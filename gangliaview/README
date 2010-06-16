@@ -1,0 +1,74 @@
+#########################################################################
+#       
+#       GangliaView derived from CactiView http://github.com/lozzd/CactiView
+#
+#       Author: Vladimir Vuksan http://twitter.com/vvuksan
+#
+#
+#       Displays a section of Ganglia graphs based on your selection.
+#       Graphs rotate automatically every 30 seconds (by default)
+#
+#       Configuration is available in config.php
+#
+#########################################################################
+
+0. Requirements
+
+- PHP
+- Cacti
+- A monitor dedicated for graphs, preferably hanging from the ceiling or wall. 
+- A web browser running on a computer attached to said monitor
+
+1. Limitations
+
+At the present time, this is intended for a specific screen resolution and there is no easy
+way to change this dynamically. If it doesn't quite fit, please manually alter the size of the
+graphs using the numbers in graphview.php. 
+
+2. What it does 
+
+GangliaView  gives you a clean and simple view of one data source from Ganglia at a time. You can
+name the data sources, and set the automatic rotation duration. 
+
+We show two large graphs for last hour and last day and two smaller graphs with week and month 
+view.
+
+3. Configuration
+
+The actual configuration of GangliaView is very simple. You do not even have to run GangliaView on
+the same server as Ganglia Web Front end. Simply edit config.php 
+
+In general all you need to do is add values to the $graphs array 
+
+$graphs = array (
+array("hostname" => "web01.domain.com", "cluster" => "Web", "metric_name" => "load_one", "title" => "web01 1 min load average" ),
+
+You also should add a size in Ganglia configuration that specifies the size of large graphs. For
+instance in my example I have added following to graph_sizes array in /gangali/conf.php e.g.
+
+   'xlarge'=>array(
+     'height'=>300,
+     'width'=>650,
+     'fudge_0'=>0,
+     'fudge_1'=>0,
+     'fudge_2'=>0
+   ),
+
+
+4. Using GangliaView
+
+After configuration, open a browser (I suggest Google Chrome, more here:
+http://laurie.denness.net/blog/2009/05/finding-a-web-browser-for-constant-page-reloading/ )
+and point it to where you installed GangliaView. e.g. http://host/gangliaview
+
+You should land at your first graph, and after the timeout, it will rotate to the next graph
+in the array until it hits the last at which point it will start again at the being. This repeats
+forever. 
+
+5. Hints and tips
+
+If displaying this unattended constantly, it is a good idea to use a method to turn off the 
+display when no one will be looking at it (if possible!). On Windows, I provide a couple of
+small .exe files, one which sleeps the displays, and one to wake them. You can then use 
+Task Scheduler to have the monitors be controlled automatically. Using Linux, you can use
+dpms to sleep and wake the monitors using cron. 
