@@ -38,10 +38,10 @@ $gangliapath = "/ganglia/graph.php?s=by name&hc=4&st=";
 
 $graphs = array (
 array("hostname" => "db06.domain.com", "cluster" => $cluster, "metric_name" => "load_five", "title" => "db06 5 minute load average" ),
-array("hostname" => "db03.domain.com", "cluster" => $cluster, "metric_name" => "load_five", "title" => "db03 5 minute load average" ),
+array("hostname" => "db03.domain.com", "cluster" => $cluster, "metric_name" => "load_five", "title" => "db03 5 minute load average" )
 
 );
-s
+
 # Disable debugging
 error_reporting(0);
 
