@@ -51,6 +51,20 @@ body {
 
 
 <body>
+
+<?php
+
+$current_hour = date('G');
+
+#####################################################################################
+# Check whether these are office hours. Display graphs only during office hours
+# so that we can give Ganglia server a little breather from generating all those
+# images
+#####################################################################################
+if ( $current_hour >= $office_hour_min && $current_hour <= $office_hour_max ) {
+
+?>
+
 <div style="position: fixed; left: 20; width: 800; top: 2; font-size: 48px;"><?php echo $title;  ?></div>
 <div style="position: fixed; left: 20; width: 600; top: 55; font-size: 24px;">Next: <?php echo $nexttitle  ?></div><br />
 
@@ -61,13 +75,29 @@ body {
 	<td valign="top">
           <img src="<?php echo $gangliapath . "&c=${cluster}&h=${host}&r=week&z=${small_size}&${graph_name}" ?>">
 	  <img src="<?php echo $gangliapath . "&c=${cluster}&h=${host}&r=month&z=${small_size}&${graph_name}" ?>">
-         <div style="margin-top: 10px; font-size: 48px; text-align: center;"><?php echo date('n/j/y G:i T'); ?></div>
+         <div style="margin-top: 10px; font-size: 48px; text-align: center;"><?php echo date(DATE_RFC850); ?></div>
 	</td>
 
 	</td>
 </tr>
 </table>
 
+<?php
+
+} else {
+
+?>
+<div style="color: red; font-size: 72px;">
+We are sleeping since it's off hours.<p>
+Adjust $office_hour_min and $office_hour_max if this makes you unhappy</h3>
+</div>
+<div style="margin-top: 10px; font-size: 48px; text-align: center;"><?php echo date(DATE_RFC850); ?></div>
+
+<?php
+
+}
+
+?>
 
 </body>
 </html>

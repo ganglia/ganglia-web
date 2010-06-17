@@ -17,6 +17,13 @@ $timeout = 30;
 # For ease of changing things
 $cluster = "unspecified";
 
+# This defines times when updates are happening. For instance if you want
+# to turn off updating during non-business hours you would set 
+# office_hour_min = 8 and office_hour_max = 17. If you want them 24/7
+# set min to 0 and max to 24.
+$office_hour_min = 0;
+$office_hour_max = 24;
+
 # Graph sizes to use. Those have to be specified in /ganglia/conf.php
 $small_size = "medium";
 $large_size = "xlarge";
