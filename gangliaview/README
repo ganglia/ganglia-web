@@ -15,7 +15,7 @@
 0. Requirements
 
 - PHP
-- Cacti
+- Ganglia 
 - A monitor dedicated for graphs, preferably hanging from the ceiling or wall. 
 - A web browser running on a computer attached to said monitor
 
