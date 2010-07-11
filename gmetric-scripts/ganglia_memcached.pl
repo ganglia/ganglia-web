@@ -4,6 +4,12 @@
 # This is memcached collection script for Ganglia
 # Author: Vladimir Vuksan http://vuksan.com/linux/ 
 # Based off mymemcalc http://code.google.com/p/mymemcalc/
+#
+# You need to install XML::Simple and Cache::Memcached
+# modules off CPAN ie.
+# perl -MCPAN -e 'install XML::Simple' 
+# perl -MCPAN -e 'Cache::Memcached' 
+#
 #############################################################
 use strict;
 use warnings FATAL => 'all';
