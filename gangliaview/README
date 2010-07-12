@@ -72,3 +72,26 @@ display when no one will be looking at it (if possible!). On Windows, I provide 
 small .exe files, one which sleeps the displays, and one to wake them. You can then use 
 Task Scheduler to have the monitors be controlled automatically. Using Linux, you can use
 dpms to sleep and wake the monitors using cron. 
+
+6. Power/resource saving
+
+Ganglia View also supports configurable time when it's running. For instance you can define
+that your office hours are from 9 to 6 pm. Outside those hours GangliaView will present
+a simple banner instead of pulling images. That may give your Ganglia server a break. To 
+define the hours change following variables in config.php
+
+<pre>
+$office_hour_min = 0;
+$office_hour_max = 24;
+</pre>
+
+For turning the monitor off and on in Linux you would could do this from the command line 
+or from cron
+
+Turn Off: xset dpms force off
+Turn On: xset dpms force on
+
+I have it set in the cron this way. Turns on at 9am and turns off at 6 pm
+
+0 18 * * mon-fri              export DISPLAY=:0.0 ; /usr/bin/xset dpms force off >> /dev/null
+0 9 * * mon-fri               export DISPLAY=:0.0 ; /usr/bin/xset dpms force on >> /dev/null
