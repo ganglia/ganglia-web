@@ -1,0 +1,159 @@
+<SCRIPT TYPE="text/javascript"><!--
+// Script taken from: http://www.netlobo.com/div_hiding.html
+function toggleLayer( whichLayer )
+{
+  var elem, vis;
+  if( document.getElementById ) // this is the way the standards work
+    elem = document.getElementById( whichLayer );
+  else if( document.all ) // this is the way old msie versions work
+      elem = document.all[whichLayer];
+  else if( document.layers ) // this is the way nn4 works
+    elem = document.layers[whichLayer];
+  vis = elem.style;
+  // if the style.display value is blank we try to figure it out here
+  if(vis.display==''&&elem.offsetWidth!=undefined&&elem.offsetHeight!=undefined)
+    vis.display = (elem.offsetWidth!=0&&elem.offsetHeight!=0)?'block':'none';
+  vis.display = (vis.display==''||vis.display=='block')?'none':'block';
+}
+--></SCRIPT>
+
+<style>
+#edit_optional_graphs_button {
+    font-size:12px;
+}
+#edit_optional_graphs {
+    position:absolute;
+    left:250px;
+    top:100px;
+    width:800px;
+    height: 550px;
+    margin-left:auto;
+    margin-right:auto;
+    background-color: #FFFFFF;
+    color:blue;
+    font-size:10px;
+    overflow: scroll;
+    z-index:1;
+    padding: .4em 1em .4em 10px;
+}
+#edit_optional_graphs_content {
+    padding: .4em 1em .4em 10px;
+}
+</style>
+
+<div id="edit_optional_graphs">
+  <button id='save_optional_graphs_button'>Save</button>
+  <div style="text-align:right">
+ <button id="close_edit_optional_graphs_link">Close Window</button></p>  
+  </div>
+  <div id="edit_optional_graphs_content">Empty</div>
+</div>
+
+
+
+<div id="optional_graphs">
+
+<TABLE BORDER="0" WIDTH="100%">
+
+<TR>
+
+<TD ALIGN="CENTER" VALIGN="TOP" WIDTH="395">
+
+{optional_reports}<br>
+<button id="edit_optional_graphs_button">Edit Optional Graphs</button>
+</TD>
+</TR>
+</TABLE>
+</div>
+
+<div id="sort_column_dropdowns">
+<TABLE BORDER="0" WIDTH="100%">
+<TR>
+  <TD CLASS=title>
+  {host} <strong>graphs</strong>
+  last <strong>{range}</strong>
+  sorted <strong>{sort}</strong>
+<!-- START BLOCK : columns_dropdown -->
+  <FONT SIZE="-1">
+    Columns&nbsp;&nbsp;{metric_cols_menu}
+    Size&nbsp;&nbsp;{size_menu}
+  </FONT>
+<!-- END BLOCK : columns_dropdown -->
+  </TD>
+</TR>
+</TABLE>
+
+</div>
+
+<div id=metrics>
+
+<CENTER>
+<TABLE>
+<TR>
+ <TD>
+
+<!-- START BLOCK : vol_group_info -->
+<A HREF="javascript:;" ONMOUSEDOWN="javascript:toggleLayer('{group}');" TITLE="Toggle {group} metrics group on/off" NAME="{group}">
+<TABLE BORDER="0" WIDTH="100%">
+<TR>
+  <TD CLASS=metric>
+  {group} metrics ({group_metric_count})
+  </TD>
+</TR>
+</TABLE>
+</A>
+<DIV ID="{group}">
+<TABLE><TR>
+<!-- START BLOCK : vol_metric_info -->
+<TD>
+<a name=metric_{metric_name}>
+<font style="font-size: 9px">{metric_name}</font><br>
+<A HREF="./graph_all_periods.php?{graphargs}&amp;z=large">
+<IMG BORDER=0 ALT="{alt}" SRC="./graph.php?{graphargs}" TITLE="{desc}">
+</A>
+</TD>
+{new_row}
+<!-- END BLOCK : vol_metric_info -->
+</TR>
+</TABLE>
+</DIV>
+<!-- END BLOCK : vol_group_info -->
+
+ </TD>
+</TR>
+</TABLE>
+</CENTER>
+
+</div>
+
+<script>
+    $(function() {
+	    $( "#edit_optional_graphs" ).hide();
+	    $( "#edit_optional_graphs_button" ).button();
+	    $( "#save_optional_graphs_button" ).button();
+	    $( "#close_edit_optional_graphs_link" ).button();
+    });
+
+    $("#edit_optional_graphs_button").click(function(event) {
+      $( "#edit_optional_graphs" ).toggle();
+      $.get('edit_optional_graphs.php', "hostname={hostname}", function(data) {
+	      $('#edit_optional_graphs_content').html(data);
+      })
+      return false;
+    });
+
+    $("#save_optional_graphs_button").click(function(event) {
+       $.get('edit_optional_graphs.php', $("#edit_optional_reports_form").serialize(), function(data) {
+	      $('#edit_optional_graphs_content').html(data);
+	    });
+      return false;
+    });
+
+
+    $( "#close_edit_optional_graphs_link" ).click(function(){
+	$("#edit_optional_graphs").toggle();
+	location.reload(true);
+	return false;
+    });
+
+</script>
