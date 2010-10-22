@@ -145,7 +145,7 @@ $default_metric = "cpu_report";
 # remove the domainname from the FQDN hostnames in graphs
 # (to help with long hostnames in small charts)
 #
-$strip_domainname = yes;
+$strip_domainname = "yes";
 
 #
 # Optional summary graphs
