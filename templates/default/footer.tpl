@@ -1,6 +1,6 @@
 </div>
 <div id="tabs-search">
-Search by host or metric.
+Search by host or metric e.g. web or disk.
 
 <!---- Uses LiveSearch from http://andreaslagerkvist.com/jquery/live-search/ ---->
 <div id="metric-search">

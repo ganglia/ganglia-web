@@ -121,7 +121,8 @@ function toggleLayer( whichLayer )
     });
 
     $("#edit_optional_graphs_button").click(function(event) {
-	$("#edit_optional_graphs").dialog('open');
+      $("#edit_optional_graphs").dialog('open');
+      $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
       $.get('edit_optional_graphs.php', "hostname={hostname}", function(data) {
 	      $('#edit_optional_graphs_content').html(data);
       })
