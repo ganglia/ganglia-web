@@ -20,7 +20,7 @@ function graph_apache_report ( &$rrdtool_graph ) {
     if ($context != 'host') {
        $rrdtool_graph['title'] = $title;
     } else {
-       $rrdtool_graph['title'] = shortenFQDN($hostname) . " $title last $range";
+       $rrdtool_graph['title'] = "$title last $range";
 
     }
 
@@ -40,13 +40,11 @@ function graph_apache_report ( &$rrdtool_graph ) {
                    ."DEF:'apache_400'='${rrd_dir}/apache_400.rrd':'sum':AVERAGE "
                    ."CDEF:'capache_400'=apache_400,num_nodes,/ "
                    ."DEF:'apache_500'='${rrd_dir}/apache_500.rrd':'sum':AVERAGE "
-                   ."CDEF:'capache_other'=apache_other,num_nodes,/ "
-	           ."DEF:'apache_unique_users'='${rrd_dir}/apache_unique_users.rrd':'sum':AVERAGE "
+                   ."CDEF:'capache_500'=apache_500,num_nodes,/ "
                    ."AREA:'apache_200'#$cpu_user_color:'200' "
                    ."STACK:'apache_300'#$cpu_nice_color:'300' "
                    ."STACK:'apache_400'#$cpu_system_color:'400' "
-                   ."STACK:'apache_500'#$cpu_wio_color:'500' "
-		   ."LINE2:'apache_unique_users'#$mem_swapped_color:'Unique IPs' ";
+                   ."STACK:'apache_500'#$cpu_wio_color:'500' ";
 
                 }
      else
@@ -59,8 +57,6 @@ function graph_apache_report ( &$rrdtool_graph ) {
                    ."STACK:'apache_300'#$cpu_nice_color:'300' "
                    ."STACK:'apache_400'#$cpu_system_color:'400' "
                    ."STACK:'apache_500'#$cpu_wio_color:'500' ";
-#	           ."DEF:'apache_unique_users'='${rrd_dir}/apache_unique_users.rrd':'sum':AVERAGE "
-#		   ."LINE2:'apache_unique_users'#$mem_swapped_color:'Unique IPs' ";
                 }
 
      #################################################################################
