@@ -1,2 +1,13 @@
 This should work like the normal Ganglia web UI. The difference is that
 you need to make the conf/ directory writeable by the Apache user.
+
+IMPORTANT:
+You will need PHP JSON extension. It comes with PHP 5.2+. If you are on 5.1
+use 
+
+pecl install json
+
+pecl is part of php-pear package on RHEL/CentOS. Make sure you have 
+
+# cat /etc/php.d/json.ini 
+extension=json.so
