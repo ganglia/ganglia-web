@@ -1,0 +1,2 @@
+This should work like the normal Ganglia web UI. The difference is that
+you need to make the conf/ directory writeable by the Apache user.
