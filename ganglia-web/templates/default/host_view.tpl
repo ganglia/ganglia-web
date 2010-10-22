@@ -21,30 +21,15 @@ function toggleLayer( whichLayer )
 #edit_optional_graphs_button {
     font-size:12px;
 }
-#edit_optional_graphs {
-    position:absolute;
-    left:250px;
-    top:100px;
-    width:800px;
-    height: 550px;
-    margin-left:auto;
-    margin-right:auto;
-    background-color: #FFFFFF;
-    color:blue;
-    font-size:10px;
-    overflow: scroll;
-    z-index:1;
-    padding: .4em 1em .4em 10px;
-}
+
 #edit_optional_graphs_content {
     padding: .4em 1em .4em 10px;
 }
 </style>
 
 <div id="edit_optional_graphs">
-  <button id='save_optional_graphs_button'>Save</button>
-  <div style="text-align:right">
- <button id="close_edit_optional_graphs_link">Close Window</button></p>  
+  <div style="text-align: center;">
+    <button  id='save_optional_graphs_button'>Save</button>
   </div>
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
@@ -128,14 +113,15 @@ function toggleLayer( whichLayer )
 
 <script>
     $(function() {
-	    $( "#edit_optional_graphs" ).hide();
+	    $( "#edit_optional_graphs" ).dialog({ autoOpen: false, minWidth: 550,
+	      beforeClose: function(event, ui) {  location.reload(true); } })
 	    $( "#edit_optional_graphs_button" ).button();
 	    $( "#save_optional_graphs_button" ).button();
 	    $( "#close_edit_optional_graphs_link" ).button();
     });
 
     $("#edit_optional_graphs_button").click(function(event) {
-      $( "#edit_optional_graphs" ).toggle();
+	$("#edit_optional_graphs").dialog('open');
       $.get('edit_optional_graphs.php', "hostname={hostname}", function(data) {
 	      $('#edit_optional_graphs_content').html(data);
       })
@@ -147,13 +133,6 @@ function toggleLayer( whichLayer )
 	      $('#edit_optional_graphs_content').html(data);
 	    });
       return false;
-    });
-
-
-    $( "#close_edit_optional_graphs_link" ).click(function(){
-	$("#edit_optional_graphs").toggle();
-	location.reload(true);
-	return false;
     });
 
 </script>
