@@ -36,11 +36,39 @@ $command    = '';
 
 $size = in_array( $size, $graph_sizes_keys ) ? $size : 'default';
 
-$height  = $graph_sizes[ $size ][ 'height' ];
-$width   = $graph_sizes[ $size ][ 'width' ];
+if ( isset($_GET['height'] ) ) 
+  $height = $_GET['height'];
+else 
+  $height  = $graph_sizes[ $size ][ 'height' ];
+
+if ( isset($_GET['width'] ) ) 
+  $width =  $_GET['width'];
+else
+  $width = $graph_sizes[ $size ][ 'width' ];
+
+#$height  = $graph_sizes[ $size ][ 'height' ];
+#$width   = $graph_sizes[ $size ][ 'width' ];
 $fudge_0 = $graph_sizes[ $size ][ 'fudge_0' ];
 $fudge_1 = $graph_sizes[ $size ][ 'fudge_1' ];
 $fudge_2 = $graph_sizes[ $size ][ 'fudge_2' ];
+
+
+/* ------------------------------------------------------------------------
+  Graphite stuff
+------------------------------------------------------------------------- */
+
+function create_graphite_target_string($array) {
+
+  global $host;
+  foreach ( $array as $metric => $metric_description ) {
+    $elements[] = "target=alias($host." . $metric . ".sum%2C'" . urlencode($metric_description) . "')";
+  }
+
+  return join("&", $elements);
+
+}
+
+
 
 #
 # Since the $command variable is explicitly set to an empty string, above, do we really need
@@ -203,35 +231,97 @@ if (!array_key_exists('series', $rrdtool_graph) || !strlen($rrdtool_graph['serie
     exit();
 }
 
-# Make small graphs (host list) cleaner by removing the too-big
-# legend: it is displayed above on larger cluster summary graphs.
-if ($size == "small" and ! isset($subtitle))
-    $rrdtool_graph['extras'] = "-g";
+  # Make small graphs (host list) cleaner by removing the too-big
+  # legend: it is displayed above on larger cluster summary graphs.
+  if ($size == "small" and ! isset($subtitle))
+      $rrdtool_graph['extras'] = "-g";
 
-$command = RRDTOOL . " graph - $rrd_options ";
+  $command = RRDTOOL . " graph - $rrd_options ";
 
-// The order of the other arguments isn't important, except for the
-// 'extras' and 'series' values.  These two require special handling.
-// Otherwise, we just loop over them later, and tack $extras and
-// $series onto the end of the command.
-foreach (array_keys ($rrdtool_graph) as $key) {
+  // The order of the other arguments isn't important, except for the
+  // 'extras' and 'series' values.  These two require special handling.
+  // Otherwise, we just loop over them later, and tack $extras and
+  // $series onto the end of the command.
+  foreach (array_keys ($rrdtool_graph) as $key) {
 
-    if (preg_match('/extras|series/', $key))
-        continue;
+      if (preg_match('/extras|series/', $key))
+	  continue;
 
-    $value = $rrdtool_graph[$key];
+      $value = $rrdtool_graph[$key];
 
-    if (preg_match('/\W/', $value)) {
-        //more than alphanumerics in value, so quote it
-        $value = "'$value'";
+      if (preg_match('/\W/', $value)) {
+	  //more than alphanumerics in value, so quote it
+	  $value = "'$value'";
+      }
+      $command .= " --$key $value";
+  }
+
+// Let's check if we are using graphite
+if ( $use_graphite == "no" ) {
+
+  // And finish up with the two variables that need special handling.
+  // See above for how these are created
+  $command .= array_key_exists('extras', $rrdtool_graph) ? ' '.$rrdtool_graph['extras'].' ' : '';
+  $command .= " $rrdtool_graph[series]";
+
+} else {
+
+  $host      = isset($_GET["h"])  ?  sanitize ( str_replace(".","_", $_GET["h"]) )   : NULL;
+
+  $area = "";
+  $series = $rrdtool_graph["series"];
+  # Figure out the name of the RRD file
+  if (preg_match("/DEF:.+?\/([^\/]+)\.rrd:(.+?)'/", $series, $matches)) {
+    $rrd = $matches[1];
+  }
+  if (preg_match("/AREA/", $series, $matches)) {
+    $area = "&areaMode=all";
+  }
+
+  $height += 50;
+
+  $title = urlencode($rrdtool_graph["title"]);
+
+  if ( isset($_GET['g'])) {
+
+    // if it's a report increase the height for additional 30 pixels
+    $height += 40;
+
+    switch ( $_GET['g'] ) {
+
+      case "load_report":
+	$metric_array = array("load_one" => "Load one");
+	$target = create_graphite_target_string($metric_array) . "&target=alias($host.proc_run.sum%2C'Running%20processes')&areaMode=first&colorList=BBBBBB,2030F4";
+	break;
+
+      case "cpu_report":
+	$metric_array = array("cpu_user" => "CPU User", "cpu_nice" => "CPU Nice", "cpu_system" => "CPU System", "cpu_wio" => "CPU Wait", "cpu_idle" => "CPU Idle");
+	$target = create_graphite_target_string($metric_array) . "&areaMode=stacked&max=100&colorList=$cpu_user_color,$cpu_nice_color,$cpu_system_color,$cpu_wio_color,$cpu_idle_color";
+	break;
+      case "mem_report":
+	$metric_array = array("mem_shared" => "Mem shared", "mem_cached" => "Mem cached", "mem_buffers" => "Mem buffered",  "mem_free" => "Mem Free");
+	$target = create_graphite_target_string($metric_array) . "&areaMode=stacked";
+	break;
+      case "network_report":
+	$metric_array = array("bytes_in" => "Bytes In", "bytes_out" => "Bytes out");
+	$target = create_graphite_target_string($metric_array);
+	break;
+      case "packet_report":
+	$metric_array = array("pkts_in" => "Packets In", "pkts_out" => "Packets out");
+	$target = create_graphite_target_string($metric_array);
+	break;
+      default:
+	break;
     }
-    $command .= " --$key $value";
-}
+  } else {
 
-// And finish up with the two variables that need special handling.
-// See above for how these are created
-$command .= array_key_exists('extras', $rrdtool_graph) ? ' '.$rrdtool_graph['extras'].' ' : '';
-$command .= " $rrdtool_graph[series]";
+    $target = "target=$host.$rrd.sum$area";
+  }
+
+  $url = $graphite_url_base . "?width=$width&height=$height&" . $target . "&title=$title&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000";
+
+
+}
 
 #if ($debug) {   error_log("Final rrdtool command:  $command");   }
 
@@ -245,11 +335,20 @@ if($command) {
     if ($debug>2) {
         header ("Content-type: text/html");
         print "<html><body>";
-        print htmlentities( $command );
+	if ( $use_graphite == "no" ) {
+	  print htmlentities( $command );
+	} else {
+	  print $url;
+	}
         print "</body></html>";
     } else {
         header ("Content-type: image/png");
-        passthru($command);
+	if ( $use_graphite == "no" ) {
+	  passthru($command);
+	} else {
+          echo file_get_contents($url);
+	}
+
     }
 }
 

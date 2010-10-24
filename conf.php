@@ -150,7 +150,7 @@ $strip_domainname = "yes";
 #
 # Optional summary graphs
 #
-$optional_graphs = array('apache');
+$optional_graphs = array();
 
 # 
 # Time ranges
@@ -166,6 +166,11 @@ $time_ranges = array(
 
 # this key must exist in $time_ranges
 $default_time_range = 'hour';
+
+
+# Use graphite
+$use_graphite = "no";
+$graphite_url_base = "http://127.0.0.1/render";
 
 #
 # Graph sizes
