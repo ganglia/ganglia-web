@@ -300,22 +300,22 @@ if ( $use_graphite == "no" ) {
 	break;
       case "mem_report":
 	$metric_array = array("mem_shared" => "Mem shared", "mem_cached" => "Mem cached", "mem_buffers" => "Mem buffered",  "mem_free" => "Mem Free");
-	$target = create_graphite_target_string($metric_array) . "&areaMode=stacked";
+	$target = create_graphite_target_string($metric_array) . "&areaMode=stacked&colorList=$mem_shared_color,$mem_cached_color,$mem_buffered_color,$mem_swapped_color,$mem_used_color";
 	break;
       case "network_report":
 	$metric_array = array("bytes_in" => "Bytes In", "bytes_out" => "Bytes out");
-	$target = create_graphite_target_string($metric_array);
+	$target = create_graphite_target_string($metric_array) . "&vtitle=bytes";
 	break;
       case "packet_report":
 	$metric_array = array("pkts_in" => "Packets In", "pkts_out" => "Packets out");
-	$target = create_graphite_target_string($metric_array);
+	$target = create_graphite_target_string($metric_array) . "&vtitle=packets";
 	break;
       default:
 	break;
     }
   } else {
 
-    $target = "target=$host.$rrd.sum$area";
+    $target = "target=$host.$rrd.sum$area&hideLegend=true&vtitle=$vlabel";
   }
 
   $url = $graphite_url_base . "?width=$width&height=$height&" . $target . "&title=$title&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000";
