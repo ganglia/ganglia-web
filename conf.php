@@ -168,23 +168,26 @@ $time_ranges = array(
 $default_time_range = 'hour';
 
 
-# Use graphite
+// Use graphite
 $use_graphite = "no";
+// 
 $graphite_url_base = "http://127.0.0.1/render";
+// 
+$graphite_rrd_dir = "/opt/graphite/storage/rrd";
 
 #
 # Graph sizes
 #
 $graph_sizes = array(
    'small'=>array(
-     'height'=>40,
-     'width'=>160,
+     'height'=>65,
+     'width'=>200,
      'fudge_0'=>0,
      'fudge_1'=>0,
      'fudge_2'=>0
    ),
    'medium'=>array(
-     'height'=>75,
+     'height'=>95,
      'width'=>300,
      'fudge_0'=>0,
      'fudge_1'=>14,

@@ -57,11 +57,11 @@ $fudge_2 = $graph_sizes[ $size ][ 'fudge_2' ];
   Graphite stuff
 ------------------------------------------------------------------------- */
 
-function create_graphite_target_string($array) {
+function create_graphite_target_string($host_cluster, $array) {
 
   global $host;
   foreach ( $array as $metric => $metric_description ) {
-    $elements[] = "target=alias($host." . $metric . ".sum%2C'" . urlencode($metric_description) . "')";
+    $elements[] = "target=alias($host_cluster." . $metric . ".sum%2C'" . urlencode($metric_description) . "')";
   }
 
   return join("&", $elements);
@@ -87,15 +87,19 @@ switch ($context)
 {
     case "meta":
       $rrd_dir = "$rrds/__SummaryInfo__";
+      $rrd_graphite_link = "$graphite_rrd_dir/__SummaryInfo__";
       break;
     case "grid":
       $rrd_dir = "$rrds/$grid/__SummaryInfo__";
+      $rrd_graphite_link = "$graphite_rrd_dir/$grid/__SummaryInfo__";
       break;
     case "cluster":
       $rrd_dir = "$rrds/$clustername/__SummaryInfo__";
+      $rrd_graphite_link = "$graphite_rrd_dir/$clustername/__SummaryInfo__";
       break;
     case "host":
       $rrd_dir = "$rrds/$clustername/$hostname";
+      $rrd_graphite_link = $graphite_rrd_dir . "/" . $clustername . "/" . $host;
       break;
     default:
       exit;
@@ -266,8 +270,23 @@ if ( $use_graphite == "no" ) {
 
 } else {
 
-  $host      = isset($_GET["h"])  ?  sanitize ( str_replace(".","_", $_GET["h"]) )   : NULL;
+  // Get hostname
+  $raw_host = isset($_GET["h"])  ?  sanitize ( $_GET["h"]  )   : "__SummaryInfo__";  
 
+  // For graphite purposes we need to replace all dots with underscore. dot  is
+  // separates subtrees in graphite
+  $host = str_replace(".","_", $raw_host);
+
+  // Check whether the link exists from Ganglia RRD tree to the graphite storage/rrd_dir
+  // area
+  if ( ! is_link($rrd_graphite_link) ) {
+    // Does the directory exist for the cluster. If not create it
+    if ( ! is_dir ($graphite_rrd_dir . "/" . $clustername) )
+      mkdir ( $graphite_rrd_dir . "/" . $clustername );
+    symlink($rrd_dir, $rrd_graphite_link);
+  }
+
+  $host_cluster = $clustername . "." . $host;
   $area = "";
   $series = $rrdtool_graph["series"];
   # Figure out the name of the RRD file
@@ -291,31 +310,31 @@ if ( $use_graphite == "no" ) {
 
       case "load_report":
 	$metric_array = array("load_one" => "Load one");
-	$target = create_graphite_target_string($metric_array) . "&target=alias($host.proc_run.sum%2C'Running%20processes')&areaMode=first&colorList=BBBBBB,2030F4";
+	$target = create_graphite_target_string($host_cluster, $metric_array) . "&target=alias($host_cluster.proc_run.sum%2C'Running%20processes')&areaMode=first&colorList=BBBBBB,2030F4";
 	break;
 
       case "cpu_report":
 	$metric_array = array("cpu_user" => "CPU User", "cpu_nice" => "CPU Nice", "cpu_system" => "CPU System", "cpu_wio" => "CPU Wait", "cpu_idle" => "CPU Idle");
-	$target = create_graphite_target_string($metric_array) . "&areaMode=stacked&max=100&colorList=$cpu_user_color,$cpu_nice_color,$cpu_system_color,$cpu_wio_color,$cpu_idle_color";
+	$target = create_graphite_target_string($host_cluster, $metric_array) . "&areaMode=stacked&max=100&colorList=$cpu_user_color,$cpu_nice_color,$cpu_system_color,$cpu_wio_color,$cpu_idle_color";
 	break;
       case "mem_report":
 	$metric_array = array("mem_shared" => "Mem shared", "mem_cached" => "Mem cached", "mem_buffers" => "Mem buffered",  "mem_free" => "Mem Free");
-	$target = create_graphite_target_string($metric_array) . "&areaMode=stacked&colorList=$mem_shared_color,$mem_cached_color,$mem_buffered_color,$mem_swapped_color,$mem_used_color";
+	$target = create_graphite_target_string($host_cluster, $metric_array) . "&areaMode=stacked&colorList=$mem_shared_color,$mem_cached_color,$mem_buffered_color,$mem_swapped_color,$mem_used_color";
 	break;
       case "network_report":
 	$metric_array = array("bytes_in" => "Bytes In", "bytes_out" => "Bytes out");
-	$target = create_graphite_target_string($metric_array) . "&vtitle=bytes";
+	$target = create_graphite_target_string($host_cluster, $metric_array) . "&vtitle=bytes";
 	break;
       case "packet_report":
 	$metric_array = array("pkts_in" => "Packets In", "pkts_out" => "Packets out");
-	$target = create_graphite_target_string($metric_array) . "&vtitle=packets";
+	$target = create_graphite_target_string($host_cluster, $metric_array) . "&vtitle=packets";
 	break;
       default:
 	break;
     }
   } else {
 
-    $target = "target=$host.$rrd.sum$area&hideLegend=true&vtitle=$vlabel";
+    $target = "target=$host_cluster.$rrd.sum$area&hideLegend=true&vtitle=$vlabel";
   }
 
   $url = $graphite_url_base . "?width=$width&height=$height&" . $target . "&title=$title&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000";
