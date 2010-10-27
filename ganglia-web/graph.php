@@ -31,6 +31,13 @@ $summary    = isset( $_GET["su"] )    ? 1 : 0;
 $debug      = isset( $_GET['debug'] ) ? clean_number ( sanitize( $_GET["debug"] ) ) : 0;
 $command    = '';
 
+// Get hostname
+$raw_host = isset($_GET["h"])  ?  sanitize ( $_GET["h"]  )   : "__SummaryInfo__";  
+
+// For graphite purposes we need to replace all dots with underscore. dot  is
+// separates subtrees in graphite
+$host = str_replace(".","_", $raw_host);
+
 # Assumes we have a $start variable (set in get_context.php).
 # $graph_sizes and $graph_sizes_keys defined in conf.php.  Add custom sizes there.
 
@@ -98,7 +105,7 @@ switch ($context)
       $rrd_graphite_link = "$graphite_rrd_dir/$clustername/__SummaryInfo__";
       break;
     case "host":
-      $rrd_dir = "$rrds/$clustername/$hostname";
+      $rrd_dir = "$rrds/$clustername/$raw_host";
       $rrd_graphite_link = $graphite_rrd_dir . "/" . $clustername . "/" . $host;
       break;
     default:
@@ -269,13 +276,6 @@ if ( $use_graphite == "no" ) {
   $command .= " $rrdtool_graph[series]";
 
 } else {
-
-  // Get hostname
-  $raw_host = isset($_GET["h"])  ?  sanitize ( $_GET["h"]  )   : "__SummaryInfo__";  
-
-  // For graphite purposes we need to replace all dots with underscore. dot  is
-  // separates subtrees in graphite
-  $host = str_replace(".","_", $raw_host);
 
   // Check whether the link exists from Ganglia RRD tree to the graphite storage/rrd_dir
   // area
