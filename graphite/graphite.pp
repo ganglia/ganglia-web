@@ -56,23 +56,29 @@ class graphite::common {
 
 }
 
+# TODO
 #/opt/graphite/webapp/graphite# python manage.py syncdb
 #Could not import graphite.local_settings, using defaults!
 #Could not import graphite.local_settings, using defaults!
-
-# patch -p0 < ../graphite.diff 
 
 class graphite::centos {
 
   $apache_user = "apache"
 
+  # Some of these packages are not part of the standard set. You can find the remainder at
+  # http://vuksan.com/centos/RPMS or compile your own
   package { 
-        [ python-django, python-simplejson, mod_python, python-memcached, python-sqlite2, rrdtool-python]: ensure => latest;
+        [ pycairo, python-ldap, python-django, python-simplejson, mod_python, python-memcached, python-sqlite2, rrdtool-python]: ensure => latest;
   }
 
 }
 
 
+###########################################################################################
+# On Ubuntu 9.10 python-rrdtool package is nearly empty !@#$%
+# https://bugs.launchpad.net/ubuntu/+source/rrdtool/+bug/388221
+# Use lucid packages :-(
+###########################################################################################
 class graphite::ubuntu {
 
   $apache_user = "www-data"
