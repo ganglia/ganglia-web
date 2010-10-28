@@ -1,9 +1,3 @@
-################################################################################
-# This Puppet recipe install Ganglia and Graphite on the same host.
-# It is still work in progress. Need to resolve patching the source to 
-# support Ganglia RRDs and creating the initial Django admin DB
-################################################################################
-
 class graphite::common {
 
  $build_dir = "/tmp"
@@ -35,11 +29,18 @@ class graphite::common {
         creates => "$webapp_loc"
    }      
 
+  exec { "download-ganglia-graphite-diff":
+        path => ["/bin", "/usr/bin", "/usr/sbin", "/sbin"],
+        command => "wget -O $build_dir/graphite.diff http://github.com/vvuksan/ganglia-misc/raw/master/graphite/graphite.diff",
+        creates => "$build_dir/graphite.diff"
+   }
+
    exec { "install-webapp":
         path => ["/bin", "/usr/bin", "/usr/sbin"],
         command => "cd $build_dir ; tar -zxvf $webapp_loc ; cd graphite-web-0.9.6 ; python setup.py install",
+	require => Exec["download-ganglia-graphite-diff"],
         subscribe => Exec[download-graphite-whisper],
-        refreshonly => true
+	creates => "/opt/graphite"
    }
 
 
@@ -71,12 +72,13 @@ class graphite::centos {
 
 }
 
+
 class graphite::ubuntu {
 
   $apache_user = "www-data"
 
   package {
-        [ python-django, python-simplejson, libapache2-mod-python, python-memcache, python-pysqlite2, python-rrdtool]: ensure => latest;
+        [ python-ldap, python-cairo, python-django, python-simplejson, libapache2-mod-python, python-memcache, python-pysqlite2, python-rrdtool]: ensure => latest;
   }
 
 }
@@ -84,33 +86,56 @@ class graphite::ubuntu {
 
 class ganglia::common {
 
- service {
-#        gmond:
-#                ensure => running,
- #               enable => true;  
 
-        gmetad:
-                ensure => running,
-                enable => true;  
-
-  }
 }
 
-class ganglia::centos {
+class ganglia::client::centos {
 
  package { 
-        [ ganglia-gmond, ganglia-gmond-modules-python, ganglia-gmetad]: ensure => latest;
+        [ ganglia-gmond, ganglia-gmond-modules-python ]: ensure => latest;
 
   }
 
 }
 
-class ganglia::ubuntu {
+class ganglia::server::centos {
 
  package { 
-        [ ganglia-monitor, gmetad]: ensure => latest;
+        [ ganglia-gmetad]: ensure => latest;
 
   }
+
+  service {
+    gmetad:
+      ensure => running,
+      enable => true;  
+  }
+
+}
+
+
+class ganglia::client::ubuntu {
+
+ package { 
+        [ ganglia-monitor]: ensure => latest;
+
+  }
+
+}
+
+class ganglia::server::ubuntu {
+
+ package { 
+        [ gmetad]: ensure => latest;
+
+  }
+
+  service {
+    gmetad:
+      ensure => running,
+      enable => true;  
+  }
+
 
 }
 
@@ -119,4 +144,5 @@ include graphite::common
 include "graphite::$operatingsystem"
 
 include ganglia::common
-include "ganglia::$operatingsystem"
+include "ganglia::client::$operatingsystem"
+include "ganglia::server::$operatingsystem"
