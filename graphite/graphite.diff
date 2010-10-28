@@ -1,0 +1,55 @@
+=== modified file 'webapp/graphite/render/graphTemplates.conf'
+--- webapp/graphite/render/graphTemplates.conf	2008-04-25 22:22:48 +0000
++++ webapp/graphite/render/graphTemplates.conf	2010-10-14 16:36:07 +0000
+@@ -1,13 +1,14 @@
+ [default]
+-background = black
+-foreground = white
++background = white
++foreground = black
+ majorLine = white
+ minorLine = grey
+-lineColors = blue,green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose
+ fontName = Sans
++lineColors = green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose
+ fontSize = 10
+ fontBold = False
+ fontItalic = False
++lineWidth = .2 
+ 
+ [noc]
+ background = black
+@@ -36,3 +37,10 @@
+ majorLine = grey
+ minorLine = rose
+ lineColors = 00ff00aa,ff000077,00337799
++
++[imstor]
++background = white
++foreground = black
++majorLine = white
++minorLine = grey
++lineColors = 0192B5
+
+=== modified file 'webapp/graphite/storage.py'
+--- webapp/graphite/storage.py	2009-12-07 05:58:32 +0000
++++ webapp/graphite/storage.py	2010-10-14 16:36:07 +0000
+@@ -262,7 +262,8 @@
+   def getDataSources(self):
+     try:
+       info = rrdtool.info(self.fs_path)
+-      return [RRDDataSource(self, source) for source in info['ds']]
++      #return [RRDDataSource(self, source) for source in info['ds']]
++      return [RRDDataSource(self, source) for source in ["sum"]]
+     except:
+       raise
+       return []
+@@ -274,6 +275,7 @@
+     self.name = name
+     self.fs_path = rrd_file.fs_path
+     self.metric_path = rrd_file.metric_path + '.' + name
++    self.real_metric = str(self.metric_path)
+ 
+   def fetch(self, startTime, endTime):
+     startString = time.strftime("%H:%M_%Y%m%d", time.localtime(startTime))
+
