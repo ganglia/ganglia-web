@@ -17,6 +17,89 @@ function toggleLayer( whichLayer )
 }
 --></SCRIPT>
 
+	<script type="text/javascript">
+	$(function() {
+		// Modified from http://jqueryui.com/demos/toggle/
+		//run the currently selected effect
+		function runEffect(){
+			//most effect types need no options passed by default
+			var options = {};
+
+			options = { to: {width: 200,height: 60} }; 
+			
+			//run the effect
+			$("#host_overview").toggle("blind",options,500);
+		};
+		
+		//set effect from select menu value
+		$("#button").click(function() {
+			runEffect();
+			return false;
+		});
+
+	});
+	</script>
+
+<style type="text/css">
+		.toggler { width: 500px; height: 200px; }
+		#button { padding: .5em 1em; text-decoration: none; }
+		#effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
+		#effect h3 { margin: 0; padding: 0.4em; text-align: center; }
+</style>
+
+<a href="#" id="button" class="ui-state-default ui-corner-all">Show host overview</a>
+
+<div style="display: none;" id=host_overview>
+<table>
+
+<TABLE BORDER="0" WIDTH="100%">
+<TR>
+  <TD COLSPAN="2" BGCOLOR="#EEEEEE" ALIGN="CENTER">
+  <FONT SIZE="+2">{host} Overview</FONT>
+  </TD>
+</TR>
+
+<TR>
+ <TD ALIGN="LEFT" VALIGN="TOP">
+
+<IMG SRC="{node_image}" HEIGHT="60" WIDTH="30" ALT="{host}" BORDER="0">
+{node_msg}
+<P>
+
+<TABLE BORDER="0" WIDTH="100%">
+<TR>
+  <TD COLSPAN="2" CLASS=title>Time and String Metrics</TD>
+</TR>
+
+<!-- START BLOCK : string_metric_info -->
+<TR>
+ <TD CLASS=footer WIDTH=30%>{name}</TD><TD>{value}</TD>
+</TR>
+<!-- END BLOCK : string_metric_info -->
+
+<TR><TD>&nbsp;</TD></TR>
+
+<TR>
+  <TD COLSPAN=2 CLASS=title>Constant Metrics</TD>
+</TR>
+
+<!-- START BLOCK : const_metric_info -->
+<TR>
+ <TD CLASS=footer WIDTH=30%>{name}</TD><TD>{value}</TD>
+</TR>
+<!-- END BLOCK : const_metric_info -->
+</TABLE>
+
+ <HR>
+<!-- INCLUDE BLOCK : extra -->
+
+</TD> 
+
+</table>
+
+</div>
+
+
 <style>
 #edit_optional_graphs_button {
     font-size:12px;
@@ -27,14 +110,14 @@ function toggleLayer( whichLayer )
 }
 </style>
 
+
+
 <div id="edit_optional_graphs">
   <div style="text-align: center;">
     <button  id='save_optional_graphs_button'>Save</button>
   </div>
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
-
-
 
 <div id="optional_graphs">
 
