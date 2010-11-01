@@ -77,7 +77,7 @@ class graphite::centos {
 ###########################################################################################
 # On Ubuntu 9.10 python-rrdtool package is nearly empty !@#$%
 # https://bugs.launchpad.net/ubuntu/+source/rrdtool/+bug/388221
-# Use lucid packages :-(
+# Use lucid packages
 ###########################################################################################
 class graphite::ubuntu {
 

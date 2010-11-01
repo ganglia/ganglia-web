@@ -16,6 +16,11 @@ Search by host or metric e.g. web or disk.
 </form>
 </div>
 
+</div> 
+
+
+<div id="tabs-dashboards">
+  Dashboards
 </div>
 
 <HR>

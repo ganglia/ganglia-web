@@ -27,6 +27,7 @@
     <ul>
 	<li><a href="#tabs-main">Main</a></li>
 	<li><a href="#tabs-search" onclick="getSearchContent();">Search</a></li>
+	<li><a href="#tabs-dashboards" onclick="getDashboardsContent();">Dashboards</a></li>
     </ul>
 
 <div id="tabs-main">

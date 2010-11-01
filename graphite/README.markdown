@@ -22,11 +22,11 @@ Apache Config
 Manual steps that need to be run after puppet finishes are copy the Graphite Virtual Host example config
 to Apache configuration directory ie. on Ubuntu you could do
 
-   cp /tmp/graphite-web-0.9.6/examples/example-graphite-vhost.conf /etc/apache2/sites-enabled/
+      cp /tmp/graphite-web-0.9.6/examples/example-graphite-vhost.conf /etc/apache2/sites-enabled/
 
 or on Centos
 
-   cp /tmp/graphite-web-0.9.6/examples/example-graphite-vhost.conf /etc/httpd/conf.d/
+      cp /tmp/graphite-web-0.9.6/examples/example-graphite-vhost.conf /etc/httpd/conf.d/
 
 You also need to add following lines to it instructing Apache not to use mod_python
 for Ganglia web UI e.g.
@@ -44,12 +44,12 @@ Django init
 
 Graphite uses Django and you need to initialize it. Go to
 
-   cd /opt/graphite/webapp/graphite 
+	cd /opt/graphite/webapp/graphite 
 
 then type
 
-   Ubuntu: sudo -u www-data python manage.py syncdb
-   CentOS: sudo -u apache python manage.py syncdb
+	Ubuntu: sudo -u www-data python manage.py syncdb
+	CentOS: sudo -u apache python manage.py syncdb
 
 Follow the directions. You will be asked to create Graphite admin user.
 
@@ -63,9 +63,9 @@ http://github.com/vvuksan/ganglia-misc/tree/master/ganglia-web/
 
 Copy it to e.g. /var/www/html/ganglia. To enable Graphite in conf.php you will need to change
 
-  $use_graphite = "no";
+      $use_graphite = "no";
 
 to 
 
-  $use_graphite = "yes";
+      $use_graphite = "yes";
 
