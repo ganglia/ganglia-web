@@ -47,17 +47,12 @@ function toggleLayer( whichLayer )
 		#effect h3 { margin: 0; padding: 0.4em; text-align: center; }
 </style>
 
-<a href="#" id="button" class="ui-state-default ui-corner-all">Show host overview</a>
+<a href="#" id="button" class="ui-state-default ui-corner-all">Host overview</a>
 
 <div style="display: none;" id=host_overview>
 <table>
 
 <TABLE BORDER="0" WIDTH="100%">
-<TR>
-  <TD COLSPAN="2" BGCOLOR="#EEEEEE" ALIGN="CENTER">
-  <FONT SIZE="+2">{host} Overview</FONT>
-  </TD>
-</TR>
 
 <TR>
  <TD ALIGN="LEFT" VALIGN="TOP">
