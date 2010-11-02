@@ -19,8 +19,8 @@ Search by host or metric e.g. web or disk.
 </div> 
 
 
-<div id="tabs-dashboards">
-  Dashboards
+<div id="tabs-views">
+  Views
 </div>
 
 <HR>

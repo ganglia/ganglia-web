@@ -67,7 +67,7 @@
 <ul>
   <li><a href="#tabs-main">Main</a></li>
   <li><a href="#tabs-search" onclick="getSearchContent();">Search</a></li>
-  <li><a href="#tabs-dashboards" onclick="getDashboardsContent();">Dashboards</a></li>
+  <li><a href="#tabs-views" onclick="getViewsContent();">Views</a></li>
 </ul>
 
 <div id="tabs-main">
