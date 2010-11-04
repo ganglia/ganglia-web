@@ -18,7 +18,9 @@ $optional_reports = "";
 
 
 ####################################################################################
-# Let's find out what 
+# Let's find out what optional reports are included
+# First we find out what the default (site-wide) reports are then look
+# for host specific included or excluded reports
 ####################################################################################
 $conf_dir = "./conf";
 
@@ -35,7 +37,7 @@ if ( is_file($host_file) ) {
 
 # Merge arrays
 $reports["included_reports"] = array_merge( $default_reports["included_reports"] , $override_reports["included_reports"]);
-$reports["excluded_reports"] =  array_merge($default_reports["excluded_reports"] , $override_reports["excluded_reports"]);
+$reports["excluded_reports"] = array_merge($default_reports["excluded_reports"] , $override_reports["excluded_reports"]);
 
 # Remove duplicates
 $reports["included_reports"] = array_unique($reports["included_reports"]);
@@ -50,7 +52,6 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
   }
 
 }
-
 
 $tpl->assign("optional_reports", $optional_reports);
 
@@ -224,6 +225,7 @@ if ( is_array($g_metrics) && is_array($g_metrics_group) )
                $group = "no_group";
             }
             $tpl->newBlock("vol_group_info");
+
             $tpl->assign("group", $group);
             $c = count($metric_array);
             $tpl->assign("group_metric_count", $c);
@@ -235,6 +237,7 @@ if ( is_array($g_metrics) && is_array($g_metrics_group) )
                      $tpl->newBlock("vol_metric_info");
                      $tpl->assign("graphargs", $v['graph']);
 		     $tpl->assign("metric_name", $name);
+		     $tpl->assign("host_name", $hostname);
                      $tpl->assign("alt", "$hostname $name");
                      if (isset($v['description']))
                         $tpl->assign("desc", $v['description']);

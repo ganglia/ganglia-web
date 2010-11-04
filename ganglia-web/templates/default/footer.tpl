@@ -1,26 +1,23 @@
 </div>
 <div id="tabs-search">
-Search by host or metric e.g. web or disk.
-
-<!---- Uses LiveSearch from http://andreaslagerkvist.com/jquery/live-search/ ---->
-<div id="metric-search">
-<form method="post" action="/search/">
-
+  Search by host or metric e.g. web or disk.
+  <!---- Uses LiveSearch from http://andreaslagerkvist.com/jquery/live-search/ ---->
+  <div id="metric-search">
+    <form method="post" action="/search/">
     <p>
-        <label>
-            Enter search terms<br />
-            <input type="text" name="q" size=40 />
-        </label> <input type="submit" value="Go" />
+	<label>
+	    Enter search terms<br />
+	    <input type="text" name="q" size=40 />
+	</label> <input type="submit" value="Go" />
     </p>
-
-</form>
-</div>
-
+    </form>
+  </div>
 </div> 
 
-
 <div id="tabs-views">
+  <div id="tabs-views-content">
   Views
+  </div>
 </div>
 
 <HR>

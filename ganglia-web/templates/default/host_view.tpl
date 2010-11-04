@@ -17,37 +17,38 @@ function toggleLayer( whichLayer )
 }
 --></SCRIPT>
 
-	<script type="text/javascript">
-	$(function() {
-		// Modified from http://jqueryui.com/demos/toggle/
-		//run the currently selected effect
-		function runEffect(){
-			//most effect types need no options passed by default
-			var options = {};
+<script type="text/javascript">
+$(function() {
+  // Modified from http://jqueryui.com/demos/toggle/
+  //run the currently selected effect
+  function runEffect(){
+    //most effect types need no options passed by default
+    var options = {};
 
-			options = { to: {width: 200,height: 60} }; 
-			
-			//run the effect
-			$("#host_overview").toggle("blind",options,500);
-		};
-		
-		//set effect from select menu value
-		$("#button").click(function() {
-			runEffect();
-			return false;
-		});
+    options = { to: {width: 200,height: 60} }; 
+    
+    //run the effect
+    $("#host_overview").toggle("blind",options,500);
+  };
+  
+  //set effect from select menu value
+  $("#button").click(function() {
+    runEffect();
+    return false;
+  });
 
-	});
-	</script>
-
+});
+</script>
 <style type="text/css">
-		.toggler { width: 500px; height: 200px; }
-		#button { padding: .5em 1em; text-decoration: none; }
-		#effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
-		#effect h3 { margin: 0; padding: 0.4em; text-align: center; }
+  .toggler { width: 500px; height: 200px; }
+  #button { padding: .15em 1em; text-decoration: none; }
+  #effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
+  #effect h3 { margin: 0; padding: 0.4em; text-align: center; }
 </style>
 
+<div>
 <a href="#" id="button" class="ui-state-default ui-corner-all">Host overview</a>
+</div>
 
 <div style="display: none;" id=host_overview>
 <table>
@@ -170,7 +171,7 @@ function toggleLayer( whichLayer )
 <!-- START BLOCK : vol_metric_info -->
 <TD>
 <a name=metric_{metric_name}>
-<font style="font-size: 9px">{metric_name}</font><br>
+<font style="font-size: 9px">{metric_name}</font> <a style="background-color: #dddddd" onclick="addMetricToView('{host_name}','{metric_name}'); return false;" href="#">+</a><br>
 <A HREF="./graph_all_periods.php?{graphargs}&amp;z=large">
 <IMG BORDER=0 ALT="{alt}" SRC="./graph.php?{graphargs}" TITLE="{desc}">
 </A>
