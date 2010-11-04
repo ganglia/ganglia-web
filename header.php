@@ -252,7 +252,7 @@ if (!$physical) {
 	$checked = "checked=\"checked\"";
       else
 	$checked = "";
-      $range_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"radio-$v\">$v</label>";
+      $range_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
 
    }
 

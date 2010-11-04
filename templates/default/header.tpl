@@ -11,51 +11,109 @@
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
 <style>
-    #table_top_chooser {
+#views_table {
       font-size: 12px
-    }
+}
+#table_top_chooser {
+      font-size: 12px
+}
+#views_menu { width: 200px; }
+#views_menu ul
+{
+margin-left: 0;
+padding-left: 0;
+list-style-type: none;
+font-family: Arial, Helvetica, sans-serif;
+}
+#views_menu a
+{
+display: block;
+padding: 3px;
+width: 160px;
+background-color: white;
+border-bottom: 1px solid #eee;
+}
+#views_menu a:link, #navlist a:visited
+{
+color: blue;
+text-decoration: none;
+}
+#views_menu a:hover
+{
+background-color: #dddddd;
+color: blue;
+}
 </style>
 <script>
- $(function(){
+$(function(){
 
-   var availablemetrics = [
+  var availablemetrics = [
       {available_metrics}
-   ];
+  ];
 
+  $("#tabs").tabs();
+  $( "#range_menu" ).buttonset();
+  $( "#sort_menu" ).buttonset();
+  jQuery('#metric-search input[name="q"]').liveSearch({url: 'search.php?q='});
+  $( "#datepicker-cs" ).datepicker({
+	  showOn: "button",
+	  buttonImage: "img/calendar.gif",
+	  buttonImageOnly: true
+  });
+  $( "#datepicker-ce" ).datepicker({
+	  showOn: "button",
+	  buttonImage: "img/calendar.gif",
+	  buttonImageOnly: true
+  });
 
-	$("#tabs").tabs();
-	$( "#range_menu" ).buttonset();
-	$( "#sort_menu" ).buttonset();
-	jQuery('#metric-search input[name="q"]').liveSearch({url: 'search.php?q='});
-	$(function() {
-		$( "#datepicker-cs" ).datepicker({
-			showOn: "button",
-			buttonImage: "img/calendar.gif",
-			buttonImageOnly: true
-		});
-	});
-	$(function() {
-		$( "#datepicker-ce" ).datepicker({
-			showOn: "button",
-			buttonImage: "img/calendar.gif",
-			buttonImageOnly: true
-		});
-	});
+  $( "#metrics-picker" ).autocomplete({
+      source: availablemetrics
+  });
 
-	$( "#metrics-picker" ).autocomplete({
-	    source: availablemetrics
-	});
+  {is-metrics-picker-disabled}
 
-	{is-metrics-picker-disabled}
+});
 
-    });
+function getViewsContent() {
+  $.get('views.php', "" , function(data) {
+    $("#tabs-views-content").html('<img src="img/spinner.gif">');
+    $("#tabs-views-content").html(data);
+    $("#create_view_button")
+      .button()
+      .click(function() {
+	$( "#create-new-view-dialog" ).dialog( "open" );
+      });;
+  });
+  return false;
+}
 
-    function ganglia_submit(clearonly) {
-      document.getElementById("datepicker-cs").value = "";
-      document.getElementById("datepicker-ce").value = "";
-      if (! clearonly)
-	document.ganglia_form.submit();
-    }
+// This one avoids 
+function getViewsContentJustGraphs(viewName) {
+    $.get('views.php', "view_name=" + viewName + "&just_graphs=1", function(data) {
+		  $("#view_graphs").html('<img src="img/spinner.gif">');
+		  $("#view_graphs").html(data);
+     });
+    return false;
+}
+
+function createView() {
+  $.get('views.php', args , function(data) {
+    $("#create-new-view-dialog").html('<img src="img/spinner.gif">');
+    $("#create-new-view-dialog").html(data);
+  });
+  return false;
+}
+
+function addMetricToView(host_name,metric_name) {
+    alert(host_name + metric_name);
+}
+
+function ganglia_submit(clearonly) {
+  document.getElementById("datepicker-cs").value = "";
+  document.getElementById("datepicker-ce").value = "";
+  if (! clearonly)
+    document.ganglia_form.submit();
+}
 </script>
 {custom_time_head}
 </HEAD>
@@ -100,10 +158,9 @@
   </TD>
   </TR>
 
+  <tr><td colspan="2">{node_menu}</td></tr>
+
   </TABLE>
 
 
-<FONT SIZE="+1">
-{node_menu}
-</FONT>
 <HR SIZE="1" NOSHADE>
