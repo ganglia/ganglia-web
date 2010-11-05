@@ -103,13 +103,15 @@ function getViewsContent() {
       .click(function() {
 	$( "#create-new-view-dialog" ).dialog( "open" );
       });;
+    $( "#view_range_chooser" ).buttonset();
+
   });
   return false;
 }
 
 // This one avoids 
 function getViewsContentJustGraphs(viewName) {
-    $.get('views.php', "view_name=" + viewName + "&just_graphs=1", function(data) {
+    $.get('views.php', "view_name=" + viewName + "&just_graphs=1"  , function(data) {
 		  $("#view_graphs").html('<img src="img/spinner.gif">');
 		  $("#view_graphs").html(data);
      });
@@ -125,13 +127,25 @@ function createView() {
   return false;
 }
 
-function addMetricToView(host_name,metric_name) {
+function addMetricToView() {
+  $.get('views.php', $("#add_metric_to_view_form").serialize() + "&add_to_view=1" , function(data) {
+      $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
+      $("#metric-actions-dialog-content").html(data);
+  });
+  return false;  
+}
+
+function metricActions(host_name,metric_name) {
     $( "#metric-actions-dialog" ).dialog( "open" );
-    $.get('actions.php', "show_views=1&host_name=" + host_name + "&metric_name=" + metric_name, function(data) {
-		  $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
-		  $("#metric-actions-dialog-content").html(data);
+    $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name, function(data) {
+      $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
+      $("#metric-actions-dialog-content").html(data);
      });
     return false;
+}
+
+function updateViewTimeRange() {
+  alert("Not implemented yet");
 }
 
 function ganglia_submit(clearonly) {

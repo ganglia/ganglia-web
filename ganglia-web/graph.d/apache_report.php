@@ -27,6 +27,14 @@ function graph_apache_report ( &$rrdtool_graph ) {
     $rrdtool_graph['lower-limit']    = '0';
     $rrdtool_graph['vertical-label'] = 'hps';
     $rrdtool_graph['extras']         = '--rigid';
+    $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
+
+    if( $graphreport_stats ) {
+        $rrdtool_graph['height'] += ($size == 'medium') ? 16 : 0;
+        $rmspace = '\\g';
+    } else {
+        $rmspace = '';
+    }
  
     if($context != "host" )
                 {

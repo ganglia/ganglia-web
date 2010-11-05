@@ -370,10 +370,11 @@ if ($context == "meta" or $context == "cluster" or $context == "host")
          $custom_time .= " value=\"$ce\"";
       $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
       $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\">\n";
-      $custom_time .= $calendar;
+#      $custom_time .= $calendar;
       $tpl->assign("custom_time", $custom_time);
 
-      $tpl->assign("custom_time_head", $calendar_head);
+#      $tpl->assign("custom_time_head", $calendar_head);
+      $tpl->assign("custom_time_head", "");
    }
 
 # Make sure that no data is cached..
