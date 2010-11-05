@@ -5,6 +5,10 @@
 #
 include_once "./version.php";
 
+$GLOBALS['ganglia_dir'] = dirname(__FILE__);
+$GLOBALS['views_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
+
+
 #
 # The name of the directory in "./templates" which contains the
 # templates that you want to use. Templates are like a skin for the

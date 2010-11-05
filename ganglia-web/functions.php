@@ -662,4 +662,45 @@ function filter_permit($source_name)
 
    return isset($filter_permit_list[$source_name]);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Get all the available views
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+function get_available_views() {
+  /* -----------------------------------------------------------------------
+  Find available views by looking in the GANGLIA_DIR/conf directory
+  anything that matches view_*.json. Read them all and build a available_views
+  array
+  ----------------------------------------------------------------------- */
+  $available_views = array();
+
+  if ($handle = opendir($GLOBALS['views_dir'])) {
+
+      while (false !== ($file = readdir($handle))) {
+
+	if ( preg_match("/view_(.*)/", $file, $out) ) {
+
+	  $view_config_file = $GLOBALS['views_dir'] . "/" . $file;
+	  if ( ! is_file ($view_config_file) ) {
+	    echo("Can't read view config file " . $view_config_file . ". Please check permissions");
+	  }
+
+	  $view = json_decode(file_get_contents($view_config_file), TRUE);	  
+	  $available_views[] = array ( "file_name" => $view_config_file, "name" => $view['view_name'],
+	    "items" => $view['items']);
+	  unset($view);
+
+	}
+      }
+
+      closedir($handle);
+  }
+
+  return $available_views;
+
+}
+
+
+
 ?>
