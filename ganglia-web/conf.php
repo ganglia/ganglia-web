@@ -162,6 +162,8 @@ $optional_graphs = array();
 #
 $time_ranges = array(
    'hour'=>3600,
+   '2hr'=>7200,
+   '4hr'=>14400,
    'day'=>86400,
    'week'=>604800,
    'month'=>2419200,
