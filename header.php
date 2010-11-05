@@ -335,7 +335,7 @@ if ($context == "physical" or $context == "cluster" or $context == 'host' )
               continue;
           $size_menu .= "<OPTION VALUE=\"$size\"";
           if (    ( isset($clustergraphsize) && ($size === $clustergraphsize)) 
-               || (!isset($clustergraphsize) && ($size === 'medium' ))) {
+               || (!isset($clustergraphsize) && ($size === 'small' ))) {
               $size_menu .= " SELECTED";
           }
           $size_menu .= ">$size</OPTION>\n";
