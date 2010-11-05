@@ -177,7 +177,7 @@ $(function() {
 <!-- START BLOCK : vol_metric_info -->
 <TD>
 <a name=metric_{metric_name}>
-<font style="font-size: 9px">{metric_name}</font> <a style="background-color: #dddddd" onclick="addMetricToView('{host_name}','{metric_name}'); return false;" href="#">+</a><br>
+<font style="font-size: 9px">{metric_name}</font> <a style="background-color: #dddddd" onclick="metricActions('{host_name}','{metric_name}'); return false;" href="#">+</a><br>
 <A HREF="./graph_all_periods.php?{graphargs}&amp;z=large">
 <IMG BORDER=0 ALT="{alt}" SRC="./graph.php?{graphargs}" TITLE="{desc}">
 </A>

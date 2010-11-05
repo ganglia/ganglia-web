@@ -138,13 +138,13 @@ function create_radio_button($variable_name, $variable_value = "ignored") {
 if ($handle = opendir($ganglia_dir . '/graph.d')) {
 
     // If we are using Graphite reports are in JSON files instead of the standard PHP files
-    if ( $use_graphite = "yes" )
+    if ( $use_graphite == "yes" )
       $report_suffix = "json";
     else
       $report_suffix = "php";
 
     while (false !== ($file = readdir($handle))) {
-      if ( preg_match("/(.*)(_report." . $report_suffix .")/", $file, $out) ) {
+      if ( preg_match("/(.*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
         $available_reports[] = $out[1] . "_report";
       }
     }
@@ -153,7 +153,6 @@ if ($handle = opendir($ganglia_dir . '/graph.d')) {
 }
 
 asort($available_reports);
-
 ?>
 
 <tr>

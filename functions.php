@@ -687,7 +687,7 @@ function get_available_views() {
 	  }
 
 	  $view = json_decode(file_get_contents($view_config_file), TRUE);	  
-	  $available_views[] = array ( "file_name" => $view_config_file, "name" => $view['view_name'],
+	  $available_views[] = array ( "file_name" => $view_config_file, "view_name" => $view['view_name'],
 	    "items" => $view['items']);
 	  unset($view);
 
@@ -696,6 +696,12 @@ function get_available_views() {
 
       closedir($handle);
   }
+
+  foreach ($available_views as $key => $row) {
+    $name[$key]  = strtolower($row['view_name']);
+  }
+
+  array_multisort($name,SORT_ASC, $available_views);
 
   return $available_views;
 

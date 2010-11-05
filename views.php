@@ -12,7 +12,7 @@ if ( isset($_GET['create_view']) ) {
   $available_views = get_available_views();
 
   foreach ( $available_views as $view_id => $view ) {
-    if ( $view['name'] == $_GET['view_name'] ) {
+    if ( $view['view_name'] == $_GET['view_name'] ) {
       $view_exists = 1;
     }
   }
@@ -55,6 +55,66 @@ if ( isset($_GET['create_view']) ) {
   exit(1);
 } 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Create new view
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+if ( isset($_GET['add_to_view']) ) {
+
+  $view_exists = 0;
+  // Check whether the view name already exists
+  $available_views = get_available_views();
+
+  foreach ( $available_views as $view_id => $view ) {
+    if ( $view['view_name'] == $_GET['view_name'] ) {
+      $view_exists = 1;
+      break;
+    }
+  }
+
+  if ( $view_exists == 0 ) {
+  ?>
+      <div class="ui-widget">
+	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+	  <strong>Alert:</strong> View <?php print $_GET['view_name']; ?> does not exist. This should not happen.</p>
+	</div>
+      </div>
+    <?php
+  } else {
+
+    // Read in contents of an existing view
+    $view_filename = $view['file_name'];
+    // Delete the file_name index
+    unset($view['file_name']);
+
+    $view['items'][] = array( "hostname" => $_GET['host_name'], "metric" => $_GET['metric_name']);
+    $json = json_encode($view);
+
+    if ( file_put_contents($view_filename, $json) === FALSE ) {
+    ?>
+      <div class="ui-widget">
+	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+	  <strong>Alert:</strong> Can't write to file <?php print $view_filename; ?>. Perhaps permissions are wrong.</p>
+	</div>
+      </div>
+    <?php
+    } else {
+    ?>
+      <div class="ui-widget">
+	<div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
+	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+	  View has been updated successfully.</p>
+	</div>
+	</div>
+    <?php
+    } // end of if ( file_put_contents($view_filename, $json) === FALSE ) 
+  }  // end of if ( $view_exists == 1 )
+  exit(1);
+} 
+
+
+
 // Load the metric caching code we use if we need to display graphs
 require_once('./cache.php');
 
@@ -89,36 +149,6 @@ if ( sizeof($available_views) == 0 ) {
   if ( ! isset($_GET['just_graphs']) ) {
 
   ?>
-    <style>
-    ul#horiz-list
-    {
-    margin-left: 0;
-    padding-left: 0;
-    white-space: nowrap;
-    }
-
-    #horiz-list li
-    {
-    display: inline;
-    list-style-type: none;
-    }
-
-    #horiz-list a { padding: 0px 5px; }
-
-    #horiz-list a:link, #horiz-list a:visited
-    {
-    color: green;
-    background-color: #eeeeee;
-    text-decoration: none;
-    }
-
-    #horiz-list a:hover
-    {
-    color: green;
-    background-color: #369;
-    text-decoration: none;
-    }
-    </style>
     <table id=views_table>
     <tr><td valign=top>
   
@@ -130,20 +160,23 @@ if ( sizeof($available_views) == 0 ) {
 
     # List all the available views
     foreach ( $available_views as $view_id => $view ) {
-      $v = $view['name'];
+      $v = $view['view_name'];
       print '<li><a href="#" onClick="getViewsContentJustGraphs(\'' . $v . '\'); return false;">' . $v . '</a></li>';  
     }
 
     ?>
     </ul></div></td><td valign=top>
     <div id=view_range_chooser>
-    <ul id="horiz-list">
-    <li><a href="#">hour</a></li>
-    <li><a href="#">day</a></li>
-    <li><a href="#">week</a></li>
-    <li><a href="#">month</a></li>
-    <li><a href="#">year</a></li>
-    </ul>
+    <form id=view_timerange_form>
+      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-hour" name="r" value="hour" checked="checked" /><label for="view-range-hour">hour</label>
+      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-day" name="r" value="day" /><label for="view-range-day">day</label>
+      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-week" name="r" value="week" /><label for="view-range-week">week</label>
+      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-month" name="r" value="month" /><label for="view-range-month">month</label>
+      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-year" name="r" value="year" /><label for="view-range-year">year</label>
+      &nbsp;&nbsp;or from <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="cs" ID="datepicker-cs" SIZE="17"> to <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="ce" ID="datepicker-ce" SIZE="17"> <input type="submit" value="Go">
+      <input type="button" value="Clear" onclick="ganglia_submit(1)">
+      </form><p>
+      </div>
     </div>
 
   <?php
@@ -153,7 +186,7 @@ if ( sizeof($available_views) == 0 ) {
   print "<div id=view_graphs>";
 
   foreach ( $available_views as $view_id => $view ) {
-   if ( $view['name'] == $view_name ) {
+   if ( $view['view_name'] == $view_name ) {
 
       // Does view have any items/graphs defined
       if ( sizeof($view['items']) == 0 ) {
