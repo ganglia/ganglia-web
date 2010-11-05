@@ -192,7 +192,7 @@ function ganglia_submit(clearonly) {
   <TR>
   <TD COLSPAN="2">
   <div id="sort_menu">
-   <B>Metric</B>&nbsp;&nbsp; <input name="m" type=text id="metrics-picker" /><input type="submit" value="Go">&nbsp;&nbsp;
+   <B>Metric</B>&nbsp;&nbsp; <input name="m" onclick="$('#metrics-picker').val('');" type=text id="metrics-picker" /><input type="submit" value="Go">&nbsp;&nbsp;
      {sort_menu}
   </div>
   </TD>

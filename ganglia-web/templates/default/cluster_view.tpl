@@ -52,6 +52,10 @@
 </TR>
 </TABLE>
 
+<script>
+// Need to set the field value to metric name
+$("#metrics-picker").val("{metric_name}");
+</script>
 
 <TABLE BORDER="0" WIDTH="100%">
 <TR>
