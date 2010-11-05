@@ -80,6 +80,7 @@ else {
   $units = "";
 }
 $tpl->assign("metric","$metricname $units");
+$tpl->assign("metric_name","$metricname");
 $tpl->assign("sort", $sort);
 $tpl->assign("range", $range);
 $tpl->assign("checked$showhosts", "checked");
