@@ -1,45 +1,7 @@
 <?php
 
-$GLOBALS['ganglia_dir'] = dirname(__FILE__);
-$GLOBALS['views_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// Get all the available views
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-function get_available_views() {
-  /* -----------------------------------------------------------------------
-  Find available views by looking in the GANGLIA_DIR/conf directory
-  anything that matches view_*.json. Read them all and build a available_views
-  array
-  ----------------------------------------------------------------------- */
-  $available_views = array();
-
-  if ($handle = opendir($GLOBALS['views_dir'])) {
-
-      while (false !== ($file = readdir($handle))) {
-
-	if ( preg_match("/view_(.*)/", $file, $out) ) {
-
-	  $view_config_file = $GLOBALS['views_dir'] . "/" . $file;
-	  if ( ! is_file ($view_config_file) ) {
-	    echo("Can't read view config file " . $view_config_file . ". Please check permissions");
-	  }
-
-	  $view = json_decode(file_get_contents($view_config_file), TRUE);	  
-	  $available_views[] = array ( "file_name" => $view_config_file, "name" => $view['view_name'],
-	    "items" => $view['items']);
-	  unset($view);
-
-	}
-      }
-
-      closedir($handle);
-  }
-
-  return $available_views;
-
-}
-
+include_once("./conf.php");
+include_once("./functions.php");
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // Create new view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +18,14 @@ if ( isset($_GET['create_view']) ) {
   }
 
   if ( $view_exists == 1 ) {
-    print "View with the name " . $_GET['view_name'] . " already exists.";
+  ?>
+      <div class="ui-widget">
+	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+	  <strong>Alert:</strong> View with the name <?php print $_GET['view_name']; ?> already exists.</p>
+	</div>
+      </div>
+    <?php
   } else {
     $empty_view = array ( "view_name" => $_GET['view_name'],
       "items" => array() );
@@ -84,8 +53,7 @@ if ( isset($_GET['create_view']) ) {
     } // end of if ( file_put_contents($view_filename, $json) === FALSE ) 
   }  // end of if ( $view_exists == 1 )
   exit(1);
-}
-
+} 
 
 // Load the metric caching code we use if we need to display graphs
 require_once('./cache.php');
@@ -153,26 +121,7 @@ if ( sizeof($available_views) == 0 ) {
     </style>
     <table id=views_table>
     <tr><td valign=top>
-    <script>
-      $( "#create-new-view-dialog" ).dialog({
-	autoOpen: false,
-	height: 200,
-	width: 350,
-	modal: true,
-	close: function() {
-	  getViewsContent();
-	  }
-	});
-    </script>
-    <div id="create-new-view-dialog" title="Create new view">
-	<form id="create_view_form">
-	<input type=hidden name=create_view value=1>
-		<label for="name">View Name</label>
-		<input type="text" name="view_name" id="view_name" class="text ui-widget-content ui-corner-all" />
-	  <center><button onclick="createView();">Create</button></center>
-	</form>
-    </div>
-
+  
     <button onclick="return false" id=create_view_button>Create View</button>
     <p>  <div id="views_menu">
       Existing views:

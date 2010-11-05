@@ -46,6 +46,12 @@ $(function() {
   #effect h3 { margin: 0; padding: 0.4em; text-align: center; }
 </style>
 
+<div id="metric-actions-dialog" title="Metric Actions">
+  <div id="metric-actions-dialog-content">
+	Available Metric actions.
+  </div>
+</div>
+
 <div>
 <a href="#" id="button" class="ui-state-default ui-corner-all">Host overview</a>
 </div>

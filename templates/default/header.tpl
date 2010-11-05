@@ -4,7 +4,7 @@
 <TITLE>Ganglia:: {page_title}</TITLE>
 <META http-equiv="Content-type" content="text/html; charset=utf-8">
 <META http-equiv="refresh" content="{refresh}">
-<SCRIPT TYPE="text/javascript" SRC="js/jquery-1.4.3.min.js"></script>
+<script TYPE="text/javascript" SRC="js/jquery-1.4.3.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.5.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.liveSearch.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.5.custom.css" rel="stylesheet" />
@@ -72,6 +72,26 @@ $(function(){
 
   {is-metrics-picker-disabled}
 
+  $( "#create-new-view-dialog" ).dialog({
+    autoOpen: false,
+    height: 200,
+    width: 350,
+    modal: true,
+    close: function() {
+      getViewsContent();
+      $("#create-new-view-layer").toggle();
+      $("#create-new-view-confirmation-layer").html("");
+    }
+  });
+
+  $( "#metric-actions-dialog" ).dialog({
+    autoOpen: false,
+    height: 200,
+    width: 350,
+    modal: true
+  });
+
+
 });
 
 function getViewsContent() {
@@ -97,15 +117,21 @@ function getViewsContentJustGraphs(viewName) {
 }
 
 function createView() {
-  $.get('views.php', args , function(data) {
-    $("#create-new-view-dialog").html('<img src="img/spinner.gif">');
-    $("#create-new-view-dialog").html(data);
+  $.get('views.php', $("#create_view_form").serialize() , function(data) {
+    $("#create-new-view-layer").toggle();
+    $("#create-new-view-confirmation-layer").html('<img src="img/spinner.gif">');
+    $("#create-new-view-confirmation-layer").html(data);
   });
   return false;
 }
 
 function addMetricToView(host_name,metric_name) {
-    alert(host_name + metric_name);
+    $( "#metric-actions-dialog" ).dialog( "open" );
+    $.get('actions.php', "show_views=1&host_name=" + host_name + "&metric_name=" + metric_name, function(data) {
+		  $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
+		  $("#metric-actions-dialog-content").html(data);
+     });
+    return false;
 }
 
 function ganglia_submit(clearonly) {

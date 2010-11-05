@@ -14,10 +14,24 @@
   </div>
 </div> 
 
+    <div id="create-new-view-dialog" title="Create new view">
+      <div id="create-new-view-layer">
+	<form id="create_view_form">
+	<input type=hidden name=create_view value=1>
+	<fieldset>
+		<label for="name">View Name</label>
+		<input type="text" name="view_name" id="view_name" class="text ui-widget-content ui-corner-all" />
+	  <center><button onclick='createView(); return false;'>Create</button></center>
+	</fieldset>
+	</form>
+      </div>
+      <div id="create-new-view-confirmation-layer">
+      </div>
+    </div>
 <div id="tabs-views">
   <div id="tabs-views-content">
-  Views
   </div>
+
 </div>
 
 <HR>
