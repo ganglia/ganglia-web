@@ -86,8 +86,8 @@ $(function(){
 
   $( "#metric-actions-dialog" ).dialog({
     autoOpen: false,
-    height: 200,
-    width: 350,
+    height: 250,
+    width: 450,
     modal: true
   });
 
