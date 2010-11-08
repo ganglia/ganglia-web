@@ -19,7 +19,7 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
     Add to view
     <input type=hidden name=host_name value="<?php print $_GET['host_name']; ?>">
     <input type=hidden name=metric_name value="<?php print $_GET['metric_name']; ?>">
-    <input type=hidden name=metric_type value="<?php print $_GET['type']; ?>">
+    <input type=hidden name=type value="<?php print $_GET['type']; ?>">
     <select onChange="addMetricToView()" name="view_name">
     <option value='none'>Please choose one</option>
     <?php

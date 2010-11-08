@@ -172,11 +172,26 @@ if ( sizeof($available_views) == 0 ) {
     </ul></div></td><td valign=top>
     <div id=view_range_chooser>
     <form id=view_timerange_form>
-      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-hour" name="r" value="hour" checked="checked" /><label for="view-range-hour">hour</label>
-      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-day" name="r" value="day" /><label for="view-range-day">day</label>
-      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-week" name="r" value="week" /><label for="view-range-week">week</label>
-      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-month" name="r" value="month" /><label for="view-range-month">month</label>
-      <input OnChange="updateViewTimeRange();" type="radio" id="view-range-year" name="r" value="year" /><label for="view-range-year">year</label>
+    <input type="hidden" name=view_name id=view_name value="">
+<?php
+   $context_ranges = array_keys( $time_ranges );
+   if ($jobrange)
+      $context_ranges[]="job";
+   if ($cs or $ce)
+      $context_ranges[]="custom";
+
+   $range_menu = "<B>Last</B>&nbsp;&nbsp;";
+   foreach ($context_ranges as $v) {
+      $url=rawurlencode($v);
+      if ($v == $range)
+	$checked = "checked=\"checked\"";
+      else
+	$checked = "";
+      $range_menu .= "<input OnChange=\"updateViewTimeRange();\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+
+   }
+  print $range_menu;
+?>
       &nbsp;&nbsp;or from <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="cs" ID="datepicker-cs" SIZE="17"> to <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="ce" ID="datepicker-ce" SIZE="17"> <input type="submit" value="Go">
       <input type="button" value="Clear" onclick="ganglia_submit(1)">
       </form><p>
