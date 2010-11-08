@@ -7,7 +7,7 @@
     <p>
 	<label>
 	    Enter search terms<br />
-	    <input type="text" name="q" size=40 />
+	    <input type="text" name="q" id="search-field-q" on size=40 />
 	</label> <input type="submit" value="Go" />
     </p>
     </form>
