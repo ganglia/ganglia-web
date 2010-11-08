@@ -1,18 +1,16 @@
 <?php
 
-$ganglia_dir = dirname(__FILE__);
-
-$conf_dir = $ganglia_dir . "/conf";
+require_once('./conf.php');
 
 $hostname = $_GET['hostname'];
 
 $default_reports = array("included_reports" => array(), "excluded_reports" => array());
-$default_file = $conf_dir . "/default.json";
+$default_file = $GLOBALS['conf_dir'] . "/default.json";
 if ( is_file($default_file) ) {
   $default_reports = array_merge($default_reports,json_decode(file_get_contents($default_file), TRUE));
 }
 
-$host_file = $conf_dir . "/host_" . $hostname . ".json";
+$host_file = $GLOBALS['conf_dir'] . "/host_" . $hostname . ".json";
 $override_reports = array("included_reports" => array(), "excluded_reports" => array());
 if ( is_file($host_file) ) {
   $override_reports = array_merge($override_reports, json_decode(file_get_contents($host_file), TRUE));
@@ -41,7 +39,7 @@ if ( isset($_GET['action']) ) {
 
   if ( is_array($reports) ) {
     $json = json_encode($reports);
-    $host_file = $conf_dir . "/host_" . $hostname . ".json";
+    $host_file = $GLOBALS['conf_dir'] . "/host_" . $hostname . ".json";
     if ( file_put_contents($host_file, $json) === FALSE ) {
   ?>
 	<div class="ui-widget">
@@ -135,7 +133,7 @@ function create_radio_button($variable_name, $variable_value = "ignored") {
  Find available graphs by looking in the GANGLIA_DIR/graph.d directory
  anything that matches _report.php
 ----------------------------------------------------------------------- */
-if ($handle = opendir($ganglia_dir . '/graph.d')) {
+if ($handle = opendir($GLOBALS['ganglia_dir'] . '/graph.d')) {
 
     // If we are using Graphite reports are in JSON files instead of the standard PHP files
     if ( $use_graphite == "yes" )

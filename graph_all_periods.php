@@ -14,7 +14,7 @@ foreach ($_GET as $key => $value) {
 }
 
 ?>
-<b>Host: </b><?php echo $_GET['h'] ?>&nbsp;<b>Metric: </b><?php echo $_GET['g'] ?>
+<b>Host: </b><?php echo $_GET['h'] ?>&nbsp;<b>Metric/Graph: </b><?php if (isset($_GET['g'])) echo $_GET['g']; else echo $_GET['m']; ?>
 <br />
 
 <img src="graph.php?r=hour&z=large<?php echo $query_string ?>">
