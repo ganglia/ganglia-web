@@ -134,7 +134,6 @@ function addMetricToView() {
   });
   return false;  
 }
-
 function metricActions(host_name,metric_name,type) {
     $( "#metric-actions-dialog" ).dialog( "open" );
     $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type, function(data) {
@@ -144,6 +143,12 @@ function metricActions(host_name,metric_name,type) {
     return false;
 }
 
+function autoRotationChooser() {
+  $.get('autorotation.php', "" , function(data) {
+      $("#tabs-autorotation-chooser").html('<img src="img/spinner.gif">');
+      $("#tabs-autorotation-chooser").html(data);
+  });
+}
 function updateViewTimeRange() {
   alert("Not implemented yet");
 }
@@ -166,6 +171,7 @@ function ganglia_submit(clearonly) {
   <li><a href="#tabs-main">Main</a></li>
   <li><a href="#tabs-search" onclick="getSearchContent();">Search</a></li>
   <li><a href="#tabs-views" onclick="getViewsContent();">Views</a></li>
+  <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
 </ul>
 
 <div id="tabs-main">
