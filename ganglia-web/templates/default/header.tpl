@@ -111,7 +111,7 @@ function getViewsContent() {
 
 // This one avoids 
 function getViewsContentJustGraphs(viewName) {
-    $.get('views.php', "view_name=" + viewName + "&just_graphs=1"  , function(data) {
+    $.get('views.php', "view_name=" + viewName + "&just_graphs=1", function(data) {
 		  $("#view_graphs").html('<img src="img/spinner.gif">');
 		  $("#view_graphs").html(data);
      });

@@ -23,6 +23,9 @@ $self       = isset($_GET["me"]) ?  sanitize ( $_GET["me"] )  : NULL;
 $vlabel     = isset($_GET["vl"]) ?  sanitize ( $_GET["vl"] )  : NULL;
 $value      = isset($_GET["v"])  ?  sanitize ( $_GET["v"] )   : NULL;
 
+
+$metric_name = isset($_GET["m"])  ?  sanitize ( $_GET["m"] )   : NULL;
+
 $max        = isset($_GET["x"])  ?  clean_number ( sanitize ($_GET["x"] ) ) : NULL;
 $min        = isset($_GET["n"])  ?  clean_number ( sanitize ($_GET["n"] ) ) : NULL;
 $sourcetime = isset($_GET["st"]) ?  clean_number ( sanitize( $_GET["st"] ) ) : NULL;
@@ -175,17 +178,23 @@ if (!$graph) {
     $graph = 'metric';
 }
 
-$graph_file = "$graphdir/$graph.php";
 
-if ( is_readable($graph_file) ) {
-    include_once($graph_file);
+// Only in rrdtool this check is necessary
+if ( $use_graphite == "no" ) {
 
-    $graph_function = "graph_${graph}";
-    $graph_function($rrdtool_graph);  // Pass by reference call, $rrdtool_graph modified inplace
-} else {
-    /* Bad stuff happened. */
-    error_log("Tried to load graph file [$graph_file], but failed.  Invalid graph, aborting.");
-    exit();
+  $graph_file = "$graphdir/$graph.php";
+
+  if ( is_readable($graph_file) ) {
+      include_once($graph_file);
+
+      $graph_function = "graph_${graph}";
+      $graph_function($rrdtool_graph);  // Pass by reference call, $rrdtool_graph modified inplace
+  } else {
+      /* Bad stuff happened. */
+      error_log("Tried to load graph file [$graph_file], but failed.  Invalid graph, aborting.");
+      exit();
+  }
+
 }
 
 # Calculate time range.
@@ -239,10 +248,14 @@ if (isset($title)) {
 
 //--------------------------------------------------------------------------------------
 
-// We must have a 'series' value, or this is all for naught
-if (!array_key_exists('series', $rrdtool_graph) || !strlen($rrdtool_graph['series']) ) {
-    error_log("\$series invalid for this graph request ".$_SERVER['PHP_SELF']);
-    exit();
+if ( $use_graphite == "no" ) {
+
+  // We must have a 'series' value, or this is all for naught
+  if (!array_key_exists('series', $rrdtool_graph) || !strlen($rrdtool_graph['series']) ) {
+      error_log("\$series invalid for this graph request ".$_SERVER['PHP_SELF']);
+      exit();
+  }
+
 }
 
   # Make small graphs (host list) cleaner by removing the too-big
@@ -270,7 +283,10 @@ if (!array_key_exists('series', $rrdtool_graph) || !strlen($rrdtool_graph['serie
       $command .= " --$key $value";
   }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
 // Let's check if we are using graphite
+// USING RRDTOOL
+//////////////////////////////////////////////////////////////////////////////////////////////////
 if ( $use_graphite == "no" ) {
 
   // And finish up with the two variables that need special handling.
@@ -280,6 +296,10 @@ if ( $use_graphite == "no" ) {
 
 } else {
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // Let's check if we are using graphite
+  // USING Graphite
+  //////////////////////////////////////////////////////////////////////////////////////////////////
   // Check whether the link exists from Ganglia RRD tree to the graphite storage/rrd_dir
   // area
   if ( ! is_link($rrd_graphite_link) ) {
@@ -289,20 +309,16 @@ if ( $use_graphite == "no" ) {
     symlink($rrd_dir, $rrd_graphite_link);
   }
 
+  // Generate host cluster string
   $host_cluster = $clustername . "." . $host;
-  $area = "";
-  $series = $rrdtool_graph["series"];
-  # Figure out the name of the RRD file
-  if (preg_match("/DEF:.+?\/([^\/]+)\.rrd:(.+?)'/", $series, $matches)) {
-    $rrd = $matches[1];
-  }
-  if (preg_match("/AREA/", $series, $matches)) {
-    $area = "&areaMode=all";
+
+  $height += 70;
+
+  if ($size == "small") {
+    $width += 20;
   }
 
-  $height += 50;
-
-  $title = urlencode($rrdtool_graph["title"]);
+//  $title = urlencode($rrdtool_graph["title"]);
 
   if ( isset($_GET['g'])) {
 
@@ -333,8 +349,8 @@ if ( $use_graphite == "no" ) {
     }
 
   } else {
-
-    $target = "target=$host_cluster.$rrd.sum$area&hideLegend=true&vtitle=$vlabel";
+    // It's a simple metric graph
+    $target = "target=$host_cluster.$metric_name.sum&hideLegend=true&vtitle=$vlabel&areaMode=all";
   }
 
   $url = $graphite_url_base . "?width=$width&height=$height&" . $target . "&title=$title&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000";
