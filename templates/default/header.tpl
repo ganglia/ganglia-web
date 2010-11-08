@@ -135,9 +135,9 @@ function addMetricToView() {
   return false;  
 }
 
-function metricActions(host_name,metric_name) {
+function metricActions(host_name,metric_name,type) {
     $( "#metric-actions-dialog" ).dialog( "open" );
-    $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name, function(data) {
+    $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type, function(data) {
       $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
       $("#metric-actions-dialog-content").html(data);
      });

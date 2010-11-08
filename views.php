@@ -87,7 +87,11 @@ if ( isset($_GET['add_to_view']) ) {
     // Delete the file_name index
     unset($view['file_name']);
 
-    $view['items'][] = array( "hostname" => $_GET['host_name'], "metric" => $_GET['metric_name']);
+    if ( $_GET['type'] == "metric" ) 
+      $view['items'][] = array( "hostname" => $_GET['host_name'], "metric" => $_GET['metric_name']);
+    else
+      $view['items'][] = array( "hostname" => $_GET['host_name'], "graph" => $_GET['metric_name']);
+
     $json = json_encode($view);
 
     if ( file_put_contents($view_filename, $json) === FALSE ) {

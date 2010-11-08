@@ -37,6 +37,31 @@ $(function() {
     return false;
   });
 
+    $(function() {
+	    $( "#edit_optional_graphs" ).dialog({ autoOpen: false, minWidth: 550,
+	      beforeClose: function(event, ui) {  location.reload(true); } })
+	    $( "#edit_optional_graphs_button" ).button();
+	    $( "#save_optional_graphs_button" ).button();
+	    $( "#close_edit_optional_graphs_link" ).button();
+    });
+
+    $("#edit_optional_graphs_button").click(function(event) {
+      $("#edit_optional_graphs").dialog('open');
+      $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
+      $.get('edit_optional_graphs.php', "hostname={hostname}", function(data) {
+	      $('#edit_optional_graphs_content').html(data);
+      })
+      return false;
+    });
+
+    $("#save_optional_graphs_button").click(function(event) {
+       $.get('edit_optional_graphs.php', $("#edit_optional_reports_form").serialize(), function(data) {
+	      $('#edit_optional_graphs_content').html(data);
+	    });
+      return false;
+    });
+
+
 });
 </script>
 <style type="text/css">
@@ -94,26 +119,17 @@ $(function() {
 
  <HR>
 <!-- INCLUDE BLOCK : extra -->
-
 </TD> 
-
 </table>
-
 </div>
-
-
 <style>
 #edit_optional_graphs_button {
     font-size:12px;
 }
-
 #edit_optional_graphs_content {
     padding: .4em 1em .4em 10px;
 }
 </style>
-
-
-
 <div id="edit_optional_graphs">
   <div style="text-align: center;">
     <button  id='save_optional_graphs_button'>Save</button>
@@ -177,7 +193,7 @@ $(function() {
 <!-- START BLOCK : vol_metric_info -->
 <TD>
 <a name=metric_{metric_name}>
-<font style="font-size: 9px">{metric_name}</font> <a style="background-color: #dddddd" onclick="metricActions('{host_name}','{metric_name}'); return false;" href="#">+</a><br>
+<font style="font-size: 9px">{metric_name}</font> <a style="background-color: #dddddd" onclick="metricActions('{host_name}','{metric_name}', 'metric'); return false;" href="#">+</a><br>
 <A HREF="./graph_all_periods.php?{graphargs}&amp;z=large">
 <IMG BORDER=0 ALT="{alt}" SRC="./graph.php?{graphargs}" TITLE="{desc}">
 </A>
@@ -195,30 +211,3 @@ $(function() {
 </CENTER>
 
 </div>
-
-<script>
-    $(function() {
-	    $( "#edit_optional_graphs" ).dialog({ autoOpen: false, minWidth: 550,
-	      beforeClose: function(event, ui) {  location.reload(true); } })
-	    $( "#edit_optional_graphs_button" ).button();
-	    $( "#save_optional_graphs_button" ).button();
-	    $( "#close_edit_optional_graphs_link" ).button();
-    });
-
-    $("#edit_optional_graphs_button").click(function(event) {
-      $("#edit_optional_graphs").dialog('open');
-      $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
-      $.get('edit_optional_graphs.php', "hostname={hostname}", function(data) {
-	      $('#edit_optional_graphs_content').html(data);
-      })
-      return false;
-    });
-
-    $("#save_optional_graphs_button").click(function(event) {
-       $.get('edit_optional_graphs.php', $("#edit_optional_reports_form").serialize(), function(data) {
-	      $('#edit_optional_graphs_content').html(data);
-	    });
-      return false;
-    });
-
-</script>
