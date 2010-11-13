@@ -7,6 +7,7 @@ include_once "./version.php";
 
 $GLOBALS['ganglia_dir'] = dirname(__FILE__);
 $GLOBALS['views_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
+$GLOBALS['conf_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
 
 
 #
