@@ -22,6 +22,8 @@ if(CACHEDATA == 1 && file_exists(CACHEFILE)){
         }
 }
 
+#print "<PRE>"; print_r($index_array);
+
 if ( ! isset($index_array) ) {
 
   if ( $debug == 1 ) {
@@ -29,23 +31,35 @@ if ( ! isset($index_array) ) {
   }
   include_once "$ganglia_dir/conf.php";
   # Set up for cluster summary
-  $context = "cluster";
+  $context = "meta";
   include_once "$ganglia_dir/functions.php";
   include_once "$ganglia_dir/ganglia.php";
   include_once "$ganglia_dir/get_ganglia.php";
-  # Put the serialized metrics into a file
-  $index_array['hosts'] = array_keys($metrics);
-  foreach ( $metrics as $host => $host_metrics ) {
-    foreach ( $host_metrics as $metric_name => $value ) {
-      $index_array['metrics'][$metric_name][] = $host;
+  unset($metrics);
+
+  # Get host cluster location
+  foreach($grid as $source) {
+    if (isset($source['CLUSTER']) and $source['CLUSTER']) {
+	$standalone = 1;
+	$context = "cluster";
+	# Need to refresh data with new context.
+	$clustername = $source['NAME'];
+	Gmetad($ganglia_ip, $ganglia_port);
+	foreach ( $metrics as $host => $host_metrics ) {
+	  $index_array['cluster'][$host] = $clustername;
+	  $hosts[] = $host;
+	  foreach ( $host_metrics as $metric_name => $attributes ) {
+	      $index_array['metrics'][$metric_name][] = $host;
+	  }
+	}
+	unset($metrics);
     }
   }
 
-  # Get host cluster location
-  foreach ( $metrics as $host => $host_metrics ) {
-     $index_array['cluster'][$host] = $host_metrics['location']['VAL'];
-  }
-
+  # Make sure hosts are sorted by name
+  asort($hosts);
+  $index_array['hosts'] = $hosts;
+  
   file_put_contents(CACHEFILE, serialize($index_array));
 
 }
