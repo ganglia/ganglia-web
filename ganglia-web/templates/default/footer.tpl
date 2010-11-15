@@ -31,7 +31,7 @@
 
 <div id="tabs-views">
   <div id="tabs-views-content">
-<img src="img/spinner.gif">
+Loading View Please wait...<img src="img/spinner.gif">
   </div>
 </div>
 <div id="tabs-autorotation">
@@ -40,6 +40,7 @@ Invoke automatic rotation system. Automatic rotation rotates all of the graphs/m
 <p>
 Please select view you want rotate.<p>
 <div id="tabs-autorotation-chooser">
+Loading View Please wait...<img src="img/spinner.gif">
 </div>
 </div>
 
