@@ -4,6 +4,41 @@ your $HTTPD_ROOT/ganglia and it should just work.
 New features
 ============
 
+Views
+===============
+
+Views are an arbitrary collection of hostname/metric graphs. They are defined using JSON files and stored in the
+/conf directory. View file names have to start with view ie.
+
+view_web_servers_vitals.json
+
+There are two types of views, standard (default) and regex views. 
+
+Standard views are defined as follows
+
+{"view_name":"web_servers_vitals",
+  "items": [
+    { "hostname":"web1", "metric":"disk_free"},
+    { "hostname":"web2", "graph":"cpu_report"}
+          ]
+}
+
+Regex views allow using regex to match hostnames (need to specify view_type regex) e.g.
+
+{"view_name":"web_servers_wiki",
+ "view_type":"regex",
+  "items": [
+    { "hostname":"web-wiki.*", "metric":"disk_free"},
+    { "hostname":".*wiki", "graph":"cpu_report"}
+          ]
+}
+
+Auto Rotation
+===============
+
+Automatically rotate view graphs every 30 seconds with hour, day, week and month overview for each metric
+on a single page
+
 Optional Graphs
 ===============
 
