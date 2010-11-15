@@ -686,9 +686,11 @@ function get_available_views() {
 	    echo("Can't read view config file " . $view_config_file . ". Please check permissions");
 	  }
 
-	  $view = json_decode(file_get_contents($view_config_file), TRUE);	  
+	  $view = json_decode(file_get_contents($view_config_file), TRUE);
+	  // Check whether view type has been specified ie. regex. If not it's standard view
+	  isset($view['view_type']) ? $view_type = $view['view_type'] : $view_type = "standard";
 	  $available_views[] = array ( "file_name" => $view_config_file, "view_name" => $view['view_name'],
-	    "items" => $view['items']);
+	    "items" => $view['items'], "view_type" => $view_type);
 	  unset($view);
 
 	}
