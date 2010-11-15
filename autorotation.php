@@ -70,7 +70,7 @@ if ( ! isset($_GET['view_name']) ) {
   $host = $view_elements[$id]['hostname'];
   // The title of the graph
   $title = $view_elements[$id]['name'];
-  $nexttitle = $view_elements[$nextid]['name'] . " for " . $host;
+  $nexttitle = $view_elements[$nextid]['name'] . " for " . $view_elements[$nextid]['hostname'];
 
   ?>
   <html>
