@@ -187,7 +187,7 @@ if ( sizeof($available_views) == 0 ) {
 	$checked = "checked=\"checked\"";
       else
 	$checked = "";
-      $range_menu .= "<input OnChange=\"updateViewTimeRange();\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+      $range_menu .= "<input OnChange=\"getViewsContentJustGraphs($('#view_name').val());\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
 
    }
   print $range_menu;
@@ -201,40 +201,57 @@ if ( sizeof($available_views) == 0 ) {
   <?php
 
   } // end of  if ( ! isset($_GET['just_graphs']) 
-	
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Displays graphs in the graphs div
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
   print "<div id=view_graphs>";
 
+  // Let's find the view definition
   foreach ( $available_views as $view_id => $view ) {
+
    if ( $view['view_name'] == $view_name ) {
 
-      // Does view have any items/graphs defined
-      if ( sizeof($view['items']) == 0 ) {
-	print "No graphs defined for this view. Please add some";
-      } else {
-	foreach ( $view['items'] as $item_id => $item ) {
+      switch ( $view['view_type'] ) {
 
-	  // Is it a metric or a graph(report)
-	  if ( isset($item['metric']) ) {
-	    $graph_args_array[] = "m=" . $item['metric'];
-	  } else {
-	    $graph_args_array[] = "g=" . $item['graph'];
-	  }
+	case "standard":
+	// Does view have any items/graphs defined
+	if ( sizeof($view['items']) == 0 ) {
+	  print "No graphs defined for this view. Please add some";
+	} else {
+	  foreach ( $view['items'] as $item_id => $item ) {
 
-	  $hostname = $item['hostname'];
-	  $cluster = $index_array['cluster'][$hostname];
-	  $graph_args_array[] = "h=$hostname";
-	  $graph_args_array[] = "c=$cluster";
+	    // Is it a metric or a graph(report)
+	    if ( isset($item['metric']) ) {
+	      $graph_args_array[] = "m=" . $item['metric'];
+	    } else {
+	      $graph_args_array[] = "g=" . $item['graph'];
+	    }
 
-	  $graph_args = join("&", $graph_args_array);
+	    $hostname = $item['hostname'];
+	    $cluster = $index_array['cluster'][$hostname];
+	    $graph_args_array[] = "h=$hostname";
+	    $graph_args_array[] = "c=$cluster";
 
-	  print "
-	    <A HREF=\"./graph_all_periods.php?$graph_args&z=large\">
-	    <IMG BORDER=0 SRC=\"./graph.php?$graph_args&z=medium\"></A>";
+	    $graph_args = join("&", $graph_args_array);
 
-	  unset($graph_args_array);
+	    print "
+	      <A HREF=\"./graph_all_periods.php?$graph_args&z=large\">
+	      <IMG BORDER=0 SRC=\"./graph.php?$graph_args&z=medium\"></A>";
 
-	} // end of foreach ( $view['items']
-      } // end of if ( sizeof($view['items'])
+	    unset($graph_args_array);
+
+	  } // end of foreach ( $view['items']
+	} // end of if ( sizeof($view['items'])
+	break;
+	;;
+
+	case "regex":
+	print "Regex View";
+
+	break;;
+      
+      } // end of switch ( $view['view_type'] ) {
     }  // end of if ( $view['view_name'] == $view_name
   } // end of foreach ( $views as $view_id 
 
