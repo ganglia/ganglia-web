@@ -54,20 +54,17 @@ if ( ! isset($_GET['view_name']) ) {
   $gangliapath = "graph.php?hc=4&st=";
 
   # Get the requested graphid and store it in a somewhat more beautiful variable name
-  if ( isset($_GET['id']) ) 
-    $id = $_GET['id'];
-  else
-    $id = 0;
+  isset($_GET['id']) ? $id = $_GET['id'] : $id = 0;
+
+  // Let's get all View graph elements
+  $view_elements = get_view_graph_elements($view);
 
   # The title of the next graph, with some logic to set the next to the first if we run out of graphs
-  if ($id < (count($view['items']) -1)) {
+  if ($id < (count($view_elements) -1)) {
 	  $nextid = $id+1;
   } else {
 	  $nextid = 0;
   }
-
-  // Let's get all View graph elements
-  $view_elements = get_view_graph_elements($view);
 
   # Set up some variables 
   $host = $view_elements[$id]['hostname'];
