@@ -212,76 +212,15 @@ if ( sizeof($available_views) == 0 ) {
 
    if ( $view['view_name'] == $view_name ) {
 
-      switch ( $view['view_type'] ) {
+      $view_elements = get_view_graph_elements($view);
 
-	case "standard":
-	// Does view have any items/graphs defined
-	if ( sizeof($view['items']) == 0 ) {
-	  print "No graphs defined for this view. Please add some";
-	} else {
-	  foreach ( $view['items'] as $item_id => $item ) {
+      foreach ( $view_elements as $id => $element ) {
+	  print "
+	  <A HREF=\"./graph_all_periods.php?$graph_args&z=large\">
+	  <IMG ALT=\"" . $element['hostname'] . " - " . $element['name'] . "\" BORDER=0 SRC=\"./graph.php?" . $element['graph_args'] . "&z=medium\"></A>";
+      }
 
-	    // Is it a metric or a graph(report)
-	    if ( isset($item['metric']) ) {
-	      $graph_args_array[] = "m=" . $item['metric'];
-	    } else {
-	      $graph_args_array[] = "g=" . $item['graph'];
-	    }
-
-	    $hostname = $item['hostname'];
-	    $cluster = $index_array['cluster'][$hostname];
-	    $graph_args_array[] = "h=$hostname";
-	    $graph_args_array[] = "c=$cluster";
-
-	    $graph_args = join("&", $graph_args_array);
-
-	    print "
-	      <A HREF=\"./graph_all_periods.php?$graph_args&z=large\">
-	      <IMG BORDER=0 SRC=\"./graph.php?$graph_args&z=medium\"></A>";
-
-	    unset($graph_args_array);
-
-	  } // end of foreach ( $view['items']
-	} // end of if ( sizeof($view['items'])
-	break;
-	;;
-
-	////////////////////////////////////////////////////////////////////////////////////
-	// Currently only supports matching hosts.
-	////////////////////////////////////////////////////////////////////////////////////
-	case "regex":
-	  foreach ( $view['items'] as $item_id => $item ) {
-	    // Is it a metric or a graph(report)
-	    if ( isset($item['metric']) ) {
-	      $metric_suffix = "m=" . $item['metric'];
-	    } else {
-	      $metric_suffix = "g=" . $item['graph'];
-	    }
-
-	    // Find hosts matching a criteria
-	    $query = $item['hostname'];
-	    foreach ( $index_array['hosts'] as $key => $host_name ) {
-	      if ( preg_match("/$query/", $host_name ) ) {
-		$cluster = $index_array['cluster'][$host_name];
-		$graph_args_array[] = "h=$host_name";
-		$graph_args_array[] = "c=$cluster";
-		$graph_args = $metric_suffix . "&" . join("&", $graph_args_array);
-
-		print "
-		  <A HREF=\"./graph_all_periods.php?$graph_args&z=large\">
-		  <IMG BORDER=0 SRC=\"./graph.php?$graph_args&z=medium\"></A>";
-
-		unset($graph_args_array);
-
-	      }
-	    }
-
-	    
-	  } // end of foreach ( $view['items'] as $item_id => $item )
-	break;;
-      
-      } // end of switch ( $view['view_type'] ) {
-    }  // end of if ( $view['view_name'] == $view_name
+   }  // end of if ( $view['view_name'] == $view_name
   } // end of foreach ( $views as $view_id 
 
   print "</div>"; 
