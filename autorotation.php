@@ -31,7 +31,7 @@ if ( ! isset($_GET['view_name']) ) {
   // for now I will have to do this
   foreach ( $available_views as $id => $view ) {
     # Find view settings
-    if ( $_GET['view_name'] == $myview['view_name'] )
+    if ( $_GET['view_name'] == $view['view_name'] )
       break;
   }
 
@@ -66,22 +66,14 @@ if ( ! isset($_GET['view_name']) ) {
 	  $nextid = 0;
   }
 
+  // Let's get all View graph elements
+  $view_elements = get_view_graph_elements($view);
+
   # Set up some variables 
-  $host = $view['items'][$id]['hostname'];
-  if ( isset($view['items'][$id]['metric']) ) {
-      $graph_name = "m=" . urlencode($view['items'][$id]['metric']);
-      // The title of the graph
-      $title = $view['items'][$id]['metric'];
-      $nexttitle = $view['items'][$nextid]['metric'] . " for " . $host;
-  } else {
-      $graph_name = "g=" . urlencode($view['items'][$id]['graph']);
-      // The title of the graph
-      $title = $view['items'][$id]['graph'];
-      $nexttitle = $view['items'][$nextid]['graph'] . " for " . $host;
-  }
-
-  $cluster = $index_array['cluster'][$host];
-
+  $host = $view_elements[$id]['hostname'];
+  // The title of the graph
+  $title = $view_elements[$id]['name'];
+  $nexttitle = $view_elements[$nextid]['name'] . " for " . $host;
 
   ?>
   <html>
@@ -117,11 +109,11 @@ if ( ! isset($_GET['view_name']) ) {
 
   <table>
   <tr>
-    <td><img src="<?php echo $gangliapath . "&c=${cluster}&h=${host}&r=hour&z=${large_size}&${graph_name}" ?>"><br />
-	<img src="<?php echo $gangliapath . "&c=${cluster}&h=${host}&r=day&z=${large_size}&${graph_name}" ?>"></td>
+    <td><img src="<?php echo $gangliapath . "&r=hour&z=${large_size}&" . $view_elements[$id]['graph_args']; ?>"><br />
+	<img src="<?php echo $gangliapath . "&r=day&z=${large_size}&" . $view_elements[$id]['graph_args']; ?>"></td>
     <td valign="top">
-      <img src="<?php echo $gangliapath . "&c=${cluster}&h=${host}&r=week&z=${small_size}&${graph_name}" ?>">
-      <img src="<?php echo $gangliapath . "&c=${cluster}&h=${host}&r=month&z=${small_size}&${graph_name}" ?>">
+      <img src="<?php echo $gangliapath . "&r=week&z=${small_size}&" . $view_elements[$id]['graph_args']; ?>">
+      <img src="<?php echo $gangliapath . "&r=month&z=${small_size}&" . $view_elements[$id]['graph_args']; ?>">
     <div style="margin-top: 10px; font-size: 48px; text-align: center;"><?php echo date(DATE_RFC850); ?></div>
     <p>
     <center><a href="/ganglia/">Go back to Ganglia</a></center></div>
