@@ -246,9 +246,38 @@ if ( sizeof($available_views) == 0 ) {
 	break;
 	;;
 
+	////////////////////////////////////////////////////////////////////////////////////
+	// Currently only supports matching hosts.
+	////////////////////////////////////////////////////////////////////////////////////
 	case "regex":
-	print "Regex View";
+	  foreach ( $view['items'] as $item_id => $item ) {
+	    // Is it a metric or a graph(report)
+	    if ( isset($item['metric']) ) {
+	      $metric_suffix = "m=" . $item['metric'];
+	    } else {
+	      $metric_suffix = "g=" . $item['graph'];
+	    }
 
+	    // Find hosts matching a criteria
+	    $query = $item['hostname'];
+	    foreach ( $index_array['hosts'] as $key => $host_name ) {
+	      if ( preg_match("/$query/", $host_name ) ) {
+		$cluster = $index_array['cluster'][$host_name];
+		$graph_args_array[] = "h=$host_name";
+		$graph_args_array[] = "c=$cluster";
+		$graph_args = $metric_suffix . "&" . join("&", $graph_args_array);
+
+		print "
+		  <A HREF=\"./graph_all_periods.php?$graph_args&z=large\">
+		  <IMG BORDER=0 SRC=\"./graph.php?$graph_args&z=medium\"></A>";
+
+		unset($graph_args_array);
+
+	      }
+	    }
+
+	    
+	  } // end of foreach ( $view['items'] as $item_id => $item )
 	break;;
       
       } // end of switch ( $view['view_type'] ) {
