@@ -31,6 +31,7 @@
 
 <div id="tabs-views">
   <div id="tabs-views-content">
+<img src="img/spinner.gif">
   </div>
 </div>
 <div id="tabs-autorotation">
