@@ -22,8 +22,6 @@ if(CACHEDATA == 1 && file_exists(CACHEFILE)){
         }
 }
 
-#print "<PRE>"; print_r($index_array);
-
 if ( ! isset($index_array) ) {
 
   if ( $debug == 1 ) {
@@ -31,29 +29,19 @@ if ( ! isset($index_array) ) {
   }
   include_once "$ganglia_dir/conf.php";
   # Set up for cluster summary
-  $context = "meta";
+  $context = "everything";
   include_once "$ganglia_dir/functions.php";
   include_once "$ganglia_dir/ganglia.php";
   include_once "$ganglia_dir/get_ganglia.php";
-  unset($metrics);
 
-  # Get host cluster location
-  foreach($grid as $source) {
-    if (isset($source['CLUSTER']) and $source['CLUSTER']) {
-	$standalone = 1;
-	$context = "cluster";
-	# Need to refresh data with new context.
-	$clustername = $source['NAME'];
-	Gmetad($ganglia_ip, $ganglia_port);
-	foreach ( $metrics as $host => $host_metrics ) {
-	  $index_array['cluster'][$host] = $clustername;
-	  $hosts[] = $host;
+  foreach ( $metrics as $cluster_name => $cluster_metrics ) {
+    foreach ( $cluster_metrics as $hostname => $host_metrics ) {
+	  $index_array['cluster'][$hostname] = $cluster_name;
+	  $hosts[] = $hostname;
 	  foreach ( $host_metrics as $metric_name => $attributes ) {
-	      $index_array['metrics'][$metric_name][] = $host;
+	      $index_array['metrics'][$metric_name][] = $hostname;
 	  }
-	}
-	unset($metrics);
-    }
+    } // end of foreach ( $cluster_metrics as $hostname => $host_metrics )
   }
 
   # Make sure hosts are sorted by name
