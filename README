@@ -33,11 +33,13 @@ Regex views allow using regex to match hostnames (need to specify view_type rege
           ]
 }
 
+Obviously you can write a regex that matches a single host. 
+
 Auto Rotation
-===============
+==============
 
 Automatically rotate view graphs every 30 seconds with hour, day, week and month overview for each metric
-on a single page
+on a single page. It will rotate until page closed. 
 
 Optional Graphs
 ===============
