@@ -104,24 +104,25 @@ function getViewsContent() {
 	$( "#create-new-view-dialog" ).dialog( "open" );
       });;
     $( "#view_range_chooser" ).buttonset();
-
+    document.getElementById('view_name').value = "default";
   });
   return false;
 }
 
 // This one avoids 
-function getViewsContentJustGraphs(viewName) {
-    $.get('views.php', "view_name=" + viewName + "&just_graphs=1", function(data) {
-		  $("#view_graphs").html('<img src="img/spinner.gif">');
-		  $("#view_graphs").html(data);
+function getViewsContentJustGraphs(viewName,range, cs, ce) {
+    $("#view_graphs").html('<img src="img/spinner.gif">');
+    $.get('views.php', "view_name=" + viewName + "&just_graphs=1&r=" + range + "&cs=" + cs + "&ce=" + ce, function(data) {
+	$("#view_graphs").html(data);
+	document.getElementById('view_name').value = viewName;
      });
     return false;
 }
 
 function createView() {
+  $("#create-new-view-confirmation-layer").html('<img src="img/spinner.gif">');
   $.get('views.php', $("#create_view_form").serialize() , function(data) {
     $("#create-new-view-layer").toggle();
-    $("#create-new-view-confirmation-layer").html('<img src="img/spinner.gif">');
     $("#create-new-view-confirmation-layer").html(data);
   });
   return false;
@@ -136,16 +137,16 @@ function addMetricToView() {
 }
 function metricActions(host_name,metric_name,type) {
     $( "#metric-actions-dialog" ).dialog( "open" );
+    $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
     $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type, function(data) {
-      $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
       $("#metric-actions-dialog-content").html(data);
      });
     return false;
 }
 
 function autoRotationChooser() {
+  $("#tabs-autorotation-chooser").html('<img src="img/spinner.gif">');
   $.get('autorotation.php', "" , function(data) {
-      $("#tabs-autorotation-chooser").html('<img src="img/spinner.gif">');
       $("#tabs-autorotation-chooser").html(data);
   });
 }

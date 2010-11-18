@@ -182,6 +182,15 @@ $graphite_url_base = "http://127.0.0.1/render";
 // 
 $graphite_rrd_dir = "/opt/graphite/storage/rrd";
 
+
+// One of the bottlenecks is that to get individual metrics we query gmond which
+// returns every single host and all the metrics. If you have lots of hosts and lots of 
+// checks this may be quite heavy so you may want to cache data
+define("CACHEDATA", 1);
+define("CACHEFILE",     $GLOBALS['ganglia_dir'] . "/conf/ganglia_metrics.cache");
+define("CACHETIME",     120); // How long to cache the data in seconds
+
+
 #
 # Graph sizes
 #

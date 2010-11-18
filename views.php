@@ -165,7 +165,7 @@ if ( sizeof($available_views) == 0 ) {
     # List all the available views
     foreach ( $available_views as $view_id => $view ) {
       $v = $view['view_name'];
-      print '<li><a href="#" onClick="getViewsContentJustGraphs(\'' . $v . '\'); return false;">' . $v . '</a></li>';  
+      print '<li><a href="#" onClick="getViewsContentJustGraphs(\'' . $v . '\', \'1hour\', \'\',\'\'); return false;">' . $v . '</a></li>';  
     }
 
     ?>
@@ -175,10 +175,15 @@ if ( sizeof($available_views) == 0 ) {
     <input type="hidden" name=view_name id=view_name value="">
 <?php
    $context_ranges = array_keys( $time_ranges );
-   if ($jobrange)
+   if (isset($jobrange))
       $context_ranges[]="job";
-   if ($cs or $ce)
+   if (isset($cs) or isset($ce))
       $context_ranges[]="custom";
+
+   if ( isset($_GET['r']) ) 
+    $range = $_GET['r'];
+   else
+    $range = "";
 
    $range_menu = "<B>Last</B>&nbsp;&nbsp;";
    foreach ($context_ranges as $v) {
@@ -187,13 +192,17 @@ if ( sizeof($available_views) == 0 ) {
 	$checked = "checked=\"checked\"";
       else
 	$checked = "";
-      $range_menu .= "<input OnChange=\"getViewsContentJustGraphs($('#view_name').val());\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+#	$range_menu .= "<input OnChange=\"getViewsContentJustGraphs(document.getElementById('view_name').value);\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+      $range_menu .= "<input OnChange=\"document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = ''; getViewsContentJustGraphs(document.getElementById('view_name').value, '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
 
    }
   print $range_menu;
 ?>
-      &nbsp;&nbsp;or from <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="cs" ID="datepicker-cs" SIZE="17"> to <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="ce" ID="datepicker-ce" SIZE="17"> <input type="submit" value="Go">
-      <input type="button" value="Clear" onclick="ganglia_submit(1)">
+      &nbsp;&nbsp;or from 
+  <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="cs" ID="view-cs" SIZE="17"> to 
+  <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="ce" ID="view-ce" SIZE="17"> 
+  <input type="button" onclick="getViewsContentJustGraphs(document.getElementById('view_name').value, '', document.getElementById('view-cs').value, document.getElementById('view-ce').value ); return false;" value="Go">
+  <input type="button" value="Clear" onclick="document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = '' ; return false;">
       </form><p>
       </div>
     </div>
@@ -214,10 +223,17 @@ if ( sizeof($available_views) == 0 ) {
 
       $view_elements = get_view_graph_elements($view);
 
+      $range_args = "";
+      if ( isset($_GET['r']) && $_GET['r'] != "" ) 
+	    $range_args .= "&r=" . $_GET['r'];
+      if ( isset($_GET['cs']) && isset($_GET['ce']) ) 
+	    $range_args .= "&cs=" . $_GET['cs'] . "&ce=" . $_GET['ce'];
+
       foreach ( $view_elements as $id => $element ) {
+
 	  print "
-	  <A HREF=\"./graph_all_periods.php?$graph_args&z=large\">
-	  <IMG ALT=\"" . $element['hostname'] . " - " . $element['name'] . "\" BORDER=0 SRC=\"./graph.php?" . $element['graph_args'] . "&z=medium\"></A>";
+	  <A HREF=\"./graph_all_periods.php?" . $element['graph_args'] ."&z=large\">
+	  <IMG ALT=\"" . $element['hostname'] . " - " . $element['name'] . "\" BORDER=0 SRC=\"./graph.php?" . $element['graph_args'] . "&z=medium" . $range_args .  "\"></A>";
       }
 
    }  // end of if ( $view['view_name'] == $view_name
