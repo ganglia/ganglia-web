@@ -11,40 +11,6 @@
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.5.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
-<style>
-#views_table {
-      font-size: 12px
-}
-#table_top_chooser {
-      font-size: 12px
-}
-#views_menu { width: 200px; }
-#views_menu ul
-{
-margin-left: 0;
-padding-left: 0;
-list-style-type: none;
-font-family: Arial, Helvetica, sans-serif;
-}
-#views_menu a
-{
-display: block;
-padding: 3px;
-width: 160px;
-background-color: white;
-border-bottom: 1px solid #eee;
-}
-#views_menu a:link, #navlist a:visited
-{
-color: blue;
-text-decoration: none;
-}
-#views_menu a:hover
-{
-background-color: #dddddd;
-color: blue;
-}
-</style>
 <script>
   var availablemetrics = [
       {available_metrics}
