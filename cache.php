@@ -22,12 +22,12 @@ if ( ! isset($index_array) ) {
   if ( $debug == 1 ) {
                   echo("DEBUG: Querying GMond for new data\n");
   }
-  include_once "$ganglia_dir/conf.php";
+  include_once $GLOBALS['ganglia_dir'] . "/conf.php";
   # Set up for cluster summary
   $context = "index_array";
-  include_once "$ganglia_dir/functions.php";
-  include_once "$ganglia_dir/ganglia.php";
-  include_once "$ganglia_dir/get_ganglia.php";
+  include_once $GLOBALS['ganglia_dir'] . "/functions.php";
+  include_once $GLOBALS['ganglia_dir'] . "/ganglia.php";
+  include_once $GLOBALS['ganglia_dir'] . "/get_ganglia.php";
 
   foreach ( $index_array['cluster'] as $hostname => $elements ) {
     $hosts[] = $hostname;
@@ -39,7 +39,5 @@ if ( ! isset($index_array) ) {
   $index_array['hosts'] = $hosts;
 
 }
-
-print_r($index_array);
 
 ?>
