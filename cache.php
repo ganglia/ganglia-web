@@ -33,10 +33,10 @@ if ( ! isset($index_array) ) {
     $hosts[] = $hostname;
   }
 
-  file_put_contents(CACHEFILE, serialize($index_array));
-
   asort($hosts);
   $index_array['hosts'] = $hosts;
+
+  file_put_contents(CACHEFILE, serialize($index_array));
 
 }
 
