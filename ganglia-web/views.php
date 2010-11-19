@@ -145,18 +145,38 @@ if ( sizeof($available_views) == 0 ) {
     $view_name = $_GET['view_name'];
   }
 
-  ?>
+  if ( isset($_GET['standalone']) ) {
+    ?>
+<html><head>
+<script TYPE="text/javascript" SRC="js/jquery-1.4.3.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.5.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.liveSearch.js"></script>
+<script type="text/javascript" src="js/ganglia.js"></script>
+<link type="text/css" href="css/smoothness/jquery-ui-1.8.5.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
+<LINK rel="stylesheet" href="./styles.css" type="text/css">
+</head>
+<body>
+  <div id="tabs-views-content">
+    <?php
+  }
 
-  <form id=view_chooser_form>
-  <?php
+  print "<form id=view_chooser_form>";
   
   if ( ! isset($_GET['just_graphs']) ) {
 
   ?>
     <table id=views_table>
     <tr><td valign=top>
-  
-    <button onclick="return false" id=create_view_button>Create View</button>
+
+  <?php
+    if ( ! isset($_GET['standalone']) ) {
+  ?>
+      <button onclick="return false" id=create_view_button>Create View</button>
+      <a href="views.php?standalone=1" id="detach-tab-button">Detach Tab</a> 
+  <?php
+   }
+  ?>
     <p>  <div id="views_menu">
       Existing views:
       <ul id="navlist">
@@ -169,6 +189,15 @@ if ( sizeof($available_views) == 0 ) {
     }
 
     ?>
+<script>
+$(function(){
+    $( "#view_range_chooser" ).buttonset();
+    $( "#detach-tab-button").button();
+    document.getElementById('view_name').value = "default";
+});
+</script>
+
+
     </ul></div></td><td valign=top>
     <div id=view_range_chooser>
     <form id=view_timerange_form>
@@ -243,6 +272,11 @@ if ( sizeof($available_views) == 0 ) {
 
   if ( ! isset($_GET['just_graphs']) )
     print "</td></tr></table></form>";
+
+  if ( isset($_GET['standalone']) ) {
+    print "</div>";
+  }
+
 
 } // end of ie else ( ! isset($available_views )
 
