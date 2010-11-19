@@ -175,7 +175,7 @@ function start_cluster ($parser, $tagname, $attrs)
 
 function start_everything ($parser, $tagname, $attrs)
 {
-   global $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down;
+   global $index_array, $hosts, $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down;
    static $hostname, $cluster_name;
 
    switch ($tagname)
@@ -189,48 +189,23 @@ function start_everything ($parser, $tagname, $attrs)
             break;
 
          case "CLUSTER":
-	    $cluster = $attrs;
+#	    $cluster = $attrs;
             $cluster_name = $attrs['NAME'];
             break;
 
          case "HOST":
             $hostname = $attrs['NAME'];
-
-            if (host_alive($attrs, $cluster))
-               {
-		  isset($cluster[$cluster_name]['HOSTS_UP']) or $cluster[$cluster_name]['HOSTS_UP'] = 0;
-                  $cluster[$cluster_name]['HOSTS_UP']++;
-                  $hosts_up[$cluster_name][$hostname] = $attrs;
-               }
-            else
-               {
-		  isset($cluster[$cluster_name]['HOSTS_DOWN']) or $cluster[$cluster_name]['HOSTS_DOWN'] = 0;
-                  $cluster[$cluster_name]['HOSTS_DOWN']++;
-                  $hosts_down[$cluster_name][$hostname] = $attrs;
-               }
-            # Pseudo metrics - add useful HOST attributes like gmond_started & last_reported to the metrics list:
-            $metrics[$cluster_name][$hostname]['gmond_started']['NAME'] = "GMOND_STARTED";
-            $metrics[$cluster_name][$hostname]['gmond_started']['VAL'] = $attrs['GMOND_STARTED'];
-            $metrics[$cluster_name][$hostname]['gmond_started']['TYPE'] = "timestamp";
-            $metrics[$cluster_name][$hostname]['last_reported']['NAME'] = "REPORTED";
-            $metrics[$cluster_name][$hostname]['last_reported']['VAL'] = uptime($cluster['LOCALTIME'] - $attrs['REPORTED']);
-            $metrics[$cluster_name][$hostname]['last_reported']['TYPE'] = "string";
-            $metrics[$cluster_name][$hostname]['ip_address']['NAME'] = "IP";
-            $metrics[$cluster_name][$hostname]['ip_address']['VAL'] = $attrs['IP'];
-            $metrics[$cluster_name][$hostname]['ip_address']['TYPE'] = "string";
-            $metrics[$cluster_name][$hostname]['location']['NAME'] = "LOCATION";
-            $metrics[$cluster_name][$hostname]['location']['VAL'] = $attrs['LOCATION'];
-            $metrics[$cluster_name][$hostname]['location']['TYPE'] = "string";
-            break;
+	    $index_array['cluster'][$hostname] = $cluster_name;
 
          case "METRIC":
             $metricname = $attrs['NAME'];
-            $metrics[$cluster_name][$hostname][$metricname] = $attrs;
+	    $index_array['metrics'][$metricname][] = $hostname;
             break;
 
          default:
             break;
       }
+
 }
 
 
@@ -363,7 +338,7 @@ function Gmetad ()
             xml_set_element_handler($parser, "start_cluster", "end_all");
             $request = "/$clustername";
              break;
-         case "everything":
+         case "index_array":
             xml_set_element_handler($parser, "start_everything", "end_all");
             $request = "/";
              break;

@@ -24,27 +24,22 @@ if ( ! isset($index_array) ) {
   }
   include_once "$ganglia_dir/conf.php";
   # Set up for cluster summary
-  $context = "everything";
+  $context = "index_array";
   include_once "$ganglia_dir/functions.php";
   include_once "$ganglia_dir/ganglia.php";
   include_once "$ganglia_dir/get_ganglia.php";
 
-  foreach ( $metrics as $cluster_name => $cluster_metrics ) {
-    foreach ( $cluster_metrics as $hostname => $host_metrics ) {
-	  $index_array['cluster'][$hostname] = $cluster_name;
-	  $hosts[] = $hostname;
-	  foreach ( $host_metrics as $metric_name => $attributes ) {
-	      $index_array['metrics'][$metric_name][] = $hostname;
-	  }
-    } // end of foreach ( $cluster_metrics as $hostname => $host_metrics )
+  foreach ( $index_array['cluster'] as $hostname => $elements ) {
+    $hosts[] = $hostname;
   }
 
-  # Make sure hosts are sorted by name
-  asort($hosts);
-  $index_array['hosts'] = $hosts;
-  
   file_put_contents(CACHEFILE, serialize($index_array));
 
+  asort($hosts);
+  $index_array['hosts'] = $hosts;
+
 }
+
+print_r($index_array);
 
 ?>
