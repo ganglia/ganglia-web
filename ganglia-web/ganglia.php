@@ -199,7 +199,8 @@ function start_everything ($parser, $tagname, $attrs)
 
          case "METRIC":
             $metricname = $attrs['NAME'];
-	    $index_array['metrics'][$metricname][] = $hostname;
+	    if ( $metricname != $hostname ) 
+	      $index_array['metrics'][$metricname][] = $hostname;
             break;
 
          default:
