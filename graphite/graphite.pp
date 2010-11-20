@@ -37,7 +37,7 @@ class graphite::common {
 
    exec { "install-webapp":
         path => ["/bin", "/usr/bin", "/usr/sbin"],
-        command => "cd $build_dir ; tar -zxvf $webapp_loc ; cd graphite-web-0.9.6 ; python setup.py install",
+        command => "cd $build_dir ; tar -zxvf $webapp_loc ; cd graphite-web-0.9.6 ;  patch -p0 < $build_dir/graphite.diff ; python setup.py install",
 	require => Exec["download-ganglia-graphite-diff"],
         subscribe => Exec[download-graphite-whisper],
 	creates => "/opt/graphite"
