@@ -21,8 +21,8 @@ if ( $query != "" ) {
   // Now let's look through metrics.
   foreach ( $index_array['metrics'] as $metric_name => $hosts ) {
     if ( preg_match("/$query/", $metric_name ) ) {
-      $cluster_name = $index_array['cluster'][$host_name];
       foreach ( $hosts as $key => $host_name ) {
+	$cluster_name = $index_array['cluster'][$host_name];
 	$results .= "Metric: <a target=\"_blank\" href=\"?c=" . $cluster_name . "&h=" . $host_name . "&m=cpu_report&r=hour&s=descending&hc=4&mc=2#metric_" . $metric_name  . "\">" . $host_name . " (" . $metric_name .  " )</a><br>";
       }
     }
