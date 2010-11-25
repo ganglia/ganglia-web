@@ -226,6 +226,14 @@ $graph_sizes = array(
      'fudge_2'=>0
    ),
 
+   'mobile'=>array(
+     'height'=>95,
+     'width'=>220,
+     'fudge_0'=>0,
+     'fudge_1'=>0,
+     'fudge_2'=>0
+   ),
+
    # this was the default value when no other size was provided.
    'default'=>array(
      'height'=>100,
@@ -234,6 +242,8 @@ $graph_sizes = array(
      'fudge_1'=>0,
      'fudge_2'=>0
    )
+
+
 );
 $default_graph_size = 'default';
 $graph_sizes_keys = array_keys( $graph_sizes );

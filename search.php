@@ -1,15 +1,15 @@
 <?php
 
-$ganglia_dir = dirname(__FILE__);
+require_once('./conf.php');
 
 // Load the metric caching code
 require_once('./cache.php');
 
-$query = $_GET['q'];
 $results = "";
 
-if ( $query != "" ) {
+if ( isset($_GET['q']) && $_GET['q'] != "" ) {
 
+  $query = $_GET['q'];
   // First we look for the hosts
   foreach ( $index_array['hosts'] as $key => $host_name ) {
     if ( preg_match("/$query/", $host_name ) ) {
