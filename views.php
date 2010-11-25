@@ -148,7 +148,7 @@ if ( sizeof($available_views) == 0 ) {
   if ( isset($_GET['standalone']) ) {
     ?>
 <html><head>
-<script TYPE="text/javascript" SRC="js/jquery-1.4.3.min.js"></script>
+<script TYPE="text/javascript" SRC="js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.5.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.liveSearch.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
