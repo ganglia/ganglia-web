@@ -260,10 +260,10 @@ foreach ( $sorted_hosts as $host => $value )
          }
       else
          {
-            $cell="<td><a href=$host_link><img src=\"./graph.php?";
+            $cell="<td><div><font style='font-size: 8px'>$host</font><br><a href=$host_link><img src=\"./graph.php?";
             $cell .= (isset($reports[$metricname]) and $reports[$metricname])
                ? "g=$metricname" : "m=$metricname";
-            $cell .= "&amp;$graphargs\" alt=\"$host\" border=0></a></td>";
+            $cell .= "&amp;$graphargs\" alt=\"$host\" border=0></a></div></td>";
          }
 
       if ($hostcols == 0) {
