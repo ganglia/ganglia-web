@@ -1,0 +1,16 @@
+This is a modified version of embedded gmetric written in Python. It has been modified from
+
+http://code.google.com/p/embeddedgmetric/
+
+Main changes are
+
+  - Support for Ganglia 3.1
+  - Ability to specify metric group which gets grouped in the Ganglia Web UI. 
+
+Acknowledgements:
+
+Thanks to Ilya Grigorik for posting Ruby Gmetric
+
+https://github.com/igrigorik/gmetric
+
+It was much easier to figure out proper XDR packet packing in his code than looking through the C code
