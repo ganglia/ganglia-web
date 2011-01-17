@@ -1,5 +1,5 @@
 <?php
-/* $Id: header.php 2082 2009-09-16 20:05:55Z hawson $ */
+/* $Id: header.php 2423 2011-01-07 02:00:33Z vvuksan $ */
 
 # Check if this context is private.
 include_once "./auth.php";
@@ -68,21 +68,21 @@ if(count($gridstack) > 1) {
   list($parentgrid, $parentlink) = explode("@", $gridstack[count($gridstack)-2]);
 }
 
-$tpl = new TemplatePower( template("$header.tpl") );
-$tpl->prepare();
-$tpl->assign("page_title", $title);
-$tpl->assign("refresh", $default_refresh);
+$tpl = new Dwoo_Template_File( template("$header.tpl") );
+$data = new Dwoo_Data();
+$data->assign("page_title", $title);
+$data->assign("refresh", $default_refresh);
 
 # Templated Logo image
-$tpl->assign("images","./templates/$template_name/images");
+$data->assign("images","./templates/$template_name/images");
 
-$tpl->assign( "date", date("r"));
+$data->assign( "date", date("r"));
 
 # The page to go to when "Get Fresh Data" is pressed.
 if (isset($page))
-      $tpl->assign("page",$page);
+      $data->assign("page",$page);
 else
-      $tpl->assign("page","./");
+      $data->assign("page","./");
 
 #
 # Used when making graphs via graph.php. Included in most URLs
@@ -96,31 +96,60 @@ if ($cs)
 if ($ce)
     $get_metric_string .= "&amp;ce=" . rawurlencode($ce);
 
+$start_timestamp = null;
+$end_timestamp = null;
+if ($cs) {
+    if (! is_numeric($cs)) {
+        $start_timestamp = strtotime($cs);
+    } else {
+        $start_timestamp = $cs;
+    }
+
+    if ($ce) {
+        if (! is_numeric($ce)) {
+            $end_timestamp = strtotime($ce);
+        } else {
+            $end_timestamp = $ce;
+        }
+    } else {
+        $end_timestamp = strtotime("+1 $range", $start_timestamp);
+    }
+} else {
+    $end_timestamp = time();
+    $start_timestamp = strtotime("-1 $range", $end_timestamp);
+}
+
+$data->assign("start_timestamp", $start_timestamp);
+$data->assign("end_timestamp", $end_timestamp);
+
 # Set the Alternate view link.
 $cluster_url=rawurlencode($clustername);
 $node_url=rawurlencode($hostname);
 
 # Make some information available to templates.
-$tpl->assign("cluster_url", $cluster_url);
+$data->assign("cluster_url", $cluster_url);
+$alt_view = "";
 
 if ($context=="cluster")
    {
-      $tpl->assign("alt_view", "<a href=\"./?p=2&amp;c=$cluster_url\">Physical View</a>");
+      $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url\">Physical View</a>";
    }
 elseif ($context=="physical")
    {
-      $tpl->assign("alt_view", "<a href=\"./?c=$cluster_url\">Full View</a>");
+      $alt_view = "<a href=\"./?c=$cluster_url\">Full View</a>";
    }
 elseif ($context=="node")
    {
-      $tpl->assign("alt_view",
-      "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string\">Host View</a>");
+      $alt_view =
+      "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string\">Host View</a>";
    }
 elseif ($context=="host")
    {
-      $tpl->assign("alt_view",
-      "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>");
+      $alt_view =
+      "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>";
    }
+
+$data->assign("alt_view", $alt_view);
 
 # Build the node_menu
 $node_menu = "";
@@ -216,7 +245,7 @@ $node_menu .= hiddenvar("cr", $controlroom);
 $node_menu .= hiddenvar("js", $jobstart);
 $node_menu .= hiddenvar("jr", $jobrange);
 
-$tpl->assign("node_menu", $node_menu);
+$data->assign("node_menu", $node_menu);
 
 
 //////////////////// Build the metric menu ////////////////////////////////////
@@ -238,6 +267,7 @@ if( $context == "cluster" )
 #
 # If there are graphs present, show ranges.
 #
+$range_menu = "";
 if (!$physical) {
    $context_ranges = array_keys( $time_ranges );
    if ($jobrange)
@@ -256,12 +286,14 @@ if (!$physical) {
 
    }
 
-   $tpl->assign("range_menu", $range_menu);
 }
+
+$data->assign("range_menu", $range_menu);
 
 #
 # Only show metric list if we have some and are in cluster context.
 #
+$metric_menu = array();
 if (is_array($context_metrics) and $context == "cluster")
    {
 
@@ -272,18 +304,20 @@ if (is_array($context_metrics) and $context == "cluster")
             $metric_menu[] = "\"$url\"";
          }
 
-      $tpl->assign("available_metrics", join(",", $metric_menu) );       
-      $tpl->assign("is-metrics-picker-disabled", "");
+      $data->assign("available_metrics", join(",", $metric_menu) );       
+      $data->assign("is_metrics_picker_disabled", "");
 
    } else {
       // We have to disable the sort_menu if we are not in the cluster context
-      $tpl->assign("is-metrics-picker-disabled", '$("#sort_menu").toggle(); ');
+      $data->assign("is_metrics_picker_disabled", '$("#sort_menu").toggle(); ');
+      $data->assign("available_metrics", "" );       
    }
 
 
 #
 # Show sort order if there is more than one physical machine present.
 #
+$sort_menu = "";
 if ($context == "meta" or $context == "cluster")
    {
       $context_sorts[]="ascending";
@@ -310,8 +344,8 @@ if ($context == "meta" or $context == "cluster")
 
       }
 
-      $tpl->assign("sort_menu", $sort_menu );
    }
+$data->assign("sort_menu", $sort_menu );
    
 if ($context == "physical" or $context == "cluster" or $context == 'host' )
    {
@@ -358,6 +392,9 @@ if ($context == "host")
          }
       $metric_cols_menu .= "</SELECT>\n";
    }
+
+$custom_time = "";
+
 if ($context == "meta" or $context == "cluster" or $context == "host")
    {
       $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
@@ -371,11 +408,18 @@ if ($context == "meta" or $context == "cluster" or $context == "host")
       $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
       $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\">\n";
 #      $custom_time .= $calendar;
-      $tpl->assign("custom_time", $custom_time);
+      $data->assign("custom_time", $custom_time);
 
 #      $tpl->assign("custom_time_head", $calendar_head);
-      $tpl->assign("custom_time_head", "");
+      $data->assign("custom_time_head", "");
    }
+else
+   {
+      $data->assign("custom_time_head", "");
+   }
+ 
+$data->assign("custom_time", $custom_time);
+
 
 # Make sure that no data is cached..
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    # Date in the past
@@ -383,5 +427,6 @@ header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modifie
 header ("Cache-Control: no-cache, must-revalidate");  # HTTP/1.1
 header ("Pragma: no-cache");                          # HTTP/1.0
 
-$tpl->printToScreen();
+$dwoo->output($tpl, $data);
+
 ?>

@@ -1,24 +1,24 @@
 <?php
-/* $Id: footer.php 1586 2008-07-21 09:35:43Z carenas $ */
-$tpl = new TemplatePower( template("footer.tpl") );
-$tpl->prepare();
-$tpl->assign("webfrontend-version",$version["webfrontend"]);
+/* $Id: footer.php 2362 2010-11-26 01:43:53Z vvuksan $ */
+$tpl = new Dwoo_Template_File( template("footer.tpl") );
+$data = new Dwoo_Data(); 
+$data->assign("webfrontend_version",$version["webfrontend"]);
 
 if ($version["rrdtool"]) {
-   $tpl->assign("rrdtool-version",$version["rrdtool"]);
-}
-$tpl->assign("templatepower-version", $tpl->version);
-
-if ($version["gmetad"]) {
-   $tpl->assign("webbackend-component", "gmetad");
-   $tpl->assign("webbackend-version",$version["gmetad"]);
-}
-elseif ($version["gmond"]) {
-   $tpl->assign("webbackend-component", "gmond");
-   $tpl->assign("webbackend-version", $version["gmond"]);
+   $data->assign("rrdtool_version",$version["rrdtool"]);
 }
 
-$tpl->assign("parsetime", sprintf("%.4f", $parsetime) . "s");
+$backend_components = array("gmetad", "gmetad-python", "gmond");
 
-$tpl->printToScreen();
+foreach ($backend_components as $backend) {
+   if (isset($version[$backend])) {
+      $data->assign("webbackend_component", $backend);
+      $data->assign("webbackend_version",$version[$backend]);
+      break;
+   }
+}
+
+$data->assign("parsetime", sprintf("%.4f", $parsetime) . "s");
+
+$dwoo->output($tpl, $data);
 ?>

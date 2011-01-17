@@ -1,9 +1,21 @@
 $(function(){
 
-  $("#tabs").tabs();
+  // Follow tab's URL instead of loading its content via ajax
+  $("#tabs").tabs({
+       select: function(event, ui) {
+           var url = $.data(ui.tab, 'load.tabs');
+           if ( url ) {
+               location.href = url;
+               return false;
+           }
+           return true;
+       }
+  });
   $( "#range_menu" ).buttonset();
   $( "#sort_menu" ).buttonset();
-  jQuery('#metric-search input[name="q"]').liveSearch({url: 'search.php?q='});
+
+  jQuery('#metric-search input[name="q"]').liveSearch({url: 'search.php?q=', typeDelay: 500});
+
   $( "#datepicker-cs" ).datepicker({
 	  showOn: "button",
 	  buttonImage: "img/calendar.gif",
