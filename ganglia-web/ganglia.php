@@ -1,5 +1,5 @@
 <?php
-/* $Id: ganglia.php 1724 2008-08-25 20:40:46Z bernardli $ */
+/* $Id: ganglia.php 2375 2010-11-30 00:15:37Z bernardli $ */
 #
 # Parses ganglia XML tree.
 #
@@ -33,7 +33,6 @@ $metrics = array();
 $version = array();
 
 # The web frontend version, from conf.php.
-#$version["webfrontend"] = "$majorversion.$minorversion.$microversion";
 $version["webfrontend"] = "$ganglia_version";
 
 # Get rrdtool version
@@ -99,7 +98,7 @@ function start_meta ($parser, $tagname, $attrs)
             break;
 
          case "METRICS":
-            $metricname = $attrs['NAME'];
+            $metricname = rawurlencode($attrs['NAME']);
             $metrics[$sourcename][$metricname] = $attrs;
             break;
 
@@ -164,7 +163,7 @@ function start_cluster ($parser, $tagname, $attrs)
             break;
 
          case "METRIC":
-            $metricname = $attrs['NAME'];
+            $metricname = rawurlencode($attrs['NAME']);
             $metrics[$hostname][$metricname] = $attrs;
             break;
 
@@ -198,7 +197,7 @@ function start_everything ($parser, $tagname, $attrs)
 	    $index_array['cluster'][$hostname] = $cluster_name;
 
          case "METRIC":
-            $metricname = $attrs['NAME'];
+            $metricname = rawurlencode($attrs['NAME']);
 	    if ( $metricname != $hostname ) 
 	      $index_array['metrics'][$metricname][] = $hostname;
             break;
@@ -208,7 +207,6 @@ function start_everything ($parser, $tagname, $attrs)
       }
 
 }
-
 
 function start_cluster_summary ($parser, $tagname, $attrs)
 {
@@ -267,7 +265,7 @@ function start_host ($parser, $tagname, $attrs)
             break;
 
          case "METRIC":
-            $metricname = $attrs['NAME'];
+            $metricname = rawurlencode($attrs['NAME']);
             $metrics[$metricname] = $attrs;
             break;
 

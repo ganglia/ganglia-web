@@ -5,7 +5,7 @@ New features
 ============
 
 Views
-===============
+=====
 
 Views are an arbitrary collection of hostname/metric graphs. They are defined using JSON files and stored in the
 /conf directory. View file names have to start with view ie.
@@ -36,7 +36,7 @@ Regex views allow using regex to match hostnames (need to specify view_type rege
 Obviously you can write a regex that matches a single host. 
 
 Auto Rotation
-==============
+=============
 
 Automatically rotate view graphs every 30 seconds with hour, day, week and month overview for each metric
 on a single page. It will rotate until page closed. 
@@ -70,6 +70,8 @@ pecl is part of php-pear package on RHEL/CentOS. Make sure you have
 
 # cat /etc/php.d/json.ini 
 extension=json.so
+
+On RHEL/CentOS 4, you will also need phpize which comes with the php-devel package.
 
 BUGS
 ====

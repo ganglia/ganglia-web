@@ -1,5 +1,5 @@
 <?php
-/* $Id: get_context.php 2312 2010-07-16 22:40:40Z bernardli $ */
+/* $Id: get_context.php 2362 2010-11-26 01:43:53Z vvuksan $ */
 
 include_once "./functions.php";
 

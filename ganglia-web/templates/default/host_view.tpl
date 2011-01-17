@@ -23,9 +23,9 @@ $(function() {
   //run the currently selected effect
   function runEffect(){
     //most effect types need no options passed by default
-    var options = {};
+    var options = { };
 
-    options = { to: {width: 200,height: 60} }; 
+    options = { to: { width: 200,height: 60 } }; 
     
     //run the effect
     $("#host_overview").toggle("blind",options,500);
@@ -48,7 +48,7 @@ $(function() {
     $("#edit_optional_graphs_button").click(function(event) {
       $("#edit_optional_graphs").dialog('open');
       $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
-      $.get('edit_optional_graphs.php', "hostname={hostname}", function(data) {
+      $.get('edit_optional_graphs.php', "hostname={$hostname}", function(data) {
 	      $('#edit_optional_graphs_content').html(data);
       })
       return false;
@@ -89,8 +89,8 @@ $(function() {
 <TR>
  <TD ALIGN="LEFT" VALIGN="TOP">
 
-<IMG SRC="{node_image}" HEIGHT="60" WIDTH="30" ALT="{host}" BORDER="0">
-{node_msg}
+<IMG SRC="{$node_image}" HEIGHT="60" WIDTH="30" ALT="{$host}" BORDER="0">
+{$node_msg}
 <P>
 
 <TABLE BORDER="0" WIDTH="100%">
@@ -98,11 +98,11 @@ $(function() {
   <TD COLSPAN="2" CLASS=title>Time and String Metrics</TD>
 </TR>
 
-<!-- START BLOCK : string_metric_info -->
+{foreach $s_metrics_data s_metric}
 <TR>
- <TD CLASS=footer WIDTH=30%>{name}</TD><TD>{value}</TD>
+ <TD CLASS=footer WIDTH="30%">{$s_metric.name}</TD><TD>{$s_metric.value}</TD>
 </TR>
-<!-- END BLOCK : string_metric_info -->
+{/foreach}
 
 <TR><TD>&nbsp;</TD></TR>
 
@@ -110,15 +110,17 @@ $(function() {
   <TD COLSPAN=2 CLASS=title>Constant Metrics</TD>
 </TR>
 
-<!-- START BLOCK : const_metric_info -->
+{foreach $c_metrics_data c_metric}
 <TR>
- <TD CLASS=footer WIDTH=30%>{name}</TD><TD>{value}</TD>
+ <TD CLASS=footer WIDTH="30%">{$c_metric.name}</TD><TD>{$c_metric.value}</TD>
 </TR>
-<!-- END BLOCK : const_metric_info -->
+{/foreach}
 </TABLE>
 
  <HR>
-<!-- INCLUDE BLOCK : extra -->
+{if isset($extra)}
+{include(file="$extra")}
+{/if}
 </TD> 
 </table>
 </div>
@@ -145,7 +147,7 @@ $(function() {
 
 <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="395">
 
-{optional_reports}<br>
+{$optional_reports}<br>
 <button id="edit_optional_graphs_button">Edit Optional Graphs</button>
 </TD>
 </TR>
@@ -156,15 +158,15 @@ $(function() {
 <TABLE BORDER="0" WIDTH="100%">
 <TR>
   <TD CLASS=title>
-  {host} <strong>graphs</strong>
-  last <strong>{range}</strong>
-  sorted <strong>{sort}</strong>
-<!-- START BLOCK : columns_dropdown -->
+  {$host} <strong>graphs</strong>
+  last <strong>{$range}</strong>
+  sorted <strong>{$sort}</strong>
+{if isset($columns_dropdown)}
   <FONT SIZE="-1">
-    Columns&nbsp;&nbsp;{metric_cols_menu}
-    Size&nbsp;&nbsp;{size_menu}
+    Columns&nbsp;&nbsp;{$metric_cols_menu}
+    Size&nbsp;&nbsp;{$size_menu}
   </FONT>
-<!-- END BLOCK : columns_dropdown -->
+{/if}
   </TD>
 </TR>
 </TABLE>
@@ -178,33 +180,32 @@ $(function() {
 <TR>
  <TD>
 
-<!-- START BLOCK : vol_group_info -->
-<A HREF="javascript:;" ONMOUSEDOWN="javascript:toggleLayer('{group}');" TITLE="Toggle {group} metrics group on/off" NAME="{group}">
+{foreach $g_metrics_group_data group g_metrics}
+<A HREF="javascript:;" ONMOUSEDOWN="javascript:toggleLayer('{$group}');" TITLE="Toggle {$group} metrics group on/off" NAME="{$group}">
 <TABLE BORDER="0" WIDTH="100%">
 <TR>
   <TD CLASS=metric>
-  {group} metrics ({group_metric_count})
+  {$group} metrics ({$g_metrics.group_metric_count})
   </TD>
 </TR>
 </TABLE>
 </A>
-<DIV ID="{group}">
+<DIV ID="{$group}">
 <TABLE><TR>
-<!-- START BLOCK : vol_metric_info -->
+{foreach $g_metrics["metrics"] g_metric}
 <TD>
-<a name=metric_{metric_name}>
-<font style="font-size: 9px">{metric_name}</font> <a style="background-color: #dddddd" onclick="metricActions('{host_name}','{metric_name}', 'metric'); return false;" href="#">+</a><br>
-<A HREF="./graph_all_periods.php?{graphargs}&amp;z=large">
-<IMG BORDER=0 ALT="{alt}" SRC="./graph.php?{graphargs}" TITLE="{desc}">
+<a name=metric_{$g_metric.metric_name}>
+<font style="font-size: 9px">{$g_metric.metric_name}</font> <a style="background-color: #dddddd" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric'); return false;" href="#">+</a><br>
+<A HREF="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
+<IMG BORDER=0 ALT="{$g_metric.alt}" SRC="./graph.php?{$g_metric.graphargs}" TITLE="{$g_metric.desc}">
 </A>
 </TD>
-{new_row}
-<!-- END BLOCK : vol_metric_info -->
+{$g_metric.new_row}
+{/foreach}
 </TR>
 </TABLE>
 </DIV>
-<!-- END BLOCK : vol_group_info -->
-
+{/foreach}
  </TD>
 </TR>
 </TABLE>
