@@ -1,0 +1,55 @@
+General
+
+- Add back the Ganglia logo
+- Provide an easy method for user to add their organization's logo
+- Centralize sanitization of user input (Extract this from get_context.php and graph.php, no other scripts
+  should use $_GET directly)
+- Make indentation consistent - mixed usage of 2 spaces, 3 spaces, 4 spaces, or tabs makes code harder to read
+
+Graphs
+
+- Eliminate usage of global variables
+- graph.d/.php files all modify the global $hostname, should be a local variable
+- Zooming
+- graph.d/ JSON definition should allow optional metrics to be added to the graph only if they exist
+
+Views
+
+- Support regex expressions for metrics in regex views
+Suggestions from Ben Hartshorne. 
+- Color code by host or metric, so as to easily differentiate
+- Do something else to sort by host or metric, such as all metrics from a specific host in a row
+- group by metric or group by host - right now it lists all hosts metric A, then all hosts metric B (when
+using the regex)
+
+Caching
+
+- Figure out a better way to cache metrics
+- Avoid race conditions
+
+Mobile
+
+- Add ability to specify arbitrary time ranges
+- Add support for multi-touch enlarging of graphs
+- Allow hosts to be named the same in multiple clusters (right now they are filtered out)
+- Mobile browser detection code to automatically use mobile version
+- Clicking on a metric search result should bring up the host page anchoring at the
+  metric graph in question
+- Add ability to add metrics to views
+- Implement "refresh" for pages to prevent stale data from being displayed via ajax
+- Fix XSS vuln. in input handling (See general 'Centralize sanitization' task above)
+
+Graphite
+
+- Add polish to Graphite integration
+- Fix CPU report for Cluster summary. Needs to be "scaled" by number of nodes
+
+Documentation
+
+- Add user guide
+- Add installation guide (expand on README)
+- Add templating guide
+
+New features
+
+- Implement aggregate graphs (line and stacked)

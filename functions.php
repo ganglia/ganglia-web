@@ -801,9 +801,9 @@ function get_view_graph_elements($view) {
 
 }
 
-/**
- * Populate $rrdtool_graph from $config (from JSON file).
- */
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Populate $rrdtool_graph from $config (from JSON file).
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_rrdtool_args_from_json( &$rrdtool_graph, $config ) {
   global $context,
          $hostname,
@@ -819,7 +819,15 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $config ) {
    
   $title = sanitize( $config[ 'title' ] );
   $rrdtool_graph[ 'title' ] =  ($context == 'host') ? "$hostname $title last $range" : $title;
-  $rrdtool_graph[ 'vertical-label' ] = sanitize( $config[ 'vertical-label' ] );
+  // If vertical label is empty or non-existent set it to space otherwise rrdtool will fail
+  if ( ! isset($config[ 'vertical_label' ]) || $config[ 'vertical_label' ] == "" ) {
+     $rrdtool_graph[ 'vertical-label' ] = " ";   
+  } else {
+     $rrdtool_graph[ 'vertical-label' ] = sanitize( $config[ 'vertical_label' ] );
+  }
+
+  $rrdtool_graph['lower-limit']    = '0';
+  
   
   $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
   if( $graphreport_stats ) {
@@ -833,40 +841,92 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $config ) {
   }
   
   $series = '';
-  foreach( $config[ 'series' ] as $item ) {
+  
+  $stack_counter = 0;
+
+  // Available line types
+  $line_widths = array("1","2","3");
+  
+  // Loop through all the graph items
+  foreach( $config[ 'series' ] as $index => $item ) {
+   
+    # Need this when defining graphs that may use same metric names
+    $unique_id = "a" . $index;
+    
+    $rrd_dir = $GLOBALS['rrds'] . "/" . $item['clustername'] . "/" . $item['hostname'];
+
     $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
     $metric = sanitize( $item[ 'metric' ] );
-    $series .= "DEF:'$metric'='${rrd_dir}/$metric.rrd':'sum':AVERAGE "
-      . strtoupper( sanitize( $item['style'] ) ).":'$metric'#${item['color']}:'${label}'"
-      . ( isset($item[ 'stack' ]) && $item[ 'stack' ] ? ":STACK" : "" ) . " ";
-
-    if ( $graphreport_stats ) {
-      $series .= "VDEF:${metric}_last=$metric,LAST "
-              . "VDEF:${metric}_min=$metric,MINIMUM "
-              . "VDEF:${metric}_avg=$metric,AVERAGE "
-              . "VDEF:${metric}_max=$metric,MAXIMUM "
-              . "GPRINT:'${metric}_last':'Now\:%5.1lf%s' "
-              . "GPRINT:'${metric}_min':'Min\:%5.1lf%s' "
-              . "GPRINT:'${metric}_avg':'Avg\:%5.1lf%s' "
-              . "GPRINT:'${metric}_max':'Max\:%5.1lf%s\\l' ";
-    }
+    $series .= " DEF:'$unique_id'='${rrd_dir}/$metric.rrd':'sum':AVERAGE ";
+    
+    // By default graph is a line graph
+   isset( $item['type']) ? $item_type = $item['type'] : $item_type = "line";
+   
+   // TODO sanitize color
+   
+   switch ( $item_type ) {
+      
+      case "line":
+         // Make sure it's a recognized line type
+         isset($item['line_width']) && in_array( $item['line_width'], $line_widths) ? $line_width = $item['line_width'] : $line_width = "1";
+         $series .= "LINE" . $line_width . ":'$unique_id'#${item['color']}:'${label}' ";
+         break;
+      
+      case "stack":
+         // First element in a stack has to be AREA
+         if ( $stack_counter == 0 ) {
+            $series .= "AREA:'$unique_id'#${item['color']}:'${label}' ";
+            $stack_counter++;
+         } else {
+            $series .= "STACK:'$unique_id'#${item['color']}:'${label}' ";
+         }
+         break;
+   }
+    
+   if ( $graphreport_stats ) {
+      $series .= "VDEF:${unique_id}_last=${unique_id},LAST "
+              . "VDEF:${unique_id}_min=${unique_id},MINIMUM "
+              . "VDEF:${unique_id}_avg=${unique_id},AVERAGE "
+              . "VDEF:${unique_id}_max=${unique_id},MAXIMUM "
+              . "GPRINT:'${unique_id}_last':'Now\:%5.1lf%s' "
+              . "GPRINT:'${unique_id}_min':'Min\:%5.1lf%s' "
+              . "GPRINT:'${unique_id}_avg':'Avg\:%5.1lf%s' "
+              . "GPRINT:'${unique_id}_max':'Max\:%5.1lf%s\\l' ";
+   }
   }
   $rrdtool_graph[ 'series' ] = $series;
   return $rrdtool_graph;
 }
 
-
-// TODO: create graphite areaMode
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Graphite graphs
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 function build_graphite_series( $config, $host_cluster ) {
   $targets = array();
   $colors = array();
+  // Keep track of stacked items
+  $stacked = 0;
   foreach( $config[ 'series' ] as $item ) {
+   
+    if ( $item['type'] == "stack" )
+      $stacked++;
+      
     $targets[] = "target=". urlencode( "alias($host_cluster.${item['metric']}.sum,'${item['label']}')" );
     $colors[] = $item['color'];
+
   }
   $output = implode( $targets, '&' );
   $output .= "&colorList=" . implode( $colors, ',' );
-  $output .= "&vtitle=" . urlencode( $config[ 'vertical-label' ] );
+  $output .= "&vtitle=" . urlencode( $config[ 'vertical_label' ] );
+
+  // Do we have any stacked elements. We assume if there is only one element
+  // that is stacked that rest of it is line graphs
+  if ( $stacked > 0 ) {
+    if ( $stacked > 1 )
+      $output .= "&areaMode=stacked";
+    else
+      $output .= "&areaMode=first";
+  }
   
   return $output;
 }

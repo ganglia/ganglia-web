@@ -1,5 +1,5 @@
 <?php
-# $Id: conf.php.in 2294 2010-03-30 14:40:14Z hawson $
+# $Id: conf.php.in 2390 2010-12-05 15:33:18Z vvuksan $
 #
 # Gmetad-webfrontend version. Used to check for updates.
 #
@@ -8,7 +8,6 @@ include_once "./version.php";
 $GLOBALS['ganglia_dir'] = dirname(__FILE__);
 $GLOBALS['views_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
 $GLOBALS['conf_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
-
 
 #
 # The name of the directory in "./templates" which contains the
@@ -25,6 +24,9 @@ $template_name = "default";
 # Where gmetad stores the rrd archives.
 $gmetad_root = "/var/lib/ganglia";
 $rrds = "$gmetad_root/rrds";
+
+# Where Dwoo (PHP templating engine) store compiled templates
+$dwoo_compiled_dir = "$gmetad_root/dwoo";
 
 # Where to find filter configuration files, if not set filtering
 # will be disabled
@@ -46,7 +48,7 @@ $rrdcached_socket = "";
 $graphdir='./graph.d';
 
 # Display statistical values on RRD graphs; i.e.: average, min, max
-$graphreport_stats = false;
+$graphreport_stats = true;
 
 #
 # If you want to grab data from a different ganglia source specify it here.
@@ -116,6 +118,11 @@ $proc_run_color = "0000FF";
 $cpu_num_color  = "FF0000";
 $num_nodes_color = "00FF00";
 
+#
+# Display number of cores in LOAD report graph
+#
+$show_cores = false;
+
 # Other colors
 $jobstart_color = "ff3300";
 
@@ -144,18 +151,18 @@ $default_metric_color = "555555";
 #
 # Default metric 
 #
-$default_metric = "cpu_report";
+$default_metric = "load_one";
 
 #
 # remove the domainname from the FQDN hostnames in graphs
 # (to help with long hostnames in small charts)
 #
-$strip_domainname = "yes";
+$strip_domainname = false;
 
 #
 # Optional summary graphs
 #
-$optional_graphs = array();
+#$optional_graphs = array('packet');
 
 # 
 # Time ranges
@@ -174,22 +181,23 @@ $time_ranges = array(
 # this key must exist in $time_ranges
 $default_time_range = 'hour';
 
+# Graph Engine to use
+$GLOBALS['graph_engine'] = "rrdtool";
 
-// Use graphite
-$use_graphite = "no";
-// 
+#$GLOBALS['graph_engine'] = "graphite";
 $graphite_url_base = "http://127.0.0.1/render";
-// 
 $graphite_rrd_dir = "/opt/graphite/storage/rrd";
 
-
-// One of the bottlenecks is that to get individual metrics we query gmond which
-// returns every single host and all the metrics. If you have lots of hosts and lots of 
-// checks this may be quite heavy so you may want to cache data
+# One of the bottlenecks is that to get individual metrics we query gmond which
+# returns every single host and all the metrics. If you have lots of hosts and lots of 
+# checks this may be quite heavy so you may want to cache data
 define("CACHEDATA", 1);
-define("CACHEFILE",     $GLOBALS['ganglia_dir'] . "/conf/ganglia_metrics.cache");
-define("CACHETIME",     120); // How long to cache the data in seconds
+define("CACHEFILE", $GLOBALS['ganglia_dir'] . "/conf/ganglia_metrics.cache");
+define("CACHETIME", 1200); // How long to cache the data in seconds
 
+
+# Enable Zoom support on graphs
+$GLOBALS['zoom_support'] = true;
 
 #
 # Graph sizes
@@ -242,7 +250,6 @@ $graph_sizes = array(
      'fudge_1'=>0,
      'fudge_2'=>0
    )
-
 
 );
 $default_graph_size = 'default';
