@@ -1,5 +1,9 @@
 <?php
 
+//////////////////////////////////////////////////////////////////////////
+// This file generates the Edit Optional Graphs dialog. 
+//////////////////////////////////////////////////////////////////////////
+
 require_once('./conf.php');
 
 $hostname = $_GET['hostname'];
@@ -128,6 +132,8 @@ function create_radio_button($variable_name, $variable_value = "ignored") {
   return $str;
 }
 
+// Initialize the available reports array
+$available_reports = array();
 
 /* -----------------------------------------------------------------------
  Find available graphs by looking in the GANGLIA_DIR/graph.d directory
@@ -135,15 +141,16 @@ function create_radio_button($variable_name, $variable_value = "ignored") {
 ----------------------------------------------------------------------- */
 if ($handle = opendir($GLOBALS['ganglia_dir'] . '/graph.d')) {
 
-    // If we are using Graphite reports are in JSON files instead of the standard PHP files
-    if ( $use_graphite == "yes" )
-      $report_suffix = "json";
+    // If we are using RRDtool reports can be json or PHP suffixes
+    if ( $GLOBALS['graph_engine'] == "rrdtool" )
+      $report_suffix = "php|json";
     else
-      $report_suffix = "php";
+      $report_suffix = "json";
 
     while (false !== ($file = readdir($handle))) {
       if ( preg_match("/(.*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
-        $available_reports[] = $out[1] . "_report";
+	if ( ! in_array($out[1] . "_report", $available_reports) )
+          $available_reports[] = $out[1] . "_report";
       }
     }
 
