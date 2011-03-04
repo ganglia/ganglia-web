@@ -668,6 +668,8 @@ function filter_permit($source_name)
 // Get all the available views
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function get_available_views() {
+  global $conf;
+  
   /* -----------------------------------------------------------------------
   Find available views by looking in the GANGLIA_DIR/conf directory
   anything that matches view_*.json. Read them all and build a available_views
@@ -675,13 +677,13 @@ function get_available_views() {
   ----------------------------------------------------------------------- */
   $available_views = array();
 
-  if ($handle = opendir($GLOBALS['views_dir'])) {
+  if ($handle = opendir($conf['views_dir'])) {
 
       while (false !== ($file = readdir($handle))) {
 
 	if ( preg_match("/view_(.*)/", $file, $out) ) {
 
-	  $view_config_file = $GLOBALS['views_dir'] . "/" . $file;
+	  $view_config_file = $conf['views_dir'] . "/" . $file;
 	  if ( ! is_file ($view_config_file) ) {
 	    echo("Can't read view config file " . $view_config_file . ". Please check permissions");
 	  }
@@ -804,26 +806,27 @@ function get_view_graph_elements($view) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // Populate $rrdtool_graph from $config (from JSON file).
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-function build_rrdtool_args_from_json( &$rrdtool_graph, $config ) {
+function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   global $context,
          $hostname,
          $range,
          $rrd_dir,
          $size,
          $strip_domainname,
-         $graphreport_stats;
+         $graphreport_stats,
+         $conf;
   
   if ($strip_domainname)     {
     $hostname = strip_domainname($hostname);
   }
    
-  $title = sanitize( $config[ 'title' ] );
+  $title = sanitize( $graph_config[ 'title' ] );
   $rrdtool_graph[ 'title' ] =  ($context == 'host') ? "$hostname $title last $range" : $title;
   // If vertical label is empty or non-existent set it to space otherwise rrdtool will fail
-  if ( ! isset($config[ 'vertical_label' ]) || $config[ 'vertical_label' ] == "" ) {
+  if ( ! isset($graph_config[ 'vertical_label' ]) || $graph_config[ 'vertical_label' ] == "" ) {
      $rrdtool_graph[ 'vertical-label' ] = " ";   
   } else {
-     $rrdtool_graph[ 'vertical-label' ] = sanitize( $config[ 'vertical_label' ] );
+     $rrdtool_graph[ 'vertical-label' ] = sanitize( $graph_config[ 'vertical_label' ] );
   }
 
   $rrdtool_graph['lower-limit']    = '0';
@@ -836,7 +839,7 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $config ) {
   
   // find longest label length, so we pad the others accordingly to get consistent column alignment
   $max_label_length = 0;
-  foreach( $config[ 'series' ] as $item ) {
+  foreach( $graph_config[ 'series' ] as $item ) {
     $max_label_length = max( strlen( $item[ 'label' ] ), $max_label_length );
   }
   
@@ -848,12 +851,12 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $config ) {
   $line_widths = array("1","2","3");
   
   // Loop through all the graph items
-  foreach( $config[ 'series' ] as $index => $item ) {
+  foreach( $graph_config[ 'series' ] as $index => $item ) {
    
     # Need this when defining graphs that may use same metric names
     $unique_id = "a" . $index;
     
-    $rrd_dir = $GLOBALS['rrds'] . "/" . $item['clustername'] . "/" . $item['hostname'];
+    $rrd_dir = $conf['rrds'] . "/" . $item['clustername'] . "/" . $item['hostname'];
 
     $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
     $metric = sanitize( $item[ 'metric' ] );

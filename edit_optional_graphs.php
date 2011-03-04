@@ -9,12 +9,12 @@ require_once('./conf.php');
 $hostname = $_GET['hostname'];
 
 $default_reports = array("included_reports" => array(), "excluded_reports" => array());
-$default_file = $GLOBALS['conf_dir'] . "/default.json";
+$default_file = $conf['conf_dir'] . "/default.json";
 if ( is_file($default_file) ) {
   $default_reports = array_merge($default_reports,json_decode(file_get_contents($default_file), TRUE));
 }
 
-$host_file = $GLOBALS['conf_dir'] . "/host_" . $hostname . ".json";
+$host_file = $conf['conf_dir'] . "/host_" . $hostname . ".json";
 $override_reports = array("included_reports" => array(), "excluded_reports" => array());
 if ( is_file($host_file) ) {
   $override_reports = array_merge($override_reports, json_decode(file_get_contents($host_file), TRUE));
@@ -43,7 +43,7 @@ if ( isset($_GET['action']) ) {
 
   if ( is_array($reports) ) {
     $json = json_encode($reports);
-    $host_file = $GLOBALS['conf_dir'] . "/host_" . $hostname . ".json";
+    $host_file = $conf['conf_dir'] . "/host_" . $hostname . ".json";
     if ( file_put_contents($host_file, $json) === FALSE ) {
   ?>
 	<div class="ui-widget">
@@ -139,10 +139,10 @@ $available_reports = array();
  Find available graphs by looking in the GANGLIA_DIR/graph.d directory
  anything that matches _report.php
 ----------------------------------------------------------------------- */
-if ($handle = opendir($GLOBALS['ganglia_dir'] . '/graph.d')) {
+if ($handle = opendir($conf['ganglia_dir'] . '/graph.d')) {
 
     // If we are using RRDtool reports can be json or PHP suffixes
-    if ( $GLOBALS['graph_engine'] == "rrdtool" )
+    if ( $conf['graph_engine'] == "rrdtool" )
       $report_suffix = "php|json";
     else
       $report_suffix = "json";

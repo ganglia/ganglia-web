@@ -180,7 +180,7 @@ if (isset($title)) {
 //////////////////////////////////////////////////////////////////////////////
 // Check what graph engine we are using
 //////////////////////////////////////////////////////////////////////////////
-switch ( $GLOBALS['graph_engine'] ) {
+switch ( $conf['graph_engine'] ) {
   case "rrdtool":  
     $php_report_file = $graphdir . "/" . $graph . ".php";
     $json_report_file = $graphdir . "/" . $graph . ".json";
@@ -305,7 +305,7 @@ switch ( $GLOBALS['graph_engine'] ) {
   
     $graphite_url = $graphite_url_base . "?width=$width&height=$height&" . $target . "&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000&title=" . urlencode($title . " last " . $range);
     break;
-} // end of switch ( $GLOBALS['graph_engine'])
+} // end of switch ( $conf['graph_engine'])
 
 if ($debug) {
   error_log("Final rrdtool command:  $command");
@@ -322,7 +322,7 @@ if($command || $graphite_url) {
         header ("Content-type: text/html");
         print "<html><body>";
         
-        switch ( $GLOBALS['graph_engine'] ) {  
+        switch ( $conf['graph_engine'] ) {  
           case "rrdtool":
             print htmlentities( $command );
             break;
@@ -333,7 +333,7 @@ if($command || $graphite_url) {
         print "</body></html>";
     } else {
         header ("Content-type: image/png");
-        switch ( $GLOBALS['graph_engine'] ) {  
+        switch ( $conf['graph_engine'] ) {  
           case "rrdtool":
             passthru($command);
             break;

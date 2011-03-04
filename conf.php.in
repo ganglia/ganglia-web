@@ -5,9 +5,9 @@
 #
 include_once "./version.php";
 
-$GLOBALS['ganglia_dir'] = dirname(__FILE__);
-$GLOBALS['views_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
-$GLOBALS['conf_dir'] = $GLOBALS['ganglia_dir'] . '/conf';
+$conf['ganglia_dir'] = dirname(__FILE__);
+$conf['views_dir'] = $conf['ganglia_dir'] . '/conf';
+$conf['conf_dir'] = $conf['ganglia_dir'] . '/conf';
 
 #
 # The name of the directory in "./templates" which contains the
@@ -165,7 +165,7 @@ $conf['strip_domainname'] = false;
 #$conf['optional_graphs'] = array('packet');
 
 # Enable Zoom support on graphs
-$GLOBALS['zoom_support'] = true;
+$conf['zoom_support'] = true;
 
 
 # 
@@ -186,9 +186,9 @@ $conf['time_ranges'] = array(
 $conf['default_time_range'] = 'hour';
 
 # Graph Engine to use
-$GLOBALS['graph_engine'] = "rrdtool";
+$conf['graph_engine'] = "rrdtool";
 
-#$GLOBALS['graph_engine'] = "graphite";
+#$conf['graph_engine'] = "graphite";
 $conf['graphite_url_base'] = "http://127.0.0.1/render";
 $conf['graphite_rrd_dir'] = "/opt/graphite/storage/rrd";
 
@@ -196,7 +196,7 @@ $conf['graphite_rrd_dir'] = "/opt/graphite/storage/rrd";
 # returns every single host and all the metrics. If you have lots of hosts and lots of 
 # checks this may be quite heavy so you may want to cache data
 define("CACHEDATA", 1);
-define("CACHEFILE", $GLOBALS['ganglia_dir'] . "/conf/ganglia_metrics.cache");
+define("CACHEFILE", $conf['ganglia_dir'] . "/conf/ganglia_metrics.cache");
 define("CACHETIME", 1200); // How long to cache the data in seconds
 
 #
