@@ -212,6 +212,7 @@ $data->assign("name", "Avg Utilization (last $range)");
 $data->assign("value", "$cluster_util%");
 
 # Show constant metrics.
+$c_metrics_data = null;
 if (isset($c_metrics) and is_array($c_metrics))
    {
       $c_metrics_data = array();
