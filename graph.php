@@ -94,6 +94,7 @@ switch ($context)
     case "host":
       $rrd_dir = "$rrds/$clustername/$raw_host";
       $rrd_graphite_link = $graphite_rrd_dir . "/" . $clustername . "/" . $host;
+      $title = "";
       if (!$summary)
         $title = $metric_name ;
       break;
