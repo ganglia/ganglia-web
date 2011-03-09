@@ -3,15 +3,14 @@
 //////////////////////////////////////////////////////////////////////////
 // This file generates the Edit Optional Graphs dialog. 
 //////////////////////////////////////////////////////////////////////////
-
 require_once('./conf.php');
 
-$hostname = $_GET['hostname'];
-$clustername = $_GET['clustername'];
+$hostname = isset($_GET['hostname'])  ?  $_GET['hostname']   : "none";
+$clustername = isset($_GET['clustername'])  ? $_GET['clustername'] : "none";
 
-if ( $hostname != "" ) {
+if ( $hostname != "none" ) {
     $filename = "/host_" . $hostname . ".json";
-} else if ( $clustername != "" ) {
+} else if ( $clustername != "none" ) {
     $filename = "/cluster_" . $clustername . ".json";
 }
 
@@ -115,8 +114,8 @@ if ( isset($_GET['action']) ) {
 ?>
 
 <form id=edit_optional_reports_form>
-<input type=hidden name=hostname value=<?php print $_GET['hostname']; ?>>
-<input type=hidden name=clustername value=<?php print $_GET['clustername']; ?>>
+<input type=hidden name=hostname value=<?php print $hostname ?>>
+<input type=hidden name=clustername value=<?php print $clustername; ?>>
 <input type=hidden name=action value=change>
 <table border=1 width=90%>
 <style>
