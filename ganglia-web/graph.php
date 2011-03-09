@@ -190,17 +190,17 @@ switch ( $conf['graph_engine'] ) {
       $graph_function = "graph_${graph}";
       $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
     } else if ( is_file( $json_report_file ) ) {
-      $config = json_decode( file_get_contents( $json_report_file ), TRUE );
+      $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
       
       # We need to add hostname and clustername if it's not specified
-      foreach ( $config['series'] as $index => $item ) {
-        if ( ! isset($config['series'][$index]['hostname'])) {
-          $config['series'][$index]['hostname'] = $raw_host;
-          $config['series'][$index]['clustername'] = $clustername;
+      foreach ( $graph_config['series'] as $index => $item ) {
+        if ( ! isset($graph_config['series'][$index]['hostname'])) {
+          $graph_config['series'][$index]['hostname'] = $raw_host;
+          $graph_config['series'][$index]['clustername'] = $clustername;
         }
       }
       
-      build_rrdtool_args_from_json ( $rrdtool_graph, $config );
+      build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
     }
   
     // We must have a 'series' value, or this is all for naught
@@ -272,20 +272,20 @@ switch ( $conf['graph_engine'] ) {
       $report_definition_file = $ganglia_dir . "/graph.d/" . $report_name . ".json";
       // Check whether report is defined in graph.d directory
       if ( is_file($report_definition_file) ) {
-        $config = json_decode(file_get_contents($report_definition_file), TRUE);
+        $graph_config = json_decode(file_get_contents($report_definition_file), TRUE);
       } else {
         error_log("There is JSON config file specifying $report_name.");
         exit(1);
       }
   
-      if ( isset($config) ) {
-        switch ( $config["report_type"] ) {
+      if ( isset($graph_config) ) {
+        switch ( $graph_config["report_type"] ) {
           case "template":
-            $target = str_replace("HOST_CLUSTER", $host_cluster, $config["graphite"]);
+            $target = str_replace("HOST_CLUSTER", $host_cluster, $graph_config["graphite"]);
             break;
   
           case "standard":
-            $target = build_graphite_series( $config, $host_cluster );
+            $target = build_graphite_series( $graph_config, $host_cluster );
             break;
   
           default:
@@ -293,7 +293,7 @@ switch ( $conf['graph_engine'] ) {
             break;
         }
   
-        $title = $config['title'];
+        $title = $graph_config['title'];
       } else {
         error_log("Configuration file to $report_name exists however it doesn't appear it's a valid JSON file");
         exit(1);
