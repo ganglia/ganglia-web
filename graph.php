@@ -178,29 +178,97 @@ if (isset($title)) {
    $rrdtool_graph['title'] = $title . " last $range";
 }
 
+// Are we generating aggregate graphs
+if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
+    
+    // If graph type is not specified default to line graph
+    if ( isset($_GET["gt"]) && in_array($_GET["gt"], array("stack","line") )  ) 
+        $graph_type = $_GET["gt"];
+    else
+        $graph_type = "line";
+    
+    // If line width not specified default to 2
+    if ( isset($_GET["lw"]) && in_array($_GET["lw"], array("1","2", "3") )  ) 
+        $line_width = $_GET["lw"];
+    else
+        $line_width = "2";
+    
+    // Set up 
+    $graph_config["report_name"] = $metric_name;
+    $graph_config["report_type"] = "standard";
+    $graph_config["title"] = $metric_name;
+
+    // Colors to use
+    $colors = array("128936","FF8000","158499","CC3300","996699","FFAB11","3366CC","01476F");
+    $color_count = sizeof($colors);
+
+    // Load the host cache
+    require_once('./cache.php');
+    
+    $counter = 0;
+
+    // Find matching hosts    
+    foreach ( $_GET['hreg'] as $key => $query ) {
+      foreach ( $index_array['hosts'] as $key => $host_name ) {
+        if ( preg_match("/$query/i", $host_name ) ) {
+          // We can have same hostname in multiple clusters
+          $matches[] = $host_name . "|" . $index_array['cluster'][$host_name]; 
+        }
+      }
+    } 
+
+    $matches_unique = array_unique($matches);
+
+    // Create graph_config series from matched hosts
+    foreach ( $matches_unique as $key => $host_cluster ) {
+      // We need to cycle the available colors
+      $color_index = $counter % $color_count;
+      
+      $out = explode("|", $host_cluster);
+      
+      $host_name = $out[0];
+      $cluster_name = $out[1];
+      
+      $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
+         "metric" => $metric_name,  "color" => $colors[$color_index], "label" => $host_name, "line_width" => $line_width, "type" => $graph_type);
+         $counter++;
+ 
+    }
+    
+    #print "<PRE>"; print_r($graph_config); exit(1);
+ 
+}
 //////////////////////////////////////////////////////////////////////////////
 // Check what graph engine we are using
 //////////////////////////////////////////////////////////////////////////////
 switch ( $conf['graph_engine'] ) {
-  case "rrdtool":  
-    $php_report_file = $graphdir . "/" . $graph . ".php";
-    $json_report_file = $graphdir . "/" . $graph . ".json";
-    if( is_file( $php_report_file ) ) {
-      include_once $php_report_file;
-      $graph_function = "graph_${graph}";
-      $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
-    } else if ( is_file( $json_report_file ) ) {
-      $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
-      
-      # We need to add hostname and clustername if it's not specified
-      foreach ( $graph_config['series'] as $index => $item ) {
-        if ( ! isset($graph_config['series'][$index]['hostname'])) {
-          $graph_config['series'][$index]['hostname'] = $raw_host;
-          $graph_config['series'][$index]['clustername'] = $clustername;
+  case "rrdtool":
+    
+    if ( ! isset($graph_config) ) {
+        $php_report_file = $graphdir . "/" . $graph . ".php";
+        $json_report_file = $graphdir . "/" . $graph . ".json";
+        if( is_file( $php_report_file ) ) {
+          include_once $php_report_file;
+          $graph_function = "graph_${graph}";
+          $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
+        } else if ( is_file( $json_report_file ) ) {
+          $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
+          
+          # We need to add hostname and clustername if it's not specified
+          foreach ( $graph_config['series'] as $index => $item ) {
+            if ( ! isset($graph_config['series'][$index]['hostname'])) {
+              $graph_config['series'][$index]['hostname'] = $raw_host;
+              $graph_config['series'][$index]['clustername'] = $clustername;
+            }
+          }
+          
+          build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
         }
-      }
-      
-      build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
+    
+    } else {
+        
+        build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
+
     }
   
     // We must have a 'series' value, or this is all for naught
