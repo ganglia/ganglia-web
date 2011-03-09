@@ -51,18 +51,18 @@ $size = in_array( $size, $graph_sizes_keys ) ? $size : 'default';
 if ( isset($_GET['height'] ) ) 
   $height = $_GET['height'];
 else 
-  $height  = $graph_sizes[ $size ][ 'height' ];
+  $height  = $conf['graph_sizes'][ $size ][ 'height' ];
 
 if ( isset($_GET['width'] ) ) 
   $width =  $_GET['width'];
 else
-  $width = $graph_sizes[ $size ][ 'width' ];
+  $width = $conf['graph_sizes'][ $size ][ 'width' ];
 
-#$height  = $graph_sizes[ $size ][ 'height' ];
-#$width   = $graph_sizes[ $size ][ 'width' ];
-$fudge_0 = $graph_sizes[ $size ][ 'fudge_0' ];
-$fudge_1 = $graph_sizes[ $size ][ 'fudge_1' ];
-$fudge_2 = $graph_sizes[ $size ][ 'fudge_2' ];
+#$height  = $conf['graph_sizes'][ $size ][ 'height' ];
+#$width   = $conf['graph_sizes'][ $size ][ 'width' ];
+$fudge_0 = $conf['graph_sizes'][ $size ][ 'fudge_0' ];
+$fudge_1 = $conf['graph_sizes'][ $size ][ 'fudge_1' ];
+$fudge_2 = $conf['graph_sizes'][ $size ][ 'fudge_2' ];
 
 ///////////////////////////////////////////////////////////////////////////
 // Set some variables depending on the context. Context is set in
@@ -71,29 +71,29 @@ $fudge_2 = $graph_sizes[ $size ][ 'fudge_2' ];
 switch ($context)
 {
     case "meta":
-      $rrd_dir = "$rrds/__SummaryInfo__";
-      $rrd_graphite_link = "$graphite_rrd_dir/__SummaryInfo__";
+      $rrd_dir = $conf['rrds'] . "/__SummaryInfo__";
+      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/__SummaryInfo__";
       $title = "$self Grid";
       break;
     case "grid":
-      $rrd_dir = "$rrds/$grid/__SummaryInfo__";
-      $rrd_graphite_link = "$graphite_rrd_dir/$grid/__SummaryInfo__";
+      $rrd_dir = $conf['rrds'] . "/$grid/__SummaryInfo__";
+      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/$grid/__SummaryInfo__";
       if (preg_match('/grid/i', $gridname))
           $title  = $gridname;
       else
           $title  = "$gridname Grid";
       break;
     case "cluster":
-      $rrd_dir = "$rrds/$clustername/__SummaryInfo__";
-      $rrd_graphite_link = "$graphite_rrd_dir/$clustername/__SummaryInfo__";
+      $rrd_dir = $conf['rrds'] . "/$clustername/__SummaryInfo__";
+      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/$clustername/__SummaryInfo__";
       if (preg_match('/cluster/i', $clustername))
           $title  = $clustername;
       else
           $title  = "$clustername Cluster";
       break;
     case "host":
-      $rrd_dir = "$rrds/$clustername/$raw_host";
-      $rrd_graphite_link = $graphite_rrd_dir . "/" . $clustername . "/" . $host;
+      $rrd_dir = $conf['rrds'] . "/$clustername/$raw_host";
+      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/" . $clustername . "/" . $host;
       $title = "";
       if (!$summary)
         $title = $metric_name ;
@@ -247,8 +247,8 @@ switch ( $conf['graph_engine'] ) {
     // area
     if ( ! is_link($rrd_graphite_link) ) {
       // Does the directory exist for the cluster. If not create it
-      if ( ! is_dir ($graphite_rrd_dir . "/" . $clustername) )
-        mkdir ( $graphite_rrd_dir . "/" . $clustername );
+      if ( ! is_dir ($conf['graphite_rrd_dir'] . "/" . $clustername) )
+        mkdir ( $conf['graphite_rrd_dir'] . "/" . $clustername );
       symlink($rrd_dir, $rrd_graphite_link);
     }
   
@@ -269,7 +269,7 @@ switch ( $conf['graph_engine'] ) {
   
       $report_name = sanitize($_GET['g']);
   
-      $report_definition_file = $ganglia_dir . "/graph.d/" . $report_name . ".json";
+      $report_definition_file = $conf['ganglia_dir'] . "/graph.d/" . $report_name . ".json";
       // Check whether report is defined in graph.d directory
       if ( is_file($report_definition_file) ) {
         $graph_config = json_decode(file_get_contents($report_definition_file), TRUE);
@@ -304,7 +304,7 @@ switch ( $conf['graph_engine'] ) {
       $title = " ";
     }
   
-    $graphite_url = $graphite_url_base . "?width=$width&height=$height&" . $target . "&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000&title=" . urlencode($title . " last " . $range);
+    $graphite_url = $conf['graphite_url_base'] . "?width=$width&height=$height&" . $target . "&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000&title=" . urlencode($title . " last " . $range);
     break;
 } // end of switch ( $conf['graph_engine'])
 
