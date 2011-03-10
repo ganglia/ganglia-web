@@ -43,6 +43,9 @@ function graph_cpu_report( &$rrdtool_graph )
 
     // RB: Perform some formatting/spacing magic.. tinkered to fit
     //
+    $eol1 = '';
+    $space1 = '';
+    $space2 = '';
     if ($size == 'small') {
        $eol1 = '\\l';
        $space1 = ' ';
