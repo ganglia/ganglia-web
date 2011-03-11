@@ -816,6 +816,7 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
          $graphreport_stats,
          $conf;
   
+  
   if ($strip_domainname)     {
     $hostname = strip_domainname($hostname);
   }
@@ -853,51 +854,61 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   // Loop through all the graph items
   foreach( $graph_config[ 'series' ] as $index => $item ) {
    
-    # Need this when defining graphs that may use same metric names
-    $unique_id = "a" . $index;
-    
-    $rrd_dir = $conf['rrds'] . "/" . $item['clustername'] . "/" . $item['hostname'];
+     $rrd_dir = $conf['rrds'] . "/" . $item['clustername'] . "/" . $item['hostname'];
 
-    $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
-    $metric = sanitize( $item[ 'metric' ] );
-    $series .= " DEF:'$unique_id'='${rrd_dir}/$metric.rrd':'sum':AVERAGE ";
+     $metric = sanitize( $item[ 'metric' ] );
+     
+     $metric_file = $rrd_dir . "/" . $metric . ".rrd";
     
-    // By default graph is a line graph
-   isset( $item['type']) ? $item_type = $item['type'] : $item_type = "line";
-   
-   // TODO sanitize color
-   
-   switch ( $item_type ) {
-      
-      case "line":
-         // Make sure it's a recognized line type
-         isset($item['line_width']) && in_array( $item['line_width'], $line_widths) ? $line_width = $item['line_width'] : $line_width = "1";
-         $series .= "LINE" . $line_width . ":'$unique_id'#${item['color']}:'${label}' ";
-         break;
-      
-      case "stack":
-         // First element in a stack has to be AREA
-         if ( $stack_counter == 0 ) {
-            $series .= "AREA:'$unique_id'#${item['color']}:'${label}' ";
-            $stack_counter++;
-         } else {
-            $series .= "STACK:'$unique_id'#${item['color']}:'${label}' ";
-         }
-         break;
-   }
+     // Make sure metric file exists. Otherwise we'll get a broken graph
+     if ( is_file($metric_file) ) {
+
+       # Need this when defining graphs that may use same metric names
+      $unique_id = "a" . $index;
+     
+       $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
+       $series .= " DEF:'$unique_id'='$metric_file':'sum':AVERAGE ";
+     
+       // By default graph is a line graph
+       isset( $item['type']) ? $item_type = $item['type'] : $item_type = "line";
     
-   if ( $graphreport_stats ) {
-      $series .= "VDEF:${unique_id}_last=${unique_id},LAST "
-              . "VDEF:${unique_id}_min=${unique_id},MINIMUM "
-              . "VDEF:${unique_id}_avg=${unique_id},AVERAGE "
-              . "VDEF:${unique_id}_max=${unique_id},MAXIMUM "
-              . "GPRINT:'${unique_id}_last':'Now\:%5.1lf%s' "
-              . "GPRINT:'${unique_id}_min':'Min\:%5.1lf%s' "
-              . "GPRINT:'${unique_id}_avg':'Avg\:%5.1lf%s' "
-              . "GPRINT:'${unique_id}_max':'Max\:%5.1lf%s\\l' ";
-   }
-  }
+       // TODO sanitize color
+       switch ( $item_type ) {
+       
+         case "line":
+           // Make sure it's a recognized line type
+           isset($item['line_width']) && in_array( $item['line_width'], $line_widths) ? $line_width = $item['line_width'] : $line_width = "1";
+           $series .= "LINE" . $line_width . ":'$unique_id'#${item['color']}:'${label}' ";
+           break;
+       
+         case "stack":
+           // First element in a stack has to be AREA
+           if ( $stack_counter == 0 ) {
+             $series .= "AREA:'$unique_id'#${item['color']}:'${label}' ";
+             $stack_counter++;
+           } else {
+             $series .= "STACK:'$unique_id'#${item['color']}:'${label}' ";
+           }
+           break;
+        } // end of switch ( $item_type )
+     
+        if ( $graphreport_stats ) {
+          $series .= "VDEF:${unique_id}_last=${unique_id},LAST "
+               . "VDEF:${unique_id}_min=${unique_id},MINIMUM "
+               . "VDEF:${unique_id}_avg=${unique_id},AVERAGE "
+               . "VDEF:${unique_id}_max=${unique_id},MAXIMUM "
+               . "GPRINT:'${unique_id}_last':'Now\:%5.1lf%s' "
+               . "GPRINT:'${unique_id}_min':'Min\:%5.1lf%s' "
+               . "GPRINT:'${unique_id}_avg':'Avg\:%5.1lf%s' "
+               . "GPRINT:'${unique_id}_max':'Max\:%5.1lf%s\\l' ";
+        }
+     } // end of if ( is_file($metric_file) ) {
+     
+  } // end of foreach( $graph_config[ 'series' ] as $index => $item )
+
   $rrdtool_graph[ 'series' ] = $series;
+  
+  
   return $rrdtool_graph;
 }
 
