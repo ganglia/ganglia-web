@@ -21,8 +21,8 @@ if ( isset($_GET['host_group'])) {
 ?>
 <form>
   
-  Host Group: <input name="host_group"><br>
-  Metric: <input name="metric_name"><br>
+  Host Regular expression e.g. web-[0,4], web or (web|db): <input name="host_reg" <?php isset($_GET['host_reg']) ? print "value='" . $_GET['host_reg'] . "'" : print ""; ?>><br>
+  Metric (not a report e.g. load_one, cpu_system): <input name="metric_name" <?php isset($_GET['metric_name']) ? print "value='" . $_GET['metric_name'] . "'" : print ""; ?>><br>
   Graph Type:  <input type="radio" name="graph_type" value="line" checked>Line</input>
     <input type="radio" name="graph_type" value="stack">Stacked</input><br>
   <input type=submit>
@@ -35,37 +35,12 @@ if ( isset($_GET['host_group'])) {
 if ( isset($_GET['metric_name']) )
   $metric_name = $_GET['metric_name'];
 
-$colors = array("128936","FF8000","158499","CC3300","996699","FFAB11","3366CC","01476F");
-$color_count = sizeof($colors);
-
-$counter = 0;
-
 isset ($_GET['graph_type']) ? $graph_type = $_GET['graph_type'] : $graph_type = "line";
 
 // Show graph only if host_group is set
-if ( isset($_GET['host_group'])) {
-
-  $graph = array ("report_name" => $metric_name, "report_type" => "standard", "title" => $metric_name . " Report", "vertical_label" => " ");
-
-  $query = $_GET['host_group'];
-
-  foreach ( $index_array['hosts'] as $key => $host_name ) {
-    if ( preg_match("/$query/i", $host_name ) ) {
-      $cluster_name = $index_array['cluster'][$host_name];
-
-      // We need to cycle the available colors
-      $color_index = $counter % $color_count; 
-
-      $graph['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
-	"metric" => $metric_name,  "color" => $colors[$color_index], "label" => $host_name, "line_width" => "2", "type" => $graph_type);
-      $counter++;
-      
-    }
-  }
+if ( isset($_GET['host_reg'])) {
   
-  $json = urlencode(serialize($graph));
-  
-  print "<img src=graph.php?r=hour&z=xlarge&m=" . $_GET['metric_name'] . "&graph_config=" . $json . ">";
+  print "<img src=graph.php?r=hour&z=xlarge&m=" . $_GET['metric_name'] . "&aggregate=1&hreg[]=" . $_GET['host_reg'] . "&gtype=" . $_GET['graph_type'] .  ">";
 
 }
 
