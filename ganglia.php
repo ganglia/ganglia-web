@@ -302,14 +302,12 @@ function end_all ($parser, $tagname)
 
 function Gmetad ()
 {
-   global $error, $parsetime, $clustername, $hostname, $context;
-   # From conf.php:
-   global $ganglia_ip, $ganglia_port;
-
+   global $conf, $error, $parsetime, $clustername, $hostname, $context;
+   
    # Parameters are optionalshow
    # Defaults...
-   $ip = $ganglia_ip;
-   $port = $ganglia_port;
+   $ip = $conf['ganglia_ip'];
+   $port = $conf['ganglia_port'];
    $timeout = 3.0;
    $errstr = "";
    $errno  = "";
