@@ -311,7 +311,8 @@ function Gmetad ()
    $timeout = 3.0;
    $errstr = "";
    $errno  = "";
-
+   
+   //TODO: all calls to this function (in get_ganglia.php) supply 2 args.  Why do we make that optional?
    switch( func_num_args() )
       {
          case 2:
