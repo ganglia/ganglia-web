@@ -142,14 +142,12 @@ $(function(){
 	  <h1>Search</h1>
   </div>
   <div data-role="content">
-    <form method="post" action="/search/">
     <p>
       <label>
 	Search for host or a metric: <br />
 	<input type="text" name="q" id="search-field-q" on size=40 />
       </label>
     </p>
-    </form>
   </div>
   </div><!-- /content -->
 </div><!-- /page -->
