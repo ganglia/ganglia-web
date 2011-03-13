@@ -1,6 +1,6 @@
 <?php
-
-include_once("./conf.php");
+error_log('views mob');
+include_once("./eval_config.php");
 include_once("./functions.php");
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 // Create new view
@@ -203,7 +203,7 @@ $(function(){
     <form id=view_timerange_form>
     <input type="hidden" name=view_name id=view_name value="">
 <?php
-   $context_ranges = array_keys( $time_ranges );
+   $context_ranges = array_keys( $conf['time_ranges'] );
    if (isset($jobrange))
       $context_ranges[]="job";
    if (isset($cs) or isset($ce))
@@ -257,7 +257,7 @@ $(function(){
 		<ul>
 <?php
 
-   $my_ranges = array_keys( $time_ranges );   
+   $my_ranges = array_keys( $conf['time_ranges'] );   
 
    for ( $i = 0 ; $i < 5 ; $i++ ) {
       $context_ranges[] = $my_ranges[$i]; 
