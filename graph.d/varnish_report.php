@@ -4,17 +4,12 @@
 /* Pass in by reference! */
 function graph_varnish_report ( &$rrdtool_graph ) {
 
-   global $context, 
-           $cpu_idle_color,
-           $cpu_nice_color, 
-           $cpu_system_color, 
-           $cpu_user_color,
-           $cpu_wio_color,
-	   $mem_swapped_color,
-           $hostname,
-           $range,
-           $rrd_dir,
-           $size;
+   global $conf,
+          $context, 
+          $hostname,
+          $range,
+          $rrd_dir,
+          $size;
 
     $title = 'Varnish Report';
     if ($context != 'host') {
@@ -29,7 +24,7 @@ function graph_varnish_report ( &$rrdtool_graph ) {
     $rrdtool_graph['extras']         = '--rigid';
     $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
 
-    if( $graphreport_stats ) {
+    if( $conf['graphreport_stats'] ) {
         $rrdtool_graph['height'] += ($size == 'medium') ? 16 : 0;
         $rmspace = '\\g';
     } else {
@@ -50,12 +45,12 @@ function graph_varnish_report ( &$rrdtool_graph ) {
                    ."DEF:'varnish_500'='${rrd_dir}/varnish_500.rrd':'sum':AVERAGE "
                    ."CDEF:'cvarnish_500'=varnish_500,num_nodes,/ "
                    ."DEF:'varnish_other'='${rrd_dir}/varnish_other.rrd':'sum':AVERAGE "
-                   ."AREA:'varnish_200'#$cpu_user_color:'200' "
-                   ."STACK:'varnish_300'#$cpu_nice_color:'300' "
-                   ."STACK:'varnish_400'#$cpu_system_color:'400' "
-                   ."STACK:'varnish_500'#$cpu_wio_color:'500' "
-                   ."STACK:'varnish_other'#$cpu_idle_color:'other' "
-		   ."LINE2:'varnish_unique_users'#$mem_swapped_color:'Unique IPs' ";
+                   ."AREA:'varnish_200'#${conf['cpu_user_color']}:'200' "
+                   ."STACK:'varnish_300'#${conf['cpu_nice_color']}:'300' "
+                   ."STACK:'varnish_400'#${conf['cpu_system_color']}:'400' "
+                   ."STACK:'varnish_500'#${conf['cpu_wio_color']}:'500' "
+                   ."STACK:'varnish_other'#${conf['cpu_idle_color']}:'other' "
+		   ."LINE2:'varnish_unique_users'#${conf['mem_swapped_color']}:'Unique IPs' ";
 
                 }
      else
@@ -64,10 +59,10 @@ function graph_varnish_report ( &$rrdtool_graph ) {
                    ."DEF:'varnish_300'='${rrd_dir}/varnish_300.rrd':'sum':AVERAGE "
                    ."DEF:'varnish_400'='${rrd_dir}/varnish_400.rrd':'sum':AVERAGE "
                    ."DEF:'varnish_500'='${rrd_dir}/varnish_500.rrd':'sum':AVERAGE "
-                   ."AREA:'varnish_200'#$cpu_user_color:'200' "
-                   ."STACK:'varnish_300'#$cpu_nice_color:'300' "
-                   ."STACK:'varnish_400'#$cpu_system_color:'400' "
-                   ."STACK:'varnish_500'#$cpu_wio_color:'500' ";
+                   ."AREA:'varnish_200'#${conf['cpu_user_color']}:'200' "
+                   ."STACK:'varnish_300'#${conf['cpu_nice_color']}:'300' "
+                   ."STACK:'varnish_400'#${conf['cpu_system_color']}:'400' "
+                   ."STACK:'varnish_500'#${conf['cpu_wio_color']}:'500' ";
                 }
 
      #################################################################################
@@ -76,7 +71,7 @@ function graph_varnish_report ( &$rrdtool_graph ) {
      #################################################################################
      if ( !file_exists("$rrd_dir/varnish_200.rrd")) {
 		$rrdtool_graph['series'] =  "DEF:'cpu_num'='${rrd_dir}/cpu_num.rrd':'sum':AVERAGE "
-		   ."LINE2:'cpu_num'#$mem_swapped_color:'Varnish metrics not collected' ";
+		   ."LINE2:'cpu_num'#${conf['mem_swapped_color']}:'Varnish metrics not collected' ";
      }
 
 return $rrdtool_graph;
