@@ -6,8 +6,8 @@
 /* Pass in by reference! */
 function graph_metric ( &$rrdtool_graph ) {
 
-    global $context,
-           $default_metric_color,
+    global $conf,
+           $context,
            $hostname,
            $jobstart,
            $load_color,
@@ -21,11 +21,9 @@ function graph_metric ( &$rrdtool_graph ) {
            $size,
            $summary,
            $value,
-           $vlabel,
-           $strip_domainname,
-           $graphreport_stats;
+           $vlabel;
 
-    if ($strip_domainname) {
+    if ($conf['strip_domainname']) {
         $hostname = strip_domainname($hostname);
     }
 
@@ -33,9 +31,9 @@ function graph_metric ( &$rrdtool_graph ) {
     $rrdtool_graph['extras'] = '';
 
     if ($size == 'medium') {
-       $rrdtool_graph['extras']        .= ($graphreport_stats == true) ? ' --font LEGEND:7' : '';
+       $rrdtool_graph['extras']        .= ($conf['graphreport_stats'] == true) ? ' --font LEGEND:7' : '';
     } else if ($size == 'large') {
-       $rrdtool_graph['extras']        .= ($graphreport_stats == true) ? ' --font LEGEND:10' : '';
+       $rrdtool_graph['extras']        .= ($conf['graphreport_stats'] == true) ? ' --font LEGEND:10' : '';
     }
 
     switch ($context) {
@@ -119,9 +117,9 @@ function graph_metric ( &$rrdtool_graph ) {
 
     //# the actual graph...
     $series  = "DEF:'sum'='$rrd_dir/$metricname.rrd:sum':AVERAGE ";
-    $series .= "AREA:'sum'#$default_metric_color:'$subtitle_one\\n'";
+    $series .= "AREA:'sum'#${conf['default_metric_color']}:'$subtitle_one\\n'";
 
-    if ($graphreport_stats == false) {
+    if ($conf['graphreport_stats'] == false) {
         $series .= ":STACK: COMMENT:'$subtitle_two\\l'";
     }
     $series .= " ";
@@ -132,7 +130,7 @@ function graph_metric ( &$rrdtool_graph ) {
         $eol2        = '';
     }
 
-    if($graphreport_stats == true) {
+    if($conf['graphreport_stats'] == true) {
 
         $series .= "CDEF:sum_pos=sum,0,LT,0,sum,IF "
                 . "VDEF:sum_last=sum_pos,LAST "
@@ -146,7 +144,7 @@ function graph_metric ( &$rrdtool_graph ) {
     }
 
     if ($jobstart) {
-        $series .= "VRULE:$jobstart#$jobstart_color ";
+        $series .= "VRULE:$jobstart#${conf['jobstart_color']} ";
     }
 
     $rrdtool_graph['series'] = $series;
