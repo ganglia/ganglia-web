@@ -132,7 +132,7 @@ else if($clustername and $hostname)
    }
 
 if (!$range)
-    $range = "${conf['default_time_range']}";
+    $range = $conf['default_time_range'];
 
 $end = "N";
 
@@ -149,7 +149,7 @@ if ($cs or $ce)
     $range = "custom";
 
 if (!$metricname)
-    $metricname = "${conf['default_metric']}";
+    $metricname = $conf['default_metric'];
 
 if (!$sort)
     $sort = "by name";
