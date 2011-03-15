@@ -1,16 +1,110 @@
-Author: Vladimir Vuksan
-Copyright 2010 Vladimir Vuksan 
+This is an attempt to make the Ganglia UI more usable. You should be able to drop this into
+your $HTTPD_ROOT/ganglia then run make to generate conf.php.
 
-This is my collection of Ganglia scripts and add-ons. There is documentation
-for most of the scripts at http://vuksan.com/linux/ganglia/ 
+Please modify Makefile to point the directory where you installed the code. Also note
+that Makefile will create directories /var/lib/ganglia/rrds and /var/lib/ganglia/dwoo
+which are required for UI to function.
 
-All the scripts are licensed under the Apache License, Version 2.0 (the "License") 
-unless otherwise noted; you may not use this file except in compliance with the License. 
-You may obtain a copy of the License at 
+New features
+============
 
-http://www.apache.org/licenses/LICENSE-2.0 
+Views
+=====
 
-Unless required by applicable law or agreed to in writing, software distributed under the 
-License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
-either express or implied. See the License for the specific language governing permissions 
-and limitations under the License. 
+Views are an arbitrary collection of hostname/metric graphs. They are defined using JSON files and stored in the
+/conf directory. View file names have to start with view ie.
+
+view_web_servers_vitals.json
+
+There are two types of views, standard (default) and regex views. 
+
+Standard views are defined as follows
+
+{"view_name":"web_servers_vitals",
+  "items": [
+    { "hostname":"web1", "metric":"disk_free"},
+    { "hostname":"web2", "graph":"cpu_report"}
+          ]
+}
+
+Regex views allow using regex to match hostnames (need to specify view_type regex) e.g.
+
+{"view_name":"web_servers_wiki",
+ "view_type":"regex",
+  "items": [
+    { "hostname":"web-wiki.*", "metric":"disk_free"},
+    { "hostname":".*wiki", "graph":"cpu_report"}
+          ]
+}
+
+Obviously you can write a regex that matches a single host. 
+
+Easy Graph Aggregation
+======================
+
+You can also define add graphs created through easy graph aggregation by specifying
+"aggregate_graph": true then specifying all the regex rules to match host_regexes.
+For example this is one example. Save it as view_myview.json and put in the conf 
+directory.
+
+{
+ "view_name":"myview",
+ "items":[
+  { "hostname":"web01.domain.com","graph":"cpu_report"},
+  { "aggregate_graph":"true",
+      "host_regex":[ 
+        {"regex":"web-0[1-6]"},
+        {"regex":"web-2[3-6]"}
+      ],
+      "metric":"load_one",
+      "graph_type":"line",
+      "description":"Prod Web Servers load1"
+  }
+ ],
+ "view_type":"standard"
+}
+
+
+Auto Rotation
+=============
+
+Automatically rotate view graphs every 30 seconds with hour, day, week and month overview for each metric
+on a single page. It will rotate until page closed. 
+
+Optional Graphs
+===============
+
+Ability to define optional graphs that are show at the top of the page for any host.
+Those are defined using overrides stored in $GANGLIA_DIR/conf directory. You need
+to make sure that directory is writeable by the Apache/Web user.
+
+This should work like the normal Ganglia web UI. The difference is that
+you need to make the conf/ directory writeable by the Apache user.
+
+Search
+======
+
+You can search for a metric or a host in a live manner. You should be able to click on the
+host or metric in the search and 
+
+Installation notes
+==================
+
+IMPORTANT:
+You will need PHP JSON extension. It comes with PHP 5.2+. If you are on 5.1
+use 
+
+pecl install json
+
+pecl is part of php-pear package on RHEL/CentOS. Make sure you have 
+
+# cat /etc/php.d/json.ini 
+extension=json.so
+
+On RHEL/CentOS 4, you will also need phpize which comes with the php-devel package.
+
+BUGS
+====
+
+In the search window when you click on a metric it should actually jump to the metric once the
+page is opened. That doesn't work. If you just press enter in the Location bar it does jump.
