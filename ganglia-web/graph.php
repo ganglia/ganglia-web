@@ -1,5 +1,5 @@
 <?php
-/* $Id: graph.php 2469 2011-02-03 01:56:28Z bernardli $ */
+/* $Id: graph.php 2510 2011-03-15 01:12:34Z vvuksan $ */
 include_once "./eval_config.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -196,7 +196,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     // Set up 
     $graph_config["report_name"] = $metric_name;
     $graph_config["report_type"] = "standard";
-    $graph_config["title"] = $metric_name;
+    $graph_config["title"] = $metric_name . " last " . $range;
 
     // Colors to use
     $colors = array("128936","FF8000","158499","CC3300","996699","FFAB11","3366CC","01476F");
