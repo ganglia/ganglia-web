@@ -163,7 +163,7 @@ if ($context == "cluster") {
     }
 }
 
-// temporary step until all scripts expect $user.
+// TODO: temporary step until all scripts expect $user.
 extract( $user );
 
 # A hack for pre-2.5.0 ganglia data sources.
