@@ -55,21 +55,22 @@ else if (isset($_GET['aggregate']) )
   $description = "Aggregate graph";
 else
   $description = "Unknown";
+
+// Skip printing the 
+if ( ! isset($_GET['aggregate'] )  ) {
 ?>
-<b>Host/Cluster/Aggregate: </b><?php print $description ?>&nbsp;<b>Metric/Graph: </b><?php if (isset($_GET['g'])) echo $_GET['g']; else echo $_GET['m']; ?>
-<br />
-<img src="graph.php?r=hour&z=<?php print $largesize . $query_string ?>">
-<img src="graph.php?r=day&z=<?php print $largesize . $query_string ?>">
-<p />
+<b>Host/Cluster/Aggregate: </b><?php print $description ?>&nbsp;<b>Metric/Graph: </b><?php if (isset($_GET['g'])) echo $_GET['g']; else echo $_GET['m']; ?><br />
+<?php
+}
 
-<img src="graph.php?r=week&z=<?php print $largesize . $query_string ?>">
-<img src="graph.php?r=month&z=<?php print $largesize . $query_string ?>">
+include_once "./eval_config.php";
 
-<!--- Scale the yearly image to 100% width --->
+foreach ( $conf['time_ranges'] as $key => $value ) {
 
-<img width=100% src="graph.php?r=year&z=<?php print $xlargesize . $query_string ?>">
+  print '<img src="graph.php?r=' . $key . '&z=' . $largesize . $query_string . '">';
 
-
+}
+?>
 
 </body>
 </html>
