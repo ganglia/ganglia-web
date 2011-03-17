@@ -1,5 +1,5 @@
 <?php
-error_log('cache');
+
 include_once("./eval_conf.php");
 
 $debug = 0;
