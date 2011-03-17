@@ -715,7 +715,7 @@ function get_available_views() {
 // size information, time ranges etc.
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function get_view_graph_elements($view) {
-
+  global $conf;
   require("./cache.php");
 
   $view_elements = array();
