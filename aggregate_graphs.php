@@ -1,50 +1,53 @@
-<html><head>
-<script TYPE="text/javascript" SRC="js/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.8.5.custom.min.js"></script>
-<script type="text/javascript" src="js/jquery.liveSearch.js"></script>
-<script type="text/javascript" src="js/ganglia.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.8.5.custom.css" rel="stylesheet" />
-<link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
-<LINK rel="stylesheet" href="./styles.css" type="text/css">
-</head>
-<body>
-<?php
-
-if ( isset($_GET['host_group'])) {
-
-  require_once('./conf.php');
-  // Load the metric caching code
+<style>
+#aggregate_graph_table_form {
+   font-size: 12px;
+}
+</style>
+<script>
+function createAggregateGraph() {
+  $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
+  $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1" , function(data) {
+    $("#aggregate_graph_display").html(data);
+  });
+  return false;
+}
+var availableMetrics = [ <?php
   require_once('./cache.php');
+  foreach ( $index_array['metrics'] as $key => $value)
+    $metrics[] = "'" . $key . "'";
 
-}
+  print join(',', $metrics);
+  ?>
+];
 
-?>
-<form>
-  
-  Host Regular expression e.g. web-[0,4], web or (web|db): <input name="host_reg" <?php isset($_GET['host_reg']) ? print "value='" . $_GET['host_reg'] . "'" : print ""; ?>><br>
-  Metric (not a report e.g. load_one, cpu_system): <input name="metric_name" <?php isset($_GET['metric_name']) ? print "value='" . $_GET['metric_name'] . "'" : print ""; ?>><br>
-  Graph Type:  <input type="radio" name="graph_type" value="line" checked>Line</input>
-    <input type="radio" name="graph_type" value="stack">Stacked</input><br>
-  <input type=submit>
-  <p>
-  
+$(function() {
+  $( "#metric_chooser" ).autocomplete({
+	source: availableMetrics
+  });
+});
+</script>
+<div id="aggregate_graph_header">
+<h2>Create aggregate graphs</h2>
+
+<form id="aggregate_graph_form">
+<table id="aggregate_graph_table_form">
+<tr>
+<td>Host Regular expression e.g. web-[0,4], web or (web|db):</td>
+<td colspan=2><input name="hreg[]" size=60></td>
+<tr>
+<tr><td>Metric (not a report e.g. load_one, cpu_system):</td>
+<td colspan=2><input name="m" id="metric_chooser"></td>
+</tr>
+<tr>
+<td>Graph Type:</td><td>
+<div id="graph_type_menu"><input type="radio" name="gtype" value="line" checked>Line</input>
+<input type="radio" name="gtype" value="stack">Stacked</input></div></td>
+<td>
+<input type=submit onclick="createAggregateGraph(); return false" value="Create Graph"></td>
+</tr>
+</table>
 </form>
+</div>
+<div id="aggregate_graph_display">
 
-<?php
-
-if ( isset($_GET['metric_name']) )
-  $metric_name = $_GET['metric_name'];
-
-isset ($_GET['graph_type']) ? $graph_type = $_GET['graph_type'] : $graph_type = "line";
-
-// Show graph only if host_group is set
-if ( isset($_GET['host_reg'])) {
-  
-  print "<img src=graph.php?r=hour&z=xlarge&m=" . $_GET['metric_name'] . "&aggregate=1&hreg[]=" . $_GET['host_reg'] . "&gtype=" . $_GET['graph_type'] .  ">";
-
-}
-
-?>
-
-</body>
-</html>
+</div>
