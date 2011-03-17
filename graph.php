@@ -1,6 +1,6 @@
 <?php
 /* $Id: graph.php 2510 2011-03-15 01:12:34Z vvuksan $ */
-include_once "./eval_config.php";
+include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
 
