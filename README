@@ -5,6 +5,22 @@ Please modify Makefile to point the directory where you installed the code. Also
 that Makefile will create directories /var/lib/ganglia/rrds and /var/lib/ganglia/dwoo
 which are required for UI to function.
 
+IMPORTANT
+=========
+
+Make file will create a file called conf_default.php. These are default settings. If you 
+would like to override any of the $conf settings put them in conf.php file ie. my conf.php
+looks like this
+
+<?php
+
+$conf['graphreport_stats'] = false;
+
+?>
+
+That way upgrades are much simpler and we can add/change configuration options with as 
+little impact as possible.
+
 New features
 ============
 
