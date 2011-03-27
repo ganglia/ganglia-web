@@ -1,5 +1,5 @@
 <?php
-# $Id: conf.php.in 2476 2011-02-15 03:06:33Z vvuksan $
+# $Id: conf_default.php.in 2535 2011-03-26 19:14:06Z vvuksan $
 #
 # Gmetad-webfrontend version. Used to check for updates.
 #

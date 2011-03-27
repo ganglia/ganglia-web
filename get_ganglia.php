@@ -1,5 +1,5 @@
 <?php
-# $Id: get_ganglia.php 589 2005-10-10 07:42:26Z knobi1 $
+# $Id: get_ganglia.php 2510 2011-03-15 01:12:34Z vvuksan $
 # Retrieves and parses the XML output from gmond. Results stored
 # in global variables: $clusters, $hosts, $hosts_down, $metrics.
 # Assumes you have already called get_context.php.

@@ -1,5 +1,5 @@
  <?php
- /* $Id: cluster_view.php 2476 2011-02-15 03:06:33Z vvuksan $ */
+ /* $Id: cluster_view.php 2535 2011-03-26 19:14:06Z vvuksan $ */
 $tpl = new Dwoo_Template_File( template("cluster_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("extra", template("cluster_extra.tpl"));
