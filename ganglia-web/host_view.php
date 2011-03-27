@@ -1,5 +1,5 @@
 <?php
-/* $Id: host_view.php 2476 2011-02-15 03:06:33Z vvuksan $ */
+/* $Id: host_view.php 2510 2011-03-15 01:12:34Z vvuksan $ */
 
 $tpl = new Dwoo_Template_File( template("host_view.tpl") );
 $data = new Dwoo_Data();

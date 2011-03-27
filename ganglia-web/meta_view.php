@@ -1,5 +1,5 @@
 <?php
-/* $Id: meta_view.php 2371 2010-11-29 17:42:15Z vvuksan $ */
+/* $Id: meta_view.php 2510 2011-03-15 01:12:34Z vvuksan $ */
 $tpl = new Dwoo_Template_File( template("meta_view.tpl") );
 $data = new Dwoo_Data();
 
