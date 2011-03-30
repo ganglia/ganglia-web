@@ -1,13 +1,13 @@
 <?php
-# $Id: conf_default.php.in 2535 2011-03-26 19:14:06Z vvuksan $
+# $Id: conf_default.php.in 2545 2011-03-30 02:16:47Z vvuksan $
 #
 # Gmetad-webfrontend version. Used to check for updates.
 #
-include_once "./version.php";
-
 $conf['ganglia_dir'] = dirname(__FILE__);
 $conf['views_dir'] = $conf['ganglia_dir'] . '/conf';
 $conf['conf_dir'] = $conf['ganglia_dir'] . '/conf';
+
+include_once $conf['ganglia_dir'] . "/version.php";
 
 #
 # The name of the directory in "./templates" which contains the
