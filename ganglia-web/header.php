@@ -1,5 +1,5 @@
 <?php
-/* $Id: header.php 2540 2011-03-28 19:54:28Z vvuksan $ */
+/* $Id: header.php 2548 2011-04-06 18:51:07Z vvuksan $ */
 
 # Check if this context is private.
 include_once "./auth.php";
@@ -340,7 +340,7 @@ if ($context == "meta" or $context == "cluster")
 	    $checked = "checked=\"checked\"";
 	  else
 	    $checked = "";
-	  $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-$url\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-$url\">$v</label>";
+	  $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
 
       }
 
