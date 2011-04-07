@@ -1,0 +1,84 @@
+*** graphite-web-0.9.8/webapp/graphite/render/graphTemplates.conf	2009-11-16 13:45:35.000000000 -0500
+--- graphite-web-0.9.8.patched/webapp/graphite/render/graphTemplates.conf	2011-04-04 22:16:34.000000000 -0400
+***************
+*** 1,13 ****
+  [default]
+! background = black
+! foreground = white
+  majorLine = white
+  minorLine = grey
+- lineColors = blue,green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose
+  fontName = Sans
+  fontSize = 10
+  fontBold = False
+  fontItalic = False
+  
+  [noc]
+  background = black
+--- 1,14 ----
+  [default]
+! background = white
+! foreground = black
+  majorLine = white
+  minorLine = grey
+  fontName = Sans
++ lineColors = green,red,purple,brown,yellow,aqua,grey,magenta,pink,gold,rose
+  fontSize = 10
+  fontBold = False
+  fontItalic = False
++ lineWidth = .2 
+  
+  [noc]
+  background = black
+*************** foreground = black
+*** 36,38 ****
+--- 37,46 ----
+  majorLine = grey
+  minorLine = rose
+  lineColors = 00ff00aa,ff000077,00337799
++ 
++ [imstor]
++ background = white
++ foreground = black
++ majorLine = white
++ minorLine = grey
++ lineColors = 0192B5
+
+*** graphite-web-0.9.8/webapp/graphite/storage.py	2011-04-01 15:48:43.000000000 -0400
+--- graphite-web-0.9.8.patched/webapp/graphite/storage.py	2011-04-04 22:18:19.000000000 -0400
+*************** class RRDFile(Branch):
+*** 311,317 ****
+    def getDataSources(self):
+      try:
+        info = rrdtool.info(self.fs_path)
+!       return [RRDDataSource(self, source) for source in info['ds']]
+      except:
+        raise
+        return []
+--- 311,318 ----
+    def getDataSources(self):
+      try:
+        info = rrdtool.info(self.fs_path)
+!       #return [RRDDataSource(self, source) for source in info['ds']]
+!       return [RRDDataSource(self, source) for source in ["sum"]]
+      except:
+        raise
+        return []
+*************** class RRDDataSource(Leaf):
+*** 323,329 ****
+      self.name = name
+      self.fs_path = rrd_file.fs_path
+      self.metric_path = rrd_file.metric_path + '.' + name
+!     self.real_metric = metric_path
+  
+    def fetch(self, startTime, endTime):
+      startString = time.strftime("%H:%M_%Y%m%d", time.localtime(startTime))
+--- 324,331 ----
+      self.name = name
+      self.fs_path = rrd_file.fs_path
+      self.metric_path = rrd_file.metric_path + '.' + name
+!     self.real_metric = str(self.metric_path)
+! 
+  
+    def fetch(self, startTime, endTime):
+      startString = time.strftime("%H:%M_%Y%m%d", time.localtime(startTime))
