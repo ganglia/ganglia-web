@@ -37,13 +37,4 @@ if( isset( $conf['rrdcached_socket'] ) )
         $rrd_options .= " --daemon ${conf['rrdcached_socket']}";
     }
 }
-
-if( isset( $conf['slope_mode'] ) )
-{
-    if($conf['slope_mode'] )
-    {
-        $rrd_options .= " --slope-mode";
-    }
-}
-
 ?>
