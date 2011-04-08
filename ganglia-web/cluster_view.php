@@ -1,5 +1,5 @@
  <?php
- /* $Id: cluster_view.php 2544 2011-03-30 01:34:28Z vvuksan $ */
+ /* $Id: cluster_view.php 2551 2011-04-08 01:22:23Z vvuksan $ */
 $tpl = new Dwoo_Template_File( template("cluster_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("extra", template("cluster_extra.tpl"));
@@ -75,7 +75,7 @@ if ( is_file($conf['conf_dir'] . "/default.json") ) {
   $default_reports = array_merge($default_reports,json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), TRUE));
 }
 
-$cluster_file = $conf['conf_dir'] . "/cluster_" . $clustername . ".json";
+$cluster_file = $conf['conf_dir'] . "/cluster_" . str_replace(" ", "_", $clustername) . ".json";
 $override_reports = array("included_reports" => array(), "excluded_reports" => array());
 if ( is_file($cluster_file) ) {
   $override_reports = array_merge($override_reports, json_decode(file_get_contents($cluster_file), TRUE));
