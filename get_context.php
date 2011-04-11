@@ -1,5 +1,5 @@
 <?php
-/* $Id: get_context.php 2535 2011-03-26 19:14:06Z vvuksan $ */
+/* $Id: get_context.php 2559 2011-04-11 22:01:34Z bernardli $ */
 
 include_once "./functions.php";
 
@@ -148,9 +148,9 @@ $end = "N";
 if( $user['range'] == 'job' && isSet( $user['jobrange'] ) ) {
     $start = $user['jobrange'];
 } else if( isSet( $conf['time_ranges'][ $user['range'] ] ) ) {
-    $start = $conf['time_ranges'][ $user['range'] ] * -1;
+    $start = $conf['time_ranges'][ $user['range'] ] * -1 . "s";
 } else {
-    $start = $conf['time_ranges'][ $conf['default_time_range'] ] * -1;
+    $start = $conf['time_ranges'][ $conf['default_time_range'] ] * -1 . "s";
 }
 
 if ($user['cs'] or $user['ce'])
