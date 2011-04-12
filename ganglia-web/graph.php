@@ -1,5 +1,5 @@
 <?php
-/* $Id: graph.php 2564 2011-04-12 01:09:33Z vvuksan $ */
+/* $Id: graph.php 2566 2011-04-12 01:35:25Z vvuksan $ */
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -411,7 +411,7 @@ if ( $user['json_output'] || $user['csv_output'] ) {
   $rrdtool_graph_args = "";
 
   // First find RRDtool DEFs by parsing $rrdtool_graph['series']
-  preg_match_all("| DEF:(.*):AVERAGE|U", $rrdtool_graph['series'], $matches);
+  preg_match_all("| DEF:(.*):AVERAGE|U", " " . $rrdtool_graph['series'], $matches);
 
   foreach ( $matches[0] as $key => $value ) {
     if ( preg_match("/(DEF:\')(.*)(\'=\')(.*)\/(.*)\/(.*)\/(.*)(\.rrd)/", $value, $out ) ) {
