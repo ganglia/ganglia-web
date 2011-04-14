@@ -1,4 +1,12 @@
 <?php
+
+/*
+Levels of access control:
+disable all auth, via config.  (behind firewall, everybody can do everything)
+enable auth, subject to config rules
+'edit' needs to check for writeability of data directory.  error log if edit is allowed but we're unable to due to fs problems.
+*/
+
 require_once 'lib/GangliaAcl.php';
 require_once 'lib/GangliaAuth.php';
 
