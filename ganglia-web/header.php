@@ -457,6 +457,9 @@ if ( $context == "cluster" ) {
 } else
   $data->assign("additional_filter_options", '');
 
+$username = sanitize( GangliaAuth::getInstance()->getUser() );
+$data->assign('username', $username);
+
 # Make sure that no data is cached..
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    # Date in the past
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modified

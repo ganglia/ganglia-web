@@ -1,4 +1,59 @@
 <?php
+require_once 'lib/GangliaAcl.php';
+require_once 'lib/GangliaAuth.php';
+
+$acl = GangliaAcl::getInstance();
+
+// define roles for all users
+// specify the user, then the groups they belong to (if any)
+// you can use GangliaAcl::ADMIN to grant all privileges, or make up your own groups using $acl->addRole('group-name')
+$acl->addRole('alex',GangliaAcl::ADMIN);
+
+// if you want per-cluster restrictions, define them like this
+$acl->addResource('cluster1',GangliaAcl::ALL);
+$acl->allow(GangliaAcl::ADMIN,'cluster1','edit');
+
+
+$acl->addPrivateCluster('private-cluster');
+
+/**
+ * Check if current user has a privilege (view, edit, etc) on a resource.
+ * If resource is unspecified, we assume GangliaAcl::ALL.
+ *
+ * Examples
+ *   checkAccess( 'edit' ); // user has global edit?
+ *   checkAccess( 'view' ); // user has global view?
+ *   checkAccess( 'edit', 'cluster1' ); // user has edit privilege on cluster1?
+ *   checkAccess( 'view', 'cluster1' ); // user has view privilege on cluster1?
+ */
+function checkAccess( $privilege, $resource=GangliaAcl::ALL ) {
+  $acl = GangliaAcl::getInstance();
+  $auth = GangliaAuth::getInstance();
+  
+  if(!$auth->isAuthenticated()) {
+    $user = GangliaAcl::GUEST;
+  } else {
+    $user = $auth->getUser();
+    $group = $auth->getGroup();
+  }
+  
+  if(!$acl->has($resource)) {
+    throw new Exception("Unknown resource '$resource'.");
+  }
+  if($acl->hasRole($user)) {
+    return (bool) $acl->isAllowed($user, $resource, $privilege);
+  }
+  if($acl->hasRole($group)) {
+    return (bool) $acl->isAllowed($group, $resource, $privilege);
+  }
+  return false;
+}
+
+// echo "Edit:".checkAccess( 'edit' );
+// echo "View:".checkAccess( 'view' );
+// echo "View private:".checkAccess( 'view', 'private-cluster' );
+// echo "Edit private:".checkAccess( 'edit', 'private-cluster' );
+
 #
 # Functions to authenticate users with the HTTP "Basic" password
 # box. Original author Federico Sacerdoti <fds@sdsc.edu>
