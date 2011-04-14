@@ -26,6 +26,13 @@ if ( ! isset($conf['dwoo_compiled_dir']) || ! is_writeable($conf['dwoo_compiled_
   is writeable by the Apache user e.g.<p>
     \$conf['dwoo_compiled_dir'] = '/var/lib/ganglia/dwoo';</font>"); 
 
+// other checks
+// if auth is enabled
+//   htpasswd file exists? (user might use some other auth mechanism, though)
+// conf dir exists
+// conf dir is writable?  edits disabled if not
+// cache dir should be writable regardless.  maybe /tmp?  or disable caching if it's not writable.
+
 # These are settings derived from the configuration settings, and
 # should not be modified.  This file will be overwritten on package upgrades,
 # while changes made in conf.php should be preserved
