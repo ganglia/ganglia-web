@@ -18,25 +18,25 @@ class GangliaAcl extends Zend_Acl {
   }
   
   private function __construct() {
-    // define roles for any groups
+    // define default groups
     $this->addRole( new Zend_Acl_Role(GangliaAcl::GUEST))
-        ->addRole( new Zend_Acl_Role(GangliaAcl::ADMIN));
-
-    // define resources you want to protect.
-    // all params after the 1st one define 'parent' resources, so privileges may be inherited.
+         ->addRole( new Zend_Acl_Role(GangliaAcl::ADMIN));
+    
+    // define default resources
+    // all clusters should be children of GangliaAcl::ALL
     $this->add( new Zend_Acl_Resource(GangliaAcl::ALL) );
-
-    // specify who can do what.
-    // role, resource, action
-    // we support actions 'view' and 'edit'
+    
+    // guest can view everything.  (private clusters are set up using $this->deny())
     $this->allow(GangliaAcl::GUEST, GangliaAcl::ALL, GangliaAcl::VIEW);
     $this->allow(GangliaAcl::ADMIN, GangliaAcl::ALL, GangliaAcl::VIEW);
+    // admin can edit everything.
     $this->allow(GangliaAcl::ADMIN, GangliaAcl::ALL, GangliaAcl::EDIT);
   }
   
   public function addPrivateCluster($cluster) {
     
     $this->add( new Zend_Acl_Resource($cluster), self::ALL );
+    //$this->allow(self::ADMIN, $cluster, 'edit');
     $this->deny(self::GUEST, $cluster);
   }
 }
