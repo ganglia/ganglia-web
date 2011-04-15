@@ -15,14 +15,15 @@ $acl = GangliaAcl::getInstance();
 // define roles for all users
 // specify the user, then the groups they belong to (if any)
 // you can use GangliaAcl::ADMIN to grant all privileges, or make up your own groups using $acl->addRole('group-name')
-$acl->addRole('alex',GangliaAcl::ADMIN);
+
+// 'admin-user' is the name provided by Apache (from your htaccess file or other authentication system)
+// $acl->addRole('admin-user',GangliaAcl::ADMIN);
 
 // if you want per-cluster restrictions, define them like this
-$acl->addResource('cluster1',GangliaAcl::ALL);
-$acl->allow(GangliaAcl::ADMIN,'cluster1','edit');
+// $acl->addResource('cluster1',GangliaAcl::ALL);
+// $acl->allow(GangliaAcl::ADMIN,'cluster1','edit');
 
-
-$acl->addPrivateCluster('private-cluster');
+//$acl->addPrivateCluster('private-cluster');
 
 /**
  * Check if current user has a privilege (view, edit, etc) on a resource.
@@ -31,6 +32,7 @@ $acl->addPrivateCluster('private-cluster');
  * Examples
  *   checkAccess( 'edit', $conf ); // user has global edit?
  *   checkAccess( 'view', $conf ); // user has global view?
+ *   checkAccess( 'edit', $cluster ); // user can edit current cluster?
  *   checkAccess( 'edit', 'cluster1', $conf ); // user has edit privilege on cluster1?
  *   checkAccess( 'view', 'cluster1', $conf ); // user has view privilege on cluster1?
  */
