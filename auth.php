@@ -6,7 +6,7 @@ disable all auth, via config.  (behind firewall, everybody can do everything)
 enable auth, subject to config rules
 'edit' needs to check for writeability of data directory.  error log if edit is allowed but we're unable to due to fs problems.
 */
-
+require_once 'eval_conf.php';
 require_once 'lib/GangliaAcl.php';
 require_once 'lib/GangliaAuth.php';
 
@@ -29,12 +29,33 @@ $acl->addPrivateCluster('private-cluster');
  * If resource is unspecified, we assume GangliaAcl::ALL.
  *
  * Examples
- *   checkAccess( 'edit' ); // user has global edit?
- *   checkAccess( 'view' ); // user has global view?
- *   checkAccess( 'edit', 'cluster1' ); // user has edit privilege on cluster1?
- *   checkAccess( 'view', 'cluster1' ); // user has view privilege on cluster1?
+ *   checkAccess( 'edit', $conf ); // user has global edit?
+ *   checkAccess( 'view', $conf ); // user has global view?
+ *   checkAccess( 'edit', 'cluster1', $conf ); // user has edit privilege on cluster1?
+ *   checkAccess( 'view', 'cluster1', $conf ); // user has view privilege on cluster1?
  */
-function checkAccess( $privilege, $resource=GangliaAcl::ALL ) {
+function checkAccess() {
+  $args = func_get_args();
+  $privilege = $args[0];
+  switch(count($args)) {
+    case 2:
+      $resource=GangliaAcl::ALL;
+      $conf = $args[1];
+      break;
+    case 3:
+      $resource = $args[1];
+      $conf = $args[2];
+      break;
+    default:
+      trigger_error('checkAccess requires 2 or 3 arguments.',E_USER_ERROR);
+      break;
+  }
+  
+  // if auth system is disabled, everything is allowed.
+  if(!$conf['auth_system']) {
+    return true;
+  }
+  
   $acl = GangliaAcl::getInstance();
   $auth = GangliaAuth::getInstance();
   
@@ -57,10 +78,10 @@ function checkAccess( $privilege, $resource=GangliaAcl::ALL ) {
   return false;
 }
 
-// echo "Edit:".checkAccess( 'edit' );
-// echo "View:".checkAccess( 'view' );
-// echo "View private:".checkAccess( 'view', 'private-cluster' );
-// echo "Edit private:".checkAccess( 'edit', 'private-cluster' );
+// echo "Edit:".checkAccess( 'edit', $conf );
+// echo "View:".checkAccess( 'view', $conf );
+// echo "View private:".checkAccess( 'view', 'private-cluster', $conf );
+// echo "Edit private:".checkAccess( 'edit', 'private-cluster', $conf );
 
 #
 # Functions to authenticate users with the HTTP "Basic" password
