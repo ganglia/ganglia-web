@@ -49,7 +49,6 @@ dist-dir:	default
 
 .htaccess:	.htaccess.in
 	secret=`php -r 'echo sha1(rand().microtime());'` && \
-	echo $$secret && \
 	sed -e "s/@ganglia_secret@/$$secret/" .htaccess.in > .htaccess
 
 install:	dist-dir
