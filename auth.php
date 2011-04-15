@@ -63,7 +63,6 @@ function checkAccess() {
     $user = GangliaAcl::GUEST;
   } else {
     $user = $auth->getUser();
-    $group = $auth->getGroup();
   }
   
   if(!$acl->has($resource)) {
@@ -71,9 +70,6 @@ function checkAccess() {
   }
   if($acl->hasRole($user)) {
     return (bool) $acl->isAllowed($user, $resource, $privilege);
-  }
-  if($acl->hasRole($group)) {
-    return (bool) $acl->isAllowed($group, $resource, $privilege);
   }
   return false;
 }
