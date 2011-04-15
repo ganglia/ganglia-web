@@ -1,7 +1,7 @@
 # Location where gweb should be installed to
 DESTDIR = /var/www/html/gweb
 
-APACHE_USER = apache
+APACHE_USER = apache 
 
 # Gweb version
 GWEB_MAJOR_VERSION = 2
@@ -49,8 +49,9 @@ dist-dir:	default
 
 install:	dist-dir
 	mkdir -p $(DESTDIR) $(GWEB_DWOO) && \
+	mv $(DIST_DIR)/conf $(GWEB_STATEDIR)/ganglia && \
 	cp -a $(DIST_DIR)/* $(DESTDIR) && \
-	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(DESTDIR)/conf
+	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GWEB_STATEDIR)/ganglia/conf
 
 dist-gzip:	dist-dir
 	if [ -f $(DIST_TARBALL) ]; then \
