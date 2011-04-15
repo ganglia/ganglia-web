@@ -25,9 +25,11 @@ class GangliaAuth {
         return false;
       }
       
-      $this->tokenIsValid = ($this->getAuthToken($data['user']) == $data['token']);
-      $this->user = $data['user'];
-      $this->group = $data['group'];
+      if($this->getAuthToken($data['user']) == $data['token']) {
+        $this->tokenIsValid = true;
+        $this->user = $data['user'];
+        $this->group = $data['group'];
+      }
     }
   }
   
