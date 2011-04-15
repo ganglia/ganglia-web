@@ -6,6 +6,7 @@
 
 # Load main config file.
 require_once "./conf_default.php";
+require_once "lib/GangliaAuth.php";
 
 # Include user-defined overrides if they exist.
 if( file_exists( "./conf.php" ) ) {
@@ -27,11 +28,18 @@ if ( ! isset($conf['dwoo_compiled_dir']) || ! is_writeable($conf['dwoo_compiled_
     \$conf['dwoo_compiled_dir'] = '/var/lib/ganglia/dwoo';</font>"); 
 
 // other checks
-// if auth is enabled
-//   htpasswd file exists? (user might use some other auth mechanism, though)
 // conf dir exists
 // conf dir is writable?  edits disabled if not
 // cache dir should be writable regardless.  maybe /tmp?  or disable caching if it's not writable.
+
+if($conf['auth_system']) {
+  $auth = GangliaAuth::getInstance();
+  if(!$auth->environmentIsValid()) {
+    echo "Problems found with authentication system configuration:";
+    echo "<ul><li>".implode("</li><li>",$auth->getEnvironmentErrors())."</li></ul>";
+    die();
+  }
+}
 
 # These are settings derived from the configuration settings, and
 # should not be modified.  This file will be overwritten on package upgrades,
