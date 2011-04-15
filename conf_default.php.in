@@ -7,6 +7,9 @@ $conf['ganglia_dir'] = dirname(__FILE__);
 
 include_once $conf['ganglia_dir'] . "/version.php";
 
+# Enable access restrictions defined in auth.php?
+$conf['auth_system'] = false;
+
 #
 # The name of the directory in "./templates" which contains the
 # templates that you want to use. Templates are like a skin for the
