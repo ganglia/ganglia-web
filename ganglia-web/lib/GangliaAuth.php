@@ -14,6 +14,10 @@ class GangliaAuth {
   }
   
   private function __construct() {
+    if(!$this->environmentIsValid()) {
+      return false;
+    }
+    
     $this->user = null;
     $this->group = null;
     $this->tokenIsValid = false;
@@ -45,13 +49,20 @@ class GangliaAuth {
     return $this->tokenIsValid;
   }
   
-  public function getAuthToken($user) {
-    if(isSet($_SERVER['ganglia_secret'])) {
-      $secret = $_SERVER['ganglia_secret'];
-    } else {
-      $secret = "";
-      error_log("No ganglia_secret set in the Apache environment.  Try 'SetEnv ganglia_secret your-secret-here'.");
+  public function getEnvironmentErrors() {
+    $errors = array();
+    if(!isSet($_SERVER['ganglia_secret'])) {
+      $errors[] = "No ganglia_secret set in the Apache environment.  Try 'SetEnv ganglia_secret ".sha1(mt_rand().microtime())."'.";
     }
+    return $errors;
+  }
+  
+  public function environmentIsValid() {
+    return count($this->getEnvironmentErrors())==0;
+  }
+  
+  public function getAuthToken($user) {
+    $secret = $_SERVER['ganglia_secret'];
     return sha1( $user.$secret );
   }
   
