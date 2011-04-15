@@ -1,5 +1,5 @@
  <?php
- /* $Id: cluster_view.php 2552 2011-04-08 19:17:17Z vvuksan $ */
+ /* $Id: cluster_view.php 2554 2011-04-08 19:28:48Z vvuksan $ */
 $tpl = new Dwoo_Template_File( template("cluster_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("extra", template("cluster_extra.tpl"));
@@ -362,9 +362,9 @@ foreach ( $sorted_hosts as $host => $value )
       if ($max_graphs > 0 and $i > $max_graphs ) {
 	$overflow_list[$host]["metric_image"] = $cell;
 	if (! ($overflow_counter++ % $conf['hostcols']) ) {
-	  $sorted_list[$host]["br"] = "</tr><tr>";
+	  $overflow_list[$host]["br"] = "</tr><tr>";
 	} else {
-	  $sorted_list[$host]["br"] = "";
+	  $overflow_list[$host]["br"] = "";
 	}
 
       } else {
