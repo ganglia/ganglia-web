@@ -1,5 +1,5 @@
  <?php
- /* $Id: cluster_view.php 2554 2011-04-08 19:28:48Z vvuksan $ */
+ /* $Id: cluster_view.php 2574 2011-04-19 00:51:18Z bernardli $ */
 $tpl = new Dwoo_Template_File( template("cluster_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("extra", template("cluster_extra.tpl"));
@@ -121,6 +121,7 @@ $data->assign('optional_graphs_data', $optional_graphs_data);
 # Correctly handle *_report cases and blank (" ") units
 #
 if (isset($units)) {
+  $vlabel = $units;
   if ($units == " ")
     $units = "";
   else
@@ -333,6 +334,9 @@ foreach ( $sorted_hosts as $host => $value )
 
       if ($showhosts == 1)
          $graphargs .= "&amp;x=$max&amp;n=$min";
+
+      if (isset($vlabel))
+         $graphargs .= "&amp;vl=" . urlencode($vlabel);
 
       if ($textval)
          {

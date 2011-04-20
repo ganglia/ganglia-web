@@ -1,5 +1,5 @@
 <?php
-/* $Id: graph.php 2570 2011-04-15 20:08:08Z bernardli $ */
+/* $Id: graph.php 2572 2011-04-18 19:11:43Z bernardli $ */
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -302,8 +302,6 @@ switch ( $conf['graph_engine'] ) {
     if (isset($rrdtool_graph['title']))
        if (isset($title))
           $rrdtool_graph['title'] = $title . " " . $rrdtool_graph['title'] . " last $range";
-       else
-          $rrdtool_graph['title'] = $rrdtool_graph['title'];
 
     $command = $conf['rrdtool'] . " graph - $rrd_options ";
   
@@ -402,7 +400,7 @@ switch ( $conf['graph_engine'] ) {
 	}
       } else {
 	// It's a simple metric graph
-	$target = "target=$host_cluster.$metric_name.sum&hideLegend=true&vtitle=$vlabel&areaMode=all";
+	$target = "target=$host_cluster.$metric_name.sum&hideLegend=true&vtitle=" . urlencode($vlabel) . "&areaMode=all";
 	$title = " ";
       }
 
