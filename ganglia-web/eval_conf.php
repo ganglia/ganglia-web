@@ -6,6 +6,7 @@
 
 # Load main config file.
 require_once "./conf_default.php";
+set_include_path(".:./lib");
 require_once "lib/GangliaAuth.php";
 
 # Include user-defined overrides if they exist.
