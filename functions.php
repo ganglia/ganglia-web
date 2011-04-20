@@ -888,12 +888,13 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
      
        $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
 
-       // use custom DS defined in json template (default = 'sum')
-       $DS = sanitize( $item[ 'DS' ] );
-       if($DS!='')
+       // use custom DS defined in json template if it's defined (default = 'sum')
+       if ( isset($item[ 'ds' ]) ) {
+           $DS = sanitize( $item[ 'ds' ] );
            $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
-       else
+       } else {
            $series .= " DEF:'$unique_id'='$metric_file':'sum':AVERAGE ";
+       }
 
        // By default graph is a line graph
        isset( $item['type']) ? $item_type = $item['type'] : $item_type = "line";
