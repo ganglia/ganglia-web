@@ -1,5 +1,5 @@
 <?php
-# $Id: conf_default.php.in 2545 2011-03-30 02:16:47Z vvuksan $
+# $Id: conf_default.php.in 2557 2011-04-11 01:51:43Z vvuksan $
 #
 # Gmetad-webfrontend version. Used to check for updates.
 #
@@ -120,11 +120,6 @@ $conf['load_one_color'] = "CCCCCC";
 $conf['proc_run_color'] = "0000FF";
 $conf['cpu_num_color']  = "FF0000";
 $conf['num_nodes_color'] = "00FF00";
-
-#
-# Display number of cores in LOAD report graph
-#
-$conf['show_cores'] = false;
 
 # Other colors
 $conf['jobstart_color'] = "ff3300";
