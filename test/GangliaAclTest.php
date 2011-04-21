@@ -23,19 +23,19 @@ class GangliaAclTest extends PHPUnit_Framework_TestCase {
     }
     
     public function testGuestCanViewNormalClusters() {
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL, GangliaAcl::VIEW ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL_CLUSTERS, GangliaAcl::VIEW ) );
     }
     
     public function testAdminCanViewNormalClusters() {
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL, GangliaAcl::VIEW ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL_CLUSTERS, GangliaAcl::VIEW ) );
     }
     
     public function testGuestCannotEdit() {
-      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL, GangliaAcl::EDIT ) );
+      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL_CLUSTERS, GangliaAcl::EDIT ) );
     }
     
     public function testAdminCanEdit() {
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL, GangliaAcl::EDIT ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL_CLUSTERS, GangliaAcl::EDIT ) );
     }
     
     public function testAdminCanAccessPrivateCluster() {
@@ -51,7 +51,7 @@ class GangliaAclTest extends PHPUnit_Framework_TestCase {
     }
     
     public function testGuestCanViewNormalCluster() {
-      $this->object->add( new Zend_Acl_Resource('clustername'), GangliaAcl::ALL );
+      $this->object->add( new Zend_Acl_Resource('clustername'), GangliaAcl::ALL_CLUSTERS );
       $this->object->addRole( 'username', GangliaAcl::GUEST );
       $this->object->allow( 'username', 'clustername', array(GangliaAcl::EDIT, GangliaAcl::VIEW) );
       
