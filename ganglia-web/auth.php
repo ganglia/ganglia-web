@@ -1,36 +1,5 @@
 <?php
-
-/*
-Levels of access control:
-disable all auth, via config.  (behind firewall, everybody can do everything)
-enable auth, subject to config rules
-'edit' needs to check for writeability of data directory.  error log if edit is allowed but we're unable to due to fs problems.
-*/
 require_once 'eval_conf.php';
-require_once 'lib/GangliaAcl.php';
-require_once 'lib/GangliaAuth.php';
-
-$acl = GangliaAcl::getInstance();
-
-// define roles for all users
-// specify the user, then the groups they belong to (if any)
-// you can use GangliaAcl::ADMIN to grant all privileges, or make up your own groups using $acl->addRole('group-name')
-
-// 'admin-user' is the name provided by Apache (from your htaccess file or other authentication system)
-// $acl->addRole('admin-user',GangliaAcl::ADMIN);
-
-// if you want per-cluster restrictions, define them like this
-// $acl->addResource('cluster1',GangliaAcl::ALL);
-// $acl->allow(GangliaAcl::ADMIN,'cluster1','edit');
-
-//$acl->addPrivateCluster('private-cluster');
-
-
-
-// echo "Edit:".checkAccess( 'edit', $conf );
-// echo "View:".checkAccess( 'view', $conf );
-// echo "View private:".checkAccess( 'view', 'private-cluster', $conf );
-// echo "Edit private:".checkAccess( 'edit', 'private-cluster', $conf );
 
 #
 # Functions to authenticate users with the HTTP "Basic" password

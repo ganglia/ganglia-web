@@ -1011,6 +1011,8 @@ function checkAccess() {
     return true;
   }
   
+  // TODO: 'edit' needs to check for writeability of data directory.  error log if edit is allowed but we're unable to due to fs problems.
+  
   $acl = GangliaAcl::getInstance();
   $auth = GangliaAuth::getInstance();
   
