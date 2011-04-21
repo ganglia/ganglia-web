@@ -1,7 +1,8 @@
 <?php
 
 $base_dir = dirname(__FILE__);
-require_once $base_dir.'/../lib/GangliaAcl.php';
+ini_set( 'include_path', ini_get('include_path').":$base_dir/../lib");
+require_once 'GangliaAcl.php';
 
 /**
  * Test class for GangliaAcl.
@@ -22,57 +23,57 @@ class GangliaAclTest extends PHPUnit_Framework_TestCase {
     }
     
     public function testGuestCanViewNormalClusters() {
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL, 'view' ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL, GangliaAcl::VIEW ) );
     }
     
     public function testAdminCanViewNormalClusters() {
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL, 'view' ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL, GangliaAcl::VIEW ) );
     }
     
     public function testGuestCannotEdit() {
-      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL, 'edit' ) );
+      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL, GangliaAcl::EDIT ) );
     }
     
     public function testAdminCanEdit() {
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL, 'edit' ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL, GangliaAcl::EDIT ) );
     }
     
     public function testAdminCanAccessPrivateCluster() {
       $this->object->addPrivateCluster( 'clustername' );
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, 'clustername', 'view' ) );
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, 'clustername', 'edit' ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, 'clustername', GangliaAcl::VIEW ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, 'clustername', GangliaAcl::EDIT ) );
     }
     
     public function testGuestCannotAccessPrivateCluster() {
       $this->object->addPrivateCluster( 'clustername' );
-      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', 'view' ) );
-      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', 'edit' ) );
+      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', GangliaAcl::VIEW ) );
+      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', GangliaAcl::EDIT ) );
     }
     
     public function testGuestCanViewNormalCluster() {
       $this->object->add( new Zend_Acl_Resource('clustername'), GangliaAcl::ALL );
       $this->object->addRole( 'username', GangliaAcl::GUEST );
-      $this->object->allow( 'username', 'clustername', array('edit', 'view') );
+      $this->object->allow( 'username', 'clustername', array(GangliaAcl::EDIT, GangliaAcl::VIEW) );
       
-      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', 'view' ) );
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', GangliaAcl::VIEW ) );
     }
     
     public function testUserMayBeGrantedViewAccessToPrivateCluster() {
       $this->object->addPrivateCluster( 'clustername' );
       $this->object->addRole( 'newuser', GangliaAcl::GUEST );
-      $this->object->allow( 'newuser', 'clustername', 'view' );
+      $this->object->allow( 'newuser', 'clustername', GangliaAcl::VIEW );
       
-      $this->assertTrue( $this->object->isAllowed( 'newuser', 'clustername', 'view' ) );
-      $this->assertFalse( $this->object->isAllowed( 'newuser', 'clustername', 'edit' ) );
+      $this->assertTrue( $this->object->isAllowed( 'newuser', 'clustername', GangliaAcl::VIEW ) );
+      $this->assertFalse( $this->object->isAllowed( 'newuser', 'clustername', GangliaAcl::EDIT ) );
     }
     
     public function testUserMayBeGrantedEditAccessToPrivateCluster() {
       $this->object->addPrivateCluster( 'clustername' );
       $this->object->addRole( 'newuser', GangliaAcl::GUEST );
-      $this->object->allow( 'newuser', 'clustername', array( 'view', 'edit' ) );
+      $this->object->allow( 'newuser', 'clustername', array( GangliaAcl::VIEW, GangliaAcl::EDIT ) );
       
-      $this->assertTrue( $this->object->isAllowed( 'newuser', 'clustername', 'view' ) );
-      $this->assertTrue( $this->object->isAllowed( 'newuser', 'clustername', 'edit' ) );
+      $this->assertTrue( $this->object->isAllowed( 'newuser', 'clustername', GangliaAcl::VIEW ) );
+      $this->assertTrue( $this->object->isAllowed( 'newuser', 'clustername', GangliaAcl::EDIT ) );
     }
     
 }
