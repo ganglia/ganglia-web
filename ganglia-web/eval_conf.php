@@ -5,7 +5,7 @@
 #
 
 $base_dir = dirname(__FILE__);
-set_include_path( ini_get( 'include_path' ) . ":$base_dir/lib" );
+set_include_path( "$base_dir/lib:" . ini_get( 'include_path' ) );
 
 # Load main config file.
 require_once "./conf_default.php";
