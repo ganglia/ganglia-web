@@ -4,9 +4,11 @@
 # read and evaluate the configuration file
 #
 
+$base_dir = dirname(__FILE__);
+set_include_path( ini_get( 'include_path' ) . ":$base_dir/lib" );
+
 # Load main config file.
 require_once "./conf_default.php";
-set_include_path(".:./lib");
 require_once 'lib/GangliaAcl.php';
 require_once 'lib/GangliaAuth.php';
 
