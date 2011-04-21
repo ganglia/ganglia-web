@@ -49,6 +49,14 @@ class GangliaAclTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', 'edit' ) );
     }
     
+    public function testGuestCanViewNormalCluster() {
+      $this->object->add( new Zend_Acl_Resource('clustername'), GangliaAcl::ALL );
+      $this->object->addRole( 'username', GangliaAcl::GUEST );
+      $this->object->allow( 'username', 'clustername', array('edit', 'view') );
+      
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, 'clustername', 'view' ) );
+    }
+    
     public function testUserMayBeGrantedViewAccessToPrivateCluster() {
       $this->object->addPrivateCluster( 'clustername' );
       $this->object->addRole( 'newuser', GangliaAcl::GUEST );
