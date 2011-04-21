@@ -17,7 +17,7 @@ class GangliaAcl extends Zend_Acl {
     return self::$acl;
   }
   
-  private function __construct() {
+  public function __construct() {
     // define default groups
     $this->addRole( new Zend_Acl_Role(GangliaAcl::GUEST))
          ->addRole( new Zend_Acl_Role(GangliaAcl::ADMIN));
