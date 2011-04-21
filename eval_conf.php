@@ -39,8 +39,9 @@ if( ! isSet($conf['conf_dir']) || ! is_readable($conf['conf_dir']) ) {
 if($conf['auth_system']) {
   $auth = GangliaAuth::getInstance();
   if(!$auth->environmentIsValid()) {
-    $errors[] = "Problems found with authentication system configuration:".
-    "<ul><li>".implode("</li><li>",$auth->getEnvironmentErrors())."</li></ul>";
+    $errors[] = "Problems found with authorization system configuration:".
+    "<ul><li>".implode("</li><li>",$auth->getEnvironmentErrors())."</li></ul>".
+    "You may also disable the authorization system with <code>\$conf['auth_system'] = false;</code>";
   }
 }
 
