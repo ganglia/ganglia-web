@@ -10,12 +10,6 @@ if ( !empty($filter_defs) ) {
  }
 
 
-# Find the private clusters.  But no one is emabarrassed in the
-# control room (public only!). 
-if ( $context != "control" ) {
-   $private=embarrassed();
-}
-
 $source_names = array_keys($grid);
 
 # Build a list of cluster names and randomly pick a smaller subset to
