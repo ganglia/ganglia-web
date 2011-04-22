@@ -9,7 +9,6 @@ if ( !empty($filter_defs) ) {
    $data->assign("choose_filter", $choose_filter);
  }
 
-
 $source_names = array_keys($grid);
 
 # Build a list of cluster names and randomly pick a smaller subset to
@@ -145,7 +144,7 @@ foreach ( $sorted_sources as $source => $val )
 
       # I dont like this either, but we need to have private clusters because some
       # users are skittish about publishing the load info.
-      if (!isset($private[$source]) or !$private[$source]) 
+      if(checkAccess($source, GangliaAcl::VIEW, $conf)) 
          {
             $sources[$source]["alt_view"] = "<FONT SIZE=\"-2\">$alt_url</FONT>";
             $sources[$source]["public"] = 1;
@@ -186,7 +185,7 @@ if ($conf['show_meta_snapshot']=="yes") {
    foreach ($sorted_sources as $c=>$value) {
       if ($c==$self) continue;
       if ($c=="AAAAA.$self") continue;  # SORT HACK; see above
-      if (isset($private[$c]) and $private[$c]) {
+      if (! checkAccess($c, GangliaAcl::VIEW, $conf)) {
          $Private[$c] = template("images/cluster_private.jpg");
          continue;
       }
