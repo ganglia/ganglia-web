@@ -1,5 +1,3 @@
-php_value include_path ".:./lib"
-
 # This should be moved to the main server config.
 # So it can't be read by other users on the server.
 SetEnv ganglia_secret @ganglia_secret@
