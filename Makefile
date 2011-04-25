@@ -27,7 +27,7 @@ endif
 DIST_DIR = gweb-$(GWEB_VERSION)
 DIST_TARBALL = $(DIST_DIR).tar.gz
 
-TARGETS = conf_default.php gweb.spec version.php htaccess
+TARGETS = conf_default.php gweb.spec version.php .htaccess
 
 default:	$(TARGETS)
 
