@@ -131,7 +131,9 @@ $(function() {
 <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="395">
 
 {$optional_reports}<br>
+{if $user_may_edit}
 <button id="edit_optional_graphs_button">Edit Optional Graphs</button>
+{/if}
 </TD>
 </TR>
 </TABLE>
