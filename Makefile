@@ -1,7 +1,7 @@
 # Location where gweb should be installed to
 DESTDIR = /var/www/html/gweb
 
-APACHE_USER = apache 
+APACHE_USER = apache
 
 # Gweb version
 GWEB_MAJOR_VERSION = 2
@@ -27,7 +27,7 @@ endif
 DIST_DIR = gweb-$(GWEB_VERSION)
 DIST_TARBALL = $(DIST_DIR).tar.gz
 
-TARGETS = conf_default.php gweb.spec version.php htaccess
+TARGETS = conf_default.php gweb.spec version.php .htaccess
 
 default:	$(TARGETS)
 
