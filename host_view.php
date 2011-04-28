@@ -7,6 +7,7 @@ $data->assign("extra", template("host_extra.tpl"));
 
 $data->assign("cluster", $clustername);
 $data->assign("host", $hostname);
+$data->assign("user_may_edit", checkAccess( $clustername, GangliaAcl::EDIT, $conf ) );
 $data->assign("node_image", node_image($metrics));
 $data->assign("sort",$sort);
 $data->assign("range",$range);
