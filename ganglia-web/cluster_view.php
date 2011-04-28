@@ -1,5 +1,5 @@
  <?php
- /* $Id: cluster_view.php 2574 2011-04-19 00:51:18Z bernardli $ */
+ /* $Id: cluster_view.php 2577 2011-04-21 00:15:28Z bernardli $ */
 $tpl = new Dwoo_Template_File( template("cluster_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("extra", template("cluster_extra.tpl"));
@@ -153,9 +153,9 @@ if ($showhosts)
       foreach ($hosts_up as $host => $val)
          {
 
-	  // If host_regex is defined
-	  if ( isset($user['host_regex']) && ! preg_match("/" .$user['host_regex'] . "/", $host  ) )
-	    continue;
+            // If host_regex is defined
+            if ( isset($user['host_regex']) && ! preg_match("/" .$user['host_regex'] . "/", $host  ) )
+               continue;
             if ( isset($metrics[$host]["cpu_num"]['VAL']) and $metrics[$host]["cpu_num"]['VAL'] != 0 ){
                $cpus = $metrics[$host]["cpu_num"]['VAL'];
             } else {
@@ -184,6 +184,9 @@ if ($showhosts)
          
       foreach ($hosts_down as $host => $val)
          {
+            if ( isset($user['host_regex']) && ! preg_match("/" .$user['host_regex'] . "/", $host  ) )
+                continue;
+
             $load = -1.0;
             $down_hosts[$host] = $load;
             if(isset($percent_hosts[load_color($load)])) {
