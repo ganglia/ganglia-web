@@ -1,5 +1,5 @@
 <?php
-/* $Id: graph.php 2572 2011-04-18 19:11:43Z bernardli $ */
+/* $Id: graph.php 2583 2011-04-27 19:35:48Z bernardli $ */
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -272,7 +272,10 @@ switch ( $conf['graph_engine'] ) {
           foreach ( $graph_config['series'] as $index => $item ) {
             if ( ! isset($graph_config['series'][$index]['hostname'])) {
               $graph_config['series'][$index]['hostname'] = $raw_host;
-              $graph_config['series'][$index]['clustername'] = $clustername;
+              if (isset($grid))
+                 $graph_config['series'][$index]['clustername'] = $grid;
+              else
+                 $graph_config['series'][$index]['clustername'] = $clustername;
             }
           }
           
