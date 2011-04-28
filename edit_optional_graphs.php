@@ -15,9 +15,9 @@ if ( $hostname != "none" ) {
     $json_filename_suffix = "/host_" . $hostname . ".json";
     $clustername = $index_array['cluster'][$hostname];
 } else if ( $clustername != "none" ) {
-    $json_filename_suffix = "/cluster_" . str_replace(" ", "_", $clustername) . ".json";
     // TODO Add validation for clusters
     $clustername = isset($_GET['clustername'])  ? sanitize( $_GET['clustername'] ) : "none";
+    $json_filename_suffix = "/cluster_" . str_replace(" ", "_", $clustername) . ".json";
 }
 
 $error = false;
