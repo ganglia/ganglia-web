@@ -1,12 +1,6 @@
 <?php
 /* $Id: header.php 2548 2011-04-06 18:51:07Z vvuksan $ */
 
-# Check if this context is private.
-include_once "./auth.php";
-// include_once "./calendar.php";
-checkcontrol();
-checkprivate();
-
 # RFM - These definitions are here to eliminate "undefined variable"
 # error messages in ssl_error_log.
 !isset($initgrid) and $initgrid = 0;

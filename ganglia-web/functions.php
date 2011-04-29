@@ -983,31 +983,20 @@ function build_graphite_series( $config, $host_cluster = "" ) {
  * If resource is unspecified, we assume GangliaAcl::ALL.
  *
  * Examples
- *   checkAccess( 'edit', $conf ); // user has global edit?
- *   checkAccess( 'view', $conf ); // user has global view?
- *   checkAccess( 'edit', $cluster ); // user can edit current cluster?
- *   checkAccess( 'edit', 'cluster1', $conf ); // user has edit privilege on cluster1?
- *   checkAccess( 'view', 'cluster1', $conf ); // user has view privilege on cluster1?
+ *   checkAccess( GangliaAcl::ALL_CLUSTERS, GangliaAcl::EDIT, $conf ); // user has global edit?
+ *   checkAccess( GangliaAcl::ALL_CLUSTERS, GangliaAcl::VIEW, $conf ); // user has global view?
+ *   checkAccess( $cluster, GangliaAcl::EDIT, $conf ); // user can edit current cluster?
+ *   checkAccess( 'cluster1', GangliaAcl::EDIT, $conf ); // user has edit privilege on cluster1?
+ *   checkAccess( 'cluster1', GangliaAcl::VIEW, $conf ); // user has view privilege on cluster1?
  */
-function checkAccess() {
-  $args = func_get_args();
-  $privilege = $args[0];
-  switch(count($args)) {
-    case 2:
-      $resource=GangliaAcl::ALL;
-      $conf = $args[1];
-      break;
-    case 3:
-      $resource = $args[1];
-      $conf = $args[2];
-      break;
-    default:
-      trigger_error('checkAccess requires 2 or 3 arguments.',E_USER_ERROR);
-      break;
+function checkAccess($resource, $privilege, $conf) {
+  
+  if(!is_array($conf)) {
+    trigger_error('checkAccess: $conf is not an array.',E_USER_ERROR);
   }
   
   // if auth system is disabled, everything is allowed.
-  if(!$conf['auth_system']) {
+  if(!isSet($conf['auth_system']) || !$conf['auth_system']) {
     return true;
   }
   
@@ -1023,11 +1012,14 @@ function checkAccess() {
   }
   
   if(!$acl->has($resource)) {
-    throw new Exception("Unknown resource '$resource'.");
+    $resource = GangliaAcl::ALL_CLUSTERS;
   }
+  
+  $out = false;
   if($acl->hasRole($user)) {
-    return (bool) $acl->isAllowed($user, $resource, $privilege);
+    $out = (bool) $acl->isAllowed($user, $resource, $privilege);
   }
-  return false;
+  // error_log("checkAccess() user=$user, resource=$resource, priv=$privilege == $out");
+  return $out;
 }
 ?>

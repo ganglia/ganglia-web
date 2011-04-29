@@ -1,6 +1,5 @@
 <?php
 require_once 'eval_conf.php';
-require_once 'auth.php';
 
 if($conf['auth_system'] && isSet($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER']) ){
   $auth = GangliaAuth::getInstance();
