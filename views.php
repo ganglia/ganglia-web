@@ -18,14 +18,7 @@ if ( isset($_GET['create_view']) ) {
   }
 
   if ( $view_exists == 1 ) {
-  ?>
-      <div class="ui-widget">
-	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
-	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-	  <strong>Alert:</strong> View with the name <?php print $_GET['view_name']; ?> already exists.</p>
-	</div>
-      </div>
-    <?php
+    $output = "<strong>Alert:</strong> View with the name ".$_GET['view_name']." already exists.";
   } else {
     $empty_view = array ( "view_name" => $_GET['view_name'],
       "items" => array() );
@@ -33,25 +26,19 @@ if ( isset($_GET['create_view']) ) {
     $view_filename = $conf['views_dir'] . "/view_" . $view_suffix . ".json";
     $json = json_encode($empty_view);
     if ( file_put_contents($view_filename, $json) === FALSE ) {
-    ?>
-      <div class="ui-widget">
-	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
-	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-	  <strong>Alert:</strong> Can't write to file <?php print $view_filename; ?>. Perhaps permissions are wrong.</p>
-	</div>
-      </div>
-    <?php
+      $output = "<strong>Alert:</strong> Can't write to file $view_filename. Perhaps permissions are wrong.";
     } else {
-    ?>
-      <div class="ui-widget">
-	<div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
-	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-	  View has been created successfully.</p>
-	</div>
-	</div>
-    <?php
+      $output = "View has been created successfully.";
     } // end of if ( file_put_contents($view_filename, $json) === FALSE ) 
   }  // end of if ( $view_exists == 1 )
+?>
+<div class="ui-widget">
+  <div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+    <?php echo $output ?></p>
+  </div>
+</div>
+<?php
   exit(1);
 } 
 
@@ -72,14 +59,7 @@ if ( isset($_GET['add_to_view']) ) {
   }
 
   if ( $view_exists == 0 ) {
-  ?>
-      <div class="ui-widget">
-	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
-	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-	  <strong>Alert:</strong> View <?php print $_GET['view_name']; ?> does not exist. This should not happen.</p>
-	</div>
-      </div>
-    <?php
+    $output = "<strong>Alert:</strong> View ".$_GET['view_name']." does not exist. This should not happen.";
   } else {
 
     // Read in contents of an existing view
@@ -95,25 +75,20 @@ if ( isset($_GET['add_to_view']) ) {
     $json = json_encode($view);
 
     if ( file_put_contents($view_filename, $json) === FALSE ) {
-    ?>
-      <div class="ui-widget">
-	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
-	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-	  <strong>Alert:</strong> Can't write to file <?php print $view_filename; ?>. Perhaps permissions are wrong.</p>
-	</div>
-      </div>
-    <?php
+      $output = "<strong>Alert:</strong> Can't write to file $view_filename. Perhaps permissions are wrong.";
     } else {
-    ?>
-      <div class="ui-widget">
-	<div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
-	  <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-	  View has been updated successfully.</p>
-	</div>
-	</div>
-    <?php
+      $output = "View has been updated successfully.";
     } // end of if ( file_put_contents($view_filename, $json) === FALSE ) 
   }  // end of if ( $view_exists == 1 )
+  
+?>
+<div class="ui-widget">
+  <div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+    <?php echo $output ?></p>
+  </div>
+</div>
+<?php
   exit(1);
 } 
 
