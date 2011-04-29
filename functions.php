@@ -1019,8 +1019,7 @@ function checkAccess($resource, $privilege, $conf) {
   if($acl->hasRole($user)) {
     $out = (bool) $acl->isAllowed($user, $resource, $privilege);
   }
-  error_log("checkAccess() user=$user, resource=$resource, priv=$privilege == $out");
-  error_log("");
+  // error_log("checkAccess() user=$user, resource=$resource, priv=$privilege == $out");
   return $out;
 }
 ?>
