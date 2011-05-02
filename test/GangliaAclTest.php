@@ -76,5 +76,31 @@ class GangliaAclTest extends PHPUnit_Framework_TestCase {
       $this->assertTrue( $this->object->isAllowed( 'newuser', 'clustername', GangliaAcl::EDIT ) );
     }
     
+    public function testGuestCanViewViews() {
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW ) );
+    }
+    
+    public function testAdminCanViewViews() {
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW ) );
+    }
+    
+    public function testGuestCannotEditViews() {
+      $this->assertFalse( $this->object->isAllowed( GangliaAcl::GUEST, GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT ) );
+    }
+    
+    public function testAdminCanEditViews() {
+      $this->assertTrue( $this->object->isAllowed( GangliaAcl::ADMIN, GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT ) );
+    }
+    
+    public function testUserCanViewViews() {
+      $this->object->addRole( 'newuser', GangliaAcl::GUEST );
+      $this->assertTrue( $this->object->isAllowed( 'newuser', GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW ) );
+    }
+    
+    public function testUserCannotEditViews() {
+      $this->object->addRole( 'newuser', GangliaAcl::GUEST );
+      $this->assertFalse( $this->object->isAllowed( 'newuser', GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT ) );
+    }
+    
 }
 ?>
