@@ -451,12 +451,12 @@ if ( $context == "cluster" ) {
 } else
   $data->assign("additional_filter_options", '');
 
-if($conf['auth_system']) {
-  $data->assign('auth_system', true);
+if($conf['auth_system'] == 'enabled') {
+  $data->assign('auth_system_enabled', true);
   $username = sanitize( GangliaAuth::getInstance()->getUser() );
   $data->assign('username', $username);
 } else {
-  $data->assign('auth_system', false);
+  $data->assign('auth_system_enabled', false);
   $data->assign('username', null);
 }
 
