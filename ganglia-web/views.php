@@ -157,8 +157,12 @@ if ( sizeof($available_views) == 0 ) {
 
   <?php
     if ( ! isset($_GET['standalone']) ) {
+      if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
   ?>
       <button onclick="return false" id=create_view_button>Create View</button>
+  <?php
+      }
+  ?>
       <a href="views.php?standalone=1" id="detach-tab-button">Detach Tab</a> 
   <?php
    }
