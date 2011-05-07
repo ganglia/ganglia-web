@@ -2,6 +2,28 @@ $(function(){
 
   // Follow tab's URL instead of loading its content via ajax
   $("#tabs").tabs();
+
+  // Restore previously selected tab
+  var selected_tab = $.cookie("ganglia-selected-tab");
+  if (selected_tab != null) {
+    selected_tab = parseInt(selected_tab);
+    //alert("ganglia-selected-tab: " + selected_tab);
+    $("#tabs").tabs("select", selected_tab);
+    switch (selected_tab) {
+      case 2:
+        getViewsContent();
+        break;
+      case 4:
+        autoRotationChooser();
+        break;
+    }
+  }
+
+  $("#tabs").bind("tabsselect", function(event, ui) {
+    // Store selected tab in a session cookie
+    $.cookie("ganglia-selected-tab", ui.index);
+  });
+
   $( "#range_menu" ).buttonset();
   $( "#sort_menu" ).buttonset();
 
@@ -39,6 +61,14 @@ $(function(){
 
 });
 
+function selectView(view_name) {
+  $.cookie('ganglia-selected-view', view_name); 
+  var range = $.cookie('ganglia-view-range');
+  if (range == null)
+    range = '1hour';
+  getViewsContentJustGraphs(view_name, range, '', '');
+}
+
 function getViewsContent() {
   $.get('views.php', "" , function(data) {
     $("#tabs-views-content").html('<img src="img/spinner.gif">');
@@ -49,7 +79,18 @@ function getViewsContent() {
 	$( "#create-new-view-dialog" ).dialog( "open" );
       });;
     $( "#view_range_chooser" ).buttonset();
-    document.getElementById('view_name').value = "default";
+
+    // Restore previously selected view
+    var view_name = document.getElementById('view_name');
+    var selected_view = $.cookie("ganglia-selected-view");
+    if (selected_view != null) {
+        view_name.value = selected_view;
+	var range = $.cookie("ganglia-view-range");
+	if (range == null)
+          range = "hour";
+	$("#view-range-"+range).click();
+    } else
+      view_name.value = "default";
   });
   return false;
 }
