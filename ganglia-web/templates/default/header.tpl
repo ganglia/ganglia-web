@@ -86,7 +86,7 @@
     body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
 </style>
 
-{if $auth_system}
+{if $auth_system_enabled}
 <div style="float:right">
   {if $username}
     Currently logged in as: {$username} | <a href="logout.php">Logout</a>
