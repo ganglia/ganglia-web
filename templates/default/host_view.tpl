@@ -173,7 +173,11 @@ $(function() {
   </TD>
 </TR>
 </TABLE>
+{if isset($metric_groups_initially_collapsed) && $metric_groups_initially_collapsed}
+<div id="{$group}_div" class="ui-helper-hidden">
+{else}
 <div id="{$group}_div">
+{/if}
 <TABLE><TR>
 {foreach $g_metrics["metrics"] g_metric}
 <TD>
