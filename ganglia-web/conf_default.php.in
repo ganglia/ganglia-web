@@ -270,4 +270,8 @@ $conf['graph_sizes_keys'] = array_keys( $conf['graph_sizes'] );
 # default: true  (for gmetad < 3.2)
 # default: false (for gmetad >= 3.2)
 $conf['case_sensitive_hostnames'] = true;
+
+# The following property controls whether the graphs contained in metric
+# groups are initially displayed or collapsed
+$conf['metric_groups_initially_collapsed'] = true;
 ?>

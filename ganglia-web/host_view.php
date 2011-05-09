@@ -14,6 +14,12 @@ $data->assign("sort",$sort);
 $data->assign("range",$range);
 $data->assign("hostname", $hostname);
 
+if ( isset($conf['metric_groups_initially_collapsed']) && 
+     $conf['metric_groups_initially_collapsed'] === true )
+  $data->assign("metric_groups_initially_collapsed", true);
+else
+  $data->assign("metric_groups_initially_collapsed", false);
+
 $graph_args = "h=$hostname&amp;$get_metric_string&amp;st=$cluster[LOCALTIME]";
 
 $optional_reports = "";

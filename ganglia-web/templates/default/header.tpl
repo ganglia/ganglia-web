@@ -9,6 +9,7 @@
 <script type="text/javascript" src="js/jquery.liveSearch.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.11.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
