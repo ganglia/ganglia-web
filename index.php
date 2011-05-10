@@ -1,6 +1,7 @@
 <?php
-/* $Id: index.php 2525 2011-03-17 15:16:14Z vvuksan $ */
+/* $Id: index.php 2589 2011-05-06 19:26:02Z bernardli $ */
 include_once "./eval_conf.php";
+include_once "./check_extensions.php";
 # ATD - function.php must be included before get_context.php.  It defines some needed functions.
 include_once "./functions.php";
 include_once "./get_context.php";
