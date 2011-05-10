@@ -2,7 +2,6 @@ $(function(){
 
   // Follow tab's URL instead of loading its content via ajax
   $("#tabs").tabs();
-
   $( "#range_menu" ).buttonset();
   $( "#sort_menu" ).buttonset();
 
