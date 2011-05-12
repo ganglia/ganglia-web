@@ -50,7 +50,7 @@ if( ! isSet( $conf['auth_system'] ) ) {
     if(!$auth->environmentIsValid()) {
       $errors[] = "Problems found with authorization system configuration:".
       "<ul><li>".implode("</li><li>",$auth->getEnvironmentErrors())."</li></ul>".
-      "You may also use <code>\$conf['auth_system'] = 'readonly';</code> or <code>\$conf['auth_system'] = 'disabled';</code>";
+      "<br/>You may also use <code>\$conf['auth_system'] = 'readonly';</code> or <code>\$conf['auth_system'] = 'disabled';</code>";
     }
   }
 }
