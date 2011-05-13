@@ -50,7 +50,7 @@ if( ! isSet( $conf['auth_system'] ) ) {
       Requires configuration of an authentication mechanism in your web server.
     </li>
   </ul>
-  <br/>See <a href='https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2#AuthorizationSystem'>https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2#AuthorizationSystem</a> for more information.";
+  <br/>See <a href='https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2/AuthSystem'>https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2/AuthSystem</a> for more information.";
 } else {
   if( ! in_array( $conf['auth_system'], $valid_auth_options ) ) {
     $errors[] = "Please set \$conf['auth_system'] to one of these values: '".implode( "','", $valid_auth_options ) ."'";
