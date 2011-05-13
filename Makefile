@@ -64,4 +64,4 @@ dist-gzip:	dist-dir
 	tar -czf $(DIST_TARBALL) $(DIST_DIR)/*
 
 uninstall:
-	rm -rf $(DESTDIR) $(GWEB_DWOO)
+	rm -rf $(DESTDIR) $(GWEB_DWOO) $(GWEB_STATEDIR)/ganglia/conf
