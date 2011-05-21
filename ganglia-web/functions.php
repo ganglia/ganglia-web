@@ -207,7 +207,7 @@ function node_image ($metrics)
 #
 function find_limits($nodes, $metricname)
 {
-   global $conf, $metrics, $clustername, $rrd_dir, $start, $end, $rrd_options;
+   global $conf, $metrics, $clustername, $rrd_dir, $start, $end, $rrd_options, $loaded_extensions;
 
    if (!count($metrics))
       return array(0, 0);
@@ -230,23 +230,39 @@ function find_limits($nodes, $metricname)
          $out = array();
 
          $rrd_dir = "${conf['rrds']}/$clustername/$host";
-         if (file_exists("$rrd_dir/$metricname.rrd")) {
-            $command = $conf['rrdtool'] . " graph /dev/null $rrd_options ".
-               "--start $start --end $end ".
-               "DEF:limits='$rrd_dir/$metricname.rrd':'sum':AVERAGE ".
-               "PRINT:limits:MAX:%.2lf ".
-               "PRINT:limits:MIN:%.2lf";
-            exec($command, $out);
-            if(isset($out[1])) {
-               $thismax = $out[1];
+         $rrd_file = "$rrd_dir/$metricname.rrd";
+         if (file_exists($rrd_file)) {
+            if (in_array('rrd', $loaded_extensions)) {
+              $values = rrd_fetch($rrd_file,
+                array(
+                  "--start", $start,
+                  "--end", $end,
+                  "AVERAGE"
+                )
+              );
+
+              $values = (array_filter(array_values($values['data']['sum']), 'is_finite'));
+              $thismax = max($values);
+              $thismin = min($values);
             } else {
-               $thismax = NULL;
+              $command = $conf['rrdtool'] . " graph /dev/null $rrd_options ".
+                 "--start $start --end $end ".
+                 "DEF:limits='$rrd_dir/$metricname.rrd':'sum':AVERAGE ".
+                 "PRINT:limits:MAX:%.2lf ".
+                 "PRINT:limits:MIN:%.2lf";
+              exec($command, $out);
+              if(isset($out[1])) {
+                 $thismax = $out[1];
+              } else {
+                 $thismax = NULL;
+              }
+              if (!is_numeric($thismax)) continue;
+              $thismin=$out[2];
+              if (!is_numeric($thismin)) continue;
             }
-            if (!is_numeric($thismax)) continue;
+
             if ($max < $thismax) $max = $thismax;
 
-            $thismin=$out[2];
-            if (!is_numeric($thismin)) continue;
             if ($min > $thismin) $min = $thismin;
             #echo "$host: $thismin - $thismax (now $value)<br>\n";
          }
@@ -992,34 +1008,49 @@ function build_graphite_series( $config, $host_cluster = "" ) {
 function checkAccess($resource, $privilege, $conf) {
   
   if(!is_array($conf)) {
-    trigger_error('checkAccess: $conf is not an array.',E_USER_ERROR);
+    trigger_error('checkAccess: $conf is not an array.', E_USER_ERROR);
+  }
+  if(!isSet($conf['auth_system'])) {
+    trigger_error("checkAccess: \$conf['auth_system'] is not defined.", E_USER_ERROR);
   }
   
-  // if auth system is disabled, everything is allowed.
-  if(!isSet($conf['auth_system']) || !$conf['auth_system']) {
-    return true;
+  switch( $conf['auth_system'] ) {
+    case 'readonly':
+      $out = ($privilege == GangliaAcl::VIEW);
+      break;
+      
+    case 'enabled':
+      // TODO: 'edit' needs to check for writeability of data directory.  error log if edit is allowed but we're unable to due to fs problems.
+      
+      $acl = GangliaAcl::getInstance();
+      $auth = GangliaAuth::getInstance();
+      
+      if(!$auth->isAuthenticated()) {
+        $user = GangliaAcl::GUEST;
+      } else {
+        $user = $auth->getUser();
+      }
+      
+      if(!$acl->has($resource)) {
+        $resource = GangliaAcl::ALL_CLUSTERS;
+      }
+      
+      $out = false;
+      if($acl->hasRole($user)) {
+        $out = (bool) $acl->isAllowed($user, $resource, $privilege);
+      }
+      // error_log("checkAccess() user=$user, resource=$resource, priv=$privilege == $out");
+      break;
+    
+    case 'disabled':
+      $out = true;
+      break;
+    
+    default:
+      trigger_error( "Invalid value '".$conf['auth_system']."' for \$conf['auth_system'].", E_USER_ERROR );
+      return false;
   }
   
-  // TODO: 'edit' needs to check for writeability of data directory.  error log if edit is allowed but we're unable to due to fs problems.
-  
-  $acl = GangliaAcl::getInstance();
-  $auth = GangliaAuth::getInstance();
-  
-  if(!$auth->isAuthenticated()) {
-    $user = GangliaAcl::GUEST;
-  } else {
-    $user = $auth->getUser();
-  }
-  
-  if(!$acl->has($resource)) {
-    $resource = GangliaAcl::ALL_CLUSTERS;
-  }
-  
-  $out = false;
-  if($acl->hasRole($user)) {
-    $out = (bool) $acl->isAllowed($user, $resource, $privilege);
-  }
-  // error_log("checkAccess() user=$user, resource=$resource, priv=$privilege == $out");
   return $out;
 }
 ?>
