@@ -67,6 +67,10 @@ $(function(){
 
 });
 
+function selectTab(tab_index) {
+  $("#tabs").tabs("select", tab_index);
+}
+
 function selectView(view_name) {
   $.cookie('ganglia-selected-view', view_name); 
   var range = $.cookie('ganglia-view-range');
