@@ -54,7 +54,6 @@ $(function() {
     $( "#metric_chooser" ).autocomplete({
       source: availableMetrics,
       change: function(event, ui) {
-        alert($("#metric_chooser").val());
 	$.cookie("ganglia-aggregate-graph-metric" + window.name,
 	         $("#metric_chooser").val());
       }
