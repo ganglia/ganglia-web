@@ -694,8 +694,7 @@ function get_available_views() {
 
       while (false !== ($file = readdir($handle))) {
 
-	if ( preg_match("/view_(.*)/", $file, $out) ) {
-
+	if ( preg_match("/^view_(.*)\.json$/", $file, $out) ) {
 	  $view_config_file = $conf['views_dir'] . "/" . $file;
 	  if ( ! is_file ($view_config_file) ) {
 	    echo("Can't read view config file " . $view_config_file . ". Please check permissions");
@@ -761,6 +760,9 @@ function get_view_graph_elements($view) {
 	  else
 	    $graph_args_array[] = "gtype=line";
 
+	  if (isset($item['vertical_label']))
+	    $graph_args_array[] = "vl=" .$item['vertical_label'];
+
 	  if ( isset($item['metric']) ) {
 	    $graph_args_array[] = "aggregate=1";
 	    $graph_args_array[] = "m=" . $item['metric'];
@@ -770,6 +772,7 @@ function get_view_graph_elements($view) {
 	    );
 	  }
 
+	  unset($graph_args_array);
 	// It's standard metric graph
 	} else {
 	  // Is it a metric or a graph(report)

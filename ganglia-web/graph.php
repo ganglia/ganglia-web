@@ -20,6 +20,7 @@ $graph      = isset($_GET["g"])  ?  sanitize ( $_GET["g"] )   : "metric";
 $grid       = isset($_GET["G"])  ?  sanitize ( $_GET["G"] )   : NULL;
 $self       = isset($_GET["me"]) ?  sanitize ( $_GET["me"] )  : NULL;
 $vlabel     = isset($_GET["vl"]) ?  sanitize ( $_GET["vl"] )  : NULL;
+
 $value      = isset($_GET["v"])  ?  sanitize ( $_GET["v"] )   : NULL;
 
 $metric_name = isset($_GET["m"])  ?  sanitize ( $_GET["m"] )   : NULL;
@@ -213,6 +214,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     $graph_config["report_name"] = $metric_name;
     $graph_config["report_type"] = "standard";
     $graph_config["title"] = $metric_name;
+    $graph_config["vertical_label"] = $vlabel;
     $title = "Aggregate";
 
     // Colors to use
