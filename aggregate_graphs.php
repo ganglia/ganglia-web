@@ -69,8 +69,8 @@ $(function() {
 <td>Host Regular expression e.g. web-[0,4], web or (web|db):</td>
 <td colspan=2><input name="hreg[]" id="hreg" size=60></td>
 <tr>
-<tr><td>Metric (not a report e.g. load_one, cpu_system):</td>
-<td colspan=2><input name="m" id="metric_chooser"></td>
+<tr><td>Metric Regular expression (not a report e.g. load_one, bytes_(in|out)):</td>
+<td colspan=2><input name="mreg[]" id="metric_chooser"></td>
 </tr>
 <tr>
 <td>Graph Type:</td><td>
