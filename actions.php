@@ -12,18 +12,19 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
 
   <table>
   <?php
-    if ( isset($_GET['host_name']) ) {
+  if ( isset($_GET['aggregate']) ) {
   ?>
-  <tr><th>Hostname</th><td><?php print $_GET['host_name']; ?></td></tr>
+     <tr><th>Host regular expression</th><td><?php print join (",", $_GET['hreg']); ?></td></tr>
+     <tr><th>Metric regular expression</th><td><?php print join (",", $_GET['mreg']); ?></td></tr>
   <?php
     } else {
   ?>
-  <tr><th>Host regular expression</th><td><?php print $_GET['hreg']; ?></td></tr>
+     <tr><th>Hostname</th><td><?php print $_GET['host_name']; ?></td></tr>
+     <tr><th>Metric/Report</th><td><?php print $_GET['metric_name']; ?></td></tr>
   <?php
   }
   ?>
 
-  <tr><th>Metric/Report</th><td><?php print $_GET['metric_name']; ?></td></tr>
   </table>
   <p>
   <form id="add_metric_to_view_form">
