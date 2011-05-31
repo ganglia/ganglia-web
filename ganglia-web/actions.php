@@ -29,20 +29,27 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
   <form id="add_metric_to_view_form">
     Add to view
     <?php 
-      if ( isset($_GET['host_name']) ) {
-    ?>
-    <input type=hidden name=host_name value="<?php print $_GET['host_name']; ?>">
-    <?php
+    // Get all the aggregate form variables and put them in the hidden fields
+    if ( isset($_GET['aggregate']) ) {
+	foreach ( $_GET as $key => $value ) {
+	  if ( is_array($value) ) {
+	    foreach ( $value as $index => $value2 ) {
+	      print '<input type=hidden name="' . $key .'[]" value="' . $value2 . '">';
+	    }
+	  } else {
+	    print '<input type=hidden name=' . $key .' value="' . $value . '">';
+	  }
+	}
     } else {
     ?>
-    <input type=hidden name=hreg value="<?php print $_GET['hreg']; ?>">    
-    <input type=hidden name=aggregate value=1>
-    <input type=hidden name=graph_type value="<?php print $_GET['graph_type']; ?>"> 
+     // If hostname is not set we assume we are dealing with aggregate graphs
+    <input type=hidden name=host_name value="<?php print $_GET['host_name']; ?>">
+    <input type=hidden name=metric_name value="<?php print $_GET['metric_name']; ?>">
+    <input type=hidden name=type value="<?php print $_GET['type']; ?>">
     <?php
     }
     ?>
-    <input type=hidden name=metric_name value="<?php print $_GET['metric_name']; ?>">
-    <input type=hidden name=type value="<?php print $_GET['type']; ?>">
+
     <select onChange="addItemToView()" name="view_name">
     <option value='none'>Please choose one</option>
     <?php

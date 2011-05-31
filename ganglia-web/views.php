@@ -82,7 +82,8 @@ if ( isset($_GET['add_to_view']) ) {
       if ( isset($_GET['aggregate']) ) {
 
 	  $view['items'][] = array( "aggregate_graph" => "true", "metric" => $_GET['metric_name'], 
-	    "host_regex" => array( "regex" => $_GET['hreg'] ), "graph_type" => $_GET['graph_type']);
+	    "host_regex" => array( "regex" => $_GET['hreg'] ), "graph_type" => $_GET['gtype'],
+	    "vertical_label" => $_GET['vl']);
 
       } else {
 
