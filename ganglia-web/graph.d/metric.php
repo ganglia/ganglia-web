@@ -117,7 +117,7 @@ function graph_metric ( &$rrdtool_graph ) {
 
     //# the actual graph...
     $series  = "DEF:'sum'='$rrd_dir/$metricname.rrd:sum':AVERAGE ";
-    $series .= "AREA:'sum'#${conf['default_metric_color']}:'$subtitle_one\\n'";
+    $series .= "AREA:'sum'#${conf['default_metric_color']}:'$subtitle_one   '";
 
     if ($conf['graphreport_stats'] == false) {
         $series .= ":STACK: COMMENT:'$subtitle_two\\l'";
