@@ -217,9 +217,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     $graph_config["vertical_label"] = $vlabel;
     $title = "Aggregate";
 
-    // Colors to use
-    $colors = array("128936","FF8000","158499","CC3300","996699","FFAB11","3366CC","01476F");
-    $color_count = sizeof($colors);
+    $color_count = sizeof($conf['graph_colors']);
 
     // Load the host cache
     require_once('./cache.php');
@@ -293,7 +291,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
             $label.=" $m_name";
 
           $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
-            "metric" => $m_name,  "color" => $colors[$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
+            "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
 
           $counter++;
 
@@ -578,6 +576,64 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
   exit(1);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+// Check whether user wants to overlay events on graphs
+//////////////////////////////////////////////////////////////////////////////
+if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
+
+  $events_json = file_get_contents($conf['events_file']);
+  $events_array = json_decode($events_json, TRUE);
+  
+  $color_count = sizeof($conf['graph_colors']);
+  $counter = 0;
+
+  // In order not too pollute the command line with all the possible VRULEs
+  // we need to find the time range for the graph
+  if ( $rrdtool_graph['end'] == "-N" )
+    $end = time();
+  else if ( is_numeric($rrdtool_graph['end']) )
+    $end = $rrdtool_graph['end'];
+  else
+    $end = 20000000000;
+
+  if ( preg_match("/\-([0-9]*)(s)/", $rrdtool_graph['start'] , $out ) ) {
+    $start = time() - $out[1];
+  } else if ( is_numeric($rrdtool_graph['start']) )
+    $start = $rrdtool_graph['start'];
+  else
+    // If it's not 
+    $start = time() - 157680000;
+
+  // Preserve original rrdtool command. That's the one we'll run regex checks
+  // against
+  $original_command = $command;
+  
+  // Sort events in reverse chronological order
+  krsort($events_array);
+  
+  // Loop through all the events
+  foreach ( $events_array as $timestamp => $event) {
+
+    // If timestamp is less than start bail out of the loop since there is nothing more to do
+    if ( $timestamp < $start )
+      break;
+
+    if ( preg_match("/" . $event["host_regex"]  .  "/", $original_command)) {
+
+      if ( ($timestamp >= $start ) && ( $timestamp < $end ) ) {
+
+        $color_index = $counter % $color_count;
+        $command .= " VRULE:" . $timestamp . "#" .
+          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\"";
+    
+        $counter++;
+    
+      }
+    } // end of if ( preg_match ...
+  } // end of foreach ( $events_array ...
+  
+  unset($events_array);
+}
 
 if ($debug) {
   error_log("Final rrdtool command:  $command");

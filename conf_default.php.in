@@ -274,4 +274,16 @@ $conf['case_sensitive_hostnames'] = true;
 # The following property controls whether the graphs contained in metric
 # groups are initially displayed or collapsed
 $conf['metric_groups_initially_collapsed'] = false;
+
+# Overlay events on graphs. Those are defined by specifying all the events
+# in events.json
+$conf['overlay_events'] = false;
+
+# Where is the Overlay events file stored
+$conf['events_file'] = $conf['conf_dir'] . "/events.json";
+
+# Colors to use e.g. in graph_colors
+$conf['graph_colors'] = array("0000A3", "FF3300", "FFCC33", "00CC66", "B88A00", "33FFCC", "809900", "FF3366", "FF33CC", "CC33FF", "CCFF33", "FFFF66", "33CCFF");
+
+
 ?>
