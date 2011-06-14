@@ -62,6 +62,7 @@ $(function() {
 {/if}
 
 <style type="text/css">
+  .nobr { white-space:nowrap; }
   .toggler { width: 500px; height: 200px; }
   a.button { padding: .15em 1em; text-decoration: none; }
   #effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
@@ -88,7 +89,7 @@ $(function() {
  <tr><td width="60%">Hosts up:</td><td align=left><B>{$num_nodes}</B></td></tr>
  <tr><td>Hosts down:</td><td align=left><B>{$num_dead_nodes}</B></td></tr>
  <tr><td>&nbsp;</td></tr>
- <tr><td colspan=2>Current Load Avg (15, 5, 1m):<br>&nbsp;&nbsp;<b>{$cluster_load}</b></td></tr>
+ <tr><td colspan=2><font class="nobr">Current Load Avg (15, 5, 1m):</font><br>&nbsp;&nbsp;<b>{$cluster_load}</b></td></tr>
  <tr><td colspan=2>Avg Utilization (last {$range}):<br>&nbsp;&nbsp;<b>{$cluster_util}</b></td></tr>
  <tr><td colspan=2>Localtime:<br>&nbsp;&nbsp;<b>{$localtime}</b></td></tr>
  </table>
