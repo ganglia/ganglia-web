@@ -621,7 +621,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
     if ( preg_match("/" . $event["host_regex"]  .  "/", $original_command)) {
 
       if ( ($timestamp >= $start ) && ( $timestamp < $end ) ) {
-
+  
         $color_index = $counter % $color_count;
         $command .= " VRULE:" . $timestamp . "#" .
           $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\"";

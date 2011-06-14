@@ -290,7 +290,10 @@ function find_avg($clustername, $hostname, $metricname)
         "DEF:avg='$sum_dir/$metricname.rrd':'sum':AVERAGE ".
         "PRINT:avg:AVERAGE:%.2lf ";
     exec($command, $out);
-    $avg = $out[1];
+    if ( isset($out[1]) ) 
+      $avg = $out[1];
+    else
+      $avg = 0;
     #echo "$sum_dir: avg($metricname)=$avg<br>\n";
     return $avg;
 }
@@ -960,7 +963,13 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
      
   } // end of foreach( $graph_config[ 'series' ] as $index => $item )
 
-  $rrdtool_graph[ 'series' ] = $series;
+  // If we end up with the empty series it means that no RRD files matched. This can happen
+  // if we are trying to create a report and metrics for this host were not collected. If that
+  // happens we should create an empty graph
+  if ( $series == "" ) 
+    $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"No matching metrics detected"';   
+  else
+    $rrdtool_graph[ 'series' ] = $series;
   
   
   return $rrdtool_graph;
