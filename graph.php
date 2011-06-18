@@ -616,14 +616,16 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   $original_command = $command;
   
   // Sort events in reverse chronological order
-  krsort($events_array);
+  // krsort($events_array);
   
   // Loop through all the events
-  foreach ( $events_array as $timestamp => $event) {
+  foreach ( $events_array as $id => $event) {
+
+    $timestamp = $event['timestamp'];
 
     // If timestamp is less than start bail out of the loop since there is nothing more to do
-    if ( $timestamp < $start )
-      break;
+#    if ( $timestamp < $start )
+#      break;
 
     if ( preg_match("/" . $event["host_regex"]  .  "/", $original_command)) {
 
@@ -631,7 +633,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   
         $color_index = $counter % $color_count;
         $command .= " VRULE:" . $timestamp . "#" .
-          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\"";
+          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\":dashes";
     
         $counter++;
     
