@@ -66,13 +66,17 @@ $(function() {
 <form id="aggregate_graph_form">
 <table id="aggregate_graph_table_form">
 <tr>
+<td>Title:</td>
+<td colspan=2><input name="title" id="title" value="" size=50></td>
+</tr>
+<tr>
 <td>Vertical (Y-Axis) label:</td>
 <td colspan=2><input name="vl" id="vl" value="" size=50></td>
-<tr>
+</tr>
 <tr>
 <td>Host Regular expression e.g. web-[0,4], web or (web|db):</td>
 <td colspan=2><input name="hreg[]" id="hreg" size=60></td>
-<tr>
+</tr>
 <tr><td>Metric Regular expression (not a report e.g. load_one, bytes_(in|out)):</td>
 <td colspan=2><input name="mreg[]" id="metric_chooser"></td>
 </tr>

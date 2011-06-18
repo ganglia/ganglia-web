@@ -773,6 +773,9 @@ function get_view_graph_elements($view) {
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" .$item['vertical_label'];
 
+	  if (isset($item['title']))
+	    $graph_args_array[] = "title=" .$item['title'];
+
 	  if ( isset($item['metric']) ) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	  }
