@@ -8,7 +8,7 @@ $base_dir = dirname(__FILE__);
 set_include_path( "$base_dir/lib:" . ini_get( 'include_path' ) );
 
 # Load main config file.
-require_once "./conf_default.php";
+require_once $base_dir . "/conf_default.php";
 require_once 'lib/GangliaAcl.php';
 require_once 'lib/GangliaAuth.php';
 
