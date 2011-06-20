@@ -96,7 +96,7 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
   if ( ! in_array( $report_name, $reports["excluded_reports"] ) ) {
     $optional_reports .= "<a name=metric_" . $report_name . ">
     <A HREF=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url\">
-    <IMG BORDER=0 $additional_cluster_img_html_args ALT=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\"></A>
+    <IMG BORDER=0 style=\"padding:2px;\" $additional_cluster_img_html_args title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\"></A>
 ";
   }
 
@@ -356,12 +356,12 @@ foreach ( $sorted_hosts as $host => $value )
             $cell="<td><div><font style='font-size: 8px'>$host</font><br><a href=$host_link><img $additional_host_img_html_args src=\"./graph.php?";
             $cell .= (isset($reports[$metricname]) and $reports[$metricname])
                ? "g=$metricname" : "m=$metricname";
-            $cell .= "&amp;$graphargs\" alt=\"$host\" border=0></a></div></td>";
+            $cell .= "&amp;$graphargs\" title=\"$host\" border=0 style=\"padding:2px;\"></a></div></td>";
          }
 
       if ($conf['hostcols'] == 0) {
          $pre = "<td><a href=$host_link><img src=\"./graph.php?g=";
-         $post = "&amp;$graphargs\" $additional_host_img_html_args alt=\"$host\" border=0></a></td>";
+         $post = "&amp;$graphargs\" $additional_host_img_html_args title=\"$host\" border=0 style=\"padding:2px;\"></a></td>";
          $cell .= $pre . "load_report" . $post;
          $cell .= $pre . "mem_report" . $post;
          $cell .= $pre . "cpu_report" . $post;

@@ -116,11 +116,11 @@ $(function() {
 </div>
 
 <TD ROWSPAN=2 ALIGN="CENTER" VALIGN=top>
-<div id="optional_graphs">
+<div id="optional_graphs" style="padding-bottom:2px;">
   {$optional_reports}<br>
   {foreach $optional_graphs_data graph}
   <A HREF="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=large">
-  <IMG BORDER=0 {$additional_cluster_img_html_args} ALT="{$cluster} {$graph.name}" SRC="./graph.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=medium"></A>
+  <IMG BORDER=0 {$additional_cluster_img_html_args} title="{$cluster} {$graph.name}" SRC="./graph.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=medium"></A>
   {/foreach}
 </div>
 {if $user_may_edit}
@@ -131,7 +131,7 @@ $(function() {
 
 <TR>
  <TD align=center valign=top>
-  <IMG SRC="./pie.php?{$pie_args}" ALT="Pie Chart" BORDER="0">
+  <IMG SRC="./pie.php?{$pie_args}" title="Pie Chart" BORDER="0">
  </TD>
 </TR>
 </TABLE>
