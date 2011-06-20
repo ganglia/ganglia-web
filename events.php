@@ -20,7 +20,7 @@ $events_array = json_decode($events_json, TRUE);
 
 foreach ( $events_array as $id => $event ) {
   $description = isset($event['description']) ? $event['description'] : "";
-  print "<tr><td>" . date("Y-m-d H:i:s", $event['event_starttime']) . "</td>" .
+  print "<tr><td>" . date("Y-m-d H:i:s", $event['start_time']) . "</td>" .
     "<td>" . $event['summary'] . "</td>" .
     "<td>" . $description . "</td>" .
     "<td>" . $event['grid'] . "</td>" .

@@ -616,7 +616,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   $original_command = $command;
 
   foreach ($events_array as $key => $row) {
-    $timestamp[$key]  = $row['event_starttime'];
+    $timestamp[$key]  = $row['start_time'];
   }
 
   // Sort events in reverse chronological order
@@ -631,7 +631,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   // Loop through all the events
   foreach ( $events_array as $id => $event) {
 
-    $timestamp = $event['event_starttime'];
+    $timestamp = $event['start_time'];
 
     // If timestamp is less than start bail out of the loop since there is nothing more to do since
     // events are sorted in reverse chronological order and these events are not gonna show up in the graph
