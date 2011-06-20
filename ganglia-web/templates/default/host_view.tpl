@@ -71,7 +71,7 @@ $(function() {
   </div>
 </div>
 
-<div>
+<div style="padding-bottom:5px;">
 <a href="#" id="host_overview" class="button ui-state-default ui-corner-all">Host overview</a>
 </div>
 
@@ -142,13 +142,17 @@ $(function() {
 
 <TD ALIGN="CENTER" VALIGN="TOP" WIDTH="395">
 
-{$optional_reports}<br>
+{$optional_reports}
+</td>
+</tr>
 {if $may_edit_cluster}
+<tr>
+<td style="text-align:center;padding-top:5px;">
 <button id="edit_optional_graphs_button">Edit Optional Graphs</button>
+</td>
+</tr>
 {/if}
-</TD>
-</TR>
-</TABLE>
+</table>
 </div>
 
 <div id="sort_column_dropdowns">
