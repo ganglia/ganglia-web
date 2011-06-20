@@ -633,7 +633,8 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
 
     $timestamp = $event['event_starttime'];
 
-    // If timestamp is less than start bail out of the loop since there is nothing more to do
+    // If timestamp is less than start bail out of the loop since there is nothing more to do since
+    // events are sorted in reverse chronological order and these events are not gonna show up in the graph
     if ( $timestamp < $start )
       break;
 
@@ -641,9 +642,10 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
 
       if ( ($timestamp >= $start ) && ( $timestamp < $end ) ) {
   
+	$summary = isset($event['summary']) ? $event['summary'] : "";
         $color_index = $counter % $color_count;
         $command .= " VRULE:" . $timestamp . "#" .
-          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\"" . $overlay_events_line_type;
+          $conf['graph_colors'][$color_index] . ":\"" . $summary . "\"" . $overlay_events_line_type;
     
         $counter++;
     
