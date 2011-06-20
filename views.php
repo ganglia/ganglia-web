@@ -280,7 +280,7 @@ $(function(){
 	    $legend = isset($element['hostname']) ? $element['hostname'] : "Aggregate graph";
 	    print "
 	    <A HREF=\"./graph_all_periods.php?" . $element['graph_args'] ."&z=large\">
-	    <IMG ALT=\"" . $legend . " - " . $element['name'] . "\" BORDER=0 SRC=\"./graph.php?" . $element['graph_args'] . "&z=medium" . $range_args .  "\"></A>";
+	    <IMG title=\"" . $legend . " - " . $element['name'] . "\" BORDER=0 SRC=\"./graph.php?" . $element['graph_args'] . "&z=medium" . $range_args .  "\" style=\"padding:2px;\"></A>";
 
 	}
       } else {
