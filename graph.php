@@ -588,7 +588,7 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 //////////////////////////////////////////////////////////////////////////////
 if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
 
-  $events_json = file_get_contents($conf['events_file']);
+  $events_json = file_get_contents($conf['overlay_events_file']);
   $events_array = json_decode($events_json, TRUE);
   
   $color_count = sizeof($conf['graph_colors']);
@@ -614,18 +614,28 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   // Preserve original rrdtool command. That's the one we'll run regex checks
   // against
   $original_command = $command;
-  
+
+  foreach ($events_array as $key => $row) {
+    $timestamp[$key]  = $row['event_starttime'];
+  }
+
   // Sort events in reverse chronological order
-  // krsort($events_array);
+  array_multisort($timestamp, SORT_DESC, $events_array);
+
+  // Default to dashed line unless events_line_type is set to solid
+  if ( $conf['overlay_events_line_type'] == "solid" )
+    $overlay_events_line_type = "";
+  else
+    $overlay_events_line_type = ":dashes";
   
   // Loop through all the events
   foreach ( $events_array as $id => $event) {
 
-    $timestamp = $event['timestamp'];
+    $timestamp = $event['event_starttime'];
 
     // If timestamp is less than start bail out of the loop since there is nothing more to do
-#    if ( $timestamp < $start )
-#      break;
+    if ( $timestamp < $start )
+      break;
 
     if ( preg_match("/" . $event["host_regex"]  .  "/", $original_command)) {
 
@@ -633,7 +643,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   
         $color_index = $counter % $color_count;
         $command .= " VRULE:" . $timestamp . "#" .
-          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\":dashes";
+          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\"" . $overlay_events_line_type;
     
         $counter++;
     
