@@ -104,6 +104,9 @@
   <li><a href="#tabs-search">Search</a></li>
   <li><a href="#tabs-views" onclick="getViewsContent();">Views</a></li>
   <li><a href="aggregate_graphs.php">Aggregate Graphs</a></li>
+{if $overlay_events}
+  <li><a href="events.php">Events</a></li>
+{/if}
   <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
   <li><a href="#mobile" onclick="location.href = 'mobile.php';">Mobile</a></li>
 </ul>

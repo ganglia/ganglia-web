@@ -27,7 +27,7 @@ if ( isset($_GET['q']) && $_GET['q'] != "" ) {
       if ( $mobile )
 	$results .= '<a onclick="jQuery(\'#jquery-live-search\').slideUp(0)" href="mobile_helper.php?show_host_metrics=1&h=' . $host_name . '&c=' . $cluster_name . '&r=' . $conf['default_time_range'] . '&cs=&ce=">Host: ' . $host_name . '</a>';  
       else
-        $results .= "Host: <a target=\"_blank\" href=\"?c=" . $cluster_name . "&h=" . $host_name . "&m=cpu_report&r=" . $conf['default_time_range']  ."&s=descending&hc=4&mc=2\">" . $host_name . "</a><br>";
+        $results .= "Host: <a target=\"_blank\" href=\"?c=" . $cluster_name . "&h=" . $host_name . "&m=cpu_report&r=" . $conf['default_time_range']  ."&s=descending&hc=4&mc=2\">" . $host_name . " ( " . $cluster_name . " )</a><br>";
     }
   }
 

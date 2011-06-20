@@ -42,8 +42,8 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
 	  }
 	}
     } else {
-    ?>
      // If hostname is not set we assume we are dealing with aggregate graphs
+    ?>
     <input type=hidden name=host_name value="<?php print $_GET['host_name']; ?>">
     <input type=hidden name=metric_name value="<?php print $_GET['metric_name']; ?>">
     <input type=hidden name=type value="<?php print $_GET['type']; ?>">
