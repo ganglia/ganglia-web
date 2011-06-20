@@ -215,7 +215,6 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     $graph_config["report_type"] = "standard";
     $graph_config["title"] = $metric_name;
     $graph_config["vertical_label"] = $vlabel;
-    $title = "Aggregate";
 
     $color_count = sizeof($conf['graph_colors']);
 
@@ -259,6 +258,14 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
         $graph_config["report_name"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
         $graph_config["title"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
       }
+    }
+
+    // Reset graph title 
+    if ( isset($_GET['title']) && $_GET['title'] != "") {
+      $title = "";
+      $graph_config["title"] = $_GET['title'];
+    } else {
+      $title = "Aggregate";
     }
 
     if ( isset($matches)) {
@@ -609,22 +616,24 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   $original_command = $command;
   
   // Sort events in reverse chronological order
-  krsort($events_array);
+  // krsort($events_array);
   
   // Loop through all the events
-  foreach ( $events_array as $timestamp => $event) {
+  foreach ( $events_array as $id => $event) {
+
+    $timestamp = $event['timestamp'];
 
     // If timestamp is less than start bail out of the loop since there is nothing more to do
-    if ( $timestamp < $start )
-      break;
+#    if ( $timestamp < $start )
+#      break;
 
     if ( preg_match("/" . $event["host_regex"]  .  "/", $original_command)) {
 
       if ( ($timestamp >= $start ) && ( $timestamp < $end ) ) {
-
+  
         $color_index = $counter % $color_count;
         $command .= " VRULE:" . $timestamp . "#" .
-          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\"";
+          $conf['graph_colors'][$color_index] . ":\"" . $event['description'] . "\":dashes";
     
         $counter++;
     

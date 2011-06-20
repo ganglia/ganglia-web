@@ -61,6 +61,7 @@ function graph_cpu_report( &$rrdtool_graph )
     if ($context != "host" ) {
         $series .= "DEF:'num_nodes'='${rrd_dir}/cpu_user.rrd':'num':AVERAGE ";
     }
+
     $series .= "DEF:'cpu_user'='${rrd_dir}/cpu_user.rrd':'sum':AVERAGE "
             . $cpu_nice_def
             . "DEF:'cpu_system'='${rrd_dir}/cpu_system.rrd':'sum':AVERAGE "
@@ -159,7 +160,13 @@ function graph_cpu_report( &$rrdtool_graph )
                         . "GPRINT:'idle_max':'${space1}Max\:%5.1lf%%\\l' ";
     }
 
-    $rrdtool_graph['series'] = $series;
+  // If metrics like cpu_user and wio are not present we are likely not collecting them on this
+  // host therefore we should not attempt to build anything and will likely end up with a broken
+  // image. To avoid that we'll make an empty image
+  if ( !file_exists("$rrd_dir/cpu_wio.rrd") && !file_exists("$rrd_dir/cpu_user.rrd") ) 
+    $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"No matching metrics detected"';   
+  else
+    $rrdtool_graph[ 'series' ] = $series;
 
     return $rrdtool_graph;
 }
