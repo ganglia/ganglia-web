@@ -1,4 +1,4 @@
-o<?php
+<?php
 /* $Id: graph.php 2591 2011-05-10 13:42:54Z vvuksan $ */
 include_once "./eval_conf.php";
 include_once "./get_context.php";
@@ -658,10 +658,11 @@ if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
         
         if ( $timestamp >= $start ) {
         
+	  // Do we have the end timestamp. 
           if ( !isset($end) || ( $timestamp < $end ) || 'N' == $end ) {
 
             $summary = isset($event['summary']) ? $event['summary'] : "";
-            $summary .= '_s_'.$timestamp . '_e_'. $end . '_d_'. (isset($ts_end) ? $ts_end : $end ) -$timestamp;
+#            $summary .= '_s_'.$timestamp . '_e_'. $end . '_d_'. (isset($ts_end) ? $ts_end : $end ) -$timestamp;
             $color_index = $counter % $color_count;
   
             if (isset($ts_end)) {
@@ -679,7 +680,6 @@ if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
                         . "#$color"
                         . ':""' . $overlay_events_line_type;
 
-              
               # We need a dummpy DEF statement, because RRDtool is too stupid
               # to plot graphs without a DEF statement.
               # We can't count on a static name, so we have to "find" one.
@@ -687,7 +687,6 @@ if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
 
                 $area_cdef = " CDEF:area_$counter=$matches[1],POP,"   # stupid rrdtool limitation.
                            . "TIME,$timestamp,GT,1,UNKN,IF,TIME,$ts_end,LT,1,UNKN,IF,+";
-
 
                 $area_shade = $conf['graph_colors'][$color_index] . $conf['overlay_events_shade_alpha'];
                 $area = " TICK:area_$counter#$area_shade:1";
@@ -701,7 +700,7 @@ if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
               
             } else {
               $command .= " VRULE:" . $timestamp 
-                        . "#" . $conf['graph_colors'][$color_index] . $conf['overlay_events_tick_alpha'] 
+                        . "#" . $conf['graph_colors'][$color_index]
                         . ":\"" . $summary . "\"" . $overlay_events_line_type;
             }
             

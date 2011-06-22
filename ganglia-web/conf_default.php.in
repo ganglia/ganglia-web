@@ -288,8 +288,8 @@ $conf['overlay_events_file'] = $conf['conf_dir'] . "/events.json";
 
 # For event shading.  Value in hex, 'FF' = 100% opaque.
 # the _shade_ value should be less than _tick_
-$conf['overlay_events_tick_alpha']  = 'B0';
-$conf['overlay_events_shade_alpha'] = '55';
+$conf['overlay_events_tick_alpha']  = '20';
+$conf['overlay_events_shade_alpha'] = '30';
 
 # Colors to use e.g. in graph_colors
 $conf['graph_colors'] = array("0000A3", "FF3300", "FFCC33", "00CC66", "B88A00", "33FFCC", "809900", "FF3366", "FF33CC", "CC33FF", "CCFF33", "FFFF66", "33CCFF");
