@@ -279,11 +279,17 @@ $conf['metric_groups_initially_collapsed'] = false;
 # in events.json
 $conf['overlay_events'] = false;
 
-# Overlay events line can be either dashed or solid. It is assumed to be dashed unless specified otherwise
+# Overlay events line can be either dashed or solid. Use "solid" for solid
+# lines, anything else (including blanks) means a dashed line.
 $conf['overlay_events_line_type'] = "dashed";
 
 # Where is the Overlay events file stored
 $conf['overlay_events_file'] = $conf['conf_dir'] . "/events.json";
+
+# For event shading.  Value in hex, 'FF' = 100% opaque.
+# the _shade_ value should be less than _tick_
+$conf['overlay_events_tick_alpha']  = 'B0';
+$conf['overlay_events_shade_alpha'] = '55';
 
 # Colors to use e.g. in graph_colors
 $conf['graph_colors'] = array("0000A3", "FF3300", "FFCC33", "00CC66", "B88A00", "33FFCC", "809900", "FF3366", "FF33CC", "CC33FF", "CCFF33", "FFFF66", "33CCFF");
