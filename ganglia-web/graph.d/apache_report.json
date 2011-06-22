@@ -1,5 +1,10 @@
 {
    "report_name" : "apache_report",
-   "report_type" : "template",
-   "report_arguments"  : "target=HOST_CLUSTER.apache_200.sum&target=HOST_CLUSTER.apache_300.sum&target=HOST_CLUSTER.apache_400.sum&target=HOST_CLUSTER.apache_500.sum&areaMode=stacked"
+   "report_type" : "standard",
+   "title" : "Apache HTTP codes",
+   "vertical_label" : "req/sec",
+   "series" : [
+      { "metric": "apache_200", "color": "33cc33", "label": "200", "line_width": "2", "type": "stack" },
+      { "metric": "apache_300", "color": "5555cc", "label": "300", "line_width": "2", "type": "stack" }
+   ]
 }
