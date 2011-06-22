@@ -76,40 +76,40 @@ $fudge_2 = $conf['graph_sizes'][ $size ][ 'fudge_2' ];
 ///////////////////////////////////////////////////////////////////////////
 switch ($context)
 {
-    case "meta":
-      $rrd_dir = $conf['rrds'] . "/__SummaryInfo__";
-      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/__SummaryInfo__";
-      $title = "$self Grid";
-      break;
-    case "grid":
-      $rrd_dir = $conf['rrds'] . "/$grid/__SummaryInfo__";
-      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/$grid/__SummaryInfo__";
-      if (preg_match('/grid/i', $gridname))
-          $title  = $gridname;
-      else
-          $title  = "$gridname Grid";
-      break;
-    case "cluster":
-      $rrd_dir = $conf['rrds'] . "/$clustername/__SummaryInfo__";
-      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/$clustername/__SummaryInfo__";
-      if (preg_match('/cluster/i', $clustername))
-          $title  = $clustername;
-      else
-          $title  = "$clustername Cluster";
-      break;
-    case "host":
-      $rrd_dir = $conf['rrds'] . "/$clustername/$raw_host";
-      $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/" . $clustername . "/" . $host;
-      // Add hostname to report graphs' title in host view
-      if ($graph != 'metric')
-         if ($conf['strip_domainname'])
-            $title = strip_domainname($raw_host);
-         else
-            $title = $raw_host;
-      break;
-    default:
-      $title = $clustername;
-      exit;
+  case "meta":
+    $rrd_dir = $conf['rrds'] . "/__SummaryInfo__";
+    $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/__SummaryInfo__";
+    $title = "$self Grid";
+    break;
+  case "grid":
+    $rrd_dir = $conf['rrds'] . "/$grid/__SummaryInfo__";
+    $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/$grid/__SummaryInfo__";
+    if (preg_match('/grid/i', $gridname))
+        $title  = $gridname;
+    else
+        $title  = "$gridname Grid";
+    break;
+  case "cluster":
+    $rrd_dir = $conf['rrds'] . "/$clustername/__SummaryInfo__";
+    $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/$clustername/__SummaryInfo__";
+    if (preg_match('/cluster/i', $clustername))
+        $title  = $clustername;
+    else
+        $title  = "$clustername Cluster";
+    break;
+  case "host":
+    $rrd_dir = $conf['rrds'] . "/$clustername/$raw_host";
+    $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/" . $clustername . "/" . $host;
+    // Add hostname to report graphs' title in host view
+    if ($graph != 'metric')
+       if ($conf['strip_domainname'])
+          $title = strip_domainname($raw_host);
+       else
+          $title = $raw_host;
+    break;
+  default:
+    $title = $clustername;
+    exit;
 }
 
 
@@ -195,118 +195,119 @@ if ($range == "month")
 // Are we generating aggregate graphs
 if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     
-    // Set start time
-    $start = time() + $start;
+  // Set start time
+  $start = time() + $start;
 
-    // If graph type is not specified default to line graph
-    if ( isset($_GET["gtype"]) && in_array($_GET["gtype"], array("stack","line") )  ) 
-        $graph_type = $_GET["gtype"];
-    else
-        $graph_type = "line";
-    
-    // If line width not specified default to 2
-    if ( isset($_GET["lw"]) && in_array($_GET["lw"], array("1","2", "3") )  ) 
-        $line_width = $_GET["lw"];
-    else
-        $line_width = "2";
-    
-    // Set up 
-    $graph_config["report_name"] = $metric_name;
-    $graph_config["report_type"] = "standard";
-    $graph_config["title"] = $metric_name;
-    $graph_config["vertical_label"] = $vlabel;
+  // If graph type is not specified default to line graph
+  if ( isset($_GET["gtype"]) && in_array($_GET["gtype"], array("stack","line") )  ) 
+      $graph_type = $_GET["gtype"];
+  else
+      $graph_type = "line";
 
-    $color_count = sizeof($conf['graph_colors']);
+  // If line width not specified default to 2
+  if ( isset($_GET["lw"]) && in_array($_GET["lw"], array("1","2", "3") )  ) 
+      $line_width = $_GET["lw"];
+  else
+      $line_width = "2";
 
-    // Load the host cache
-    require_once('./cache.php');
-    
-    $counter = 0;
+  // Set up 
+  $graph_config["report_name"] = $metric_name;
+  $graph_config["report_type"] = "standard";
+  $graph_config["title"] = $metric_name;
+  $graph_config["vertical_label"] = $vlabel;
 
-    // Find matching hosts    
-    foreach ( $_GET['hreg'] as $key => $query ) {
-      foreach ( $index_array['hosts'] as $key => $host_name ) {
-        if ( preg_match("/$query/i", $host_name ) ) {
-          // We can have same hostname in multiple clusters
-          $matches[] = $host_name . "|" . $index_array['cluster'][$host_name]; 
-        }
+  $color_count = sizeof($conf['graph_colors']);
+
+  // Load the host cache
+  require_once('./cache.php');
+
+  $counter = 0;
+
+  // Find matching hosts    
+  foreach ( $_GET['hreg'] as $key => $query ) {
+    foreach ( $index_array['hosts'] as $key => $host_name ) {
+      if ( preg_match("/$query/i", $host_name ) ) {
+        // We can have same hostname in multiple clusters
+        $matches[] = $host_name . "|" . $index_array['cluster'][$host_name]; 
       }
-    } 
+    }
+  } 
 
-    if( isset($_GET['mreg'])){
-      // Find matching metrics
-      foreach ( $_GET['mreg'] as $key => $query ) {
-        foreach ( $index_array['metrics'] as $key => $m_name ) {
-          if ( preg_match("/$query/i", $key ) ) {
-            $metric_matches[] = $key;
-          }
+  if( isset($_GET['mreg'])){
+    // Find matching metrics
+    foreach ( $_GET['mreg'] as $key => $query ) {
+      foreach ( $index_array['metrics'] as $key => $m_name ) {
+        if ( preg_match("/$query/i", $key ) ) {
+          $metric_matches[] = $key;
         }
       }
     }
-    if( isset($metric_matches)){
-      $metric_matches_unique = array_unique($metric_matches);
+  }
+  
+  if( isset($metric_matches)){
+    $metric_matches_unique = array_unique($metric_matches);
+  }
+  else{
+    $metric_matches_unique = array($metric_name);
+  }
+  if( !isset($metric_name)){
+    if( sizeof($metric_matches_unique)==1){
+      $graph_config["report_name"]=$metric_matches_unique[0];
+      $graph_config["title"]=$metric_matches_unique[0];
     }
     else{
-      $metric_matches_unique = array($metric_name);
+      $graph_config["report_name"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
+      $graph_config["title"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
     }
-    if( !isset($metric_name)){
-      if( sizeof($metric_matches_unique)==1){
-        $graph_config["report_name"]=$metric_matches_unique[0];
-        $graph_config["title"]=$metric_matches_unique[0];
+  }
+
+  // Reset graph title 
+  if ( isset($_GET['title']) && $_GET['title'] != "") {
+    $title = "";
+    $graph_config["title"] = $_GET['title'];
+  } else {
+    $title = "Aggregate";
+  }
+
+  if ( isset($matches)) {
+
+    $matches_unique = array_unique($matches);
+
+    // Create graph_config series from matched hosts and metrics
+    foreach ( $matches_unique as $key => $host_cluster ) {
+
+      $out = explode("|", $host_cluster);
+
+      $host_name = $out[0];
+      $cluster_name = $out[1];
+
+      foreach ( $metric_matches_unique as $key => $m_name ) {
+
+        // We need to cycle the available colors
+        $color_index = $counter % $color_count;
+
+        // next loop if there is no metric for this hostname
+        if( !in_array($host_name, $index_array['metrics'][$m_name]))
+          continue;
+
+        $label = '';
+        if ($conf['strip_domainname'] == True )
+          $label = strip_domainname($host_name);
+        else
+          $label = $host_name;
+        if( isset($metric_matches) and sizeof($metric_matches_unique)>1)
+          $label.=" $m_name";
+
+        $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
+          "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
+
+        $counter++;
+
       }
-      else{
-        $graph_config["report_name"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
-        $graph_config["title"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
-      }
     }
 
-    // Reset graph title 
-    if ( isset($_GET['title']) && $_GET['title'] != "") {
-      $title = "";
-      $graph_config["title"] = $_GET['title'];
-    } else {
-      $title = "Aggregate";
-    }
-
-    if ( isset($matches)) {
-
-      $matches_unique = array_unique($matches);
-
-      // Create graph_config series from matched hosts and metrics
-      foreach ( $matches_unique as $key => $host_cluster ) {
-
-        $out = explode("|", $host_cluster);
-
-        $host_name = $out[0];
-        $cluster_name = $out[1];
-
-        foreach ( $metric_matches_unique as $key => $m_name ) {
-
-          // We need to cycle the available colors
-          $color_index = $counter % $color_count;
-
-          // next loop if there is no metric for this hostname
-          if( !in_array($host_name, $index_array['metrics'][$m_name]))
-            continue;
-
-          $label = '';
-          if ($conf['strip_domainname'] == True )
-            $label = strip_domainname($host_name);
-          else
-            $label = $host_name;
-          if( isset($metric_matches) and sizeof($metric_matches_unique)>1)
-            $label.=" $m_name";
-
-          $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
-            "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
-
-          $counter++;
-
-        }
-      }
-
-    }
-    #print "<PRE>"; print_r($graph_config); exit(1);
+  }
+  #print "<PRE>"; print_r($graph_config); exit(1);
 
 }
 
@@ -318,29 +319,29 @@ switch ( $conf['graph_engine'] ) {
   case "rrdtool":
     
     if ( ! isset($graph_config) ) {
-        $php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
-        $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
-        if( is_file( $php_report_file ) ) {
-          include_once $php_report_file;
-          $graph_function = "graph_${graph}";
-          $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
-        } else if ( is_file( $json_report_file ) ) {
-          $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
-          
-          # We need to add hostname and clustername if it's not specified
-          foreach ( $graph_config['series'] as $index => $item ) {
-            if ( ! isset($graph_config['series'][$index]['hostname'])) {
-              $graph_config['series'][$index]['hostname'] = $raw_host;
-              if (isset($grid))
-                 $graph_config['series'][$index]['clustername'] = $grid;
-              else
-                 $graph_config['series'][$index]['clustername'] = $clustername;
-            }
+      $php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
+      $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
+      if( is_file( $php_report_file ) ) {
+        include_once $php_report_file;
+        $graph_function = "graph_${graph}";
+        $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
+      } else if ( is_file( $json_report_file ) ) {
+        $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
+
+        # We need to add hostname and clustername if it's not specified
+        foreach ( $graph_config['series'] as $index => $item ) {
+          if ( ! isset($graph_config['series'][$index]['hostname'])) {
+            $graph_config['series'][$index]['hostname'] = $raw_host;
+            if (isset($grid))
+               $graph_config['series'][$index]['clustername'] = $grid;
+            else
+               $graph_config['series'][$index]['clustername'] = $clustername;
           }
-          
-          build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
         }
-    
+
+        build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
+      }
+
     } else {
         
         build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
@@ -373,16 +374,16 @@ switch ( $conf['graph_engine'] ) {
     // Otherwise, we just loop over them later, and tack $extras and
     // $series onto the end of the command.
     foreach (array_keys ($rrdtool_graph) as $key) {
-        if (preg_match('/extras|series/', $key))
-            continue;
-  
-        $value = $rrdtool_graph[$key];
-  
-        if (preg_match('/\W/', $value)) {
-            //more than alphanumerics in value, so quote it
-            $value = "'$value'";
-        }
-        $command .= " --$key $value";
+      if (preg_match('/extras|series/', $key))
+          continue;
+
+      $value = $rrdtool_graph[$key];
+
+      if (preg_match('/\W/', $value)) {
+          //more than alphanumerics in value, so quote it
+          $value = "'$value'";
+      }
+      $command .= " --$key $value";
     }
   
     // And finish up with the two variables that need special handling.
@@ -427,44 +428,44 @@ switch ( $conf['graph_engine'] ) {
     } else {
 
       if ( isset($_GET['g'])) {
-	// if it's a report increase the height for additional 30 pixels
-	$height += 40;
+    // if it's a report increase the height for additional 30 pixels
+    $height += 40;
     
-	$report_name = sanitize($_GET['g']);
+    $report_name = sanitize($_GET['g']);
     
-	$report_definition_file = $conf['ganglia_dir'] . "/graph.d/" . $report_name . ".json";
-	// Check whether report is defined in graph.d directory
-	if ( is_file($report_definition_file) ) {
-	  $graph_config = json_decode(file_get_contents($report_definition_file), TRUE);
-	} else {
-	  error_log("There is JSON config file specifying $report_name.");
-	  exit(1);
-	}
+    $report_definition_file = $conf['ganglia_dir'] . "/graph.d/" . $report_name . ".json";
+    // Check whether report is defined in graph.d directory
+    if ( is_file($report_definition_file) ) {
+      $graph_config = json_decode(file_get_contents($report_definition_file), TRUE);
+    } else {
+      error_log("There is JSON config file specifying $report_name.");
+      exit(1);
+    }
     
-	if ( isset($graph_config) ) {
-	  switch ( $graph_config["report_type"] ) {
-	    case "template":
-	      $target = str_replace("HOST_CLUSTER", $host_cluster, $graph_config["graphite"]);
-	      break;
+    if ( isset($graph_config) ) {
+      switch ( $graph_config["report_type"] ) {
+        case "template":
+          $target = str_replace("HOST_CLUSTER", $host_cluster, $graph_config["graphite"]);
+          break;
     
-	    case "standard":
-	      $target = build_graphite_series( $graph_config, $host_cluster );
-	      break;
+        case "standard":
+          $target = build_graphite_series( $graph_config, $host_cluster );
+          break;
     
-	    default:
-	      error_log("No valid report_type specified in the $report_name definition.");
-	      break;
-	  }
+        default:
+          error_log("No valid report_type specified in the $report_name definition.");
+          break;
+      }
     
-	  $title = $graph_config['title'];
-	} else {
-	  error_log("Configuration file to $report_name exists however it doesn't appear it's a valid JSON file");
-	  exit(1);
-	}
+      $title = $graph_config['title'];
+    } else {
+      error_log("Configuration file to $report_name exists however it doesn't appear it's a valid JSON file");
+      exit(1);
+    }
       } else {
-	// It's a simple metric graph
-	$target = "target=$host_cluster.$metric_name.sum&hideLegend=true&vtitle=" . urlencode($vlabel) . "&areaMode=all";
-	$title = " ";
+    // It's a simple metric graph
+    $target = "target=$host_cluster.$metric_name.sum&hideLegend=true&vtitle=" . urlencode($vlabel) . "&areaMode=all";
+    $title = " ";
       }
 
     } // end of if ( ! isset($graph_config) ) {
@@ -484,12 +485,15 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 
   foreach ( $matches[0] as $key => $value ) {
     if ( preg_match("/(DEF:\')(.*)(\'=\')(.*)\/(.*)\/(.*)\/(.*)(\.rrd)/", $value, $out ) ) {
-	$ds_name = $out[2];
-	$cluster_name = $out[5];
-	$host_name = $out[6];
-	$metric_name = $out[7];
-	$output_array[] = array( "ds_name" => $ds_name, "cluster_name" => $out[5], "host_name" => $out[6], "metric_name" => $out[7] );
-	$rrdtool_graph_args .= $value . " " . "XPORT:" . $ds_name . ":" . $metric_name . " ";
+      $ds_name = $out[2];
+      $cluster_name = $out[5];
+      $host_name = $out[6];
+      $metric_name = $out[7];
+      $output_array[] = array( "ds_name"      => $ds_name, 
+                               "cluster_name" => $out[5], 
+                               "host_name"    => $out[6], 
+                               "metric_name"  => $out[7] );
+      $rrdtool_graph_args .= $value . " " . "XPORT:" . $ds_name . ":" . $metric_name . " ";
     }
   }
 
@@ -541,11 +545,11 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 
     foreach ( $output_array as $key => $metric_array ) {
       foreach ( $metric_array['metrics'] as $key => $values ) {
-	$data_array[] = array ( $values['timestamp'] * 1000,  $values['value']);  
+    $data_array[] = array ( $values['timestamp'] * 1000,  $values['value']);  
       }
 
       $flot_array[] = array( 'label' =>  strip_domainname($metric_array['host_name']) . " " . $metric_array['metric_name'], 
-	  'data' => $data_array);
+      'data' => $data_array);
 
       unset($data_array);
 
@@ -573,7 +577,7 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
     foreach ( $output_array[0]["metrics"] as $key => $row ) {
       print date("c", $row["timestamp"]);
       for ( $j = 0 ; $j < $num_of_metrics ; $j++ ) {
-	print "," .$output_array[$j]["metrics"][$key]["value"];
+        print "," .$output_array[$j]["metrics"][$key]["value"];
       }
       print "\n";
     }
@@ -586,74 +590,142 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 //////////////////////////////////////////////////////////////////////////////
 // Check whether user wants to overlay events on graphs
 //////////////////////////////////////////////////////////////////////////////
-if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
+if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
 
   $events_json = file_get_contents($conf['overlay_events_file']);
   $events_array = json_decode($events_json, TRUE);
-  
-  $color_count = sizeof($conf['graph_colors']);
-  $counter = 0;
 
-  // In order not too pollute the command line with all the possible VRULEs
-  // we need to find the time range for the graph
-  if ( $rrdtool_graph['end'] == "-N" )
-    $end = time();
-  else if ( is_numeric($rrdtool_graph['end']) )
-    $end = $rrdtool_graph['end'];
-  else
-    $end = 20000000000;
+//  error_log('Events file='.$conf['overlay_events_file']);
+//  error_log('Events='.$events_json);
+//  error_log('Events='.print_r($events_array,TRUE));
+//  error_log(print_r($rrdtool_graph,TRUE));
 
-  if ( preg_match("/\-([0-9]*)(s)/", $rrdtool_graph['start'] , $out ) ) {
-    $start = time() - $out[1];
-  } else if ( is_numeric($rrdtool_graph['start']) )
-    $start = $rrdtool_graph['start'];
-  else
-    // If it's not 
-    $start = time() - 157680000;
-
-  // Preserve original rrdtool command. That's the one we'll run regex checks
-  // against
-  $original_command = $command;
-
-  foreach ($events_array as $key => $row) {
-    $timestamp[$key]  = $row['start_time'];
-  }
-
-  // Sort events in reverse chronological order
-  array_multisort($timestamp, SORT_DESC, $events_array);
-
-  // Default to dashed line unless events_line_type is set to solid
-  if ( $conf['overlay_events_line_type'] == "solid" )
-    $overlay_events_line_type = "";
-  else
-    $overlay_events_line_type = ":dashes";
-  
-  // Loop through all the events
-  foreach ( $events_array as $id => $event) {
-
-    $timestamp = $event['start_time'];
-
-    // If timestamp is less than start bail out of the loop since there is nothing more to do since
-    // events are sorted in reverse chronological order and these events are not gonna show up in the graph
-    if ( $timestamp < $start )
-      break;
-
-    if ( preg_match("/" . $event["host_regex"]  .  "/", $original_command)) {
-
-      if ( ($timestamp >= $start ) && ( $timestamp < $end ) ) {
-  
-	$summary = isset($event['summary']) ? $event['summary'] : "";
-        $color_index = $counter % $color_count;
-        $command .= " VRULE:" . $timestamp . "#" .
-          $conf['graph_colors'][$color_index] . ":\"" . $summary . "\"" . $overlay_events_line_type;
+  if (!empty($events_array)) {
     
-        $counter++;
-    
+    $color_count = sizeof($conf['graph_colors']);
+    $counter = 0;
+
+    // In order not too pollute the command line with all the possible VRULEs
+    // we need to find the time range for the graph
+    if ( $rrdtool_graph['end'] == "-N" or $rrdtool_graph['end'] == "N")
+      $end = time();
+    else if ( is_numeric($rrdtool_graph['end']) )
+      $end = $rrdtool_graph['end'];
+
+    if ( preg_match("/\-([0-9]*)(s)/", $rrdtool_graph['start'] , $out ) ) {
+      $start = time() - $out[1];
+    } else if ( is_numeric($rrdtool_graph['start']) )
+      $start = $rrdtool_graph['start'];
+    else
+      // If it's not 
+      $start = time() - 157680000;
+
+    // Preserve original rrdtool command. That's the one we'll run regex checks
+    // against
+    $original_command = $command;
+
+    foreach ($events_array as $key => $row) {
+      $timestamp[$key]  = $row['start_time'];
+    }
+
+    // Sort events in reverse chronological order
+    array_multisort($timestamp, SORT_DESC, $events_array);
+
+    // Default to dashed line unless events_line_type is set to solid
+    if ( $conf['overlay_events_line_type'] == "solid" )
+      $overlay_events_line_type = "";
+    else
+      $overlay_events_line_type = ":dashes";
+
+    // Loop through all the events
+    foreach ( $events_array as $id => $event) {
+
+      $timestamp = $event['start_time'];
+      unset($ts_end);
+      if (array_key_exists('end_time', $event)) {
+        $ts_end = $event['end_time'];
       }
-    } // end of if ( preg_match ...
-  } // end of foreach ( $events_array ...
+
+      // If timestamp is less than start bail out of the loop since there is nothing more to do since
+      // events are sorted in reverse chronological order and these events are not gonna show up in the graph
+      if ( $timestamp < $start ) {
+        //error_log("Time $timestamp earlier than start [$start]");
+        break;
+      }
+
+      if ( preg_match("/" . $event["host_regex"]  .  "/", $original_command)) {
+
+        //error_log("S:$start t:$timestamp e:$end");
+        
+        if ( $timestamp >= $start ) {
+        
+          if ( !isset($end) || ( $timestamp < $end ) || 'N' == $end ) {
+
+            $summary = isset($event['summary']) ? $event['summary'] : "";
+            $summary .= '_s_'.$timestamp . '_e_'. $end . '_d_'. (isset($ts_end) ? $ts_end : $end ) -$timestamp;
+            $color_index = $counter % $color_count;
   
-  unset($events_array);
+            if (isset($ts_end)) {
+              # Attempt to draw a shaded area between start and end points.
+              
+              $color = $conf['graph_colors'][$color_index] . $conf['overlay_events_tick_alpha'];
+
+              # Force solid line for ranges
+              $overlay_events_line_type = "";
+              
+              $start_vrule = " VRULE:" . $timestamp 
+                        . "#$color"
+                        . ":\"" . $summary . "\"" . $overlay_events_line_type;
+                        
+              $end_vrule = " VRULE:" . $ts_end
+                        . "#$color"
+                        . ':""' . $overlay_events_line_type;
+
+              
+              # We need a dummpy DEF statement, because RRDtool is too stupid
+              # to plot graphs without a DEF statement.
+              # We can't count on a static name, so we have to "find" one.
+              if (preg_match("/DEF:['\"]?(\w+)['\"]?=/", $command, $matches)) {
+
+                $area_cdef = " CDEF:area_$counter=$matches[1],POP,"   # stupid rrdtool limitation.
+                           . "TIME,$timestamp,GT,1,UNKN,IF,TIME,$ts_end,LT,1,UNKN,IF,+";
+
+
+                $area_shade = $conf['graph_colors'][$color_index] . $conf['overlay_events_shade_alpha'];
+                $area = " TICK:area_$counter#$area_shade:1";
+
+                $command .= "$area_cdef $area $start_vrule $end_vrule";
+
+              } else {
+                error_log("No DEF statements found in \$command?!");
+                #error_log("No DEF statements found in: $command");
+              }
+              
+            } else {
+              $command .= " VRULE:" . $timestamp 
+                        . "#" . $conf['graph_colors'][$color_index] . $conf['overlay_events_tick_alpha'] 
+                        . ":\"" . $summary . "\"" . $overlay_events_line_type;
+            }
+            
+            $counter++;
+            
+          } else {
+            #error_log("Timestamp [$timestamp] >= [$end]");
+          }
+          
+        } else {
+          #error_log("Timestamp [$timestamp] < [$start]");
+        }
+        
+      } // end of if ( preg_match ...
+      else {
+        //error_log("Doesn't match host_regex");
+      }
+
+    } // end of foreach ( $events_array ...
+
+    unset($events_array);
+  } //End check for array
 }
 
 if ($debug) {
@@ -672,7 +744,7 @@ if($command || $graphite_url) {
         print "<html><body>";
         
         switch ( $conf['graph_engine'] ) {
-	  case "flot":
+      case "flot":
           case "rrdtool":
             print htmlentities( $command );
             break;
@@ -684,7 +756,7 @@ if($command || $graphite_url) {
     } else {
         header ("Content-type: image/png");
         switch ( $conf['graph_engine'] ) {  
-	  case "flot":
+      case "flot":
           case "rrdtool":
             passthru($command);
             break;
