@@ -35,8 +35,13 @@ switch ( $_GET['action'] ) {
     $cluster = isset($_GET['cluster']) ? $_GET['cluster'] : "*";
     $description = isset($_GET['description']) ? $_GET['description'] : "";
 
-    $events_array[] = array( "start_time" => $start_time, "summary" => $_GET['summary'],
+    $event = array( "start_time" => $start_time, "summary" => $_GET['summary'],
       "grid" => $grid, "cluster" => $cluster, "host_regex" => $_GET['host_regex']);
+
+    if ( isset($_GET['end_time']) )
+      $event['end_time'] = $_GET['end_time'] == "now" ? time() : strtotime($_GET['end_time']);
+  
+    $events_array[] = $event;
 
     $json = json_encode($events_array);
 
