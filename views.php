@@ -239,7 +239,7 @@ $(function(){
       else
 	$checked = "";
 #	$range_menu .= "<input OnChange=\"getViewsContentJustGraphs(document.getElementById('view_name').value);\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
-      $range_menu .= "<input OnChange=\"$.cookie('ganglia-view-range', '" . $v . "'); document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = ''; getViewsContentJustGraphs(document.getElementById('view_name').value, '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+      $range_menu .= "<input OnChange=\"$.cookie('ganglia-view-range-' + window.name, '" . $v . "'); document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = ''; getViewsContentJustGraphs(document.getElementById('view_name').value, '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
 
    }
   print $range_menu;
