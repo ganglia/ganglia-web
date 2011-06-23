@@ -590,7 +590,7 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 //////////////////////////////////////////////////////////////////////////////
 // Check whether user wants to overlay events on graphs
 //////////////////////////////////////////////////////////////////////////////
-if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
+if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
 
   $events_json = file_get_contents($conf['overlay_events_file']);
   $events_array = json_decode($events_json, TRUE);
@@ -641,8 +641,12 @@ if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
     foreach ( $events_array as $id => $event) {
 
       $timestamp = $event['start_time'];
+      // Make sure it's a number
+      if ( ! is_numeric($timestamp) ) {
+	continue;
+      }
       unset($ts_end);
-      if (array_key_exists('end_time', $event)) {
+      if (array_key_exists('end_time', $event) && is_numeric($event['end_time']) ) {
         $ts_end = $event['end_time'];
       }
 
@@ -661,8 +665,9 @@ if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
 	  // Do we have the end timestamp. 
           if ( !isset($end) || ( $timestamp < $end ) || 'N' == $end ) {
 
-            $summary = isset($event['summary']) ? $event['summary'] : "";
-#            $summary .= '_s_'.$timestamp . '_e_'. $end . '_d_'. (isset($ts_end) ? $ts_end : $end ) -$timestamp;
+	    // This is a potential vector since this gets added to the command line_width
+	    // TODO: Look over sanitize
+            $summary = isset($event['summary']) ? sanitize($event['summary']) : "";
             $color_index = $counter % $color_count;
   
             if (isset($ts_end)) {
@@ -671,7 +676,7 @@ if ( $conf['overlay_events_file'] && $conf['graph_engine'] == "rrdtool" ) {
 
               # Force solid line for ranges
               $overlay_events_line_type = "";
-              
+             
               $start_vrule = " VRULE:" . $timestamp 
                         . "#$color"
                         . ":\"" . $summary . "\"" . $overlay_events_line_type;
