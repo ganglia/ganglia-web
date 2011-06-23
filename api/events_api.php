@@ -29,7 +29,14 @@ switch ( $_GET['action'] ) {
 
     // If the time is now just insert the current time stamp. Otherwise use strtotime
     // to convert
-    $start_time = $_GET['start_time'] == "now" ? time() : strtotime($_GET['start_time']);
+    if ( $_GET['start_time'] == "now" )
+      $start_time = time();
+    else if ( is_numeric($_GET['start_time']) ) 
+      $start_time = $_GET['start_time'];
+    else 
+      $start_time = strtotime($_GET['start_time']);
+
+//    $start_time = $_GET['start_time'] == "now" ? time() : strtotime($_GET['start_time']);
 
     $grid = isset($_GET['grid']) ? $_GET['grid'] : "*";
     $cluster = isset($_GET['cluster']) ? $_GET['cluster'] : "*";
@@ -46,10 +53,12 @@ switch ( $_GET['action'] ) {
     $json = json_encode($events_array);
 
     if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
-      print "Error: Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong.";
+      $message = array( "status" => "error", "message" => "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong.");
     } else {
-      print "Events file has been updated successfully.";
-    } 
+      $message = array( "status" => "ok");
+    }
+
+    print json_encode($message);
 
     break;
 
