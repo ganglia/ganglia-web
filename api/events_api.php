@@ -18,6 +18,12 @@ $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
 
+if ( ! $conf['overlay_events'] ) {
+  print "Events API is NOT ENABLED. Please set \$conf['overlay_events'] = true to enable.";
+  exit(1);
+}
+
+
 $events_json = file_get_contents($conf['overlay_events_file']);
 
 $events_array = json_decode($events_json, TRUE);
