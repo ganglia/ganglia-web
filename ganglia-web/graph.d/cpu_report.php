@@ -21,6 +21,7 @@ function graph_cpu_report( &$rrdtool_graph )
     $rrdtool_graph['vertical-label'] = 'Percent';
     $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
     $rrdtool_graph['extras'] = ($conf['graphreport_stats'] == true) ? ' --font LEGEND:7' : '';
+    $rrdtool_graph['extras']  .= " --rigid";
 
     if ( $conf['graphreport_stats'] ) {
         $rrdtool_graph['height'] += ($size == 'medium') ? 16 : 0;
