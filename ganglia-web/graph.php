@@ -318,6 +318,10 @@ switch ( $conf['graph_engine'] ) {
   case "rrdtool":
     
     if ( ! isset($graph_config) ) {
+	if ( ($graph == "metric") &&
+             isset($_GET['title']) && 
+             $_GET['title'] !== '')
+            $metrictitle = $_GET['title'];
         $php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
         $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
         if( is_file( $php_report_file ) ) {

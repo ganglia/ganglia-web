@@ -136,10 +136,10 @@ function addItemToView() {
   });
   return false;  
 }
-function metricActions(host_name,metric_name,type) {
+function metricActions(host_name,metric_name,type,graphargs) {
     $( "#metric-actions-dialog" ).dialog( "open" );
     $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
-    $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type, function(data) {
+    $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type + graphargs, function(data) {
       $("#metric-actions-dialog-content").html(data);
      });
     return false;
