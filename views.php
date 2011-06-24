@@ -52,7 +52,7 @@ if ( isset($_GET['create_view']) ) {
 } 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// Create new view
+// Add to view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 if ( isset($_GET['add_to_view']) ) {
   if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
@@ -92,10 +92,14 @@ if ( isset($_GET['add_to_view']) ) {
 	    "vertical_label" => $_GET['vl'], "title" => $_GET['title']);
 
       } else {
-
-	if ( $_GET['type'] == "metric" ) 
-	  $view['items'][] = array( "hostname" => $_GET['host_name'], "metric" => $_GET['metric_name']);
-	else
+	if ( $_GET['type'] == "metric" ) {
+          $items = array( "hostname" => $_GET['host_name'], "metric" => $_GET['metric_name'] );
+	  if (isset($_GET['vertical_label']))
+              $items["vertical_label"] = $_GET['vertical_label'];
+	  if (isset($_GET['title']))
+              $items["title"] = $_GET['title'];
+	  $view['items'][] = $items;
+	} else
 	  $view['items'][] = array( "hostname" => $_GET['host_name'], "graph" => $_GET['metric_name']);
 
       }
