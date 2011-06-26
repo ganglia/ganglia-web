@@ -252,19 +252,19 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   }
   if( !isset($metric_name)){
     if( sizeof($metric_matches_unique)==1){
-      $graph_config["report_name"]=$metric_matches_unique[0];
-      $graph_config["title"]=$metric_matches_unique[0];
+      $graph_config["report_name"]=sanitize($metric_matches_unique[0]);
+      $graph_config["title"]=sanitize($metric_matches_unique[0]);
     }
     else{
-      $graph_config["report_name"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
-      $graph_config["title"]=isset($_GET["mreg"])  ?  implode($_GET["mreg"])   : NULL;
+      $graph_config["report_name"]=isset($_GET["mreg"])  ?  sanitize(implode($_GET["mreg"]))   : NULL;
+      $graph_config["title"]=isset($_GET["mreg"])  ?  sanitize(implode($_GET["mreg"]))   : NULL;
     }
   }
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
-    $title = "";
-    $graph_config["title"] = $_GET['title'];
+    unset($title);
+    $graph_config["title"] = sanitize($_GET['title']);
   } else {
     $title = "Aggregate";
   }
@@ -319,6 +319,10 @@ switch ( $conf['graph_engine'] ) {
   case "rrdtool":
     
     if ( ! isset($graph_config) ) {
+	if ( ($graph == "metric") &&
+             isset($_GET['title']) && 
+             $_GET['title'] !== '')
+	  $metrictitle = sanitize($_GET['title']);
       $php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
       $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
       if( is_file( $php_report_file ) ) {

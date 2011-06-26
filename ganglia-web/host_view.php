@@ -69,7 +69,7 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
       $optional_reports .= "<IMG $additional_cluster_img_html_args BORDER=0 title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\" style=\"padding:2px;\"></A>";
 
     if(checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf)) {
-      $optional_reports .= "<a style=\"background-color: #dddddd\" onclick=\"metricActions('" . $hostname . "','" . $report_name ."','graph'); return false;\" href=\"#\" title=\"Metric Actions\">+</a> ";
+      $optional_reports .= "<a style=\"background-color: #dddddd\" onclick=\"metricActions('" . $hostname . "','" . $report_name ."','graph',''); return false;\" href=\"#\" title=\"Metric Actions\">+</a> ";
     }
     $optional_reports .= "<a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&csv=1\"><img title=\"Export to CSV\" border=0 height=16 width=16 src=\"img/csv.png\"></a>
     <a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&json=1\"><img title=\"Export to JSON\" border=0 height=16 width=16 src=\"img/js.png\"></a>";

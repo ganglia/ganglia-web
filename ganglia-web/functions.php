@@ -803,6 +803,12 @@ function get_view_graph_elements($view) {
 	  $graph_args_array[] = "h=$hostname";
 	  $graph_args_array[] = "c=$cluster";
 
+	  if (isset($item['vertical_label']))
+	    $graph_args_array[] = "vl=" .$item['vertical_label'];
+
+	  if (isset($item['title']))
+	    $graph_args_array[] = "title=" .$item['title'];
+
 	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array), 
 	    "hostname" => $hostname,
 	    "cluster" => $cluster,
