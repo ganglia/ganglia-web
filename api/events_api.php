@@ -9,6 +9,8 @@
 //    host_regex => Host regular expression ie. web or web-0[2,4,5]
 ////////////////////////////////////////////////////////////////////////////////////
 // Make timestamp, description and host_regex have been supplied before proceeding
+header("Content-Type: text/plain");
+
 if ( ! isset($_GET['start_time']) || ! isset($_GET['summary']) || ! isset($_GET['host_regex']) || !isset($_GET['action']) ) {
   print "Error: You need to supply start_time, summary, host_regex and action at a minimum";
   exit(1);
@@ -19,7 +21,7 @@ $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
 
 if ( ! $conf['overlay_events'] ) {
-  print "Events API is NOT ENABLED. Please set \$conf['overlay_events'] = true to enable.";
+  print "Events API is DISABLED. Please set \$conf['overlay_events'] = true to enable.";
   exit(1);
 }
 
