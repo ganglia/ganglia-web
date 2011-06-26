@@ -13,8 +13,8 @@ require_once 'lib/GangliaAcl.php';
 require_once 'lib/GangliaAuth.php';
 
 # Include user-defined overrides if they exist.
-if( file_exists( "./conf.php" ) ) {
-  include_once "./conf.php";
+if( file_exists( $base_dir . "/conf.php" ) ) {
+  include_once $base_dir . "/conf.php";
 }
 
 $errors = array();
