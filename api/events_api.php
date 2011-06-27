@@ -11,11 +11,6 @@
 // Make timestamp, description and host_regex have been supplied before proceeding
 header("Content-Type: text/plain");
 
-if ( ! isset($_GET['start_time']) || ! isset($_GET['summary']) || ! isset($_GET['host_regex']) || !isset($_GET['action']) ) {
-  print "Error: You need to supply start_time, summary, host_regex and action at a minimum";
-  exit(1);
-}
-
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
@@ -25,15 +20,23 @@ if ( ! $conf['overlay_events'] ) {
   exit(1);
 }
 
+if ( !isset($_GET['action']) ) {
+      print "Error: You need to specify an action at a minimum";
+      exit(1);
+}
 
 $events_json = file_get_contents($conf['overlay_events_file']);
 
 $events_array = json_decode($events_json, TRUE);
 
-
 switch ( $_GET['action'] ) {
  
   case "add":
+
+    if ( ! isset($_GET['start_time']) || ! isset($_GET['summary']) || ! isset($_GET['host_regex']) ) {
+      print "Error: You need to supply start_time, summary, host_regex at a minimum";
+      exit(1);
+    }
 
     // If the time is now just insert the current time stamp. Otherwise use strtotime
     // to convert
@@ -44,14 +47,15 @@ switch ( $_GET['action'] ) {
     else 
       $start_time = strtotime($_GET['start_time']);
 
-//    $start_time = $_GET['start_time'] == "now" ? time() : strtotime($_GET['start_time']);
-
     $grid = isset($_GET['grid']) ? $_GET['grid'] : "*";
     $cluster = isset($_GET['cluster']) ? $_GET['cluster'] : "*";
     $description = isset($_GET['description']) ? $_GET['description'] : "";
+    // Generate a unique event ID. This is so we can reference it later
+    $event_id = uniqid();
 
-    $event = array( "start_time" => $start_time, "summary" => $_GET['summary'],
-      "grid" => $grid, "cluster" => $cluster, "host_regex" => $_GET['host_regex']);
+    $event = array( "event_id" => $event_id, "start_time" => $start_time, "summary" => $_GET['summary'],
+      "grid" => $grid, "cluster" => $cluster, "host_regex" => $_GET['host_regex'],
+      );
 
     if ( isset($_GET['end_time']) )
       $event['end_time'] = $_GET['end_time'] == "now" ? time() : strtotime($_GET['end_time']);
@@ -63,10 +67,44 @@ switch ( $_GET['action'] ) {
     if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
       $message = array( "status" => "error", "message" => "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong.");
     } else {
-      $message = array( "status" => "ok");
+      $message = array( "status" => "ok", "event_id" => $event_id);
     }
 
-    print json_encode($message);
+    break;
+
+  case "remove":
+  case "delete":
+
+    $event_found = 0;
+    if ( isset($_GET['event_id']) ) {
+      foreach ( $events_array as $key => $event ) {
+	if ( $event['event_id'] == $_GET['event_id'] ) {
+	  $event_found = 1;
+	} else {
+	  $new_events_array[] = $event;
+	}
+
+      } // end of foreach ( $events_array as $key => $event
+
+      if ( $event_found == 1 ) {
+
+	$json = json_encode($new_events_array);
+
+	if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
+	  $message = array( "status" => "error", "message" => "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong.");
+	} else {
+	  $message = array( "status" => "ok", "message" => "Event ID " . $event_id . " removed successfully" );
+	}
+
+      } else {
+	  $message = array( "status" => "error", "message" => "Event ID ". $event_id . " not found" );
+      }
+      
+      unset($new_events_array);
+
+    } else {
+      $message = array( "status" => "error", "message" => "No event_id has been supplied.");
+    }
 
     break;
 
@@ -76,4 +114,7 @@ switch ( $_GET['action'] ) {
     break;
 
 } // end of switch ( $_GET['action'] ) {
+
+print json_encode($message);
+
 ?>
