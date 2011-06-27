@@ -81,9 +81,65 @@ switch ( $_GET['action'] ) {
     $json = json_encode($events_array);
 
     if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
-      $message = array( "status" => "error", "message" => "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong.");
+      api_return_error( "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong." );
     } else {
       $message = array( "status" => "ok", "event_id" => $event_id);
+    }
+
+    break;
+
+  case "edit":
+
+    $event_found = 0;
+    if ( isset($_GET['event_id']) ) {
+      foreach ( $events_array as $key => $event ) {
+	if ( $event['event_id'] == $_GET['event_id'] ) {
+	  $event_found = 1;
+
+          // Modify the event here
+
+          if (isset( $_GET['start_time'] )) {
+            if ( $_GET['start_time'] == "now" )
+              $event['start_time'] = time();
+            else if ( is_numeric($_GET['start_time']) ) 
+              $event['start_time'] = $_GET['start_time'];
+            else 
+              $event['start_time'] = strtotime($_GET['start_time']);
+          }
+          foreach(array('cluster', 'description', 'summary', 'grid', 'host_regex') AS $k) {
+            if (isset( $_GET[$k] )) {
+              $event[$k] = $_GET[$k];
+            }
+          }
+          if ( isset($_GET['end_time']) ) {
+            $event['end_time'] = $_GET['end_time'] == "now" ? time() : strtotime($_GET['end_time']);
+          }
+
+	} // end found event
+
+        // Add either original or modified event back in
+	$new_events_array[] = $event;
+
+      } // end of foreach ( $events_array as $key => $event
+
+      if ( $event_found == 1 ) {
+
+	$json = json_encode($new_events_array);
+
+	if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
+          api_return_error( "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong." );
+	} else {
+	  $message = array( "status" => "ok", "message" => "Event ID " . $event_id . " removed successfully" );
+	}
+
+      } else {
+	  api_return_error( "Event ID ". $event_id . " not found" );
+      }
+      
+      unset($new_events_array);
+
+    } else {
+      api_return_error( "No event_id has been supplied." );
     }
 
     break;
