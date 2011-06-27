@@ -13,7 +13,10 @@
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.11.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
-<script>
+<style type="text/css">
+    body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
+</style>
+<script type="text/javascript">
     var availablemetrics = [ {$available_metrics} ];
     $(function(){
         $( "#metrics-picker" ).autocomplete({
@@ -83,10 +86,6 @@
 {$custom_time_head}
 </HEAD>
 <BODY BGCOLOR="#FFFFFF">
-<style type="text/css">
-    body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
-</style>
-
 {if $auth_system_enabled}
 <div style="float:right">
   {if $username}

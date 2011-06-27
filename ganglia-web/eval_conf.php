@@ -13,8 +13,8 @@ require_once 'lib/GangliaAcl.php';
 require_once 'lib/GangliaAuth.php';
 
 # Include user-defined overrides if they exist.
-if( file_exists( "./conf.php" ) ) {
-  include_once "./conf.php";
+if( file_exists( $base_dir . "/conf.php" ) ) {
+  include_once $base_dir . "/conf.php";
 }
 
 $errors = array();
@@ -65,13 +65,13 @@ if( ! isSet( $conf['auth_system'] ) ) {
 }
 
 if( count($errors) ) {
-  echo "<h1>Errors were detected in your configuration.</h1>";
-  echo "<ul class='errors'>";
+  $e = "<h1>Errors were detected in your configuration.</h1>";
+  $e .= "<ul class='errors'>";
   foreach($errors as $error) {
-    echo "<li>$error</li>";
+    $e .= "<li>$error</li>";
   }
-  echo "</ul>";
-  die();
+  $e .= "</ul>";
+  trigger_error( $e, E_USER_ERROR );
 }
 
 # These are settings derived from the configuration settings, and

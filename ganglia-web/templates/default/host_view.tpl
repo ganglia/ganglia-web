@@ -195,7 +195,7 @@ $(function() {
 <TABLE><TR>
 {foreach $g_metrics["metrics"] g_metric}
 <TD>
-<font style="font-size: 9px">{$g_metric.metric_name}</font>
+<font style="font-size: 9px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font>
 {if $may_edit_views}
 {$graph_args = "&";$graph_args .= html_entity_decode($g_metric.graphargs);}
 <a style="background-color: #dddddd" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;" href="#">+</a>

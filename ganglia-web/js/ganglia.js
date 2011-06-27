@@ -76,7 +76,17 @@ function selectTab(tab_index) {
   $("#tabs").tabs("select", tab_index);
 }
 
+function viewId(view_name) {
+  return "v_" + view_name.replace(/[^a-zA-Z0-9_]/g, "_");
+}
+
+function highlightSelectedView(view_name) {
+  $("#navlist a").css('background-color', '#FFFFFF');	
+  $("#" + viewId(view_name)).css('background-color', 'rgb(238,238,238)');
+}
+
 function selectView(view_name) {
+  highlightSelectedView(view_name);
   $.cookie('ganglia-selected-view-' + window.name, view_name); 
   var range = $.cookie('ganglia-view-range-' + window.name);
   if (range == null)
@@ -106,6 +116,7 @@ function getViewsContent() {
 	$("#view-range-"+range).click();
     } else
       view_name.value = "default";
+    highlightSelectedView(view_name.value);
   });
   return false;
 }
