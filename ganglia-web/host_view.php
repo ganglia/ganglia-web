@@ -60,19 +60,20 @@ $data->assign("additional_cluster_img_html_args", $additional_cluster_img_html_a
 foreach ( $reports["included_reports"] as $index => $report_name ) {
 
   if ( ! in_array( $report_name, $reports["excluded_reports"] ) ) {
-    $optional_reports .= "<a name=metric_" . $report_name . ">
-    <a href=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url\">";
+    //$optional_reports .= "<a name=metric_" . $report_name . ">
+    $optional_reports .= "<a href=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url\">";
 
     if ( $conf['graph_engine'] == "flot" ) 
       $optional_reports .= '<div id="placeholder_' . $graph_args . '&amp;g=' . $report_name .'&amp;z=medium&amp;c=' . $cluster_url . '" class="flotgraph2 img_view"></div>';
     else
-      $optional_reports .= "<IMG $additional_cluster_img_html_args BORDER=0 title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\" style=\"padding:2px;\"></A>";
+      $optional_reports .= "<IMG $additional_cluster_img_html_args BORDER=0 title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\" style=\"padding:2px;\">";
+    $optional_reports .= "</a>";
 
     if(checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf)) {
       $optional_reports .= "<a style=\"background-color: #dddddd\" onclick=\"metricActions('" . $hostname . "','" . $report_name ."','graph',''); return false;\" href=\"#\" title=\"Metric Actions\">+</a> ";
     }
-    $optional_reports .= "<a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&csv=1\"><img title=\"Export to CSV\" border=0 height=16 width=16 src=\"img/csv.png\"></a>
-    <a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&json=1\"><img title=\"Export to JSON\" border=0 height=16 width=16 src=\"img/js.png\"></a>";
+    $optional_reports .= "<a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;csv=1\"><img title=\"Export to CSV\" border=0 height=16 width=16 src=\"img/csv.png\"></a>
+    <a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;json=1\"><img title=\"Export to JSON\" border=0 height=16 width=16 src=\"img/js.png\"></a>";
   }
 
 }
@@ -145,7 +146,8 @@ foreach ($metrics as $name => $v)
              }
              if (isset($v['TITLE'])) {
                 $title = $v['TITLE'];
-                $graphargs .= "&amp;ti=$title";
+		$encodeTitle = rawurlencode($title);
+                $graphargs .= "&amp;ti=$encodeTitle";
              }
              $g_metrics[$name]['graph'] = $graphargs;
              $g_metrics[$name]['description'] = isset($v['DESC']) ? $v['DESC'] : '';
