@@ -151,6 +151,7 @@ foreach ($metrics as $name => $v)
              }
              $g_metrics[$name]['graph'] = $graphargs;
              $g_metrics[$name]['description'] = isset($v['DESC']) ? $v['DESC'] : '';
+             $g_metrics[$name]['title'] = isset($v['TITLE']) ? $v['TITLE'] : '';
 
              # Setup an array of groups that can be used for sorting in group view
              if ( isset($metrics[$name]['GROUP']) ) {
@@ -272,11 +273,10 @@ if ( is_array($g_metrics) && is_array($g_metrics_group) )
                   if ( in_array($name, $metric_array) ) {
                      $g_metrics_group_data[$group]["metrics"][$name]["graphargs"] = $v['graph'];
                      $g_metrics_group_data[$group]["metrics"][$name]["alt"] = "$hostname $name";
-                     $g_metrics_group_data[$group]["metrics"][$name]["desc"] = "";
-		     $g_metrics_group_data[$group]["metrics"][$name]["host_name"] = $hostname;
+                     $g_metrics_group_data[$group]["metrics"][$name]["host_name"] = $hostname;
                      $g_metrics_group_data[$group]["metrics"][$name]["metric_name"] = $name;
-                     if (isset($v['description']))
-                       $g_metrics_group_data[$group]["metrics"][$name]["desc"] = $v['description'];
+                     $g_metrics_group_data[$group]["metrics"][$name]["title"] = $v['title'];
+                     $g_metrics_group_data[$group]["metrics"][$name]["desc"] = $v['description'];
                      $g_metrics_group_data[$group]["metrics"][$name]["new_row"] = "";
                      if ( !(++$i % $conf['metriccols']) && ($i != $c) )
                         $g_metrics_group_data[$group]["metrics"][$name]["new_row"] = "</TR><TR>";

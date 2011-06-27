@@ -181,7 +181,7 @@ if ( isset($_GET['standalone']) && isset($_GET['view_name']) ) {
   if ( ! isset($_GET['just_graphs']) ) {
 
   ?>
-    <table id=views_table>
+    <table id="views_table">
     <tr><td valign=top>
 
   <?php
@@ -200,7 +200,7 @@ if ( isset($_GET['standalone']) && isset($_GET['view_name']) ) {
     # List all the available views
     foreach ( $available_views as $view_id => $view ) {
       $v = $view['view_name'];
-      print '<li><a href="#" onClick="selectView(\'' . $v . '\'); return false;">' . $v . '</a></li>';
+      print '<li><a href="#" id=\'' . viewId($v) . '\' onClick="selectView(\'' . $v . '\'); return false;">' . $v . '</a></li>';
     }
 
     ?>
