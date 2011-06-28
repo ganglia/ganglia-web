@@ -82,9 +82,8 @@ $(function() {
 <TR>
  <TD ALIGN="LEFT" VALIGN="TOP">
 
-<IMG SRC="{$node_image}" HEIGHT="60" WIDTH="30" ALT="{$host}" BORDER="0">
+<IMG SRC="{$node_image}" HEIGHT="60" WIDTH="30" title="{$host}" BORDER="0">
 {$node_msg}
-<P>
 
 <TABLE BORDER="0" WIDTH="100%">
 <TR>
