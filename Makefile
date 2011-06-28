@@ -50,7 +50,7 @@ dist-dir:	default
 
 install:	dist-dir
 	mkdir -p $(DESTDIR) $(GWEB_DWOO) && \
-	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/ && \
+	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
 	cp -a $(DIST_DIR)/* $(DESTDIR) && \
 	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
 
