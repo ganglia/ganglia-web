@@ -39,7 +39,7 @@ Loading View Please wait...<img src="img/spinner.gif">
 Invoke automatic rotation system. Automatic rotation rotates all of the graphs/metrics specified in a view waiting 
 30 seconds in between each. This will run as long as you have this page open.
 <p>
-Please select view you want rotate.<p>
+Please select view you want rotate.</p>
 <div id="tabs-autorotation-chooser">
 Loading View Please wait...<img src="img/spinner.gif">
 </div>
@@ -50,12 +50,10 @@ Loading View Please wait...<img src="img/spinner.gif">
 <CENTER>
 <FONT SIZE="-1" class=footer>
 Ganglia Web Frontend version {$webfrontend_version}
-<A HREF="http://ganglia.sourceforge.net/downloads.php?component=ganglia-webfrontend&amp;
-version={$webfrontend_version}">Check for Updates.</A><BR>
+<A HREF="http://ganglia.sourceforge.net/downloads.php?component=ganglia-webfrontend&amp;version={$webfrontend_version}">Check for Updates.</A><BR>
 
 Ganglia Web Backend <i>({$webbackend_component})</i> version {$webbackend_version}
-<A HREF="http://ganglia.sourceforge.net/downloads.php?component={$webbackend_component}&amp;
-version={$webbackend_version}">Check for Updates.</A><BR>
+<A HREF="http://ganglia.sourceforge.net/downloads.php?component={$webbackend_component}&amp;version={$webbackend_version}">Check for Updates.</A><BR>
 
 Downloading and parsing ganglia's XML tree took {$parsetime}.<BR>
 Images created with <A HREF="http://www.rrdtool.org/">RRDtool</A> version {$rrdtool_version}.<BR>

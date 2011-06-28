@@ -135,10 +135,8 @@ if ( ! isset($_GET['view_name']) ) {
       }
     ?>
     </select> seconds.</form></center>
-    <p>
+    </p>
     <center><a href="/ganglia/">Go back to Ganglia</a></center></div>
-	  </td>
-
 	  </td>
   </tr>
   </table>

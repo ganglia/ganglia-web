@@ -1082,4 +1082,9 @@ function checkAccess($resource, $privilege, $conf) {
   
   return $out;
 }
+
+function viewId($view_name) {
+  $id = 'v_' . preg_replace('/[^a-zA-Z0-9_]/', '_', $view_name);
+  return $id;
+}
 ?>

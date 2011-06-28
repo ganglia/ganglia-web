@@ -77,8 +77,6 @@ $(function() {
 
 <div style="display: none;" id=host_overview_div>
 <br>
-<table>
-
 <TABLE BORDER="0" WIDTH="100%">
 
 <TR>
@@ -197,14 +195,13 @@ $(function() {
 <TABLE><TR>
 {foreach $g_metrics["metrics"] g_metric}
 <TD>
-<a name=metric_{$g_metric.metric_name}>
 <font style="font-size: 9px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font>
 {if $may_edit_views}
 {$graph_args = "&";$graph_args .= html_entity_decode($g_metric.graphargs);}
 <a style="background-color: #dddddd" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;" href="#">+</a>
 {/if}
-<a href="./graph.php?{$g_metric.graphargs}&csv=1"><img title="Export to CSV" border=0 height=16 width=16 src="img/csv.png"></a>
-<a href="./graph.php?{$g_metric.graphargs}&json=1"><img title="Export as JSON" border=0 height=16 width=16 src="img/js.png"></a>
+<a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><img title="Export to CSV" border=0 height=16 width=16 src="img/csv.png"></a>
+<a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><img title="Export as JSON" border=0 height=16 width=16 src="img/js.png"></a>
 <br>
 {if $graph_engine == "flot"}
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>
