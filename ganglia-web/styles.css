@@ -219,3 +219,7 @@ text-decoration: none;
 background-color: #dddddd;
 color: blue;
 }
+.nobr
+{
+white-space:nowrap;
+}
