@@ -1,3 +1,4 @@
+<!-- Begin show_node.tpl -->
 <TABLE BORDER="0" WIDTH="100%">
 <TR>
   <TD COLSPAN="2" CLASS=title>{$name} Info</TD>
@@ -72,3 +73,4 @@
 </TD>
 </TR>
 </TABLE>
+<!-- End show_node.tpl -->
