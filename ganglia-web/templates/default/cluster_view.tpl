@@ -1,3 +1,4 @@
+<!-- Begin cluster_view.tpl -->
 <script type="text/javascript">
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
@@ -53,7 +54,7 @@ $(function() {
 {if $graph_engine == "flot"}
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
-<style>
+<style type="text/css">
 .flotgraph2 {
   height: {$graph_height}px;
   width:  {$graph_width}px;
@@ -62,7 +63,6 @@ $(function() {
 {/if}
 
 <style type="text/css">
-  .nobr { white-space:nowrap; }
   .toggler { width: 500px; height: 200px; }
   a.button { padding: .15em 1em; text-decoration: none; }
   #effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
@@ -75,15 +75,31 @@ $(function() {
   </div>
 </div>
 
-<TABLE BORDER="0" CELLSPACING=5 WIDTH="100%">
-<TR>
-  <TD CLASS=title COLSPAN="2">
-  <FONT SIZE="+1">Overview of {$cluster}</FONT>
-  </TD>
-</TR>
+<style type="text/css">
+#edit_optional_graphs_button {
+    font-size:12px;
+}
+#edit_optional_graphs_content {
+    padding: .4em 1em .4em 10px;
+}
+</style>
 
-<TR>
-<TD ALIGN=left VALIGN=top>
+<div id="edit_optional_graphs">
+  <div style="text-align: center;">
+    <button  id='save_optional_graphs_button'>Save</button>
+  </div>
+  <div id="edit_optional_graphs_content">Empty</div>
+</div>
+
+<table border="0" cellspacing=5 width="100%">
+<tr>
+  <td class="title" colspan="2">
+  <font size="+1">Overview of {$cluster}</font>
+  </td>
+</tr>
+
+<tr>
+<td align="left" valign="top">
 <table cellspacing=1 cellpadding=1 width="100%" border=0>
  <tr><td>CPUs Total:</td><td align=left><B>{$cpu_num}</B></td></tr>
  <tr><td width="60%">Hosts up:</td><td align=left><B>{$num_nodes}</B></td></tr>
@@ -98,72 +114,57 @@ $(function() {
 {include(file="$extra")}
 {/if}
  <hr>
-</TD>
-</div>
-<style>
-#edit_optional_graphs_button {
-    font-size:12px;
-}
-#edit_optional_graphs_content {
-    padding: .4em 1em .4em 10px;
-}
-</style>
-<div id="edit_optional_graphs">
-  <div style="text-align: center;">
-    <button  id='save_optional_graphs_button'>Save</button>
-  </div>
-  <div id="edit_optional_graphs_content">Empty</div>
-</div>
-
-<TD ROWSPAN=2 ALIGN="CENTER" VALIGN=top>
+</td>
+<td rowspan=2 align="center" valign=top>
 <div id="optional_graphs" style="padding-bottom:2px;">
   {$optional_reports}<br>
   {foreach $optional_graphs_data graph}
-  <A HREF="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=large">
-  <IMG BORDER=0 {$additional_cluster_img_html_args} title="{$cluster} {$graph.name}" SRC="./graph.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=medium"></A>
+  <a href="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=large">
+  <img border=0 {$additional_cluster_img_html_args} title="{$cluster} {$graph.name}" src="./graph.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=medium"></a>
   {/foreach}
 </div>
 {if $user_may_edit}
 <button id="edit_optional_graphs_button">Edit Optional Graphs</button>
 {/if}
-</TD>
-</TR>
+</td>
+</tr>
 
-<TR>
- <TD align=center valign=top>
-  <IMG SRC="./pie.php?{$pie_args}" title="Pie Chart" BORDER="0">
- </TD>
-</TR>
-</TABLE>
+<tr>
+ <td align="center" valign="top">
+  <img src="./pie.php?{$pie_args}" title="Pie Chart" border="0">
+ </td>
+</tr>
+</table>
 
-<script>
+<script type="text/javascript">
 // Need to set the field value to metric name
 $("#metrics-picker").val("{$metric_name}");
 </script>
 
-<TABLE BORDER="0" WIDTH="100%">
-<TR>
-  <TD CLASS=title COLSPAN="2">
-  <FONT SIZE="-1">
-  Show Hosts Scaled:
+<table border="0" width="100%">
+  <tr>
+  <td class="title">
+  <font size="-1">
+  <span class="nobr">Show Hosts Scaled:
   {foreach $showhosts_levels id showhosts implode=""}
-  {$showhosts.name}<INPUT type=radio name="sh" value="{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}>
+  {$showhosts.name}<input type=radio name="sh" value="{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}>
   {/foreach}
-  </FONT>
+  </span>
+  </font>
   |
-  {$cluster} <strong>{$metric}</strong>
+  <span class="nobr">{$cluster} <strong>{$metric}</strong>
   last <strong>{$range}</strong>
-  sorted <strong>{$sort}</strong>
+  sorted <strong>{$sort}</strong></span>
 {if isset($columns_size_dropdown)}
   |
-   <FONT SIZE="-1">
-   Size&nbsp;&nbsp;{$size_menu}
-   Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)
-   </FONT>
+   <font size="-1">
+   <span class="nobr">Size&nbsp;&nbsp;{$size_menu}</span>
+   <span class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</span>
+   </font>
 {/if}
-  </TD>
-</TR>
-</TABLE>
+  </td>
+</tr>
+</table>
 
 <center>
 <table id=graph_sorted_list>
@@ -180,8 +181,10 @@ $("#metrics-picker").val("{$metric_name}");
 {/foreach}
 {$overflow_list_footer}
 
-
-<p>
 {if isset($node_legend)}
-(Nodes colored by 1-minute load) | <A HREF="./node_legend.html">Legend</A>{/if}
-</CENTER>
+<p>
+(Nodes colored by 1-minute load) | <a href="./node_legend.html">Legend</A>
+</p>
+{/if}
+</center>
+<!-- End cluster_view.tpl -->
