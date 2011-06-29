@@ -599,17 +599,13 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
   $events_json = file_get_contents($conf['overlay_events_file']);
   $events_array = json_decode($events_json, TRUE);
 
-//  error_log('Events file='.$conf['overlay_events_file']);
-//  error_log('Events='.$events_json);
-//  error_log('Events='.print_r($events_array,TRUE));
-//  error_log(print_r($rrdtool_graph,TRUE));
-
   if (!empty($events_array)) {
     
     $color_count = sizeof($conf['graph_colors']);
     $counter = 0;
+    $color_counter = 0;
 
-    // In order not too pollute the command line with all the possible VRULEs
+    // In order not to pollute the command line with all the possible VRULEs
     // we need to find the time range for the graph
     if ( $rrdtool_graph['end'] == "-N" or $rrdtool_graph['end'] == "N")
       $end = time();
@@ -672,21 +668,35 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
 	    // This is a potential vector since this gets added to the command line_width
 	    // TODO: Look over sanitize
             $summary = isset($event['summary']) ? sanitize($event['summary']) : "";
-            $color_index = $counter % $color_count;
+
+	    // We need to keep track of summaries so that if we have identical summaries
+	    // e.g. Deploy we can use the same color
+            if ( isset($summary_array[$summary]) ) {
+	      $color = $summary_array[$summary];
+	      // Need to reset the summary to empty string to avoid summary to show up 
+	      // in the legend more than once
+	      $summary = "";
+            } else {
+	      // Haven't seen this summary before. Assign it a color
+	      $color_index = $counter % $color_count;
+	      $color = $conf['graph_colors'][$color_index];
+	      $summary_array[$summary] = $color;
+	      $color_counter++;
+	    }
   
             if (isset($ts_end)) {
               # Attempt to draw a shaded area between start and end points.
-              $color = $conf['graph_colors'][$color_index] . $conf['overlay_events_tick_alpha'];
+              
 
               # Force solid line for ranges
               $overlay_events_line_type = "";
              
               $start_vrule = " VRULE:" . $timestamp 
-                        . "#$color"
+                        . "#$color" . $conf['overlay_events_tick_alpha']
                         . ":\"" . $summary . "\"" . $overlay_events_line_type;
                         
               $end_vrule = " VRULE:" . $ts_end
-                        . "#$color"
+                        . "#$color" . $conf['overlay_events_tick_alpha']
                         . ':""' . $overlay_events_line_type;
 
               # We need a dummpy DEF statement, because RRDtool is too stupid
@@ -697,7 +707,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
                 $area_cdef = " CDEF:area_$counter=$matches[1],POP,"   # stupid rrdtool limitation.
                            . "TIME,$timestamp,GT,1,UNKN,IF,TIME,$ts_end,LT,1,UNKN,IF,+";
 
-                $area_shade = $conf['graph_colors'][$color_index] . $conf['overlay_events_shade_alpha'];
+                $area_shade = $color . $conf['overlay_events_shade_alpha'];
                 $area = " TICK:area_$counter#$area_shade:1";
 
                 $command .= "$area_cdef $area $start_vrule $end_vrule";
@@ -709,12 +719,12 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
               
             } else {
               $command .= " VRULE:" . $timestamp 
-                        . "#" . $conf['graph_colors'][$color_index]
+                        . "#" . $color
                         . ":\"" . $summary . "\"" . $overlay_events_line_type;
             }
-            
-            $counter++;
-            
+
+	    $counter++;
+
           } else {
             #error_log("Timestamp [$timestamp] >= [$end]");
           }
