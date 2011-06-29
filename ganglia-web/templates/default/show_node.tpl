@@ -1,7 +1,7 @@
+<!-- Begin show_node.tpl -->
 <TABLE BORDER="0" WIDTH="100%">
 <TR>
   <TD COLSPAN="2" CLASS=title>{$name} Info</TD>
-  </TD>
 </TR>
 <TR><TD COLSPAN="1">&nbsp;</TD></TR>
 <TR>
@@ -26,16 +26,16 @@
    <td class={$load1}><small>{$load_one}</small></td>
    <td class={$load5}><small>{$load_five}</small></td>
    <td class={$load15}><small>{$load_fifteen}</small></td>
-   </tr><em><tr><td></td><td>1m</td><td>5m</td><td>15m</td></tr></em>
-   </tr></table><br>
+   </tr><tr><td></td><td><em>1m</em></td><td><em>5m</em></td><td><em>15m</em></td></tr>
+   </table><br>
 
    <table cellspacing=4 cellpadding=3 border=0><tr>
    <td><i>CPU Utilization:</i></td>
    <td class={$user}><small>{$cpu_user}</small></td>
    <td class={$sys}><small>{$cpu_system}</small></td>
    <td class={$idle}><small>{$cpu_idle}</small></td>
-   </tr><em><tr><td></td><td>user</td><td>sys</td><td>idle</td></tr></em>
-   </tr></table>
+   </tr><tr><td></td><td><em>user</em></td><td><em>sys</em></td><td><em>idle</em></td></tr>
+   </table>
    </td>
    </tr>
    <tr><td align=left valign=top>
@@ -73,3 +73,4 @@
 </TD>
 </TR>
 </TABLE>
+<!-- End show_node.tpl -->
