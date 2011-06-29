@@ -1,3 +1,4 @@
+<!-- Begin host_view.tpl -->
 <script type="text/javascript">
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
@@ -222,3 +223,4 @@ $(function() {
 </CENTER>
 
 </div>
+<!-- End host_view.tpl -->
