@@ -603,6 +603,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
     
     $color_count = sizeof($conf['graph_colors']);
     $counter = 0;
+    $color_counter = 0;
 
     // In order not to pollute the command line with all the possible VRULEs
     // we need to find the time range for the graph
@@ -672,13 +673,15 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
 	    // e.g. Deploy we can use the same color
             if ( isset($summary_array[$summary]) ) {
 	      $color = $summary_array[$summary];
+	      // Need to reset the summary to empty string to avoid summary to show up 
+	      // in the legend more than once
 	      $summary = "";
             } else {
 	      // Haven't seen this summary before. Assign it a color
 	      $color_index = $counter % $color_count;
 	      $color = $conf['graph_colors'][$color_index];
 	      $summary_array[$summary] = $color;
-	      $counter++;
+	      $color_counter++;
 	    }
   
             if (isset($ts_end)) {
@@ -719,7 +722,9 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
                         . "#" . $color
                         . ":\"" . $summary . "\"" . $overlay_events_line_type;
             }
-                        
+
+	    $counter++;
+
           } else {
             #error_log("Timestamp [$timestamp] >= [$end]");
           }
