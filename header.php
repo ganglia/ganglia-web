@@ -393,14 +393,14 @@ if ($context == "meta" or $context == "cluster" or $context == "host")
    {
       $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
          . " -2 days, start + 1 hour, etc.";
-      $custom_time = "&nbsp;&nbsp;or from <INPUT TYPE=\"TEXT\" TITLE=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
+      $custom_time = "&nbsp;&nbsp;or <span class=\"nobr\">from <INPUT TYPE=\"TEXT\" TITLE=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
       if ($cs)
          $custom_time .= " value=\"$cs\"";
       $custom_time .= "> to <INPUT TYPE=\"TEXT\" TITLE=\"$examples\" NAME=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
       if ($ce)
          $custom_time .= " value=\"$ce\"";
       $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
-      $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\">\n";
+      $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>\n";
 #      $custom_time .= $calendar;
       $data->assign("custom_time", $custom_time);
 
