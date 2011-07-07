@@ -76,9 +76,15 @@
         paddingBottom: 50,
     }, defaults));
 
+    function rrdDateTimeString(date) {
+      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+    }
+
     function setStartAndEnd(startTime, endTime) {
-        $("#datepicker-cs").val(Math.floor(startTime));
-        $("#datepicker-ce").val(Math.floor(endTime));
+        var date = new Date(Math.floor(startTime) * 1000);
+        $("#datepicker-cs").val(rrdDateTimeString(date));
+        date = new Date(Math.floor(endTime) * 1000);
+        $("#datepicker-ce").val(rrdDateTimeString(date));
     }
   });
 

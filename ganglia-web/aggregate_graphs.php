@@ -13,6 +13,16 @@ $(function() {
       $("#hreg").val());
   });
 
+  $("#vl").change(function() {
+    $.cookie("ganglia-aggregate-graph-vl" + window.name,
+      $("#vl").val());
+  });
+
+  $("#title").change(function() {
+    $.cookie("ganglia-aggregate-graph-title" + window.name,
+      $("#title").val());
+  });
+
   $("#aggregate_graph_table_form input[name=gtype]").change(function() {
     $.cookie("ganglia-aggregate-graph-gtype" + window.name,
 	   $("#aggregate_graph_table_form input[name=gtype]:checked").val());
@@ -30,6 +40,14 @@ $(function() {
     var metric = $.cookie("ganglia-aggregate-graph-metric" + window.name);
     if (metric != null)
       $("#metric_chooser").val(metric);
+
+    var title = $.cookie("ganglia-aggregate-graph-title" + window.name);
+    if (title != null)
+      $("#title").val(title);
+
+    var vl = $.cookie("ganglia-aggregate-graph-vl" + window.name);
+    if (vl != null)
+      $("#vl").val(vl);
   
     if (hreg != null && gtype != null && metric != null)
       return true;
@@ -67,18 +85,18 @@ $(function() {
 <table id="aggregate_graph_table_form">
 <tr>
 <td>Title:</td>
-<td colspan=2><input name="title" id="title" value="" size=50></td>
+<td colspan=2><input name="title" id="title" value="" size=60></td>
 </tr>
 <tr>
 <td>Vertical (Y-Axis) label:</td>
-<td colspan=2><input name="vl" id="vl" value="" size=50></td>
+<td colspan=2><input name="vl" id="vl" value="" size=60></td>
 </tr>
 <tr>
 <td>Host Regular expression e.g. web-[0,4], web or (web|db):</td>
 <td colspan=2><input name="hreg[]" id="hreg" size=60></td>
 </tr>
 <tr><td>Metric Regular expression (not a report e.g. load_one, bytes_(in|out)):</td>
-<td colspan=2><input name="mreg[]" id="metric_chooser"></td>
+<td colspan=2><input name="mreg[]" id="metric_chooser" size=60></td>
 </tr>
 <tr>
 <td>Graph Type:</td><td>
