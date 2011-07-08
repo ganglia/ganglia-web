@@ -115,8 +115,8 @@ if ( ! isset($_GET['embed'] )  ) {
 foreach ( $conf['time_ranges'] as $key => $value ) {
 
    print '<div class="img_view">' .
-  '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><img title="Export to CSV" height=16 width=16 src="img/csv.png"></a> ' .
-  '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><img title="Export to JSON" height=16 width=16 src="img/js.png"></a>' .
+  '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><img title="Export to CSV" src="img/csv.png" class="icon16"></a> ' .
+  '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><img title="Export to JSON" src="img/js.png" class="icon16"></a>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
@@ -126,7 +126,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 
   } else {
 
-    print '<a href="./graph.php?r=' . $key . '&z=' . $xlargesize . $query_string . '"><img alt="Last ' . $key . '" src="graph.php?r=' . $key . '&z=' . $largesize . $query_string . '"></a>';
+    print '<a href="./graph.php?r=' . $key . '&z=' . $xlargesize . $query_string . '"><img class="noborder" title="Last ' . $key . '" src="graph.php?r=' . $key . '&z=' . $largesize . $query_string . '"></a>';
 
   }
 
