@@ -49,7 +49,7 @@ $(function() {
     if (vl != null)
       $("#vl").val(vl);
   
-    if (hreg != null && gtype != null && metric != null)
+    if (hreg != null && metric != null)
       return true;
     else
       return false;
