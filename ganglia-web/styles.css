@@ -223,3 +223,11 @@ color: blue;
 {
 white-space:nowrap;
 }
+.noborder
+{
+border:0;
+}
+.icon16 
+{
+height:16px;width:16px;border:0;
+}

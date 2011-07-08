@@ -200,14 +200,14 @@ $(function() {
 {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
 <a style="background-color: #dddddd" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;" href="#">+</a>
 {/if}
-<a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><img title="Export to CSV" border=0 height=16 width=16 src="img/csv.png"></a>
-<a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><img title="Export as JSON" border=0 height=16 width=16 src="img/js.png"></a>
+<a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><img title="Export to CSV" class="icon16" src="img/csv.png"></a>
+<a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><img title="Export as JSON" class="icon16" src="img/js.png"></a>
 <br>
 {if $graph_engine == "flot"}
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>
 {else}
 <A HREF="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
-<IMG BORDER=0 {$additional_host_img_html_args} ALT="{$g_metric.alt}" SRC="./graph.php?{$g_metric.graphargs}" TITLE="{$g_metric.desc}">
+<IMG class="noborder" {$additional_host_img_html_args} ALT="{$g_metric.alt}" SRC="./graph.php?{$g_metric.graphargs}" TITLE="{$g_metric.desc}">
 </A>
 {/if}
 </TD>

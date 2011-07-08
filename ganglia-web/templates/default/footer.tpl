@@ -11,7 +11,7 @@
       <p>
 	<label>
 	    Search as you type<br />
-	    <input type="text" name="q" id="search-field-q" on size=40 />
+	    <input type="text" name="q" id="search-field-q" on size=60 />
 	</label>
       </p>
     </form>
