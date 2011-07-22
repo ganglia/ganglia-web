@@ -720,7 +720,7 @@ function get_available_views() {
     $name[$key]  = strtolower($row['view_name']);
   }
 
-  array_multisort($name,SORT_ASC, $available_views);
+  @array_multisort($name,SORT_ASC, $available_views);
 
   return $available_views;
 
