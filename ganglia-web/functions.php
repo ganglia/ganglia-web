@@ -7,6 +7,8 @@
 # have been set.
 #
 
+include_once ( dirname(__FILE__) . "/lib/json.php" );
+
 #-------------------------------------------------------------------------------
 # Allows a form of inheritance for template files.
 # If a file does not exist in the chosen template, the
