@@ -33,6 +33,7 @@ function ganglia_events_api_error_handler ($no, $str, $file, $line, $context) {
 }
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
+include_once $conf['ganglia_dir'] . "/lib/json.php";
 
 if ( ! $conf['overlay_events'] ) {
   api_return_error( "Events API is DISABLED. Please set \$conf['overlay_events'] = true to enable." );
