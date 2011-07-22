@@ -107,8 +107,7 @@ Installation notes
 ==================
 
 IMPORTANT:
-You will need PHP JSON extension. It comes with PHP 5.2+. If you are on 5.1
-use 
+You should install the PHP JSON extension. It comes with PHP 5.2+. If you are on 5.1 use 
 
 pecl install json
 
@@ -118,6 +117,9 @@ pecl is part of php-pear package on RHEL/CentOS. Make sure you have
 extension=json.so
 
 On RHEL/CentOS 4, you will also need phpize which comes with the php-devel package.
+
+In recent versions, a native version of JSON encoding/decoding is used, but using the
+PECL extension is recommended for performance reasons.
 
 BUGS
 ====
