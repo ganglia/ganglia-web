@@ -155,7 +155,7 @@ if ( sizeof($available_views) == 0 ) {
   if ( isset($_GET['standalone']) ) {
     ?>
 <html><head>
-<script TYPE="text/javascript" SRC="js/jquery-1.5.2.min.js"></script>
+<script TYPE="text/javascript" SRC="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.11.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.liveSearch.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
@@ -186,7 +186,7 @@ if ( isset($_GET['standalone']) && isset($_GET['view_name']) ) {
 
   <?php
     if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
-       print '<button onclick="return false" id=create_view_button>Create View</button>';
+       print '<button onclick="return false" id="create_view_button">Create View</button>';
     }
     if ( ! isset($_GET['standalone']) && ! isset($_GET['just_graphs']) ) {
        print '<a href="views.php?standalone=1" id="detach-tab-button">Detach Tab</a>';
@@ -200,7 +200,7 @@ if ( isset($_GET['standalone']) && isset($_GET['view_name']) ) {
     # List all the available views
     foreach ( $available_views as $view_id => $view ) {
       $v = $view['view_name'];
-      print '<li><a href="#" id=\'' . viewId($v) . '\' onClick="selectView(\'' . $v . '\'); return false;">' . $v . '</a></li>';
+      print '<li><a href="#" id="' . viewId($v) . '" onClick="selectView(\'' . $v . '\'); return false;">' . $v . '</a></li>';
     }
 
     ?>
@@ -220,9 +220,9 @@ $(function(){
 
 
     </ul></div></td><td valign=top>
-    <div id=view_range_chooser>
-    <form id=view_timerange_form>
-    <input type="hidden" name=view_name id=view_name value="">
+    <div id="view_range_chooser">
+    <form id="view_timerange_form">
+    <input type="hidden" name="view_name" id="view_name" value="">
 <?php
    $context_ranges = array_keys( $conf['time_ranges'] );
    if (isset($jobrange))
@@ -243,7 +243,7 @@ $(function(){
       else
 	$checked = "";
 #	$range_menu .= "<input OnChange=\"getViewsContentJustGraphs(document.getElementById('view_name').value);\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
-      $range_menu .= "<input OnChange=\"$.cookie('ganglia-view-range-' + window.name, '" . $v . "'); document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = ''; getViewsContentJustGraphs(document.getElementById('view_name').value, '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+      $range_menu .= "<input onChange=\"$.cookie('ganglia-view-range-' + window.name, '" . $v . "'); document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = ''; getViewsContentJustGraphs(document.getElementById('view_name').value, '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
 
    }
   print $range_menu;
