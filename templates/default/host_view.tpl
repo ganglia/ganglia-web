@@ -29,7 +29,7 @@ $(function() {
 
     $("#edit_optional_graphs_button").click(function(event) {
       $("#edit_optional_graphs").dialog('open');
-      $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
+      $('#edit_optional_graphs_content').html('<img src="img/spinner.gif" />');
       $.get('edit_optional_graphs.php', "hostname={$hostname}", function(data) {
 	      $('#edit_optional_graphs_content').html(data);
       })
@@ -76,45 +76,45 @@ $(function() {
 <a href="#" id="host_overview" class="button ui-state-default ui-corner-all">Host overview</a>
 </div>
 
-<div style="display: none;" id=host_overview_div>
+<div style="display: none;" id="host_overview_div">
 <br>
-<TABLE BORDER="0" WIDTH="100%">
+<table border="0" width="100%">
 
-<TR>
- <TD ALIGN="LEFT" VALIGN="TOP">
+<tr>
+ <td align="left" valign="TOP">
 
-<IMG SRC="{$node_image}" HEIGHT="60" WIDTH="30" title="{$host}" BORDER="0">
+<img src="{$node_image}" height="60" width="30" title="{$host}" border="0" />
 {$node_msg}
 
-<TABLE BORDER="0" WIDTH="100%">
-<TR>
-  <TD COLSPAN="2" CLASS=title>Time and String Metrics</TD>
-</TR>
+<table border="0" width="100%">
+<tr>
+  <td colspan="2" class="title">Time and String Metrics</td>
+</tr>
 
 {foreach $s_metrics_data s_metric}
-<TR>
- <TD CLASS=footer WIDTH="30%">{$s_metric.name}</TD><TD>{$s_metric.value}</TD>
-</TR>
+<tr>
+ <td class="footer" width="30%">{$s_metric.name}</td><td>{$s_metric.value}</td>
+</tr>
 {/foreach}
 
-<TR><TD>&nbsp;</TD></TR>
+<tr><td>&nbsp;</td></tr>
 
-<TR>
-  <TD COLSPAN=2 CLASS=title>Constant Metrics</TD>
-</TR>
+<tr>
+  <td colspan="2" class="title">Constant Metrics</td>
+</tr>
 
 {foreach $c_metrics_data c_metric}
-<TR>
- <TD CLASS=footer WIDTH="30%">{$c_metric.name}</TD><TD>{$c_metric.value}</TD>
-</TR>
+<tr>
+ <td class="footer" width="30%">{$c_metric.name}</td><td>{$c_metric.value}</td>
+</tr>
 {/foreach}
-</TABLE>
+</table>
 
- <HR>
+ <hr />
 {if isset($extra)}
 {include(file="$extra")}
 {/if}
-</TD> 
+</td> 
 </table>
 </div>
 <style>
@@ -134,11 +134,11 @@ $(function() {
 
 <div id="optional_graphs">
 
-<TABLE BORDER="0" WIDTH="100%">
+<table border="0" width="100%">
 
-<TR>
+<tr>
 
-<TD ALIGN="CENTER" VALIGN="TOP" WIDTH="395">
+<td align="center" valign="TOP" width="395">
 
 {$optional_reports}
 </td>
@@ -154,73 +154,73 @@ $(function() {
 </div>
 
 <div id="sort_column_dropdowns">
-<TABLE BORDER="0" WIDTH="100%">
-<TR>
-  <TD CLASS=title>
+<table border="0" width="100%">
+<tr>
+  <td class="title">
   {$host} <strong>graphs</strong> ({$host_metrics_count})
   last <strong>{$range}</strong>
   sorted <strong>{$sort}</strong>
 {if isset($columns_dropdown)}
-  <FONT SIZE="-1">
+  <font size="-1">
     Columns&nbsp;&nbsp;{$metric_cols_menu}
     Size&nbsp;&nbsp;{$size_menu}
-  </FONT>
+  </font>
 {/if}
-  </TD>
-</TR>
-</TABLE>
+  </td>
+</tr>
+</table>
 
 </div>
 
 <div id=metrics>
 
-<CENTER>
-<TABLE>
-<TR>
- <TD>
+<center>
+<table>
+<tr>
+ <td>
 
 {foreach $g_metrics_group_data group g_metrics}
-<TABLE BORDER="0" WIDTH="100%">
-<TR>
-  <TD CLASS=metric>
+<table border="0" width="100%">
+<tr>
+  <td class="metric">
   <a href="#" id="{$group}" class="button ui-state-default ui-corner-all" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</a>
-  </TD>
-</TR>
-</TABLE>
+  </td>
+</tr>
+</table>
 {if isset($metric_groups_initially_collapsed) && $metric_groups_initially_collapsed}
 <div id="{$group}_div" class="ui-helper-hidden">
 {else}
 <div id="{$group}_div">
 {/if}
-<TABLE><TR>
+<table><tr>
 {foreach $g_metrics["metrics"] g_metric}
-<TD>
+<td>
 <font style="font-size: 9px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font>
 {if $may_edit_views}
 {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
 <a style="background-color: #dddddd" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;" href="#">+</a>
 {/if}
-<a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><img title="Export to CSV" class="icon16" src="img/csv.png"></a>
-<a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><img title="Export as JSON" class="icon16" src="img/js.png"></a>
+<a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><img title="Export to CSV" class="icon16" src="img/csv.png" /></a>
+<a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><img title="Export as JSON" class="icon16" src="img/js.png" /></a>
 <br>
 {if $graph_engine == "flot"}
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>
 {else}
-<A HREF="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
-<IMG class="noborder" {$additional_host_img_html_args} ALT="{$g_metric.alt}" SRC="./graph.php?{$g_metric.graphargs}" TITLE="{$g_metric.desc}">
+<a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
+<img class="noborder" {$additional_host_img_html_args} alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
 </A>
 {/if}
-</TD>
+</td>
 {$g_metric.new_row}
 {/foreach}
-</TR>
-</TABLE>
+</tr>
+</table>
 </div>
 {/foreach}
- </TD>
-</TR>
-</TABLE>
-</CENTER>
+ </td>
+</tr>
+</table>
+</center>
 
 </div>
 <!-- End host_view.tpl -->
