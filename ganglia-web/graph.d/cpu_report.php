@@ -5,13 +5,12 @@ function graph_cpu_report( &$rrdtool_graph )
 {
     global $conf,
            $context,
-           $hostname,
            $range,
            $rrd_dir,
            $size;
 
     if ($conf['strip_domainname']) {
-       $hostname = strip_domainname($hostname);
+       $hostname = strip_domainname($GLOBALS['hostname']);
     }
 
     $title = 'CPU';

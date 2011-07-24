@@ -6,7 +6,6 @@ function graph_varnish_report ( &$rrdtool_graph ) {
 
    global $conf,
           $context, 
-          $hostname,
           $range,
           $rrd_dir,
           $size;
@@ -15,7 +14,7 @@ function graph_varnish_report ( &$rrdtool_graph ) {
     if ($context != 'host') {
        $rrdtool_graph['title'] = $title;
     } else {
-       $rrdtool_graph['title'] = strip_domainname( $hostname ) ." $title last $range";
+       $rrdtool_graph['title'] = strip_domainname( $GLOBALS['hostname'] ) ." $title last $range";
 
     }
 
