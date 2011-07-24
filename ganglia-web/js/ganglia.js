@@ -25,8 +25,12 @@ $(function(){
         }
       }
     } catch (err) {
-      alert("Error(ganglia.js): Unable to select tab: " + 
-            tab_index + ". " + err.getDescription());
+      try {
+          alert("Error(ganglia.js): Unable to select tab: " + 
+                tab_index + ". " + err.getDescription());
+      } catch (err) {
+          // If we can't even show the error, fail silently.
+      }
     }
   }
 

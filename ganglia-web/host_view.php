@@ -63,11 +63,12 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
     //$optional_reports .= "<a name=metric_" . $report_name . ">
     $optional_reports .= "<a href=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url\">";
 
-    if ( $conf['graph_engine'] == "flot" ) 
-      $optional_reports .= '<div id="placeholder_' . $graph_args . '&amp;g=' . $report_name .'&amp;z=medium&amp;c=' . $cluster_url . '" class="flotgraph2 img_view"></div>';
+    if ( $conf['graph_engine'] == "flot" ) {
+      $optional_reports .= '<div id="placeholder_' . $graph_args . '&amp;g=' . $report_name .'&amp;z=medium&amp;c=' . $cluster_url . '" class="flotgraph2 img_view"></div>' .
       $optional_reports .= '<div id="placeholder_' . $graph_args . '&amp;g=' . $report_name .'&amp;z=medium&amp;c=' . $cluster_url . '_legend" class="flotlegend"></div>';
-    else
+    } else {
       $optional_reports .= "<img $additional_cluster_img_html_args border=\"0\" title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\" style=\"padding:2px;\" />";
+    }
     $optional_reports .= "</a>";
 
     if(checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf)) {

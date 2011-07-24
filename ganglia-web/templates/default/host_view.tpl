@@ -1,4 +1,10 @@
 <!-- Begin host_view.tpl -->
+<style type="text/css">
+/* don't display legends for these small graphs */
+.flotlegend, .flotlegendtoplabel {
+  display: none !important;
+}
+</style>
 <script type="text/javascript">
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
@@ -205,6 +211,7 @@ $(function() {
 <br>
 {if $graph_engine == "flot"}
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>
+<div id="placeholder_{$g_metric.graphargs}_legend" class="flotlegend"></div>
 {else}
 <a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
 <img class="noborder" {$additional_host_img_html_args} alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
