@@ -231,3 +231,20 @@ border:0;
 {
 height:16px;width:16px;border:0;
 }
+.flotlegend
+{
+margin-left: 40px;
+padding: 10px;
+width: 85%;
+clear: both;
+border: 1px solid #000000;
+background-opacity: 0.5;
+background-color: #e5e5ff;
+}
+.flotlegendtoplabel label
+{
+display: block;
+text-align: center;
+size: small;
+text-weight: bold;
+}

@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Ganglia: Graph all periods</title>
+<link rel="stylesheet" href="./styles.css" type="text/css" />
 <style>
 .img_view {
   float: left;
@@ -123,6 +124,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
   if ( $conf['graph_engine'] == "flot" ) {
 
     print '<div id="placeholder_' . $key . '" class="flotgraph img_view"></div>';
+    print '<div id="placeholder_' . $key . '_legend" class="flotlegend"></div>';
 
   } else {
 
