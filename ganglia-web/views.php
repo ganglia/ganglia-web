@@ -52,6 +52,38 @@ if ( isset($_GET['create_view']) ) {
 } 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
+// Delete view
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+if ( isset($_GET['delete_view']) ) {
+  if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+    $output = "You do not have access to edit views.";
+  } else {
+    // Check whether the view name already exists
+    $view_exists = 0;
+
+    $available_views = get_available_views();
+
+    foreach ( $available_views as $view_id => $view ) {
+      if ( $view['view_name'] == $_GET['view_name'] ) {
+        $view_exists = 1;
+      }
+    }
+
+    if ( $view_exists != 1 ) {
+      $output = "<strong>Alert:</strong> View with the name ".$_GET['view_name']." does not exist.";
+    } else {
+      $view_suffix = str_replace(" ", "_", $_GET['view_name']);
+      $view_filename = $conf['views_dir'] . "/view_" . $view_suffix . ".json";
+      if ( unlink($view_filename) === FALSE ) {
+        $output = "<strong>Alert:</strong> Can't remove file $view_filename. Perhaps permissions are wrong.";
+      } else {
+        $output = "View has been successfully removed.";
+      }
+    }
+  }
+} // delete_view
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 // Add to view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 if ( isset($_GET['add_to_view']) ) {
