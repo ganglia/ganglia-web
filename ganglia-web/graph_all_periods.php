@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Ganglia: Graph all periods</title>
+<link rel="stylesheet" href="./styles.css" type="text/css" />
 <style>
 .img_view {
   float: left;
@@ -73,7 +74,7 @@ if ( $conf['graph_engine'] == "flot" ) {
 if ( ! isset($_GET['embed'] ) ) {
 ?>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
-<script language="javascript" type="text/javascript" src="js/jquery-1.5.2.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <?php
 } // end of if ( ! isset($_GET['embed'] )
@@ -123,6 +124,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
   if ( $conf['graph_engine'] == "flot" ) {
 
     print '<div id="placeholder_' . $key . '" class="flotgraph img_view"></div>';
+    print '<div id="placeholder_' . $key . '_legend" class="flotlegend"></div>';
 
   } else {
 
