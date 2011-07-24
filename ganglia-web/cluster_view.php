@@ -2,6 +2,7 @@
  /* $Id: cluster_view.php 2588 2011-05-02 21:19:54Z vvuksan $ */
 $tpl = new Dwoo_Template_File( template("cluster_view.tpl") );
 $data = new Dwoo_Data();
+$data->assign("php_gd", (function_exists('imagegif') or function_exists('imagepng')));
 $data->assign("extra", template("cluster_extra.tpl"));
 
 $data->assign("images","./templates/${conf['template_name']}/images");
