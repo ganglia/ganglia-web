@@ -131,7 +131,11 @@ $(function() {
 
 <tr>
  <td align="center" valign="top">
-  <img src="./pie.php?{$pie_args}" title="Pie Chart" border="0">
+{if $php_gd}
+  <img src="./pie.php?{$pie_args}" title="Pie Chart" border="0" />
+{else}
+  No image support in this build of PHP.
+{/if}
  </td>
 </tr>
 </table>

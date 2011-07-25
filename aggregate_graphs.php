@@ -2,6 +2,10 @@
 #aggregate_graph_table_form {
    font-size: 12px;
 }
+#show_direct_link {
+  background-color: #eeeeee;
+  text-align: center;
+}
 </style>
 <script>
 $(function() {
@@ -56,6 +60,7 @@ $(function() {
   }
 
   function createAggregateGraph() {
+    $("#show_direct_link").html("<a href='graph_all_periods.php?" + $("#aggregate_graph_form").serialize() + "&aggregate=1'>Direct Link to this aggregate graph</a>");
     $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
     $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1" , function(data) {
       $("#aggregate_graph_display").html(data);
@@ -109,6 +114,7 @@ $(function() {
 </table>
 </form>
 </div>
+<div id="show_direct_link"></div>
 <div id="aggregate_graph_display">
 
 </div>
