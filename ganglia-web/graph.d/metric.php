@@ -8,7 +8,6 @@ function graph_metric ( &$rrdtool_graph ) {
 
     global $conf,
            $context,
-           $hostname,
            $jobstart,
            $load_color,
            $max,
@@ -24,7 +23,9 @@ function graph_metric ( &$rrdtool_graph ) {
            $vlabel;
 
     if ($conf['strip_domainname']) {
-        $hostname = strip_domainname($hostname);
+        $hostname = strip_domainname($GLOBALS['hostname']);
+    } else {
+        $hostname = $GLOBALS['hostname'];
     }
 
     $rrdtool_graph['height'] += 0; //no fudge needed

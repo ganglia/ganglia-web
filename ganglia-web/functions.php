@@ -7,6 +7,8 @@
 # have been set.
 #
 
+include_once ( dirname(__FILE__) . "/lib/json.php" );
+
 #-------------------------------------------------------------------------------
 # Allows a form of inheritance for template files.
 # If a file does not exist in the chosen template, the
@@ -720,7 +722,7 @@ function get_available_views() {
     $name[$key]  = strtolower($row['view_name']);
   }
 
-  array_multisort($name,SORT_ASC, $available_views);
+  @array_multisort($name,SORT_ASC, $available_views);
 
   return $available_views;
 

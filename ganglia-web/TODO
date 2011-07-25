@@ -10,8 +10,6 @@ General
 
 Graphs
 
-- graph.d/.php files all modify the global $hostname, should be a local variable
-
 Views
 
 - Support regex expressions for metrics in regex views

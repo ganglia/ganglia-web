@@ -1,11 +1,11 @@
 <!-- Begin header.tpl -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML>
-<HEAD>
-<TITLE>Ganglia:: {$page_title}</TITLE>
-<META http-equiv="Content-type" content="text/html; charset=utf-8">
-<META http-equiv="refresh" content="{$refresh}">
-<script TYPE="text/javascript" SRC="js/jquery-1.5.2.min.js"></script>
+<html>
+<head>
+<title>Ganglia:: {$page_title}</title>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<meta http-equiv="refresh" content="{$refresh}">
+<script TYPE="text/javascript" SRC="js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.11.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.liveSearch.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
@@ -13,7 +13,7 @@
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.11.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
-<LINK rel="stylesheet" href="./styles.css" type="text/css">
+<link rel="stylesheet" href="./styles.css" type="text/css" />
 <style type="text/css">
     body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
 </style>
@@ -91,8 +91,8 @@
 
 </script>
 {$custom_time_head}
-</HEAD>
-<BODY BGCOLOR="#FFFFFF">
+</head>
+<body style="background-color: #ffffff;">
 {if $auth_system_enabled}
 <div style="float:right">
   {if $username}
@@ -114,38 +114,36 @@
   <li><a href="events.php">Events</a></li>
 {/if}
   <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
-  <li><a href="#mobile" onclick="location.href = 'mobile.php';">Mobile</a></li>
+  <li><a href="#mobile" onclick="location.href='mobile.php';">Mobile</a></li>
 </ul>
 
 <div id="tabs-main">
-<FORM ACTION="{$page}" METHOD="GET" NAME="ganglia_form">
-  <TABLE id="table_top_chooser" WIDTH="100%" CELLPADDING="4" CELLSPACING="0" BORDER=0>
-  <TR BGCOLOR="#DDDDDD">
-     <TD BGCOLOR="#DDDDDD">
-     <FONT SIZE="+1">
-     <B>{$page_title} for {$date}</B>
-     </FONT>
-     </TD>
-     <TD BGCOLOR="#DDDDDD" ALIGN="RIGHT">
-     <INPUT class="submit_button" TYPE="SUBMIT" VALUE="Get Fresh Data">
-     </TD>
-  </TR>
-  <TR>
-     <TD COLSPAN="1">
+<form action="{$page}" method="GET" name="ganglia_form">
+  <table id="table_top_chooser" width="100%" cellpadding="4" cellspacing="0" border="0">
+  <tr bgcolor="#DDDDDD">
+     <td bgcolor="#DDDDDD">
+     <big><b>{$page_title} for {$date}</b></big>
+     </td>
+     <td bgcolor="#DDDDDD" align="right">
+     <input class="submit_button" type="submit" value="Get Fresh Data" />
+     </td>
+  </tr>
+  <tr>
+     <td colspan="1">
     <div id="range_menu">{$range_menu}{$custom_time}</div>
-     </TD>
-     <TD>
-      <B>{$alt_view}</B>
-     </TD>
-  </TR>
-  <TR>
-  <TD COLSPAN="2">
+     </td>
+     <td>
+      <b>{$alt_view}</b>
+     </td>
+  </tr>
+  <tr>
+  <td colspan="2">
   <div id="sort_menu">
-   <B>Metric</B>&nbsp;&nbsp; <input name="m" onclick="$('#metrics-picker').val('');" type=text id="metrics-picker" /><input type="submit" value="Go">&nbsp;&nbsp;
+   <b>Metric</b>&nbsp;&nbsp; <input name="m" onclick="$('#metrics-picker').val('');" type=text id="metrics-picker" /><input type="submit" value="Go">&nbsp;&nbsp;
      {$sort_menu}
   </div>
-  </TD>
-  </TR>
+  </td>
+  </tr>
 
   <tr><td colspan="2">{$node_menu}&nbsp;&nbsp;{$additional_filter_options}</td>
 </tr>

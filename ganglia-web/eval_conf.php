@@ -50,7 +50,7 @@ if( ! isSet( $conf['auth_system'] ) ) {
       Requires configuration of an authentication mechanism in your web server.
     </li>
   </ul>
-  <br/>See <a href='https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2/AuthSystem'>https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2/AuthSystem</a> for more information.";
+  <br/>See <a href=\"https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2/AuthSystem\">https://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2/AuthSystem</a> for more information.";
 } else {
   if( ! in_array( $conf['auth_system'], $valid_auth_options ) ) {
     $errors[] = "Please set \$conf['auth_system'] to one of these values: '".implode( "','", $valid_auth_options ) ."'";
@@ -66,11 +66,18 @@ if( ! isSet( $conf['auth_system'] ) ) {
 
 if( count($errors) ) {
   $e = "<h1>Errors were detected in your configuration.</h1>";
-  $e .= "<ul class='errors'>";
+  $e .= "<ul class=\"errors\">";
   foreach($errors as $error) {
     $e .= "<li>$error</li>";
   }
   $e .= "</ul>";
+
+  // Make sure that errors are actually displayed, whether or not the local
+  // PHP configuration is set to display them, otherwise it looks as though
+  // a blank page is being served.
+  ini_set('display_errors', 1);
+  error_reporting(E_ALL);
+
   trigger_error( $e, E_USER_ERROR );
 }
 
