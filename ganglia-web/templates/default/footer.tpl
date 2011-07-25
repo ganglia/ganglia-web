@@ -64,5 +64,5 @@ Images created with <A HREF="http://www.rrdtool.org/">RRDtool</A> version {$rrdt
 </CENTER>
 </div> <!-- div-tabs -->
 </BODY>
-</HTML>
 <!-- End footer.tpl -->
+</HTML>
