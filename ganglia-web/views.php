@@ -194,9 +194,9 @@ if ( sizeof($available_views) == 0 ) {
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.11.custom.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
 <?php
-if ( isset($_GET['standalone']) && isset($_GET['view_name']) ) {
+if ( isset($_GET['view_name']) ) {
 
-  print "<script>selectView('" . $_GET['view_name'] . "');</script>";
+  print "<script type=\"text/javascript\">selectView('" . $_GET['view_name'] . "');</script>";
 
 }
 ?>
@@ -222,8 +222,8 @@ if ( isset($_GET['standalone']) && isset($_GET['view_name']) ) {
        print '<a href="views.php?standalone=1" id="detach-tab-button">Detach Tab</a>';
     }
   ?>
-    <p>  <div id="views_menu">
-      Existing views:
+    <div id="views_menu">
+      <p>Existing views:</p>
       <ul id="navlist">
     <?php
 
@@ -232,9 +232,10 @@ if ( isset($_GET['standalone']) && isset($_GET['view_name']) ) {
       $v = $view['view_name'];
       print '<li><a href="#" id="' . viewId($v) . '" onClick="selectView(\'' . $v . '\'); return false;">' . $v . '</a></li>';
     }
+    print '</ul>';
 
     ?>
-<script>
+<script type="text/javascript">
 $(function(){
     $( "#view_range_chooser" ).buttonset();
     <?php
@@ -244,12 +245,12 @@ $(function(){
     <?php
     }
     ?>
-    document.getElementById('view_name').value = "default";
+    $('#view_name').val("default");
 });
 </script>
 
 
-    </ul></div></td><td valign=top>
+    </div></td><td valign=top><div>
     <div id="view_range_chooser">
     <form id="view_timerange_form">
     <input type="hidden" name="view_name" id="view_name" value="">
@@ -272,20 +273,19 @@ $(function(){
 	$checked = "checked=\"checked\"";
       else
 	$checked = "";
-#	$range_menu .= "<input OnChange=\"getViewsContentJustGraphs(document.getElementById('view_name').value);\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
-      $range_menu .= "<input onChange=\"$.cookie('ganglia-view-range-' + window.name, '" . $v . "'); document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = ''; getViewsContentJustGraphs(document.getElementById('view_name').value, '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+
+      $range_menu .= "<input onChange=\"$.cookie('ganglia-view-range-' + window.name, '" . $v . "'); $('#view-cs').val(''); $('#view-ce').val(''); getViewsContentJustGraphs($('#view_name').val(), '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
 
    }
   print $range_menu;
 ?>
-      &nbsp;&nbsp;or from 
-  <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="cs" ID="view-cs" SIZE="17"> to 
-  <INPUT TYPE="TEXT" TITLE="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." NAME="ce" ID="view-ce" SIZE="17"> 
-  <input type="button" onclick="getViewsContentJustGraphs(document.getElementById('view_name').value, '', document.getElementById('view-cs').value, document.getElementById('view-ce').value ); return false;" value="Go">
-  <input type="button" value="Clear" onclick="document.getElementById('view-cs').value = ''; document.getElementById('view-ce').value = '' ; return false;">
-      </form><p>
+      &nbsp;&nbsp;or <span class="nobr">from 
+  <input type="text" title="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." name="cs" id="view-cs" size="17"> to 
+  <input type="text" title="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." name="ce" id="view-ce" size="17"> 
+  <input type="button" onclick="getViewsContentJustGraphs($('#view_name').val(), '', $('#view-cs').val(), $('#view-ce').val() ); return false;" value="Go">
+  <input type="button" value="Clear" onclick="$('#view-cs').val(''); $('#view-ce').val('') ; return false;">
+		    </span></form><p>&nbsp;</p>
       </div>
-    </div>
 
   <?php
 
@@ -305,16 +305,16 @@ $(function(){
 
       $range_args = "";
       if ( isset($_GET['r']) && $_GET['r'] != "" ) 
-	    $range_args .= "&r=" . $_GET['r'];
+	    $range_args .= "&amp;r=" . $_GET['r'];
       if ( isset($_GET['cs']) && isset($_GET['ce']) ) 
-	    $range_args .= "&cs=" . $_GET['cs'] . "&ce=" . $_GET['ce'];
+	    $range_args .= "&amp;cs=" . $_GET['cs'] . "&amp;ce=" . $_GET['ce'];
 
       if ( count($view_elements) != 0 ) {
 	foreach ( $view_elements as $id => $element ) {
 	    $legend = isset($element['hostname']) ? $element['hostname'] : "Aggregate graph";
 	    print "
-	    <A HREF=\"./graph_all_periods.php?" . $element['graph_args'] ."&z=large\">
-	    <IMG title=\"" . $legend . " - " . $element['name'] . "\" BORDER=0 SRC=\"./graph.php?" . $element['graph_args'] . "&z=medium" . $range_args .  "\" style=\"padding:2px;\"></A>";
+	    <a href=\"./graph_all_periods.php?" . htmlentities($element['graph_args']) ."&amp;z=large\">
+	    <img title=\"" . $legend . " - " . $element['name'] . "\" border=0 SRC=\"./graph.php?" . htmlentities($element['graph_args']) . "&amp;z=medium" . $range_args .  "\" style=\"padding:2px;\"></A>";
 
 	}
       } else {
@@ -327,10 +327,10 @@ $(function(){
   print "</div>"; 
 
   if ( ! isset($_GET['just_graphs']) )
-    print "</td></tr></table></form>";
+    print "</div></td></tr></table></form>";
 
   if ( isset($_GET['standalone']) ) {
-    print "</div>";
+    print "</div></body></html>";
   }
 
 
