@@ -44,6 +44,14 @@ $(function(){
 
   jQuery('#metric-search input[name="q"]').liveSearch({url: 'search.php?q=', typeDelay: 500});
 
+  $( "#search-field-q").keyup(function() {
+    $.cookie("ganglia-search-field-q" + window.name, $(this).val());
+  });
+
+  var search_value = $.cookie("ganglia-search-field-q" + window.name);
+  if (search_value != null && search_value.length > 0)
+    $("#search-field-q").val(search_value);
+
   $( "#datepicker-cs" ).datepicker({
 	  showOn: "button",
 	  buttonImage: "img/calendar.gif",
