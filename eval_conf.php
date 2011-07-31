@@ -20,22 +20,22 @@ if( file_exists( $base_dir . "/conf.php" ) ) {
 $errors = array();
 // Installation validity checks
 if ( ! isset($conf['rrds']) ||  ! is_readable($conf['rrds']) ) {
-  $errors[] = "RRDs directory is not readable.<br/>".
+  $errors[] = "RRDs directory '${conf['rrds']}' is not readable.<br/>".
   "Please adjust <code>\$conf['rrds']</code>."; 
 }
 
 if ( ! isset($conf['dwoo_compiled_dir']) || ! is_writeable($conf['dwoo_compiled_dir']) ) {
-  $errors[] = "DWOO compiled templates directory is not writeable.<br/>".
+  $errors[] = "DWOO compiled templates directory '${conf['dwoo_compiled_dir']}' is not writeable.<br/>".
   "Please adjust <code>\$conf['dwoo_compiled_dir']</code>."; 
 }
 
 if( ! isSet($conf['views_dir']) || ! is_readable($conf['views_dir']) ) {
-  $errors[] = "Views directory is not readable.<br/>".
+  $errors[] = "Views directory '${conf['views_dir']}' is not readable.<br/>".
   "Please adjust <code>\$conf['views_dir']</code>.";
 }
 
 if( ! isSet($conf['conf_dir']) || ! is_readable($conf['conf_dir']) ) {
-  $errors[] = "Directory used to store configuration information is not readable.<br/>".
+  $errors[] = "Directory used to store configuration information '${conf['conf_dir']}' is not readable.<br/>".
   "Please adjust <code>\$conf['conf_dir']</code>.";
 }
 
