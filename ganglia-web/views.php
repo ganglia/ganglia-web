@@ -188,10 +188,10 @@ if ( sizeof($available_views) == 0 ) {
     ?>
 <html><head>
 <script TYPE="text/javascript" SRC="js/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.8.11.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.8.11.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
 <?php
 if ( isset($_GET['view_name']) ) {
