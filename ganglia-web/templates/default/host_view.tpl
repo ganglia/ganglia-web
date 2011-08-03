@@ -6,6 +6,38 @@
 }
 </style>
 <script type="text/javascript">
+var SEPARATOR = "_|_";
+
+function addMetricGroup(mgId) {
+  var stored_groups = $('input[name="metric_group"]');
+  var open_groups = stored_groups.val();
+  if (open_groups != "")
+    open_groups += SEPARATOR;
+  open_groups += mgId
+  stored_groups.val(open_groups);
+}
+
+function removeMetricGroup(mgId) {
+  var stored_groups = $('input[name="metric_group"]');
+  var open_groups = stored_groups.val().split(SEPARATOR);
+  for (var i = 0; i < open_groups.length; i++) {
+    if (open_groups[i] == mgId) {
+      open_groups.splice(i, 1);
+      break;
+    }
+  }
+  stored_groups.val(open_groups.join(SEPARATOR));
+}
+
+function toggleMetricGroup(mgId, mgDiv) {
+  if (mgDiv.is(":visible"))
+    // metric group is being closed
+    removeMetricGroup(mgId);
+  else
+    addMetricGroup(mgId);
+  document.ganglia_form.submit();
+}
+
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect
@@ -16,7 +48,7 @@ $(function() {
     options = { to: { width: 200,height: 60 } }; 
     
     //run the effect
-    $("#"+id+"_div").toggle("blind",options,500);
+    $("#"+id+"_div").toggle("blind",options,500,toggleMetricGroup(id, $("#"+id+"_div")));
   };
  
   //set effect from select menu value
@@ -185,6 +217,8 @@ $(function() {
 <tr>
  <td>
 
+{$open_groups=""}
+
 {foreach $g_metrics_group_data group g_metrics}
 <table border="0" width="100%">
 <tr>
@@ -193,11 +227,17 @@ $(function() {
   </td>
 </tr>
 </table>
-{if isset($metric_groups_initially_collapsed) && $metric_groups_initially_collapsed}
-<div id="{$group}_div" class="ui-helper-hidden">
-{else}
+
+{if $g_metrics.visible}
 <div id="{$group}_div">
+{else}
+<div id="{$group}_div" class="ui-helper-hidden">
 {/if}
+{if $g_metrics.visible}
+{if $open_groups != ""}
+{$open_groups = cat($open_groups, "_|_")}
+{/if}
+{$open_groups = cat($open_groups, $group)}
 <table><tr>
 {foreach $g_metrics["metrics"] g_metric}
 <td>
@@ -222,12 +262,13 @@ $(function() {
 {/foreach}
 </tr>
 </table>
+{/if}
 </div>
 {/foreach}
  </td>
 </tr>
 </table>
 </center>
-
+<input type="hidden" name="metric_group" value="{$open_groups}">
 </div>
 <!-- End host_view.tpl -->
