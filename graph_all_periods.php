@@ -116,8 +116,8 @@ if ( ! isset($_GET['embed'] )  ) {
 foreach ( $conf['time_ranges'] as $key => $value ) {
 
    print '<div class="img_view">' .
-  '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><img title="Export to CSV" src="img/csv.png" class="icon16"></a> ' .
-  '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><img title="Export to JSON" src="img/js.png" class="icon16"></a>' .
+  '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
+  '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
