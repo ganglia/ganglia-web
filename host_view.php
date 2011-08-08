@@ -15,11 +15,7 @@ $data->assign("range",$range);
 $data->assign("hostname", $hostname);
 $data->assign("graph_engine", $conf['graph_engine']);
 
-if ( isset($conf['metric_groups_initially_collapsed']) && 
-     $conf['metric_groups_initially_collapsed'] === true )
-  $data->assign("metric_groups_initially_collapsed", true);
-else
-  $data->assign("metric_groups_initially_collapsed", false);
+$metric_groups_initially_collapsed = isset($conf['metric_groups_initially_collapsed']) ? $conf['metric_groups_initially_collapsed'] : TRUE;
 
 $graph_args = "h=$hostname&amp;$get_metric_string&amp;st=$cluster[LOCALTIME]";
 
@@ -254,6 +250,8 @@ if (isset($c_metrics) and is_array($c_metrics))
    }
 $data->assign("c_metrics_data", $c_metrics_data);
 
+$open_groups = ( isset($_GET['metric_group']) ) ? explode ("_|_", $_GET['metric_group']) : NULL;
+
 # Show graphs.
 if ( is_array($g_metrics) && is_array($g_metrics_group) )
    {
@@ -268,6 +266,12 @@ if ( is_array($g_metrics) && is_array($g_metrics_group) )
             $c = count($metric_array);
             $g_metrics_group_data[$group]["group_metric_count"] = $c;
             $host_metrics += $c;
+            if ($open_groups == NULL)
+              $g_metrics_group_data[$group]["visible"] = 
+                ! $metric_groups_initially_collapsed;
+            else {
+              $g_metrics_group_data[$group]["visible"] = in_array($group, $open_groups);
+            }
             $i = 0;
             ksort($g_metrics);
             foreach ( $g_metrics as $name => $v )
