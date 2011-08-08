@@ -14,9 +14,6 @@
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <link rel="stylesheet" href="./styles.css" type="text/css" />
-<style type="text/css">
-    body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
-</style>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var availablemetrics = [ {$available_metrics} ];
