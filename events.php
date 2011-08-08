@@ -1,12 +1,10 @@
-<link type="text/css" href="css/jquery-ui-timepicker.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery.ui.timepicker.js"></script>
 <script>
 $(function(){
   $( "#add-event-dialog" ).dialog({autoOpen: false,height: 300,width: 550,modal: true});
   $( "#event-start-date" ).datepicker({ showOn: "button", buttonImage: "img/calendar.gif", buttonImageOnly: true });
   $( "#event-end-date" ).datepicker({showOn: "button", buttonImage: "img/calendar.gif", buttonImageOnly: true });
-  $('#event-start-time').timepicker({showOn: 'button',button: '.timepicker_button_trigger'});
-  $('#event-end-time').timepicker({showOn: 'button',button: '.timepicker_button_trigger'});
+//  $('#event-start-time').timepicker({showOn: 'button',button: '.timepicker_button_trigger'});
+//  $('#event-end-time').timepicker({showOn: 'button',button: '.timepicker_button_trigger'});
   $('#add-event-button').button();
 });
 function eventActions(action) {

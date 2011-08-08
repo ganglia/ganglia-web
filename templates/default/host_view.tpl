@@ -38,6 +38,14 @@ function toggleMetricGroup(mgId, mgDiv) {
   document.ganglia_form.submit();
 }
 
+function enlargeGraph(graphArgs) {
+  $("#enlarge-graph-dialog").dialog('open');
+//  $('#enlarge-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
+  $.get('enlarge_graph.php', "flot=1&" + graphArgs, function(data) {
+    $('#enlarge-graph-dialog-content').html(data);
+  })
+}
+
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect
@@ -59,10 +67,11 @@ $(function() {
 
     $(function() {
 	    $( "#edit_optional_graphs" ).dialog({ autoOpen: false, minWidth: 550,
-	      beforeClose: function(event, ui) {  location.reload(true); } })
+	      beforeClose: function(event, ui) {  location.reload(true); } });
 	    $( "#edit_optional_graphs_button" ).button();
 	    $( "#save_optional_graphs_button" ).button();
 	    $( "#close_edit_optional_graphs_link" ).button();
+	    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     });
 
     $("#edit_optional_graphs_button").click(function(event) {
@@ -107,6 +116,10 @@ $(function() {
 <div id="metric-actions-dialog" title="Metric Actions">
   <div id="metric-actions-dialog-content">
 	Available Metric actions.
+  </div>
+</div>
+<div id="enlarge-graph-dialog" title="Enlarge Graph">
+  <div id="enlarge-graph-dialog-content">
   </div>
 </div>
 
@@ -244,10 +257,11 @@ $(function() {
 <font style="font-size: 9px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font>
 {if $may_edit_views}
 {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
-<a style="background-color: #dddddd" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;" href="#">+</a>
+<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;">+</button>
 {/if}
 <a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a>
 <a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>
+<button title="Enlarge Graph" onClick="enlargeGraph('{$g_metric.graphargs}'); return false;" class="cupid-green">Enlarge</button>
 <br>
 {if $graph_engine == "flot"}
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>
