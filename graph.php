@@ -263,7 +263,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
-    unset($title);
+    $title = "";
     $graph_config["title"] = sanitize($_GET['title']);
   } else {
     $title = "Aggregate";
