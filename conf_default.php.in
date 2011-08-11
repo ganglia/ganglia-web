@@ -279,6 +279,10 @@ $conf['metric_groups_initially_collapsed'] = false;
 # in events.json
 $conf['overlay_events'] = false;
 
+# If you have periodic events that happen often e.g. they will make the
+# graph poorly. By default we exclude events on monthly and yearly graphs
+$conf['overlay_events_exclude_ranges'] = array("month", "year");
+
 # Overlay events line can be either dashed or solid. Use "solid" for solid
 # lines, anything else (including blanks) means a dashed line.
 $conf['overlay_events_line_type'] = "dashed";
