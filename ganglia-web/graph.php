@@ -263,7 +263,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
-    unset($title);
+    $title = "";
     $graph_config["title"] = sanitize($_GET['title']);
   } else {
     $title = "Aggregate";
@@ -594,7 +594,7 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 //////////////////////////////////////////////////////////////////////////////
 // Check whether user wants to overlay events on graphs
 //////////////////////////////////////////////////////////////////////////////
-if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" ) {
+if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" && ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
 
   $events_json = file_get_contents($conf['overlay_events_file']);
   $events_array = json_decode($events_json, TRUE);
