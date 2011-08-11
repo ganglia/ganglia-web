@@ -18,6 +18,7 @@
     body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
 </style>
 <script type="text/javascript">
+    var server_utc_offset={$server_utc_offset};
     var availablemetrics = [ {$available_metrics} ];
     $(function(){
         $( "#metrics-picker" ).autocomplete({
@@ -81,9 +82,11 @@
     }
 
     function setStartAndEnd(startTime, endTime) {
-        var date = new Date(Math.floor(startTime) * 1000);
+        var local_offset = new Date().getTimezoneOffset() * 60;
+        var delta = -server_utc_offset - local_offset;
+        var date = new Date((Math.floor(startTime) + delta) * 1000);
         $("#datepicker-cs").val(rrdDateTimeString(date));
-        date = new Date(Math.floor(endTime) * 1000);
+        date = new Date((Math.floor(endTime) + delta) * 1000);
         $("#datepicker-ce").val(rrdDateTimeString(date));
     }
   });
