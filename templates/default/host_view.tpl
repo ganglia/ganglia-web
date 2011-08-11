@@ -89,7 +89,7 @@ $(function() {
 {if $graph_engine == "flot"}
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
-<style>
+<style type="text/css">
 .flotgraph2 {
   height: {$graph_height}px;
   width:  {$graph_width}px;
@@ -121,7 +121,7 @@ $(function() {
 <tr>
  <td align="left" valign="TOP">
 
-<img src="{$node_image}" height="60" width="30" title="{$host}" border="0" />
+<img src="{$node_image}" class="noborder" height="60" width="30" title="{$host}"/>
 {$node_msg}
 
 <table border="0" width="100%">
@@ -155,7 +155,7 @@ $(function() {
 </td> 
 </table>
 </div>
-<style>
+<style type="text/css">
 #edit_optional_graphs_button {
     font-size:12px;
 }
@@ -254,7 +254,7 @@ $(function() {
 <div id="placeholder_{$g_metric.graphargs}_legend" class="flotlegend"></div>
 {else}
 <a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
-<img class="noborder" {$additional_host_img_html_args} alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
+<img class="noborder {$additional_host_img_css_classes}" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
 </A>
 {/if}
 </td>

@@ -47,7 +47,7 @@ $reports["excluded_reports"] = array_unique($reports["excluded_reports"]);
 
 // If we want zoomable support on graphs we need to add correct zoomable class to every image
 $additional_cluster_img_html_args = "";
-$additional_host_img_html_args = "";
+$additional_host_img_css_classes = "";
 if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
    $additional_cluster_img_html_args = "class=cluster_zoomable";
 
@@ -126,9 +126,9 @@ foreach ($metrics as $name => $v)
 
              // set host zoom class based on the size of the graph shown
              if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
-                $additional_host_img_html_args = "class=host_${size}_zoomable";
+                $additional_host_img_css_classes = "host_${size}_zoomable";
 
-             $data->assign("additional_host_img_html_args", $additional_host_img_html_args);
+             $data->assign("additional_host_img_css_classes", $additional_host_img_css_classes);
 
              $graphargs = "c=$cluster_url&amp;h=$hostname&amp;v=$v[VAL]"
                ."&amp;m=$name&amp;r=$range&amp;z=$size&amp;jr=$jobrange"
