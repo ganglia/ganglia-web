@@ -801,7 +801,9 @@ function get_view_graph_elements($view) {
 	  }
 
 	  $hostname = $item['hostname'];
-	  $cluster = $index_array['cluster'][$hostname];
+          $cluster = array_key_exists($hostname, $index_arrayy['cluster']) ?
+	    $index_array['cluster'][$hostname] : NULL;
+
 	  $graph_args_array[] = "h=$hostname";
 	  $graph_args_array[] = "c=$cluster";
 
