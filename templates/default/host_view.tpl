@@ -266,8 +266,8 @@ g_mgMap["{$mgId}"] = "{$group}";
 {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
 <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;">+</button>
 {/if}
-<a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a>
-<a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>
+<button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;csv=1';return false;">CSV</button>
+<button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;json=1';return false;">JSON</button>
 <button title="Enlarge Graph" onClick="enlargeGraph('{$g_metric.graphargs}'); return false;" class="cupid-green">Enlarge</button>
 <br>
 {if $graph_engine == "flot"}
