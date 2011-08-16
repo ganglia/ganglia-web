@@ -64,11 +64,7 @@ if(count($gridstack) > 1) {
 
 $tpl = new Dwoo_Template_File( template("$header.tpl") );
 $data = new Dwoo_Data();
-<<<<<<< HEAD
-$data->assign("server_utc_offset", date_offset_get(new DateTime(date_default_timezone_get())));
-=======
 $data->assign("server_utc_offset", date('Z'));
->>>>>>> upstream/master
 $data->assign("page_title", $title);
 $data->assign("refresh", $conf['default_refresh']);
 
