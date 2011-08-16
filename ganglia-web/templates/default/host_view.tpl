@@ -7,21 +7,23 @@
 </style>
 <script type="text/javascript">
 var SEPARATOR = "_|_";
+// Map metric group id to name
+var g_mgMap = new Object();
 
-function addMetricGroup(mgId) {
+function addMetricGroup(mgName) {
   var stored_groups = $('input[name="metric_group"]');
   var open_groups = stored_groups.val();
   if (open_groups != "")
     open_groups += SEPARATOR;
-  open_groups += mgId
+  open_groups += mgName;
   stored_groups.val(open_groups);
 }
 
-function removeMetricGroup(mgId) {
+function removeMetricGroup(mgName) {
   var stored_groups = $('input[name="metric_group"]');
   var open_groups = stored_groups.val().split(SEPARATOR);
   for (var i = 0; i < open_groups.length; i++) {
-    if (open_groups[i] == mgId) {
+    if (open_groups[i] == mgName) {
       open_groups.splice(i, 1);
       break;
     }
@@ -30,11 +32,12 @@ function removeMetricGroup(mgId) {
 }
 
 function toggleMetricGroup(mgId, mgDiv) {
+  var mgName = g_mgMap[mgId];
   if (mgDiv.is(":visible"))
     // metric group is being closed
-    removeMetricGroup(mgId);
+    removeMetricGroup(mgName);
   else
-    addMetricGroup(mgId);
+    addMetricGroup(mgName);
   document.ganglia_form.submit();
 }
 
@@ -233,18 +236,22 @@ $(function() {
 {$open_groups=""}
 
 {foreach $g_metrics_group_data group g_metrics}
+{$mgId = regex_replace($group, '/[^a-zA-Z0-9_]/', '_')}
 <table border="0" width="100%">
 <tr>
   <td class="metric">
-  <a href="#" id="{$group}" class="button ui-state-default ui-corner-all" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</a>
+  <a href="#" id="{$mgId}" class="button ui-state-default ui-corner-all" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</a>
+<script type="text/javascript">$(function() {
+g_mgMap["{$mgId}"] = "{$group}";
+})</script>
   </td>
 </tr>
 </table>
 
 {if $g_metrics.visible}
-<div id="{$group}_div">
+<div id="{$mgId}_div">
 {else}
-<div id="{$group}_div" class="ui-helper-hidden">
+<div id="{$mgId}_div" class="ui-helper-hidden">
 {/if}
 {if $g_metrics.visible}
 {if $open_groups != ""}
