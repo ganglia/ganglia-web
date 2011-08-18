@@ -57,7 +57,6 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
 
   if ( ! in_array( $report_name, $reports["excluded_reports"] ) ) {
     //$optional_reports .= "<a name=metric_" . $report_name . ">
-    $optional_reports .= "<span class=\"nobr\">";
     $optional_reports .= "<a href=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url\">";
 
     if ( $conf['graph_engine'] == "flot" ) {
@@ -74,7 +73,6 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
     }
     $optional_reports .= " <button title=\"Export to CSV\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;csv=1';return false;\">CSV</button>
     <button title=\"Export to JSON\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;json=1';return false;\">JSON</button>";
-    $optional_reports .= "</span>";
   }
 
 }
