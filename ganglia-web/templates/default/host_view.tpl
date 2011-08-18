@@ -275,7 +275,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 <div id="placeholder_{$g_metric.graphargs}_legend" class="flotlegend"></div>
 {else}
 <a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
-<img class="noborder {$additional_host_img_css_classes}" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
+<img class="noborder {$additional_host_img_css_classes}" style="margin:5px;" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
 </A>
 {/if}
 </td>
