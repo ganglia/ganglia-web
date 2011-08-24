@@ -180,10 +180,10 @@ function createAggregateGraph() {
   return false;
 }
 
-function metricActionsAggregateGraph() {
+function metricActionsAggregateGraph(args) {
     $( "#metric-actions-dialog" ).dialog( "open" );
     $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
-    $.get('actions.php', "action=show_views&aggregate=1&" + $("#aggregate_graph_form").serialize(), function(data) {
+    $.get('actions.php', "action=show_views" + args, function(data) {
       $("#metric-actions-dialog-content").html(data);
      });
     return false;

@@ -62,7 +62,7 @@ $(function() {
   function createAggregateGraph() {
     $("#show_direct_link").html("<a href='graph_all_periods.php?" + $("#aggregate_graph_form").serialize() + "&aggregate=1'>Direct Link to this aggregate graph</a>");
     $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-    $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1" , function(data) {
+    $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1&embed=1" , function(data) {
       $("#aggregate_graph_display").html(data);
     });
     return false;
@@ -111,8 +111,7 @@ $(function() {
 <div id="graph_type_menu"><input type="radio" name="gtype" value="line" checked>Line</input>
 <input type="radio" name="gtype" value="stack">Stacked</input></div></td>
 <td>
-<button class="ag_buttons" onclick="createAggregateGraph(); return false">Create Graph</button>
-<button class="ag_buttons" onclick="metricActionsAggregateGraph(); return false">Add To View</button></td>
+<button class="ag_buttons" onclick="createAggregateGraph(); return false">Create Graph</button></td>
 </tr>
 </table>
 </form>
