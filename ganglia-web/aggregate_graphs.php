@@ -62,7 +62,7 @@ $(function() {
   function createAggregateGraph() {
     $("#show_direct_link").html("<a href='graph_all_periods.php?" + $("#aggregate_graph_form").serialize() + "&aggregate=1'>Direct Link to this aggregate graph</a>");
     $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-    $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1" , function(data) {
+    $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1&embed=1" , function(data) {
       $("#aggregate_graph_display").html(data);
     });
     return false;
@@ -97,6 +97,9 @@ $(function() {
 <td colspan=2><input name="vl" id="vl" value="" size=60></td>
 </tr>
 <tr>
+<td>Limits</td><td>Upper:<input name="x" id="x" value="" size=10></td><td>Lower:<input name="n" id="n" value="" size=10></td>
+</tr>
+<tr>
 <td>Host Regular expression e.g. web-[0,4], web or (web|db):</td>
 <td colspan=2><input name="hreg[]" id="hreg" size=60></td>
 </tr>
@@ -108,8 +111,7 @@ $(function() {
 <div id="graph_type_menu"><input type="radio" name="gtype" value="line" checked>Line</input>
 <input type="radio" name="gtype" value="stack">Stacked</input></div></td>
 <td>
-<button class="ag_buttons" onclick="createAggregateGraph(); return false">Create Graph</button>
-<button class="ag_buttons" onclick="metricActionsAggregateGraph(); return false">Add To View</button></td>
+<button class="ag_buttons" onclick="createAggregateGraph(); return false">Create Graph</button></td>
 </tr>
 </table>
 </form>

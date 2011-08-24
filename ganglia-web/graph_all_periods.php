@@ -10,6 +10,23 @@
 }
 </style>
 <?php
+if ( ! isset($_GET['embed'] ) ) {
+?>
+<script TYPE="text/javascript" SRC="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.liveSearch.js"></script>
+<script type="text/javascript" src="js/ganglia.js"></script>
+<script type="text/javascript" src="js/jquery.gangZoom.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
+<div id="metric-actions-dialog" title="Metric Actions">
+<div id="metric-actions-dialog-content">
+	Available Metric actions.
+</div>
+</div>
+<?php
+} // end of if ( ! isset($_GET['embed'] ) ) {
+
 include_once "./eval_conf.php";
 
 // build a query string but drop r and z since those designate time window and size. Also if the 
@@ -69,12 +86,10 @@ if ( $conf['graph_engine'] == "flot" ) {
 }
 </style>
 <?php
-// Add JQuery and flot loading only if this is not embedded in the Aggregate Graphs
-// Tab
+// Add JQuery and flot loading only if this is not embedded in the Aggregate Graphs Tab
 if ( ! isset($_GET['embed'] ) ) {
 ?>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
-<script language="javascript" type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <?php
 } // end of if ( ! isset($_GET['embed'] )
@@ -115,7 +130,10 @@ if ( ! isset($_GET['embed'] )  ) {
 
 foreach ( $conf['time_ranges'] as $key => $value ) {
 
-   print '<div class="img_view">' .
+   print '<div class="img_view">
+   <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' .$query_string . '\'); return false;">+</button>
+
+   ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>' .
   '<br />';
