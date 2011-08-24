@@ -33,7 +33,7 @@ if ( isset($_GET['create_view']) ) {
       $view_suffix = str_replace(" ", "_", $_GET['view_name']);
       $view_filename = $conf['views_dir'] . "/view_" . $view_suffix . ".json";
       $json = json_encode($empty_view);
-      if ( file_put_contents($view_filename, $json) === FALSE ) {
+      if ( file_put_contents($view_filename, json_prettyprint($json)) === FALSE ) {
         $output = "<strong>Alert:</strong> Can't write to file $view_filename. Perhaps permissions are wrong.";
       } else {
         $output = "View has been created successfully.";
@@ -148,7 +148,7 @@ if ( isset($_GET['add_to_view']) ) {
 
       $json = json_encode($view);
 
-      if ( file_put_contents($view_filename, $json) === FALSE ) {
+      if ( file_put_contents($view_filename, json_prettyprint($json)) === FALSE ) {
         $output = "<strong>Alert:</strong> Can't write to file $view_filename. Perhaps permissions are wrong.";
       } else {
         $output = "View has been updated successfully.";
