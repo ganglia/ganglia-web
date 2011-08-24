@@ -242,6 +242,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
         }
       }
     }
+    asort($metric_matches);
   }
   
   if( isset($metric_matches)){
