@@ -76,14 +76,14 @@ if ( isset($_GET['action']) ) {
     }
   }
 
-  if ( is_array($reports) ) {
+  if ( isset($reports) && is_array($reports) ) {
     $json = json_encode($reports);
-    if ( file_put_contents($override_file, $json) === FALSE ) {
+    if ( file_put_contents($override_file, json_prettyprint($json)) === FALSE ) {
   ?>
     <div class="ui-widget">
               <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
                   <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-                  <strong>Alert:</strong> Can't write to file <?php print $file; ?>. Perhaps permissions are wrong.</p>
+                  <strong>Alert:</strong> Can't write to file <?php print $override_file; ?>. Perhaps permissions are wrong.</p>
               </div>
     </div>
   <?php
@@ -101,8 +101,8 @@ if ( isset($_GET['action']) ) {
   } else {
 
     // Remove file if it already exists since there are no overrides
-    if ( is_file($file) ) {
-      if ( unlink($file) !== FALSE ) {
+    if ( is_file($override_file) ) {
+      if ( unlink($override_file) !== FALSE ) {
   ?>
       <div class="ui-widget">
               <div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
@@ -116,7 +116,7 @@ if ( isset($_GET['action']) ) {
     <div class="ui-widget">
               <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
                   <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-                  <strong>Alert:</strong> Can't write to file <?php print $file; ?>. Perhaps permissions are wrong.</p>
+                  <strong>Alert:</strong> Can't write to file <?php print $override_file; ?>. Perhaps permissions are wrong.</p>
               </div>
     </div>
   <?php
