@@ -78,7 +78,7 @@ if ( isset($_GET['action']) ) {
 
   if ( is_array($reports) ) {
     $json = json_encode($reports);
-    if ( file_put_contents($override_file, $json) === FALSE ) {
+    if ( file_put_contents($override_file, json_prettyprint($json)) === FALSE ) {
   ?>
     <div class="ui-widget">
               <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
