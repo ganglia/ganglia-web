@@ -772,6 +772,12 @@ function get_view_graph_elements($view) {
 	  else
 	    $graph_args_array[] = "gtype=line";
 
+	  if (isset($item['upper_limit']))
+	    $graph_args_array[] = "x=" .$item['upper_limit'];
+
+	  if (isset($item['lower_limit']))
+	    $graph_args_array[] = "n=" .$item['lower_limit'];
+
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" .$item['vertical_label'];
 

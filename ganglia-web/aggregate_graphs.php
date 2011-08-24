@@ -97,6 +97,9 @@ $(function() {
 <td colspan=2><input name="vl" id="vl" value="" size=60></td>
 </tr>
 <tr>
+<td>Limits</td><td>Upper:<input name="x" id="x" value="" size=10></td><td>Lower:<input name="n" id="n" value="" size=10></td>
+</tr>
+<tr>
 <td>Host Regular expression e.g. web-[0,4], web or (web|db):</td>
 <td colspan=2><input name="hreg[]" id="hreg" size=60></td>
 </tr>
