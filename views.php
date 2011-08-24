@@ -119,9 +119,19 @@ if ( isset($_GET['add_to_view']) ) {
 	  foreach ( $_GET['hreg'] as $key => $value ) 
 	    $host_regex_array[] = array("regex" => $value);
 
-	  $view['items'][] = array( "aggregate_graph" => "true", "metric_regex" => $metric_regex_array, 
+	  $item_array = array( "aggregate_graph" => "true", "metric_regex" => $metric_regex_array, 
 	    "host_regex" => $host_regex_array, "graph_type" => $_GET['gtype'],
 	    "vertical_label" => $_GET['vl'], "title" => $_GET['title']);
+
+          if ( isset($_GET['x']) && is_numeric($_GET['x'])) {
+            $item_array["upper_limit"] = $_GET['x'];
+          }
+          if ( isset($_GET['n']) && is_numeric($_GET['n'])) {
+            $item_array["lower_limit"] = $_GET['n'];
+          }
+
+          $view['items'][] = $item_array;
+          unset($item_array);
 
       } else {
 	if ( $_GET['type'] == "metric" ) {

@@ -25,8 +25,8 @@ $value      = isset($_GET["v"])  ?  sanitize ( $_GET["v"] )   : NULL;
 
 $metric_name = isset($_GET["m"])  ?  sanitize ( $_GET["m"] )   : NULL;
 
-$max        = isset($_GET["x"])  ?  clean_number ( sanitize ($_GET["x"] ) ) : NULL;
-$min        = isset($_GET["n"])  ?  clean_number ( sanitize ($_GET["n"] ) ) : NULL;
+$max        = isset($_GET["x"]) && is_numeric($_GET["x"])  ?  $_GET["x"] : NULL;
+$min        = isset($_GET["n"]) && is_numeric($_GET["n"])  ?  $_GET["n"] : NULL;
 $sourcetime = isset($_GET["st"]) ?  clean_number ( sanitize( $_GET["st"] ) ) : NULL;
 
 $load_color = isset($_GET["l"]) && is_valid_hex_color( rawurldecode( $_GET[ 'l' ] ) )
@@ -192,7 +192,9 @@ if ($sourcetime)
 if ($range == "month")
    $rrdtool_graph['end'] = floor($rrdtool_graph['end'] / 672) * 672;
 
+///////////////////////////////////////////////////////////////////////////////
 // Are we generating aggregate graphs
+///////////////////////////////////////////////////////////////////////////////
 if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     
   // Set start time
@@ -317,7 +319,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
 switch ( $conf['graph_engine'] ) {
   case "flot":
   case "rrdtool":
-    
+
     if ( ! isset($graph_config) ) {
 	if ( ($graph == "metric") &&
              isset($_GET['title']) && 
@@ -372,6 +374,14 @@ switch ( $conf['graph_engine'] ) {
           $rrdtool_graph['title'] = $title . " " . $rrdtool_graph['title'] . " last $range";
 
     $command = $conf['rrdtool'] . " graph - $rrd_options ";
+
+    if ( $max ) {
+      $rrdtool_graph['upper-limit'] = $max;
+    }
+    if ( $min )
+      $rrdtool_graph['lower-limit'] = $min;
+    if ( $max || $min )
+        $rrdtool_graph['extras'] = isset($rrdtool_graph['extras']) ? $rrdtool_graph['extras'] . " --rigid" : " --rigid" ;
   
     // The order of the other arguments isn't important, except for the
     // 'extras' and 'series' values.  These two require special handling.
