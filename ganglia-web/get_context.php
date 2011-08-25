@@ -102,6 +102,7 @@ if(isset($_GET["choose_filter"]))
 }
 
 # Set context.
+$context = NULL;
 if(!$user['clustername'] && !$user['hostname'] && $user['controlroom'])
    {
       $context = "control";

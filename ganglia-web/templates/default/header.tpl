@@ -75,13 +75,15 @@
     }, defaults));
 
     function rrdDateTimeString(date) {
-      return (date.getUTCMonth() + 1) + "/" + date.getUTCDate() + "/" + date.getUTCFullYear() + " " + date.getUTCHours() + ":" + date.getUTCMinutes();
+      return (date.geMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
     }
 
     function setStartAndEnd(startTime, endTime) {
-        var date = new Date(Math.floor(startTime + server_utc_offset) * 1000);
+        var local_offset = new Date().getTimezoneOffset() * 60;
+        var delta = -server_utc_offset - local_offset;
+        var date = new Date((Math.floor(startTime) + delta) * 1000);
         $("#datepicker-cs").val(rrdDateTimeString(date));
-        date = new Date(Math.floor(endTime + server_utc_offset) * 1000);
+        date = new Date((Math.floor(endTime) + delta) * 1000);
         $("#datepicker-ce").val(rrdDateTimeString(date));
     }
   });
