@@ -47,7 +47,7 @@ $reports["excluded_reports"] = array_unique($reports["excluded_reports"]);
 
 // If we want zoomable support on graphs we need to add correct zoomable class to every image
 $additional_cluster_img_html_args = "";
-$additional_host_img_html_args = "";
+$additional_host_img_css_classes = "";
 if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
    $additional_cluster_img_html_args = "class=cluster_zoomable";
 
@@ -71,8 +71,8 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
     if(checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf)) {
       $optional_reports .= "<button class=\"cupid-green\" title=\"Metric Actions - Add to View, etc\" onclick=\"metricActions('" . $hostname . "','" . $report_name ."','graph','');  return false;\">+</button>";
     }
-    $optional_reports .= " <a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;csv=1\"><button title=\"Export to CSV\" class=\"cupid-green\">CSV</button></a>
-    <a href=\"./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;json=1\"><button title=\"Export to JSON\" class=\"cupid-green\">JSON</button></a>";
+    $optional_reports .= " <button title=\"Export to CSV\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;csv=1';return false;\">CSV</button>
+    <button title=\"Export to JSON\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;json=1';return false;\">JSON</button>";
   }
 
 }
@@ -127,9 +127,9 @@ foreach ($metrics as $name => $v)
 
              // set host zoom class based on the size of the graph shown
              if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
-                $additional_host_img_html_args = "class=host_${size}_zoomable";
+                $additional_host_img_css_classes = "host_${size}_zoomable";
 
-             $data->assign("additional_host_img_html_args", $additional_host_img_html_args);
+             $data->assign("additional_host_img_css_classes", $additional_host_img_css_classes);
 
              $graphargs = "c=$cluster_url&amp;h=$hostname&amp;v=$v[VAL]"
                ."&amp;m=$name&amp;r=$range&amp;z=$size&amp;jr=$jobrange"

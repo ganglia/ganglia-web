@@ -7,21 +7,23 @@
 </style>
 <script type="text/javascript">
 var SEPARATOR = "_|_";
+// Map metric group id to name
+var g_mgMap = new Object();
 
-function addMetricGroup(mgId) {
+function addMetricGroup(mgName) {
   var stored_groups = $('input[name="metric_group"]');
   var open_groups = stored_groups.val();
   if (open_groups != "")
     open_groups += SEPARATOR;
-  open_groups += mgId
+  open_groups += mgName;
   stored_groups.val(open_groups);
 }
 
-function removeMetricGroup(mgId) {
+function removeMetricGroup(mgName) {
   var stored_groups = $('input[name="metric_group"]');
   var open_groups = stored_groups.val().split(SEPARATOR);
   for (var i = 0; i < open_groups.length; i++) {
-    if (open_groups[i] == mgId) {
+    if (open_groups[i] == mgName) {
       open_groups.splice(i, 1);
       break;
     }
@@ -30,11 +32,12 @@ function removeMetricGroup(mgId) {
 }
 
 function toggleMetricGroup(mgId, mgDiv) {
+  var mgName = g_mgMap[mgId];
   if (mgDiv.is(":visible"))
     // metric group is being closed
-    removeMetricGroup(mgId);
+    removeMetricGroup(mgName);
   else
-    addMetricGroup(mgId);
+    addMetricGroup(mgName);
   document.ganglia_form.submit();
 }
 
@@ -98,7 +101,7 @@ $(function() {
 {if $graph_engine == "flot"}
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
-<style>
+<style type="text/css">
 .flotgraph2 {
   height: {$graph_height}px;
   width:  {$graph_width}px;
@@ -134,7 +137,7 @@ $(function() {
 <tr>
  <td align="left" valign="TOP">
 
-<img src="{$node_image}" height="60" width="30" title="{$host}" border="0" />
+<img src="{$node_image}" class="noborder" height="60" width="30" title="{$host}"/>
 {$node_msg}
 
 <table border="0" width="100%">
@@ -168,7 +171,7 @@ $(function() {
 </td> 
 </table>
 </div>
-<style>
+<style type="text/css">
 #edit_optional_graphs_button {
     font-size:12px;
 }
@@ -233,18 +236,22 @@ $(function() {
 {$open_groups=""}
 
 {foreach $g_metrics_group_data group g_metrics}
+{$mgId = regex_replace($group, '/[^a-zA-Z0-9_]/', '_')}
 <table border="0" width="100%">
 <tr>
   <td class="metric">
-  <a href="#" id="{$group}" class="button ui-state-default ui-corner-all" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</a>
+  <a href="#" id="{$mgId}" class="button ui-state-default ui-corner-all" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</a>
+<script type="text/javascript">$(function() {
+g_mgMap["{$mgId}"] = "{$group}";
+})</script>
   </td>
 </tr>
 </table>
 
 {if $g_metrics.visible}
-<div id="{$group}_div">
+<div id="{$mgId}_div">
 {else}
-<div id="{$group}_div" class="ui-helper-hidden">
+<div id="{$mgId}_div" class="ui-helper-hidden">
 {/if}
 {if $g_metrics.visible}
 {if $open_groups != ""}
@@ -259,8 +266,8 @@ $(function() {
 {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
 <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;">+</button>
 {/if}
-<a href="./graph.php?{$g_metric.graphargs}&amp;csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a>
-<a href="./graph.php?{$g_metric.graphargs}&amp;json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>
+<button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;csv=1';return false;">CSV</button>
+<button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;json=1';return false;">JSON</button>
 <button title="Enlarge Graph" onClick="enlargeGraph('{$g_metric.graphargs}'); return false;" class="cupid-green">Enlarge</button>
 <br>
 {if $graph_engine == "flot"}
@@ -268,7 +275,7 @@ $(function() {
 <div id="placeholder_{$g_metric.graphargs}_legend" class="flotlegend"></div>
 {else}
 <a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
-<img class="noborder" {$additional_host_img_html_args} alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
+<img class="noborder {$additional_host_img_css_classes}" style="margin:5px;" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
 </A>
 {/if}
 </td>
