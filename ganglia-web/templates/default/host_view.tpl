@@ -59,15 +59,17 @@ $(function() {
     options = { to: { width: 200,height: 60 } }; 
     
     //run the effect
-    if (id.indexOf("mg_") == 0)
+    if ($(id).hasClass("metric-group")) {
       $("#"+id+"_div").toggle("blind",options,500,toggleMetricGroup(id, $("#"+id+"_div")));
-    else
+    } else {
       $("#"+id+"_div").toggle("blind",options,500);
+    }
   };
  
   //set effect from select menu value
   $('.button').click(function(event) {
     runEffect(event.target.id);
+    return false;
   });
 
     $(function() {
@@ -129,7 +131,7 @@ $(function() {
 </div>
 
 <div style="padding-bottom:5px;">
-<button id="host_overview" class="button ui-state-default ui-corner-all">Host overview</button>
+<button id="host_overview" class="button ui-state-default ui-corner-all">Host Overview</button>
 </div>
 
 <div style="display: none;" id="host_overview_div">
@@ -183,7 +185,7 @@ $(function() {
 </style>
 <div id="edit_optional_graphs">
   <div style="text-align: center;">
-    <button  id='save_optional_graphs_button'>Save</button>
+    <button id="save_optional_graphs_button">Save</button>
   </div>
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
@@ -242,7 +244,7 @@ $(function() {
 <table border="0" width="100%">
 <tr>
   <td class="metric">
-  <button id="{$mgId}" class="button ui-state-default ui-corner-all" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</button>
+  <button id="{$mgId}" class="button ui-state-default ui-corner-all metric-group" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</button>
 <script type="text/javascript">$(function() {
 g_mgMap["{$mgId}"] = "{$group}";
 })</script>
