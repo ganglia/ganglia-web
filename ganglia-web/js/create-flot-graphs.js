@@ -109,7 +109,7 @@ $(document).ready(function () {
       });
     }
 
-    var legends = $("#" + placeholder.attr(id) + " .legend");
+    var legends = $("#" + placeholder.attr("id") + " .legend");
     legends.each(function () {
         // fix the widths so they don't jump around
         $(this).css('width', $(this).width());
@@ -147,7 +147,7 @@ $(document).ready(function () {
             else
                 y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
 
-            console.debug("legends " + i + " = " + legends.eq(i).text());
+            // console.debug("legends " + i + " = " + legends.eq(i).text());
             if (!hasUpdatedLegend) {
                 series.label = series.label + " = ";
                 legends.eq(i).text(series.label);
