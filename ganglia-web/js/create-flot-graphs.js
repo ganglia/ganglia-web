@@ -64,15 +64,18 @@ $(document).ready(function () {
     var url = "graph.php?" + placeholder.attr('id').replace('placeholder_', '') + "&flot=1";
 
     function onDataReceived(series) {
-   //   flot_options.legend.container = $('#' + placeholder.attr('id') + '_legend');
+      // flot_options.legend.container = $('#' + placeholder.attr('id') + '_legend');
       
       $.plot(placeholder, series, {
           crosshair: { mode: "x" },
+          xaxis: { mode: "time"},
+          lines: { show: true },
+          points: { show: false },
           grid: { hoverable: true, autoHighlight: true }   }
       );
     }
 
-    var legends = $('#' + placeholder.attr('id') + " .legendLabel");
+    var legends = $('#' + placeholder.attr('id') + "_legend");
     legends.each(function () {
         // fix the widths so they don't jump around
         $(this).css('width', $(this).width());
