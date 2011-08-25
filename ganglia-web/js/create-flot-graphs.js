@@ -58,24 +58,58 @@ $(document).ready(function () {
 
   });
 
+  function showEnlargeTooltip(x, y, contents) {
+      $('<div id="enlargeTooltip">' + contents + '</div>').css( {
+          position: 'absolute',
+          display: 'none',
+          top: y + 5,
+          left: x + 5,
+          border: '1px solid #fdd',
+          padding: '2px',
+          'background-color': '#fee',
+          opacity: 0.80,
+          'z-index': 1004
+      }).appendTo("body").fadeIn(200);
+  }
+
 
   $(".flotgraph-enlarge").each(function () {
     var placeholder = $(this);
+    var plot = null;
     var url = "graph.php?" + placeholder.attr('id').replace('placeholder_', '') + "&flot=1";
 
     function onDataReceived(series) {
       // flot_options.legend.container = $('#' + placeholder.attr('id') + '_legend');
       
-      $.plot(placeholder, series, {
+      plot = $.plot(placeholder, series, {
           crosshair: { mode: "x" },
           xaxis: { mode: "time"},
           lines: { show: true },
           points: { show: false },
           grid: { hoverable: true, autoHighlight: true }   }
       );
+ 
+      var previousPoint = null;
+      placeholder.bind("plothover", function (event, pos, item) {
+          $("#x").text(pos.x.toFixed(2));
+          $("#y").text(pos.y.toFixed(2));
+
+          if (item) {
+              if (previousPoint != item.dataIndex) {
+                  previousPoint = item.dataIndex;
+                    
+                  $("#enlargeTooltip").remove();
+                  var x = item.datapoint[0].toFixed(2),
+                      y = item.datapoint[1].toFixed(2);
+
+                  showEnlargeTooltip(item.pageX, item.pageY,
+                      item.series.label ? item.series.label.replace(/=.*/, "= " + y) : y);
+              }
+          }
+      });
     }
 
-    var legends = $('#' + placeholder.attr('id') + "_legend");
+    var legends = $("#" + placeholder.attr("id") + " .legend");
     legends.each(function () {
         // fix the widths so they don't jump around
         $(this).css('width', $(this).width());
@@ -83,6 +117,7 @@ $(document).ready(function () {
  
     var updateLegendTimeout = null;
     var latestPosition = null;
+    var hasUpdatedLegend = false;
     
     function updateLegend() {
         updateLegendTimeout = null;
@@ -111,8 +146,14 @@ $(document).ready(function () {
                 y = p1[1];
             else
                 y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
- 
-            legends.eq(i).text(series.label.replace(/=.*/, "= " + y.toFixed(2)));
+
+            // console.debug("legends " + i + " = " + legends.eq(i).text());
+            if (!hasUpdatedLegend) {
+                series.label = series.label + " = ";
+                legends.eq(i).text(series.label);
+                hasUpdatedLegend = true;
+            }
+            legends.eq(i).text(series.label.replace(/=.*/, "= " + y));
         }
     }
     
