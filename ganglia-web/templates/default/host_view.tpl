@@ -52,6 +52,9 @@ function toggleMetricGroup(mgId, mgDiv) {
 
 function enlargeGraph(graphArgs) {
   $("#enlarge-graph-dialog").dialog('open');
+  $("#enlarge-graph-dialog").bind( "dialogbeforeclose", function(event, ui) {
+    $("#enlargeTooltip").remove();
+  });
 //  $('#enlarge-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
   $.get('enlarge_graph.php', "flot=1&" + graphArgs, function(data) {
     $('#enlarge-graph-dialog-content').html(data);
