@@ -4,6 +4,15 @@
 .flotlegend, .flotlegendtoplabel {
   display: none !important;
 }
+button.button {
+  font-size: 10pt;
+  padding: 5px 10px 5px 10px;
+}
+button.button:hover {
+  border-color: #000000;
+  color: #000000;
+  cursor: hand;
+}
 </style>
 <script type="text/javascript">
 var SEPARATOR = "_|_";
