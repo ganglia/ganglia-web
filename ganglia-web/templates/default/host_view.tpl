@@ -68,7 +68,7 @@ $(function() {
     options = { to: { width: 200,height: 60 } }; 
     
     //run the effect
-    if ($(id).hasClass("metric-group")) {
+    if ($("#"+id).hasClass("metric-group")) {
       $("#"+id+"_div").toggle("blind",options,500,toggleMetricGroup(id, $("#"+id+"_div")));
     } else {
       $("#"+id+"_div").toggle("blind",options,500);
