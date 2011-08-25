@@ -59,7 +59,10 @@ $(function() {
     options = { to: { width: 200,height: 60 } }; 
     
     //run the effect
-    $("#"+id+"_div").toggle("blind",options,500,toggleMetricGroup(id, $("#"+id+"_div")));
+    if (id.indexOf("mg_") == 0)
+      $("#"+id+"_div").toggle("blind",options,500,toggleMetricGroup(id, $("#"+id+"_div")));
+    else
+      $("#"+id+"_div").toggle("blind",options,500);
   };
  
   //set effect from select menu value
@@ -235,7 +238,7 @@ $(function() {
 {$open_groups=""}
 
 {foreach $g_metrics_group_data group g_metrics}
-{$mgId = regex_replace($group, '/[^a-zA-Z0-9_]/', '_')}
+{$mgId = "mg_"; $mgId .= regex_replace($group, '/[^a-zA-Z0-9_]/', '_')}
 <table border="0" width="100%">
 <tr>
   <td class="metric">
