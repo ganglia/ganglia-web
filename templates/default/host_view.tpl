@@ -4,6 +4,13 @@
 .flotlegend, .flotlegendtoplabel {
   display: none !important;
 }
+.flotheader {
+  margin-top: 2em;
+}
+.flottitle {
+  padding-right: 4em;
+  font-weight: bold;
+}
 button.button {
   font-size: 10pt;
   padding: 5px 10px 5px 10px;
