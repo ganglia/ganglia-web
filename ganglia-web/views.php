@@ -174,7 +174,8 @@ require_once('./cache.php');
 $available_views = get_available_views();
 
 // Pop up a warning message if there are no available views
-if ( sizeof($available_views) == 0 ) {
+// (Disable temporarily, otherwise we can't create views)
+if ( sizeof($available_views) == -1 ) {
     ?>
 	<div class="ui-widget">
 			  <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
