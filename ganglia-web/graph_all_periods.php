@@ -131,8 +131,8 @@ if ( ! isset($_GET['embed'] )  ) {
 foreach ( $conf['time_ranges'] as $key => $value ) {
 
    print '<div class="img_view">
+   <span style="padding-left: 4em; padding-right: 4em; text-weight: bold;">' . $key . '</span>
    <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' .$query_string . '\'); return false;">+</button>
-
    ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>' .
