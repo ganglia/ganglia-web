@@ -20,6 +20,10 @@ button.button:hover {
   color: #000000;
   cursor: hand;
 }
+.img_view {
+  float: left;
+  margin: 0 0 10px 10px;
+}
 </style>
 <script type="text/javascript">
 var SEPARATOR = "_|_";
@@ -210,24 +214,11 @@ $(function() {
 </div>
 
 <div id="optional_graphs">
-
-<table border="0" width="100%">
-
-<tr>
-
-<td align="center" valign="TOP" width="395">
-
 {$optional_reports}
-</td>
-</tr>
+<div style='clear: left'></div>
 {if $may_edit_cluster}
-<tr>
-<td style="text-align:center;padding-top:5px;">
-<button id="edit_optional_graphs_button">Edit Optional Graphs</button>
-</td>
-</tr>
+<div><button id="edit_optional_graphs_button">Edit Optional Graphs</button></div>
 {/if}
-</table>
 </div>
 
 <div id="sort_column_dropdowns">
