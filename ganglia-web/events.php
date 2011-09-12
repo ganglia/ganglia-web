@@ -20,7 +20,7 @@ function eventActions(action) {
     alert("You need to specify Host Regex");
     return false;
   }
-  $.get('api/events_api.php', "action=" + action + "&summary=" + $("#event_summary").val() + queryString, function(data) {
+  $.get('api/events.php', "action=" + action + "&summary=" + $("#event_summary").val() + queryString, function(data) {
       $("#event-message").html(data);
   });
 }
@@ -73,7 +73,8 @@ foreach ( $events_array as $id => $event ) {
     "<td>" . $description . "</td>" .
     "<td>" . $event['grid'] . "</td>" .
     "<td>" . $event['cluster'] . "</td>" .
-    "<td>" . $event['host_regex'] . "</td>";
+    "<td>" . $event['host_regex'] . "</td>" .
+    "</tr>";
 }
 ?>
 </table>

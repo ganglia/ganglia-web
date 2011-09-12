@@ -5,8 +5,8 @@ APACHE_USER = apache
 
 # Gweb version
 GWEB_MAJOR_VERSION = 2
-GWEB_MINOR_VERSION = 0
-GWEB_MICRO_VERSION = 0
+GWEB_MINOR_VERSION = 1
+GWEB_MICRO_VERSION = 8
 
 # When set to "yes", GWEB_VERSION will include SVN revision
 SNAPSHOT = yes
@@ -50,7 +50,7 @@ dist-dir:	default
 
 install:	dist-dir
 	mkdir -p $(DESTDIR) $(GWEB_DWOO) && \
-	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
+	rsync -x debian -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
 	cp -a $(DIST_DIR)/* $(DESTDIR) && \
 	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
 

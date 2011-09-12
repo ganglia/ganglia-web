@@ -99,6 +99,8 @@ extension=json.so
 
 On RHEL/CentOS 4, you will also need phpize which comes with the php-devel package.
 
+The web directory should also have "AllowOverride all" specified in your httpd.conf file, otherwise the API URL simplification will not work as advertised.
+
 BUGS
 ====
 
