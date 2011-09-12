@@ -2,6 +2,13 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // This API allows you to get cluster name for a hostname
+//
+// Currently only query supported is
+//
+//
+// hostname=YOURHOSTNAME&search_type=exact
+//
+// will give you back the name of the cluster where host is in
 /////////////////////////////////////////////////////////////////////////////
 
 require_once("../cache.php");
