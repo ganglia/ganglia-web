@@ -4,33 +4,9 @@ header("Content-Type: text/plain");
 
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
-// Common error handling
-function api_return_error ( $message ) {
-      $digest = array( "status" => "error", "message" => $message );
-      die ( json_encode($digest) );
-}
-
-function api_return_ok ( $message ) {
-      $digest = array( "status" => "ok", "message" => $message );
-      die ( json_encode($digest) );
-}
-
-// Handle PHP error
-set_error_handler("ganglia_views_api_error_handler");
-function ganglia_views_api_error_handler ($no, $str, $file, $line, $context) {
-  switch ($no) {
-    case E_ERROR:
-    case E_CORE_ERROR:
-    case E_COMPILE_ERROR:
-    case E_USER_ERROR:
-      api_return_error( "$file [$line] : $str" );
-      break;
-  }
-}
-
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
 include_once $conf['ganglia_dir'] . "/functions.php";
-include_once $conf['ganglia_dir'] . "/lib/json.php";
+include_once $conf['ganglia_dir'] . "/lib/common_api.php";
 
 if ( !isset($_GET['action']) ) {
   api_return_error( "Error: You need to specify an action at a minimum" );

@@ -1,8 +1,10 @@
 <?php
 
-$conf['ganglia_dir'] = dirname(__FILE__);
+$conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
 include_once( $conf['ganglia_dir'] . "/eval_conf.php");
+
+function ganglia_cache_metrics() {
 
 $debug = 0;
 
@@ -40,5 +42,7 @@ if ( ! isset($index_array) ) {
   file_put_contents($conf['cachefile'], serialize($index_array));
 
 }
+
+} // end function ganglia_cache_metrics
 
 ?>
