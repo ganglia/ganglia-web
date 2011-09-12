@@ -1,6 +1,8 @@
 <?php
 
-include_once("./eval_conf.php");
+$conf['ganglia_dir'] = dirname(__FILE__);
+
+include_once( $conf['ganglia_dir'] . "/eval_conf.php");
 
 $debug = 0;
 
