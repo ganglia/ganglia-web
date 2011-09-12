@@ -20,7 +20,7 @@ function eventActions(action) {
     alert("You need to specify Host Regex");
     return false;
   }
-  $.get('api/events_api.php', "action=" + action + "&summary=" + $("#event_summary").val() + queryString, function(data) {
+  $.get('api/events.php', "action=" + action + "&summary=" + $("#event_summary").val() + queryString, function(data) {
       $("#event-message").html(data);
   });
 }
