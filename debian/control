@@ -1,0 +1,20 @@
+Source: ganglia-webfrontend
+Section: net
+Priority: optional
+Maintainer: Jeff Buchbinder <jeff@freemedsoftware.org>
+Homepage: http://www.ganglia.info/
+Build-Depends: debhelper (>> 5.0.0), rsync
+Standards-Version: 3.8.4
+
+Package: ganglia-webfrontend
+Architecture: all
+Depends: ${misc:Depends}, apache | apache-ssl | apache-perl | apache2, php5 | php5-cgi | libapache2-mod-php5, rrdtool, debconf (>= 0.5), libgd2-noxpm | libgd2-xpm
+Recommends: gmetad, php5-gd
+Description: cluster monitoring toolkit - web front-end
+ Ganglia is a scalable, real-time cluster monitoring environment
+ that collects cluster statistics in an open and well-defined XML
+ format.
+ .
+ This package contains the PHP-based web front-end, which displays
+ information gathered by 'gmetad'.
+
