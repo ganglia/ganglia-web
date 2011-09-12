@@ -73,7 +73,8 @@ foreach ( $events_array as $id => $event ) {
     "<td>" . $description . "</td>" .
     "<td>" . $event['grid'] . "</td>" .
     "<td>" . $event['cluster'] . "</td>" .
-    "<td>" . $event['host_regex'] . "</td>";
+    "<td>" . $event['host_regex'] . "</td>" .
+    "</tr>";
 }
 ?>
 </table>
