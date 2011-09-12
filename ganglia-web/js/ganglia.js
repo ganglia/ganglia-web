@@ -104,9 +104,19 @@ function selectView(view_name) {
 }
 
 function getViewsContent() {
-  $.get('views.php', "" , function(data) {
+  $.get('api/views.php', "" , function(data) {
     $("#tabs-views-content").html('<img src="img/spinner.gif">');
     $("#tabs-views-content").html(data);
+/*
+    $("#tabs-views-content").html(
+      '<div class="ui-widget">' +
+        '<div class="ui-state-default ui-corner-all" style="padding: 0 .7em;">
+          '<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>' +
+        '</div>' +
+      '</div>'
+    );
+*/
+
     $("#create_view_button")
       .button()
       .click(function() {
