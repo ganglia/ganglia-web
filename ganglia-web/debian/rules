@@ -1,0 +1,90 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+PACKAGE = ganglia
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+CFLAGS = -O2 -Wall 
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -g
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+
+config.status: configure
+	dh_testdir
+build: build-stamp
+
+build-stamp:  config.status
+	dh_testdir
+
+	# Add here commands to compile the package.
+	$(MAKE) APACHE_USER=www-data DESTDIR=$(CURDIR)/debian/tmp/usr/share/ganglia-webfrontend
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	$(MAKE) clean
+	rm -f build-stamp 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	
+	# Add here commands to install the package into debian/ganglia.
+	$(MAKE) install APACHE_USER=www-data DESTDIR=$(CURDIR)/debian/tmp/usr/share/ganglia-webfrontend
+
+	# Install webfrontend
+	cp -f private_clusters debian/apache.conf \
+		 debian/ganglia-webfrontend/etc/ganglia-webfrontend
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs -i
+	dh_fixperms -i
+	dh_compress -i
+	dh_installdebconf -i
+	dh_installdeb -i
+	dh_shlibdeps -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
+	
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installinit -s
+	dh_installcron -s
+	dh_installchangelogs
+	dh_link -s
+	dh_strip -s
+	dh_compress -s
+	dh_fixperms -s
+	dh_makeshlibs -s
+	dh_installdeb -s
+	dh_shlibdeps -s
+	dh_gencontrol -s
+	dh_md5sums -s
+	dh_builddeb -s
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install 
