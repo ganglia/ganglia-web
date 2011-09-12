@@ -7,6 +7,7 @@
 # have been set.
 #
 
+include_once ( dirname(__FILE__) . "/lib/cache.php" );
 include_once ( dirname(__FILE__) . "/lib/json.php" );
 
 #-------------------------------------------------------------------------------
@@ -736,7 +737,7 @@ function get_available_views() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function get_view_graph_elements($view) {
   global $conf;
-  require("./cache.php");
+  ganglia_cache_metrics();
 
   $view_elements = array();
 
