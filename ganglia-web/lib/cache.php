@@ -5,6 +5,7 @@ $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 include_once( $conf['ganglia_dir'] . "/eval_conf.php");
 
 function ganglia_cache_metrics() {
+global $conf;
 
 $debug = 0;
 
