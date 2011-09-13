@@ -76,8 +76,10 @@ function preamble($ganglia)
 
 function start_meta ($parser, $tagname, $attrs)
 {
-   global $metrics, $grid, $self;
+   global $metrics, $grid, $self, $debug;
    static $sourcename, $metricname;
+
+   if ($debug) print "<br/>DEBUG: parser start meta [$tagname]\n";
 
    switch ($tagname)
       {
@@ -87,6 +89,7 @@ function start_meta ($parser, $tagname, $attrs)
 
          case "GRID":
          case "CLUSTER":
+            if ($debug) print "<br/>DEBUG: parser start meta GRID|CLUSTER\n";
             # Our grid will be first.
             if (!$sourcename) $self = $attrs['NAME'];
 
@@ -115,9 +118,10 @@ function start_meta ($parser, $tagname, $attrs)
 
 function start_cluster ($parser, $tagname, $attrs)
 {
-   global $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down;
+   global $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
    static $hostname;
 
+   if ($debug) print "<br/>DEBUG: parser start cluster [$tagname]\n";
    switch ($tagname)
       {
          case "GANGLIA_XML":
@@ -174,8 +178,10 @@ function start_cluster ($parser, $tagname, $attrs)
 
 function start_everything ($parser, $tagname, $attrs)
 {
-   global $index_array, $hosts, $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down;
+   global $index_array, $hosts, $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
    static $hostname, $cluster_name;
+
+   if ($debug) print "<br/>DEBUG: parser start everything [$tagname]\n";
 
    switch ($tagname)
       {
@@ -302,8 +308,10 @@ function end_all ($parser, $tagname)
 
 function Gmetad ()
 {
-   global $conf, $error, $parsetime, $clustername, $hostname, $context;
+   global $conf, $error, $parsetime, $clustername, $hostname, $context, $debug;
    
+   if ($debug) print "<br/>\n";
+
    # Parameters are optionalshow
    # Defaults...
    $ip = $conf['ganglia_ip'];
@@ -321,6 +329,7 @@ function Gmetad ()
             $ip = func_get_arg(0);
       }
 
+   if ($debug) print "<br/>DEBUG: Creating parser\n";
    $parser = xml_parser_create();
    switch ($context)
       {
@@ -355,6 +364,7 @@ function Gmetad ()
    if (!$fp)
       {
          $error = "fsockopen error: $errstr";
+         if ($debug) print "<br/>DEBUG: $error\n";
          return FALSE;
       }
 
@@ -370,6 +380,7 @@ function Gmetad ()
          if (!$rc)
             {
                $error = "Could not sent request to gmetad: $errstr";
+               if ($debug) print "<br/>DEBUG: $error\n";
                return FALSE;
             }
       }
@@ -384,6 +395,7 @@ function Gmetad ()
                $error = sprintf("XML error: %s at %d",
                   xml_error_string(xml_get_error_code($parser)),
                   xml_get_current_line_number($parser));
+               if ($debug) print "<br/>DEBUG: $error\n";
                fclose($fp);
                return FALSE;
             }
@@ -393,6 +405,7 @@ function Gmetad ()
    $end = gettimeofday();
    $parsetime = ($end['sec'] + $end['usec']/1e6) - ($start['sec'] + $start['usec']/1e6);
 
+   if ($debug) print "<br/>DEBUG: theoretically completed gmetad parsing\n";
    return TRUE;
 }
 
