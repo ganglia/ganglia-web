@@ -1177,7 +1177,7 @@ function json_prettyprint($json)
 } 
 
 function ganglia_cache_metrics() {
-    global $conf;
+    global $conf, $index_array, $hosts;
 
     $debug = 0;
 
