@@ -104,7 +104,7 @@ function selectView(view_name) {
 }
 
 function getViewsContent() {
-  $.get('api/views.php', "" , function(data) {
+  $.get('views.php', "" , function(data) {
     $("#tabs-views-content").html('<img src="img/spinner.gif">');
     $("#tabs-views-content").html(data);
 /*

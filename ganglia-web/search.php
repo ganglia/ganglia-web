@@ -9,7 +9,8 @@ require_once('./eval_conf.php');
 require_once('./functions.php');
 
 // Load the metric caching code
-ganglia_cache_metrics();
+//$debug = 1;
+include_once('lib/cache.php');
 
 if ( isset($_GET['mobile']))
   $mobile = 1;

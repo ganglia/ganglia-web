@@ -3,7 +3,7 @@
 include_once("./eval_conf.php");
 include_once("./functions.php");
 
-ganglia_cache_metrics();
+include_once("./lib/cache.php");
 
 /////////////////////////////////////////////////////////////////////////////
 // With Mobile view we are gonna utilize the capability of putting in
