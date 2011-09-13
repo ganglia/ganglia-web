@@ -23,7 +23,7 @@ if ( ! isset($_GET['view_name']) ) {
 
   // We need metrics cache in order to derive cluster name particular host
   // belongs to
-  ganglia_cache_metrics();
+  include "lib/cache.php";
 
   $available_views = get_available_views();
 

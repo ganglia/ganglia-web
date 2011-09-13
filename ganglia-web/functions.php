@@ -737,7 +737,7 @@ function get_available_views() {
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function get_view_graph_elements($view) {
   global $conf;
-  ganglia_cache_metrics();
+  include "lib/cache.php";
 
   $view_elements = array();
 
@@ -1177,9 +1177,9 @@ function json_prettyprint($json)
 } 
 
 function ganglia_cache_metrics() {
-    global $conf, $index_array, $hosts;
+    global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
 
-    $debug = 0;
+    if (!isset($debug)) { $debug = 0; }
 
     if($conf['cachedata'] == 1 && file_exists($conf['cachefile'])) {
         // check for the cached file
