@@ -15,7 +15,8 @@ $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
 include_once $conf['ganglia_dir'] . "/lib/common_api.php";
-include_once $conf['ganglia_dir'] . "/lib/cache.php";
+include_once $conf['ganglia_dir'] . "/lib/functions.php";
+
 ganglia_cache_metrics();
 
 if ( isset($_GET['hostname']) and isset($_GET['search_type']) and $_GET['search_type'] == "exact") {

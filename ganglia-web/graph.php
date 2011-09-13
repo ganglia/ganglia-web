@@ -221,7 +221,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   $color_count = sizeof($conf['graph_colors']);
 
   // Load the host cache
-  require_once('./cache.php');
+  ganglia_cache_metrics();
 
   $counter = 0;
 
