@@ -6,9 +6,9 @@
 // are going start with either host_ or cluster_
 //////////////////////////////////////////////////////////////////////////
 require_once './eval_conf.php';
-require_once 'functions.php';
+require_once './functions.php';
 // Load the host cache for validation purposes
-include_once './cache.php';
+ganglia_cache_metrics();
 
 $hostname = isset($_GET['hostname'])  ? sanitize( $_GET['hostname'] ) : "none";
 if ( $hostname != "none" ) {

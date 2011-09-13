@@ -3,8 +3,6 @@
 include_once("./eval_conf.php");
 include_once("./functions.php");
 
-// Load the metric caching code
-require_once('./lib/cache.php');
 ganglia_cache_metrics();
 
 /////////////////////////////////////////////////////////////////////////////

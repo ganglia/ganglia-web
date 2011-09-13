@@ -6,9 +6,9 @@ $( "#tabs" ).bind( "tabsshow", function(event, ui) {
 <?php
 
 require_once('./eval_conf.php');
+require_once('./functions.php');
 
 // Load the metric caching code
-require_once('./lib/cache.php');
 ganglia_cache_metrics();
 
 if ( isset($_GET['mobile']))
