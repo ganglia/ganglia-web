@@ -75,7 +75,7 @@
     }, defaults));
 
     function rrdDateTimeString(date) {
-      return (date.geMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
     }
 
     function setStartAndEnd(startTime, endTime) {
