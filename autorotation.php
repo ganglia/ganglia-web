@@ -75,7 +75,6 @@ if ( ! isset($_GET['view_name']) ) {
   }
 
   // The title of the graph
-print_r($view_elements);
   $title = $view_elements[$id]['name'];
   # If it's not an aggregate graph put hostname in the title
   $suffix = isset($view_elements[$nextid]['hostname']) ? " for " . $view_elements[$nextid]['hostname'] : "";
