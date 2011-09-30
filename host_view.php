@@ -261,6 +261,7 @@ if (isset($c_metrics) and is_array($c_metrics))
 $data->assign("c_metrics_data", $c_metrics_data);
 
 $open_groups = ( isset($_GET['metric_group']) ) ? explode ("_|_", $_GET['metric_group']) : NULL;
+$g_new_open_groups = ""; // Updated definition of currently open metric groups
 
 # Show graphs.
 if ( is_array($g_metrics) && is_array($g_metrics_group) )
@@ -268,6 +269,15 @@ if ( is_array($g_metrics) && is_array($g_metrics_group) )
       $g_metrics_group_data = array();
       ksort($g_metrics_group);
       $host_metrics = 0;
+
+      if ($open_groups == NULL) {
+        if ($metric_groups_initially_collapsed)
+          $g_new_open_groups = "NOGROUPS";
+        else
+          $g_new_open_groups = "ALLGROUPS";
+      } else
+       $g_new_open_groups .= $open_groups[0];
+
       foreach ( $g_metrics_group as $group => $metric_array )
          {
             if ( $group == "" ) {
@@ -280,8 +290,17 @@ if ( is_array($g_metrics) && is_array($g_metrics_group) )
               $g_metrics_group_data[$group]["visible"] = 
                 ! $metric_groups_initially_collapsed;
             else {
-              $g_metrics_group_data[$group]["visible"] = in_array($group, $open_groups);
+              $inList = in_array($group, $open_groups);
+              $g_metrics_group_data[$group]["visible"] = 
+                ((($open_groups[0] == "NOGROUPS") && $inList) || 
+                  ($open_groups[0] == "ALLGROUPS" && !$inList));
             }
+
+            $visible = $g_metrics_group_data[$group]["visible"];
+            if (($visible && ($open_groups[0] == "NOGROUPS")) ||
+                (!$visible && ($open_groups[0] == "ALLGROUPS")))
+              $g_new_open_groups .= "_|_" . $group;
+
             $i = 0;
             ksort($g_metrics);
             foreach ( $g_metrics as $name => $v )
@@ -307,5 +326,6 @@ if ( $conf['graph_engine'] == "flot" ) {
   $data->assign("graph_width", $conf['graph_sizes'][$size]["width"]);
 }
 $data->assign("g_metrics_group_data", $g_metrics_group_data);
+$data->assign("g_open_metric_groups", $g_new_open_groups);
 $dwoo->output($tpl, $data);
 ?>
