@@ -27,28 +27,95 @@ button.button:hover {
 </style>
 <script type="text/javascript">
 var SEPARATOR = "_|_";
+var ALL_GROUPS = "ALLGROUPS";
+var NO_GROUPS = "NOGROUPS";
 // Map metric group id to name
 var g_mgMap = new Object();
 
+function clearStoredMetricGroups() {
+  var stored_groups = $('input[name="metric_group"]');
+  stored_groups.val(NO_GROUPS);
+}
+
+function selectAllMetricGroups() {
+  var stored_groups = $('input[name="metric_group"]');
+  stored_groups.val(ALL_GROUPS);
+}
+
 function addMetricGroup(mgName) {
   var stored_groups = $('input[name="metric_group"]');
+
   var open_groups = stored_groups.val();
-  if (open_groups != "")
-    open_groups += SEPARATOR;
-  open_groups += mgName;
+  if (open_groups == ALL_GROUPS)
+    return; // no exceptions
+
+  var groups = open_groups.split(SEPARATOR);
+  switch (groups[0]) {
+    case ALL_GROUPS:
+      // Remove from except list
+      for (var i = 1; i < groups.length; i++) {
+        if (groups[i] == mgName) {
+          groups.splice(i, 1);
+          break;
+        }
+      }
+      open_groups = groups.join(SEPARATOR);
+    break;
+    case NO_GROUPS:
+      // Add to list if not already there
+      var inList = false;
+      for (var i = 1; i < groups.length; i++) {
+         if (groups[i] == mgName) {
+           inList = true;
+           break;
+         }
+      }
+      if (!inList) {
+        open_groups += SEPARATOR;
+        open_groups += mgName;
+      }
+    break;
+    default:
+      alert("Unrecognized group option - " + groups[0]);
+  }
   stored_groups.val(open_groups);
 }
 
 function removeMetricGroup(mgName) {
   var stored_groups = $('input[name="metric_group"]');
-  var open_groups = stored_groups.val().split(SEPARATOR);
-  for (var i = 0; i < open_groups.length; i++) {
-    if (open_groups[i] == mgName) {
-      open_groups.splice(i, 1);
-      break;
-    }
+
+  var open_groups = stored_groups.val();
+  if (open_groups == NO_GROUPS)
+    return; // no exceptions
+
+  var groups = open_groups.split(SEPARATOR);
+  switch (groups[0]) {
+    case ALL_GROUPS:
+      var inList = false;
+      for (var i = 1; i < groups.length; i++) {
+        if (groups[i] == mgName) {
+          inList = true;
+          break;
+        }
+      }
+      if (!inList) {
+        open_groups += SEPARATOR;
+        open_groups += mgName;
+      }
+    break;
+    case NO_GROUPS:
+      for (var i = 1; i < groups.length; i++) {
+        if (groups[i] == mgName) {
+          groups.splice(i, 1);
+          break;
+        }
+      }
+      open_groups = groups.join(SEPARATOR);
+    break;
+    default:
+      alert("Unrecognized group option - " + groups[0]);
   }
-  stored_groups.val(open_groups.join(SEPARATOR));
+  stored_groups.val(open_groups);
 }
 
 function toggleMetricGroup(mgId, mgDiv) {
@@ -121,7 +188,17 @@ $(function() {
       return false;
     });
 
+    $("#expand_all_metric_groups").click(function(event) {
+      selectAllMetricGroups();
+      document.ganglia_form.submit();
+      return false;
+    });
 
+    $("#collapse_all_metric_groups").click(function(event) {
+      clearStoredMetricGroups();
+      document.ganglia_form.submit();
+      return false;
+    });
 });
 </script>
 
@@ -241,13 +318,14 @@ $(function() {
 </div>
 
 <div id=metrics>
-
 <center>
+<div style="padding-bottom:5px;padding-top:5px;">
+<button id="expand_all_metric_groups" class="button ui-state-default ui-corner-all">Expand All Metric Groups</button>
+<button id="collapse_all_metric_groups" class="button ui-state-default ui-corner-all">Collapse All Metric Groups</button>
+</div>
 <table>
 <tr>
  <td>
-
-{$open_groups=""}
 
 {foreach $g_metrics_group_data group g_metrics}
 {$mgId = "mg_"; $mgId .= regex_replace($group, '/[^a-zA-Z0-9_]/', '_')}
@@ -268,10 +346,6 @@ g_mgMap["{$mgId}"] = "{$group}";
 <div id="{$mgId}_div" class="ui-helper-hidden">
 {/if}
 {if $g_metrics.visible}
-{if $open_groups != ""}
-{$open_groups = cat($open_groups, "_|_")}
-{/if}
-{$open_groups = cat($open_groups, $group)}
 <table><tr>
 {foreach $g_metrics["metrics"] g_metric}
 <td>
@@ -304,6 +378,6 @@ g_mgMap["{$mgId}"] = "{$group}";
 </tr>
 </table>
 </center>
-<input type="hidden" name="metric_group" value="{$open_groups}">
+<input type="hidden" name="metric_group" value="{$g_open_metric_groups}">
 </div>
 <!-- End host_view.tpl -->
