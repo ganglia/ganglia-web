@@ -206,6 +206,12 @@ $conf['cachedata'] = 1;
 $conf['cachefile'] = $conf['conf_dir'] . "/ganglia_metrics.cache";
 $conf['cachetime'] = 1200; // How long to cache the data in seconds
 
+# Different settings for Nagios
+$conf['nagios_cache_enabled'] = 1;
+$conf['nagios_cache_file'] = $conf['conf_dir'] . "/nagios_ganglia.cache";
+# Cache data for how many seconds
+$conf['nagios_cache_time'] = 45;
+
 #
 # Graph sizes
 #
@@ -236,6 +242,14 @@ $conf['graph_sizes'] = array(
    'xlarge'=>array(
      'height'=>300,
      'width'=>650,
+     'fudge_0'=>0,
+     'fudge_1'=>0,
+     'fudge_2'=>0
+   ),
+
+   'xxlarge'=>array(
+     'height'=>700,
+     'width'=>1150,
      'fudge_0'=>0,
      'fudge_1'=>0,
      'fudge_2'=>0
