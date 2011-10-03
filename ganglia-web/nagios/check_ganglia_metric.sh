@@ -26,6 +26,9 @@ then
   do
     CHECK_ARGS=${CHECK_ARGS}"&"${ARG}
   done
+else
+   echo "Sample invocation $0 host=localhost.localdomain metric_name=load_one operator=more critical_value=1"
+   exit 1 
 fi
 
 RESULT=`curl -s ${GANGLIA_URL}?${CHECK_ARGS}`
