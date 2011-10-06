@@ -20,6 +20,15 @@ if ( ! $conf['overlay_events'] ) {
   api_return_error( "Events API is DISABLED. Please set \$conf['overlay_events'] = true to enable." );
 }
 
+# If events_auth_token is specified in conf.php use that.
+if ( isset($conf['events_auth_token']) ) {
+   if ( isset($_GET['token']) && $conf['events_auth_token'] == $_GET['token'] ) {
+      continue;
+   } else {
+      api_return_error( "Error: Events Auth Token is invalid. Please check token=" );
+   }
+}
+
 if ( !isset($_GET['action']) ) {
   api_return_error( "Error: You need to specify an action at a minimum" );
 }
