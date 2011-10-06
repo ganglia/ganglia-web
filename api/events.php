@@ -22,9 +22,7 @@ if ( ! $conf['overlay_events'] ) {
 
 # If events_auth_token is specified in conf.php use that.
 if ( isset($conf['events_auth_token']) ) {
-   if ( isset($_GET['token']) && $conf['events_auth_token'] == $_GET['token'] ) {
-      continue;
-   } else {
+   if ( ! ( isset($_GET['token']) && $conf['events_auth_token'] == $_GET['token'] ) ) {
       api_return_error( "Error: Events Auth Token is invalid. Please check token=" );
    }
 }
