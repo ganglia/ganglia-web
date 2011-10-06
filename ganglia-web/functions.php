@@ -7,7 +7,6 @@
 # have been set.
 #
 
-include_once ( dirname(__FILE__) . "/lib/functions.php" );
 include_once ( dirname(__FILE__) . "/lib/json.php" );
 
 #-------------------------------------------------------------------------------
