@@ -91,6 +91,15 @@ if ($cs)
 if ($ce)
     $get_metric_string .= "&amp;ce=" . rawurlencode($ce);
 
+$metric_group = $_GET['metric_group'];
+if ( isset($metric_group) ) {
+  $data->assign('metric_group', $metric_group);
+  $metric_group = "&amp;metric_group=" . rawurlencode($metric_group);
+} else {
+  $data->assign('metric_group', "");
+  $metric_group = "";
+}
+
 $start_timestamp = null;
 $end_timestamp = null;
 if ($cs) {
@@ -127,21 +136,21 @@ $alt_view = "";
 
 if ($context=="cluster")
    {
-      $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url\">Physical View</a>";
+      $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url$metric_group\">Physical View</a>";
    }
 elseif ($context=="physical")
    {
-      $alt_view = "<a href=\"./?c=$cluster_url\">Full View</a>";
+      $alt_view = "<a href=\"./?c=$cluster_url$metric_group\">Full View</a>";
    }
 elseif ($context=="node")
    {
       $alt_view =
-      "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string\">Host View</a>";
+      "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string$metric_group\">Host View</a>";
    }
 elseif ($context=="host")
    {
       $alt_view =
-      "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>";
+      "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url$metric_group\">Node View</a>";
    }
 
 $data->assign("alt_view", $alt_view);
@@ -151,14 +160,14 @@ $node_menu = "";
 
 if ($parentgrid) 
    {
-      $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">".
+      $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string$metric_group\">".
          "$parentgrid $meta_designator</A></B> ";
       $node_menu .= "<B>&gt;</B>\n";
    }
 
 # Show grid.
 $mygrid =  ($self == "unspecified") ? "" : $self;
-$node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
+$node_menu .= "<B><A HREF=\"./?$get_metric_string$metric_group\">$mygrid $meta_designator</A></B> ";
 $node_menu .= "<B>&gt;</B>\n";
 
 if ($physical)
@@ -167,7 +176,7 @@ if ($physical)
 if ( $clustername )
    {
       $url = rawurlencode($clustername);
-      $node_menu .= "<B><A HREF=\"./?c=$url&amp;$get_metric_string\">$clustername</A></B> ";
+      $node_menu .= "<B><A HREF=\"./?c=$url&amp;$get_metric_string$metric_group\">$clustername</A></B> ";
       $node_menu .= "<B>&gt;</B>\n";
       $node_menu .= hiddenvar("c", $clustername);
    }
@@ -447,7 +456,7 @@ if ( $context == "cluster" ) {
 
   $data->assign("additional_filter_options", 'Show only nodes matching <input name=host_regex ' .$set_host_regex_value . '>'
    . '<input class=submit_button type="SUBMIT" VALUE="Filter">'
-   . '&nbsp;Max graphs to show <select onChange="ganglia_submit();" name="max_graphs">' . $max_graphs_values . '</select>'
+   . '&nbsp;<span class="nobr">Max graphs to show <select onChange="ganglia_submit();" name="max_graphs">' . $max_graphs_values . '</select></span>'
     );
 } else
   $data->assign("additional_filter_options", '');
@@ -464,8 +473,6 @@ if($conf['auth_system'] == 'enabled') {
 
 if ( $conf['overlay_events'] == true )
   $data->assign('overlay_events', true);
-  
-
 
 # Make sure that no data is cached..
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    # Date in the past

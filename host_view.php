@@ -260,7 +260,7 @@ if (isset($c_metrics) and is_array($c_metrics))
    }
 $data->assign("c_metrics_data", $c_metrics_data);
 
-$open_groups = ( isset($_GET['metric_group']) ) ? explode ("_|_", $_GET['metric_group']) : NULL;
+$open_groups = ( isset($_GET['metric_group']) && ($_GET['metric_group'] != "")) ? explode ("_|_", $_GET['metric_group']) : NULL;
 $g_new_open_groups = ""; // Updated definition of currently open metric groups
 
 # Show graphs.
