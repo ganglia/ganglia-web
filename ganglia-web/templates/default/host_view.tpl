@@ -140,6 +140,9 @@ function enlargeGraph(graphArgs) {
 }
 
 $(function() {
+  var stored_groups = $('input[name="metric_group"]');
+  stored_groups.val("{$g_open_metric_groups}");
+
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect
   function runEffect(id){
@@ -378,6 +381,5 @@ g_mgMap["{$mgId}"] = "{$group}";
 </tr>
 </table>
 </center>
-<input type="hidden" name="metric_group" value="{$g_open_metric_groups}">
 </div>
 <!-- End host_view.tpl -->
