@@ -297,7 +297,7 @@ $(function() {
 {$optional_reports}
 <div style='clear: left'></div>
 {if $may_edit_cluster}
-<div><button id="edit_optional_graphs_button">Edit Optional Graphs</button></div>
+<div style="text-align:center"><button id="edit_optional_graphs_button">Edit Optional Graphs</button></div>
 {/if}
 </div>
 
