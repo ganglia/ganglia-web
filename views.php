@@ -207,7 +207,7 @@ if ( sizeof($available_views) == -1 ) {
 <?php
 if ( isset($_GET['view_name']) ) {
 
-  print "<script type=\"text/javascript\">selectView('" . $_GET['view_name'] . "');</script>";
+  print "<script type=\"text/javascript\">$(document).ready(function() {selectView('" . $_GET['view_name'] . "');});</script>";
 
 }
 ?>
@@ -226,11 +226,13 @@ if ( isset($_GET['view_name']) ) {
     <tr><td valign=top>
 
   <?php
-    if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+    if( ! isset($_GET['standalone']) && 
+        checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
        print '<button onclick="return false" id="create_view_button">Create View</button>';
     }
-    if ( ! isset($_GET['standalone']) && ! isset($_GET['just_graphs']) ) {
-       print '<a href="views.php?standalone=1" id="detach-tab-button">Detach Tab</a>';
+    if ( ! isset($_GET['standalone']) && 
+         ! isset($_GET['just_graphs']) ) {
+       print '<a href="javascript:void(0)" onclick="detachViews();" id="detach-tab-button">Detach Tab</a>';
     }
   ?>
     <div id="views_menu">
