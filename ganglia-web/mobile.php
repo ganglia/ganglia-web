@@ -3,7 +3,7 @@
 include_once("./eval_conf.php");
 include_once("./functions.php");
 
-include_once("./lib/cache.php");
+retrieve_metrics_cache();
 
 /////////////////////////////////////////////////////////////////////////////
 // With Mobile view we are gonna utilize the capability of putting in

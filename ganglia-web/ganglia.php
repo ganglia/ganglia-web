@@ -9,6 +9,8 @@
 # information as we need to make the page.
 #
 
+include_once($conf['ganglia_dir'] . "/version.php");
+
 $error="";
 
 # Gives time in seconds to retrieve and parse XML tree. With subtree-
@@ -45,6 +47,7 @@ $version["rrdtool"] = "$rrdtool_version";
 # The name of our local grid.
 $self = " ";
 
+$index_array = array();
 
 # Returns true if the host is alive. Works for both old and new gmond sources.
 function host_alive($host, $cluster)
@@ -311,7 +314,6 @@ function Gmetad ()
    global $conf, $error, $parsetime, $clustername, $hostname, $context, $debug;
    
    if ($debug) print "<br/>\n";
-
    # Parameters are optionalshow
    # Defaults...
    $ip = $conf['ganglia_ip'];
