@@ -735,8 +735,10 @@ function get_available_views() {
 // size information, time ranges etc.
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 function get_view_graph_elements($view) {
-  global $conf;
-  include "lib/cache.php";
+
+  global $conf, $index_array;
+
+  retrieve_metrics_cache();
 
   $view_elements = array();
 
@@ -1225,5 +1227,137 @@ function ganglia_cache_metrics() {
     }
 
 } // end function ganglia_cache_metrics
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////
+function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
+
+  global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
+  
+  retrieve_metrics_cache();
+  
+  $color_count = sizeof($conf['graph_colors']);
+
+  $graph_config["report_name"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
+  $graph_config["title"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
+
+  $counter = 0;
+
+  ///////////////////////////////////////////////////////////////////////////
+  // Find matching hosts    
+  foreach ( $hreg as $key => $query ) {
+    foreach ( $index_array['hosts'] as $key => $host_name ) {
+      if ( preg_match("/$query/i", $host_name ) ) {
+        // We can have same hostname in multiple clusters
+        $matches[] = $host_name . "|" . $index_array['cluster'][$host_name]; 
+      }
+    }
+  } 
+
+  if( isset($mreg)) {
+    // Find matching metrics
+    foreach ( $mreg as $key => $query ) {
+      foreach ( $index_array['metrics'] as $key => $m_name ) {
+        if ( preg_match("/$query/i", $key ) ) {
+          $metric_matches[] = $key;
+        }
+      }
+    }
+    asort($metric_matches);
+  }
+  
+  if( isset($metric_matches)){
+    $metric_matches_unique = array_unique($metric_matches);
+  }
+  else{
+    $metric_matches_unique = array($metric_name);
+  }
+
+  if ( isset($matches)) {
+
+    $matches_unique = array_unique($matches);
+
+    // Create graph_config series from matched hosts and metrics
+    foreach ( $matches_unique as $key => $host_cluster ) {
+
+      $out = explode("|", $host_cluster);
+
+      $host_name = $out[0];
+      $cluster_name = $out[1];
+
+      foreach ( $metric_matches_unique as $key => $m_name ) {
+
+        // We need to cycle the available colors
+        $color_index = $counter % $color_count;
+
+        // next loop if there is no metric for this hostname
+        if( !in_array($host_name, $index_array['metrics'][$m_name]))
+          continue;
+
+        $label = '';
+        if ($conf['strip_domainname'] == True )
+          $label = strip_domainname($host_name);
+        else
+          $label = $host_name;
+        if( isset($metric_matches) and sizeof($metric_matches_unique)>1)
+          $label.=" $m_name";
+
+        $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
+          "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
+
+        $counter++;
+
+      }
+      }
+   }
+
+   return $graph_config;
+
+} // function build_aggregate_graph_config () {
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////
+function retrieve_metrics_cache () {
+
+   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics, $context;
+
+   if($conf['cachedata'] == 1 && file_exists($conf['cachefile'])) {
+      // check for the cached file
+      // snag it and return it if it is still fresh
+      $time_diff = time() - filemtime($conf['cachefile']);
+      $expires_in = $conf['cachetime'] - $time_diff;
+      if( $time_diff < $conf['cachetime']){
+          if ( $debug == 1 ) {
+            echo("DEBUG: Fetching data from cache. Expires in " . $expires_in . " seconds.\n");
+          }
+          $index_array = unserialize(file_get_contents($conf['cachefile']));
+      }
+   }
+
+   if ( ! isset($index_array) ) {
+
+      if ( $debug == 1 ) {
+         echo("DEBUG: Querying GMond for new data\n");
+      }
+      // Set up for cluster summary
+      $context = "index_array";
+      include_once $conf['ganglia_dir'] . "/ganglia.php";
+      Gmetad($conf['ganglia_ip'], $conf['ganglia_port']);
+
+      foreach ( $index_array['cluster'] as $hostname => $elements ) {
+         $hosts[] = $hostname;
+      }
+      asort($hosts);
+      $index_array['hosts'] = $hosts;
+
+      file_put_contents($conf['cachefile'], serialize($index_array));
+
+   }
+
+} // end of function get_metrics_cache () {
 
 ?>

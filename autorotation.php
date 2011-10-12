@@ -23,7 +23,7 @@ if ( ! isset($_GET['view_name']) ) {
 
   // We need metrics cache in order to derive cluster name particular host
   // belongs to
-  include "lib/cache.php";
+  retrieve_metrics_cache();
 
   $available_views = get_available_views();
 
