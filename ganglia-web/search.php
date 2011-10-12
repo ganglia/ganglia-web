@@ -10,7 +10,7 @@ require_once('./functions.php');
 
 // Load the metric caching code
 //$debug = 1;
-include_once('lib/cache.php');
+retrieve_metrics_cache();
 
 if ( isset($_GET['mobile']))
   $mobile = 1;

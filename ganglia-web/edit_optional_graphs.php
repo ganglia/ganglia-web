@@ -8,7 +8,7 @@
 require_once './eval_conf.php';
 require_once './functions.php';
 // Load the host cache for validation purposes
-include "lib/cache.php";
+retrieve_metrics_cache();
 
 $hostname = isset($_GET['hostname'])  ? sanitize( $_GET['hostname'] ) : "none";
 if ( $hostname != "none" ) {
