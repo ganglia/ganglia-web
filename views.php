@@ -169,7 +169,7 @@ if ( isset($_GET['add_to_view']) ) {
 
 
 // Load the metric caching code we use if we need to display graphs
-require_once('./lib/cache.php');
+retrieve_metrics_cache();
 
 $available_views = get_available_views();
 

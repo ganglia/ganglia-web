@@ -1,6 +1,5 @@
 <?php
 
-
     if (!isset($debug)) { $debug = 0; }
 
     if($conf['cachedata'] == 1 && file_exists($conf['cachefile'])) {
@@ -30,7 +29,6 @@
         foreach ( $index_array['cluster'] as $hostname => $elements ) {
             $hosts[] = $hostname;
         }
-
         asort($hosts);
         $index_array['hosts'] = $hosts;
 

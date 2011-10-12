@@ -212,57 +212,12 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   else
       $line_width = "2";
 
+
+  $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $_GET['hreg'], $_GET['mreg']);
+
   // Set up 
-  $graph_config["report_name"] = $metric_name;
   $graph_config["report_type"] = "standard";
-  $graph_config["title"] = $metric_name;
   $graph_config["vertical_label"] = $vlabel;
-
-  $color_count = sizeof($conf['graph_colors']);
-
-  // Load the host cache
-  include "lib/cache.php";
-
-  $counter = 0;
-
-  // Find matching hosts    
-  foreach ( $_GET['hreg'] as $key => $query ) {
-    foreach ( $index_array['hosts'] as $key => $host_name ) {
-      if ( preg_match("/$query/i", $host_name ) ) {
-        // We can have same hostname in multiple clusters
-        $matches[] = $host_name . "|" . $index_array['cluster'][$host_name]; 
-      }
-    }
-  } 
-
-  if( isset($_GET['mreg'])){
-    // Find matching metrics
-    foreach ( $_GET['mreg'] as $key => $query ) {
-      foreach ( $index_array['metrics'] as $key => $m_name ) {
-        if ( preg_match("/$query/i", $key ) ) {
-          $metric_matches[] = $key;
-        }
-      }
-    }
-    asort($metric_matches);
-  }
-  
-  if( isset($metric_matches)){
-    $metric_matches_unique = array_unique($metric_matches);
-  }
-  else{
-    $metric_matches_unique = array($metric_name);
-  }
-  if( !isset($metric_name)){
-    if( sizeof($metric_matches_unique)==1){
-      $graph_config["report_name"]=sanitize($metric_matches_unique[0]);
-      $graph_config["title"]=sanitize($metric_matches_unique[0]);
-    }
-    else{
-      $graph_config["report_name"]=isset($_GET["mreg"])  ?  sanitize(implode($_GET["mreg"]))   : NULL;
-      $graph_config["title"]=isset($_GET["mreg"])  ?  sanitize(implode($_GET["mreg"]))   : NULL;
-    }
-  }
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
@@ -272,45 +227,6 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     $title = "Aggregate";
   }
 
-  if ( isset($matches)) {
-
-    $matches_unique = array_unique($matches);
-
-    // Create graph_config series from matched hosts and metrics
-    foreach ( $matches_unique as $key => $host_cluster ) {
-
-      $out = explode("|", $host_cluster);
-
-      $host_name = $out[0];
-      $cluster_name = $out[1];
-
-      foreach ( $metric_matches_unique as $key => $m_name ) {
-
-        // We need to cycle the available colors
-        $color_index = $counter % $color_count;
-
-        // next loop if there is no metric for this hostname
-        if( !in_array($host_name, $index_array['metrics'][$m_name]))
-          continue;
-
-        $label = '';
-        if ($conf['strip_domainname'] == True )
-          $label = strip_domainname($host_name);
-        else
-          $label = $host_name;
-        if( isset($metric_matches) and sizeof($metric_matches_unique)>1)
-          $label.=" $m_name";
-
-        $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
-          "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
-
-        $counter++;
-
-      }
-    }
-
-  }
-  #print "<PRE>"; print_r($graph_config); exit(1);
 
 }
 

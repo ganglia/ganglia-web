@@ -83,6 +83,7 @@
 {/if}
 {/if}
 
+
 {if isset($source.private)}
   <td align="LEFT" valign="TOP">
 <table cellspacing="1" cellpadding="1" width="100%" border="0">
