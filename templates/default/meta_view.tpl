@@ -21,6 +21,11 @@
 {/if}
 
 <table border="0" width="100%">
+<tr>
+  <td class="cluster" colspan="3">
+    <a href="?vn=default&r=hour"><strong>Views</strong></a> {$source.alt_view}
+  </td>
+</tr>
 
 {foreach $sources source}
 <tr>

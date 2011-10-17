@@ -74,6 +74,12 @@ else if ($context == "host")
       include_once "./header.php";
       include_once "./host_view.php";
    }
+else if ($context == "views")
+   {
+      $title = "$viewname view";
+      include_once "./header.php";
+      include_once "./views_view.php";
+   }
 else
    {
       $title = "Unknown Context";

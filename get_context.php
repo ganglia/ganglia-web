@@ -1,16 +1,24 @@
 <?php
-/* $Id: get_context.php 2559 2011-04-11 22:01:34Z bernardli $ */
 
 include_once "./functions.php";
 
 $meta_designator = "Grid";
 $cluster_designator = "Cluster Overview";
 
-# Blocking malicious CGI input.
+///////////////////////////////////////////////////////////////////////////////
+// Determine which context we are in. Context is not specifically specified
+// so we have to figure it out ie. if vn(view_name) is present it's the views
+// context, if cluster name is specified without a hostname it's cluster etc.
+///////////////////////////////////////////////////////////////////////////////
+// Blocking malicious CGI input.
 $user['clustername'] = isset($_GET["c"]) ?
     escapeshellcmd( clean_string( rawurldecode($_GET["c"]) ) ) : NULL;
 $user['gridname'] = isset($_GET["G"]) ?
     escapeshellcmd( clean_string( rawurldecode($_GET["G"]) ) ) : NULL;
+
+$user['viewname'] = isset($_GET["vn"]) ?
+    escapeshellcmd( clean_string( rawurldecode($_GET["vn"]) ) ) : NULL;
+
 if($conf['case_sensitive_hostnames'] == 1) {
     $user['hostname'] = isset($_GET["h"]) ?
         escapeshellcmd( clean_string( rawurldecode($_GET["h"]) ) ) : NULL;
@@ -110,6 +118,10 @@ if(!$user['clustername'] && !$user['hostname'] && $user['controlroom'])
 else if (isset($user['tree']))
    {
       $context = "tree";
+   }
+else if (isset($user['viewname']))
+   {
+      $context = "views";
    }
 else if(!$user['clustername'] and !$user['gridname'] and !$user['hostname'])
    {

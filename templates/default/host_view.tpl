@@ -128,17 +128,6 @@ function toggleMetricGroup(mgId, mgDiv) {
   document.ganglia_form.submit();
 }
 
-function enlargeGraph(graphArgs) {
-  $("#enlarge-graph-dialog").dialog('open');
-  $("#enlarge-graph-dialog").bind( "dialogbeforeclose", function(event, ui) {
-    $("#enlargeTooltip").remove();
-  });
-//  $('#enlarge-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
-  $.get('enlarge_graph.php', "flot=1&" + graphArgs, function(data) {
-    $('#enlarge-graph-dialog-content').html(data);
-  })
-}
-
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect

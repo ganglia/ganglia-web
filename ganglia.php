@@ -9,7 +9,9 @@
 # information as we need to make the page.
 #
 
-include_once($conf['ganglia_dir'] . "/version.php");
+$ganglia_dir = dirname(__FILE__);
+
+include_once($ganglia_dir . "/version.php");
 
 $error="";
 
@@ -35,7 +37,7 @@ $metrics = array();
 $version = array();
 
 # The web frontend version, from conf.php.
-$version["webfrontend"] = "$ganglia_version";
+$version["webfrontend"] = $GLOBALS["ganglia_version"];
 
 # Get rrdtool version
 $rrdtool_version = array();
