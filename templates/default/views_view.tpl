@@ -5,6 +5,23 @@
 }
 </style>
 
+<script>
+  $(function() {
+    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $("#create_view_button")
+      .button()
+      .click(function() {
+	$( "#create-new-view-dialog" ).dialog( "open" );
+    });;
+  });
+</script>
+
+<div id="enlarge-graph-dialog" title="Enlarge Graph">
+  <div id="enlarge-graph-dialog-content">
+  </div>
+</div>
+
+
 <div id="views-content">
   <div id=view_graphs>
     {if $number_of_view_items == 0 }
@@ -14,7 +31,6 @@
           No graphs defined for this view. Please add some
       </div>
     </div>
-      
     {else}
       {foreach $view_items view_item}
       <div class="img_view">

@@ -136,7 +136,7 @@ if ($context == "cluster") {
    $alt_view = "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string\">Host View</a>";
 } elseif ($context=="host") {
    $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>";
-} elseif ( $context = "views") {
+} elseif ( $context == "views") {
    if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
        $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';
    }
@@ -171,7 +171,7 @@ if ( $clustername ) {
    $node_menu .= "<b><a href=\"./?c=$url&amp;$get_metric_string\">$clustername</a></b> ";
    $node_menu .= "<b>&gt;</b>\n";
    $node_menu .= hiddenvar("c", $clustername);
-} else if ( $viewname) {
+} else if ( $viewname ) {
    $url = "Views";
    $node_menu .= "<b><a href=\"./?vn=default&amp;$get_metric_string\">Views</a></b> ";
    $node_menu .= "<b>&gt;</b>\n";

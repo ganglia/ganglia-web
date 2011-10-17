@@ -26,6 +26,9 @@
     <a href="?vn=default&r=hour"><strong>Views</strong></a> {$source.alt_view}
   </td>
 </tr>
+<tr>
+<td colspan="3">&nbsp;</td>
+</tr>
 
 {foreach $sources source}
 <tr>
