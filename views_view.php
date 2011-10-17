@@ -22,6 +22,14 @@ if ( sizeof($available_views) == -1 ) {
     ';
 }
 
+$size = isset($clustergraphsize) ? $clustergraphsize : 'default';
+$size = $size == 'medium' ? 'default' : $size; //set to 'default' to preserve old behavior
+
+$additional_host_img_css_classes = "";
+if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
+    $additional_host_img_css_classes = "host_${size}_zoomable";
+
+$data->assign("additional_host_img_css_classes", $additional_host_img_css_classes);
 
 foreach ( $available_views as $view_id => $view ) {
 

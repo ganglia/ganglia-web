@@ -16,7 +16,7 @@ $(function(){
         //alert("ganglia-selected-tab: " + tab_index);
         $("#tabs").tabs("select", tab_index);
         switch (tab_index) {
-          case 4:
+          case 3:
             autoRotationChooser();
             break;
         }
