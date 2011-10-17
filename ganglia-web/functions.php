@@ -1330,7 +1330,7 @@ function retrieve_metrics_cache () {
       }
    }
 
-   if ( ! isset($index_array) ) {
+   if ( ! isset($index_array) || sizeof($index_array) == 0 ) {
 
       if ( $debug == 1 ) {
          echo("DEBUG: Querying GMond for new data\n");
