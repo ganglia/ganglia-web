@@ -91,7 +91,7 @@ if ($cs)
 if ($ce)
     $get_metric_string .= "&amp;ce=" . rawurlencode($ce);
 
-$metric_group = $_GET['metric_group'];
+$metric_group = array_key_exists('metric_group', $_GET) ? $_GET['metric_group'] : NULL;
 if ( isset($metric_group) ) {
   $data->assign('metric_group', $metric_group);
   $metric_group = "&amp;metric_group=" . rawurlencode($metric_group);
