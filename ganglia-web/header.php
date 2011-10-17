@@ -55,7 +55,7 @@ if ($initgrid or $gridwalk)
 
 # Invariant: back pointer is second-to-last element of gridstack. Grid stack
 # never has duplicate entries.
-# RFM - The original line caused an error when count($gridstack) = 1.  This
+# RFM - The original line caused an error when count($gridstack) = 1. This
 # should fix that.
 $parentgrid = $parentlink = NULL;
 if(count($gridstack) > 1) {
@@ -64,7 +64,10 @@ if(count($gridstack) > 1) {
 
 $tpl = new Dwoo_Template_File( template("$header.tpl") );
 $data = new Dwoo_Data();
+
+// Server offset used in generating pretty dates and times when zooming
 $data->assign("server_utc_offset", date('Z'));
+//
 $data->assign("page_title", $title);
 $data->assign("refresh", $conf['default_refresh']);
 
@@ -134,31 +137,26 @@ $node_url=rawurlencode($hostname);
 $data->assign("cluster_url", $cluster_url);
 $alt_view = "";
 
-if ($context=="cluster")
-   {
-      $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url$metric_group\">Physical View</a>";
+if ($context == "cluster") {
+   $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url\">Physical View</a>";
+} elseif ($context == "physical") {
+   $alt_view = "<a href=\"./?c=$cluster_url\">Full View</a>";
+} elseif ($context=="node") {
+   $alt_view = "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string\">Host View</a>";
+} elseif ($context=="host") {
+   $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>";
+} elseif ( $context = "views") {
+   if( checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+       $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';
    }
-elseif ($context=="physical")
-   {
-      $alt_view = "<a href=\"./?c=$cluster_url$metric_group\">Full View</a>";
-   }
-elseif ($context=="node")
-   {
-      $alt_view =
-      "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string$metric_group\">Host View</a>";
-   }
-elseif ($context=="host")
-   {
-      $alt_view =
-      "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url$metric_group\">Node View</a>";
-   }
+}
 
 $data->assign("alt_view", $alt_view);
 
 # Build the node_menu
 $node_menu = "";
 
-if ($parentgrid) 
+if ($parentgrid)
    {
       $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string$metric_group\">".
          "$parentgrid $meta_designator</A></B> ";
@@ -166,83 +164,106 @@ if ($parentgrid)
    }
 
 # Show grid.
-$mygrid =  ($self == "unspecified") ? "" : $self;
+$mygrid = ($self == "unspecified") ? "" : $self;
 $node_menu .= "<B><A HREF=\"./?$get_metric_string$metric_group\">$mygrid $meta_designator</A></B> ";
 $node_menu .= "<B>&gt;</B>\n";
 
 if ($physical)
    $node_menu .= hiddenvar("p", $physical);
 
-if ( $clustername )
-   {
-      $url = rawurlencode($clustername);
-      $node_menu .= "<B><A HREF=\"./?c=$url&amp;$get_metric_string$metric_group\">$clustername</A></B> ";
-      $node_menu .= "<B>&gt;</B>\n";
-      $node_menu .= hiddenvar("c", $clustername);
-   }
-else
-   {
-      # No cluster has been specified, so drop in a list
-      $node_menu .= "<SELECT NAME=\"c\" OnChange=\"ganglia_form.submit();\">\n";
-      $node_menu .= "<OPTION VALUE=\"\">--Choose a Source\n";
-      ksort($grid);
-      foreach( $grid as $k => $v )
-         {
-            if ($k==$self) continue;
-            if (isset($v['GRID']) and $v['GRID'])
-               {
-                  $url = $v['AUTHORITY'];
-                  $node_menu .="<OPTION VALUE=\"$url\">$k $meta_designator\n";
-               }
-            else
-               {
-                  $url = rawurlencode($k);
-                  $node_menu .="<OPTION VALUE=\"$url\">$k\n";
-               }
-         }
-      $node_menu .= "</SELECT>\n";
-   }
-
-if ( $clustername && !$hostname )
-   {
-      # Drop in a host list if we have hosts
-      if (!$showhosts) {
-            $node_menu .= "[Summary Only]";
+//////////////////////////////////////////////////////////////////////////////
+// Cluster name has been specified. It comes right after
+// Grid >
+//////////////////////////////////////////////////////////////////////////////
+if ( $clustername ) {
+   $url = rawurlencode($clustername);
+   $node_menu .= "<b><a href=\"./?c=$url&amp;$get_metric_string\">$clustername</a></b> ";
+   $node_menu .= "<b>&gt;</b>\n";
+   $node_menu .= hiddenvar("c", $clustername);
+} else if ( $viewname) {
+   $url = "Views";
+   $node_menu .= "<b><a href=\"./?vn=default&amp;$get_metric_string\">Views</a></b> ";
+   $node_menu .= "<b>&gt;</b>\n";
+} else {
+   # No cluster has been specified, so drop in a list
+   $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
+   $node_menu .= "<option value=\"\">--Choose a Source\n";
+   $node_menu .= "<option value=\"Views\">Views\n";
+   ksort($grid);
+   foreach( $grid as $k => $v )
+      {
+         if ($k==$self) continue;
+         if (isset($v['GRID']) and $v['GRID'])
+            {
+               $url = $v['AUTHORITY'];
+               $node_menu .="<OPTION VALUE=\"$url\">$k $meta_designator\n";
+            }
+         else
+            {
+               $url = rawurlencode($k);
+               $node_menu .="<OPTION VALUE=\"$url\">$k\n";
+            }
       }
-      elseif (is_array($hosts_up) || is_array($hosts_down))
-         {
-            $node_menu .= "<SELECT NAME=\"h\" OnChange=\"ganglia_form.submit();\">";
-            $node_menu .= "<OPTION VALUE=\"\">--Choose a Node\n";
-            if(is_array($hosts_up))
-               {
-                  uksort($hosts_up, "strnatcmp");
-                  foreach($hosts_up as $k=> $v)
-                     {
-                        $url = rawurlencode($k);
-                        $node_menu .= "<OPTION VALUE=\"$url\">$k\n";
-                     }
-               }
-            if(is_array($hosts_down))
-               {
-                  uksort($hosts_down, "strnatcmp");
-                  foreach($hosts_down as $k=> $v)
-                     {
-                        $url = rawurlencode($k);
-                        $node_menu .= "<OPTION VALUE=\"$url\">$k\n";
-                     }
-               }
-            $node_menu .= "</SELECT>\n";
-         }
-      else
-         {
-            $node_menu .= "<B>No Hosts</B>\n";
-         }
+   $node_menu .= "</select>\n";
+}
+
+if ( $context == "views" ) {
+   
+   $node_menu .= "<select name=\"vn\" OnChange=\"ganglia_form.submit();\">";
+   $node_menu .= "<option value=\"\">--Choose a View</option>";
+
+   $available_views = get_available_views();
+
+   foreach ( $available_views as $index => $view ) {
+      $extra_options = ($viewname == $view["view_name"]) ? "selected" : "";
+      $node_menu .= "<option value=\"" . $view["view_name"] . "\" $extra_options >" . $view['view_name'] . "</option>";
+      unset($extra_options);
    }
-else
-   {
-      $node_menu .= "<B>$hostname</B>\n";
-      $node_menu .= hiddenvar("h", $hostname);
+   
+   $node_menu .= "</select>";
+   
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+// We are in the cluster view pop up a list box of nodes
+/////////////////////////////////////////////////////////////////////////////////
+if ( $clustername && !$hostname ) {
+   # Drop in a host list if we have hosts
+   if (!$showhosts) {
+         $node_menu .= "[Summary Only]";
    }
+   elseif (is_array($hosts_up) || is_array($hosts_down))
+      {
+         $node_menu .= "<select name=\"h\" OnChange=\"ganglia_form.submit();\">";
+         $node_menu .= "<option value=\"\">--Choose a Node</option>";
+         if(is_array($hosts_up))
+            {
+               uksort($hosts_up, "strnatcmp");
+               foreach($hosts_up as $k=> $v)
+                  {
+                     $url = rawurlencode($k);
+                     $node_menu .= "<option value=\"$url\">$k\n";
+                  }
+            }
+         if(is_array($hosts_down))
+            {
+               uksort($hosts_down, "strnatcmp");
+               foreach($hosts_down as $k=> $v)
+                  {
+                     $url = rawurlencode($k);
+                     $node_menu .= "<option value=\"$url\">$k\n";
+                  }
+            }
+         $node_menu .= "</select>\n";
+      }
+   else
+      {
+         $node_menu .= "<B>No Hosts</B>\n";
+      }
+} else {
+   $node_menu .= "<B>$hostname</B>\n";
+   $node_menu .= hiddenvar("h", $hostname);
+}
 
 # Save other CGI variables
 $node_menu .= hiddenvar("cr", $controlroom);
@@ -283,9 +304,9 @@ if (!$physical) {
    foreach ($context_ranges as $v) {
       $url=rawurlencode($v);
       if ($v == $range)
-	$checked = "checked=\"checked\"";
+$checked = "checked=\"checked\"";
       else
-	$checked = "";
+$checked = "";
       $range_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
 
    }
@@ -308,13 +329,13 @@ if (is_array($context_metrics) and $context == "cluster")
             $metric_menu[] = "\"$url\"";
          }
 
-      $data->assign("available_metrics", join(",", $metric_menu) );       
+      $data->assign("available_metrics", join(",", $metric_menu) );
       $data->assign("is_metrics_picker_disabled", "");
 
    } else {
       // We have to disable the sort_menu if we are not in the cluster context
       $data->assign("is_metrics_picker_disabled", '$("#sort_menu").toggle(); ');
-      $data->assign("available_metrics", "" );       
+      $data->assign("available_metrics", "" );
    }
 
 
@@ -339,12 +360,12 @@ if ($context == "meta" or $context == "cluster")
 
       $sort_menu = "<B>Sorted</B>&nbsp;&nbsp;";
       foreach ($context_sorts as $v) {
-	  $url=rawurlencode($v);
-	  if ($v == $sort)
-	    $checked = "checked=\"checked\"";
-	  else
-	    $checked = "";
-	  $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
+$url=rawurlencode($v);
+if ($v == $sort)
+$checked = "checked=\"checked\"";
+else
+$checked = "";
+$sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
 
       }
 
@@ -372,7 +393,7 @@ if ($context == "physical" or $context == "cluster" or $context == 'host' )
           if ($size == "default")
               continue;
           $size_menu .= "<OPTION VALUE=\"$size\"";
-          if (    ( isset($clustergraphsize) && ($size === $clustergraphsize)) 
+          if ( ( isset($clustergraphsize) && ($size === $clustergraphsize))
                || (!isset($clustergraphsize) && ($size === 'small' )) || ( !isset($_GET['z']) && $context == 'host' && $size == "medium" ) ) {
               $size_menu .= " SELECTED";
           }
@@ -399,22 +420,22 @@ if ($context == "host")
 
 $custom_time = "";
 
-if ($context == "meta" or $context == "cluster" or $context == "host")
+if ($context == "meta" or $context == "cluster" or $context == "host" or $context == "views")
    {
       $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
          . " -2 days, start + 1 hour, etc.";
-      $custom_time = "&nbsp;&nbsp;or <span class=\"nobr\">from <INPUT TYPE=\"TEXT\" TITLE=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
+      $custom_time = "&nbsp;&nbsp;or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
       if ($cs)
          $custom_time .= " value=\"$cs\"";
-      $custom_time .= "> to <INPUT TYPE=\"TEXT\" TITLE=\"$examples\" NAME=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
+      $custom_time .= "> to <input type=\"TEXT\" title=\"$examples\" name=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
       if ($ce)
          $custom_time .= " value=\"$ce\"";
       $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
       $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>\n";
-#      $custom_time .= $calendar;
+# $custom_time .= $calendar;
       $data->assign("custom_time", $custom_time);
 
-#      $tpl->assign("custom_time_head", $calendar_head);
+# $tpl->assign("custom_time_head", $calendar_head);
       $data->assign("custom_time_head", "");
    }
 else
@@ -442,15 +463,15 @@ if ( $context == "cluster" ) {
 
   if ( isset($user['max_graphs']) && is_numeric($user['max_graphs']) )
     $max_graphs = $user['max_graphs'];
-  else 
+  else
     $max_graphs = $conf['max_graphs'];
   
   $max_graphs_values = "<option value=0>all</option>";
   foreach ( $max_graphs_options as $key => $value ) {
-      if ( $max_graphs == $value ) 
-	$max_graphs_values .= "<option selected>" . $value . "</option>";
+      if ( $max_graphs == $value )
+$max_graphs_values .= "<option selected>" . $value . "</option>";
       else
-	$max_graphs_values .= "<option>" . $value . "</option>";
+$max_graphs_values .= "<option>" . $value . "</option>";
 
   }
 
@@ -475,10 +496,10 @@ if ( $conf['overlay_events'] == true )
   $data->assign('overlay_events', true);
 
 # Make sure that no data is cached..
-header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    # Date in the past
+header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); # Date in the past
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modified
-header ("Cache-Control: no-cache, must-revalidate");  # HTTP/1.1
-header ("Pragma: no-cache");                          # HTTP/1.0
+header ("Cache-Control: no-cache, must-revalidate"); # HTTP/1.1
+header ("Pragma: no-cache"); # HTTP/1.0
 
 $dwoo->output($tpl, $data);
 
