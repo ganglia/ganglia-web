@@ -65,6 +65,7 @@ $(function(){
   if (datepicker_cs[0])
     datepicker_cs.datepicker({
 	  showOn: "button",
+	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
 	  buttonImageOnly: true
     });
@@ -73,6 +74,7 @@ $(function(){
   if (datepicker_ce[0])
     datepicker_ce.datepicker({
 	  showOn: "button",
+	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
 	  buttonImageOnly: true
     });
@@ -240,4 +242,18 @@ function detachViews() {
   if (selected_view != null)
     href += "&view_name=" + encodeURIComponent(selected_view);
   location.href = href;
+}
+
+/* ----------------------------------------------------------------------------
+ Enlarges a graph using Flot
+-----------------------------------------------------------------------------*/
+function enlargeGraph(graphArgs) {
+  $("#enlarge-graph-dialog").dialog('open');
+  $("#enlarge-graph-dialog").bind( "dialogbeforeclose", function(event, ui) {
+    $("#enlargeTooltip").remove();
+  });
+//  $('#enlarge-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
+  $.get('enlarge_graph.php', "flot=1&" + graphArgs, function(data) {
+    $('#enlarge-graph-dialog-content').html(data);
+  })
 }
