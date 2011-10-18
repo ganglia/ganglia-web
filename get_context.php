@@ -78,12 +78,19 @@ if (isset($user['gridstack']) and $user['gridstack']) {
       $user['gridstack'][ $key ] = clean_string( $value );
 }
 
-// 
+/////////////////////////////////////////////////////////////////////////////
+// Used with to limit hosts shown
 if ( isset($_GET['host_regex']) )
   $user['host_regex'] = $_GET['host_regex'];
 
 if ( isset($_GET['max_graphs']) && is_numeric($_GET['max_graphs'] ) )
   $user['max_graphs'] = $_GET['max_graphs'];
+
+/////////////////////////////////////////////////////////////////////////////
+// 
+$user['compare_hosts'] = isset($_GET["ch"]) ? 1 : NULL;
+
+$user['decompose_graph'] = isset($_GET["dg"]) ? 1 : NULL;
 
 
 # Assume we are the first grid visited in the tree if there is no gridwalk
@@ -111,46 +118,31 @@ if(isset($_GET["choose_filter"]))
 
 # Set context.
 $context = NULL;
-if(!$user['clustername'] && !$user['hostname'] && $user['controlroom'])
-   {
+if(!$user['clustername'] && !$user['hostname'] && $user['controlroom']) {
       $context = "control";
-   }
-else if (isset($user['tree']))
-   {
+} else if (isset($user['tree'])) {
       $context = "tree";
-   }
-else if (isset($user['viewname']))
-   {
+} else if ( $user['compare_hosts'] ) {
+      $context = "compare_hosts";
+} else if ( $user['decompose_graph'] ) {
+      $context = "decompose_graph";
+} else if (isset($user['viewname'])) {
       $context = "views";
-   }
-else if(!$user['clustername'] and !$user['gridname'] and !$user['hostname'])
-   {
+} else if(!$user['clustername'] and !$user['gridname'] and !$user['hostname']) {
       $context = "meta";
-   }
-else if($user['gridname'])
-   {
+} else if($user['gridname']) {
       $context = "grid";
-   }
-else if ($user['clustername'] and !$user['hostname'] and $user['physical'])
-   {
+} else if ($user['clustername'] and !$user['hostname'] and $user['physical']) {
       $context = "physical";
-   }
-else if ($user['clustername'] and !$user['hostname'] and !$user['showhosts'])
-   {
+} else if ($user['clustername'] and !$user['hostname'] and !$user['showhosts']) {
       $context = "cluster-summary";
-   }
-else if($user['clustername'] and !$user['hostname'])
-   {
+} else if($user['clustername'] and !$user['hostname']) {
       $context = "cluster";
-   }
-else if($user['clustername'] and $user['hostname'] and $user['physical'])
-   {
+} else if($user['clustername'] and $user['hostname'] and $user['physical']) {
       $context = "node";
-   }
-else if($user['clustername'] and $user['hostname'])
-   {
+} else if($user['clustername'] and $user['hostname']) {
       $context = "host";
-   }
+}
 
 if (!$user['range'])
     $user['range'] = $conf['default_time_range'];
