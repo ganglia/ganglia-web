@@ -46,6 +46,12 @@ foreach ( $_GET['hreg'] as $index => $arg ) {
   $hreg .= "&hreg[]=" . $arg;
 }
 
+if ( isset($_GET['hreg'])) {
+  $data->assign("hreg_arg", $_GET['hreg'][0]);
+} else {
+  $data->assign("hreg_arg", "");
+}
+
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
 $size = $size == 'medium' ? 'default' : $size; //set to 'default' to preserve old behavior
 
@@ -55,7 +61,14 @@ if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
 
 $data->assign("additional_host_img_css_classes", $additional_host_img_css_classes);
 
+$graphargs = "&r=" . $range;
+if ($cs)
+   $graphargs .= "&amp;cs=" . rawurlencode($cs);
+if ($ce)
+   $graphargs .= "&amp;ce=" . rawurlencode($ce);
+
 $data->assign("hreg", $hreg);
+$data->assign("graphargs", $graphargs);
 $data->assign("host_list", $host_list);
 $data->assign("host_metrics", $hmetrics);
 $data->assign("number_of_metrics", sizeof($hmetrics));
