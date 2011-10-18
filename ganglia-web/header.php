@@ -175,6 +175,11 @@ if ( $clustername ) {
    $url = "Views";
    $node_menu .= "<b><a href=\"./?vn=default&amp;$get_metric_string\">Views</a></b> ";
    $node_menu .= "<b>&gt;</b>\n";
+} else if ( $context == "decompose_graph" ) {
+   $node_menu .= '<input type="hidden" name="dg" value="1">';
+   $node_menu .= "Decompose Graph";
+} else if ( $context == "compare_hosts") { 
+   $node_menu .= "Compare Hosts";
 }  else {
    # No cluster has been specified, so drop in a list
    $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
@@ -395,45 +400,40 @@ if ($context == "physical" or $context == "cluster" or $context == 'host' )
   
       # Assign template variable in cluster view.
    }
-if ($context == "host")
-   {
-      # Present a width list
-      $metric_cols_menu = "<SELECT NAME=\"mc\" OnChange=\"ganglia_form.submit();\">\n";
+if ($context == "host") {
+   # Present a width list
+   $metric_cols_menu = "<select name=\"mc\" OnChange=\"ganglia_form.submit();\">\n";
 
-      foreach(range(1,25) as $metric_cols)
-         {
-            $metric_cols_menu .= "<OPTION VALUE=$metric_cols ";
-            if ($metric_cols == $conf['metriccols'])
-               $metric_cols_menu .= "SELECTED";
-            $metric_cols_menu .= ">$metric_cols\n";
-         }
-      $metric_cols_menu .= "</SELECT>\n";
+   foreach(range(1,25) as $metric_cols) {
+      $metric_cols_menu .= "<option value=$metric_cols ";
+      if ($metric_cols == $conf['metriccols'])
+         $metric_cols_menu .= "selected";
+      $metric_cols_menu .= ">$metric_cols\n";
    }
+   $metric_cols_menu .= "</select>\n";
+}
 
 $custom_time = "";
 
-if ($context == "meta" or $context == "cluster" or $context == "host" or $context == "views")
-   {
-      $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
-         . " -2 days, start + 1 hour, etc.";
-      $custom_time = "&nbsp;&nbsp;or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
-      if ($cs)
-         $custom_time .= " value=\"$cs\"";
-      $custom_time .= "> to <input type=\"TEXT\" title=\"$examples\" name=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
-      if ($ce)
-         $custom_time .= " value=\"$ce\"";
-      $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
-      $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>\n";
+if ( in_array($context , array ("meta", "cluster", "host", "views", "decompose_graph", "compare_hosts") ) ) {
+   $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
+      . " -2 days, start + 1 hour, etc.";
+   $custom_time = "&nbsp;&nbsp;or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
+   if ($cs)
+      $custom_time .= " value=\"$cs\"";
+   $custom_time .= "> to <input type=\"TEXT\" title=\"$examples\" name=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
+   if ($ce)
+      $custom_time .= " value=\"$ce\"";
+   $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
+   $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>\n";
 #      $custom_time .= $calendar;
-      $data->assign("custom_time", $custom_time);
+   $data->assign("custom_time", $custom_time);
 
 #      $tpl->assign("custom_time_head", $calendar_head);
-      $data->assign("custom_time_head", "");
-   }
-else
-   {
-      $data->assign("custom_time_head", "");
-   }
+   $data->assign("custom_time_head", "");
+} else {
+   $data->assign("custom_time_head", "");
+}
  
 $data->assign("custom_time", $custom_time);
 
