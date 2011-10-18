@@ -24,7 +24,7 @@ foreach ( $matches as $index => $match ) {
   $hostname = $match['hostname'];
   $host_cluster[] = $match['hostname'] . "|" . $match['clustername'];
   foreach ( $index_array['metrics'] as $metric_name => $hosts ) {
-    if ( array_search( $hostname , $hosts ) !== NULL && ! isset($host_metrics[$metric_name]) ) {
+    if ( array_search( $hostname , $hosts ) !== FALSE && ! isset($host_metrics[$metric_name]) ) {
       $host_metrics[$metric_name] = 1; 
     }
   }
