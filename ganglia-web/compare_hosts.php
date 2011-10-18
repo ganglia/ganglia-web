@@ -16,18 +16,22 @@ foreach ( $_GET['hreg'] as $key => $query ) {
       $matches[] = array ( "hostname" => $host_name, "clustername" => $index_array['cluster'][$host_name]); 
     }
   }
-} 
+}
 
 #print "<PRE>";print_r($index_array['metrics']);
 
 foreach ( $matches as $index => $match ) {
   $hostname = $match['hostname'];
+  $host_cluster[] = $match['hostname'] . "|" . $match['clustername'];
   foreach ( $index_array['metrics'] as $metric_name => $hosts ) {
     if ( array_search( $hostname , $hosts ) !== NULL && ! isset($host_metrics[$metric_name]) ) {
       $host_metrics[$metric_name] = 1; 
     }
   }
 }
+
+# Join the hosts in a list into a string which we pass to graphs
+$host_list = join(",", $host_cluster);
 
 ksort($host_metrics);
 #print "<PRE>";print_r($host_metrics);
@@ -52,6 +56,7 @@ if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
 $data->assign("additional_host_img_css_classes", $additional_host_img_css_classes);
 
 $data->assign("hreg", $hreg);
+$data->assign("host_list", $host_list);
 $data->assign("host_metrics", $hmetrics);
 $data->assign("number_of_metrics", sizeof($hmetrics));
 $dwoo->output($tpl, $data);

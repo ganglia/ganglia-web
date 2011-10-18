@@ -29,9 +29,6 @@ foreach ( $_GET['mreg'] as $index => $arg ) {
   print "<input type=hidden name=mreg[] value='" . $arg . "'>";
 }
 
-
-# print "<PRE>"; print_r($graph_config);
-
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
 $size = $size == 'medium' ? 'default' : $size; //set to 'default' to preserve old behavior
 
