@@ -66,7 +66,7 @@ if ( ! isset($_GET['view_name']) ) {
 
   // Let's get all View graph elements
   $view_elements = get_view_graph_elements($view);
-
+  
   # The title of the next graph, with some logic to set the next to the first if we run out of graphs
   if ($id < (count($view_elements) -1)) {
 	  $nextid = $id+1;
@@ -109,8 +109,8 @@ if ( ! isset($_GET['view_name']) ) {
 
   ?>
 
-  <div style="position: fixed; left: 20; width: 800; top: 2; font-size: 48px;"><?php echo $title;  ?></div>
-  <div style="position: fixed; left: 20; width: 600; top: 55; font-size: 24px;">Next: <?php echo $nexttitle  ?></div><br />
+  <div style="position: fixed; left: 20; width: 800; top: 2; font-size: 30px;"><?php echo $title;  ?></div>
+  <div style="position: fixed; left: 20; width: 600; top: 55; font-size: 20px;">Next: <?php echo $nexttitle  ?></div><br />
 
   <table>
   <tr>

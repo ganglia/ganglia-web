@@ -794,7 +794,7 @@ function get_view_graph_elements($view) {
 	  $graph_args_array[] = "aggregate=1";
 	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array), 
 	      "aggregate_graph" => 1,
-	      "name" => isset($item['title']) && $item['title'] != "" ? $item['title'] : join(",", $mreg) . " Aggregate graph"
+	      "name" => isset($item['title']) && $item['title'] != "" ? $item['title'] : $mreg[0] . " Aggregate graph"
 	  );
 
 	  unset($graph_args_array);
