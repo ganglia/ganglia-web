@@ -42,7 +42,7 @@
       <div class="img_view">
         <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$metric}{$hreg}&amp;csv=1';return false;">CSV</button>
         <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$metric}{$hreg}&amp;json=1';return false;">JSON</button>
-        <br /><a href="graph_all_periods.php?title={$metric}&mreg[]=%5E{$metric}%24{$hreg}&aggregate=1"><img class="noborder {$additional_host_img_css_classes}" src="graph.php?title={$metric}&mreg[]=%5E{$metric}%24${$hreg}&aggregate=1" /></a>
+        <br /><a href="graph_all_periods.php?title={$metric}&mreg[]=%5E{$metric}%24{$hreg}&aggregate=1&hl={$host_list}"><img class="noborder {$additional_host_img_css_classes}" src="graph.php?title={$metric}&mreg[]=%5E{$metric}%24${$hreg}&aggregate=1&hl={$host_list}" /></a>
       </div>
       {/foreach}
     {/if}
