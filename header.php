@@ -179,6 +179,7 @@ if ( $clustername ) {
    $node_menu .= '<input type="hidden" name="dg" value="1">';
    $node_menu .= "Decompose Graph";
 } else if ( $context == "compare_hosts") { 
+   $node_menu .= '<input type="hidden" name="ch" value="1">';
    $node_menu .= "Compare Hosts";
 }  else {
    # No cluster has been specified, so drop in a list
