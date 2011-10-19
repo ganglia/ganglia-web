@@ -58,28 +58,28 @@
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 38,
-        paddingBottom: 27,
+        paddingBottom: 27
     }, defaults));
 
     $(".host_default_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 30,
         paddingTop: 37,
-        paddingBottom: 50,
+        paddingBottom: 50
     }, defaults));
 
     $(".host_large_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 29,
         paddingTop: 37,
-        paddingBottom: 56,
+        paddingBottom: 56
     }, defaults));
 
     $(".cluster_zoomable").gangZoom($.extend({
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 37,
-        paddingBottom: 50,
+        paddingBottom: 50
     }, defaults));
 
     function rrdDateTimeString(date) {
