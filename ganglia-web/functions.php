@@ -901,11 +901,14 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
 
   $rrdtool_graph['lower-limit']    = '0';
   
-  
-  $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
-  if( $conf['graphreport_stats'] ) {
-    $rrdtool_graph['height'] += ($size == 'medium') ? 52 : 0;
-  }
+  if( $graph_config['height_adjustment'] ) {
+    $rrdtool_graph['height'] += ($size == 'medium') ? $graph_config['height_adjustment'] : 0;
+  } else {
+    $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
+    if( $conf['graphreport_stats'] ) {
+      $rrdtool_graph['height'] += ($size == 'medium') ? 52 : 0;
+    }
+  } 
   
   // find longest label length, so we pad the others accordingly to get consistent column alignment
   $max_label_length = 0;
