@@ -901,7 +901,7 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
 
   $rrdtool_graph['lower-limit']    = '0';
   
-  if( $graph_config['height_adjustment'] ) {
+  if( isset($graph_config['height_adjustment']) ) {
     $rrdtool_graph['height'] += ($size == 'medium') ? $graph_config['height_adjustment'] : 0;
   } else {
     $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
