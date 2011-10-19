@@ -40,7 +40,7 @@
         <button title="Decompose aggregate graph" class="cupid-green" onClick="javascript:location.href='?{$view_item.url_args}&dg=1';return false;">Decompose</button>
         {/if}
         <button title="Enlarge Graph" onClick="enlargeGraph('{$view_item.url_args}'); return false;" class="cupid-green">Enlarge</button>
-        <br /><a href="graph_all_periods.php?{$view_item.url_args}"><img class="noborder {$additional_host_img_css_classes}" src="graph.php?{$view_item.url_args}" /></a>
+        <br /><a href="graph_all_periods.php?{$view_item.url_args}"><img class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$view_item.url_args}" /></a>
       </div>
       {/foreach}
     {/if}
