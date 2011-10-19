@@ -8,7 +8,6 @@ $(function(){
   // Follow tab's URL instead of loading its content via ajax
   var tabs = $("#tabs");
   if (tabs[0]) {
-   tabs.tabs();
     // Restore previously selected tab
     var selected_tab = $.cookie("ganglia-selected-tab-" + window.name);
     if ((selected_tab != null) && (selected_tab.length > 0)) {
@@ -18,20 +17,20 @@ $(function(){
           //alert("ganglia-selected-tab: " + tab_index);
           tabs.tabs("select", tab_index);
           switch (tab_index) {
-            case 4:
+            case 3:
               autoRotationChooser();
               break;
           }
         }
       } catch (err) {
         try {
-            alert("Error(ganglia.js): Unable to select tab: " + 
-                  tab_index + ". " + err.getDescription());
+          alert("Error(ganglia.js): Unable to select tab: " + 
+                tab_index + ". " + err.getDescription());
         } catch (err) {
           // If we can't even show the error, fail silently.
         }
       }
-     }
+    }
 
     tabs.bind("tabsselect", function(event, ui) {
       // Store selected tab in a session cookie

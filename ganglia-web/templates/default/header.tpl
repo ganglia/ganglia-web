@@ -116,7 +116,6 @@
 <ul>
   <li><a href="#tabs-main">Main</a></li>
   <li><a href="#tabs-search">Search</a></li>
-  <li><a href="#tabs-views" onclick="getViewsContent();">Views</a></li>
   <li><a href="aggregate_graphs.php">Aggregate Graphs</a></li>
 {if $overlay_events}
   <li><a href="events.php">Events</a></li>

@@ -213,7 +213,37 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
       $line_width = "2";
 
 
-  $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $_GET['hreg'], $_GET['mreg']);
+  /////////////////////////////////////////////////////////////////////////////
+  // In order to reduce the load on the machine when someone is doing host
+  // compare we look whether host list has been supplied via hl arg.
+  // That way we do not have get metric cache
+  /////////////////////////////////////////////////////////////////////////////
+  if ( isset($_GET['hl']) ) {
+    
+    $counter = 0;
+    $color_count = sizeof($conf['graph_colors']);
+    
+    $metric_name = str_replace("$", "", str_replace("^", "", $_GET['mreg'][0]));
+    
+    $host_list = explode(",", $_GET['hl']);
+    foreach ( $host_list as $index => $host_cluster ) {
+      $color_index = $counter % $color_count;
+      $parts = explode("|", $host_cluster);
+      $hostname = $parts[0];
+      $clustername = $parts[1];
+      $graph_config['series'][] = array( "hostname" => $hostname,
+        "clustername" => $clustername,
+        "metric" => $metric_name,
+        "color" => $conf['graph_colors'][$color_index],
+        "line_width" => $line_width,
+        "label" => $hostname,
+        "type" => $graph_type);
+      
+      $counter++;
+    } // end of foreach ( $host_list as 
+  } else {
+    $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $_GET['hreg'], $_GET['mreg']);
+  }
 
   // Set up 
   $graph_config["report_type"] = "standard";
