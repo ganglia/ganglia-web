@@ -80,7 +80,7 @@
 
     function setStartAndEnd(startTime, endTime) {
         var local_offset = new Date().getTimezoneOffset() * 60;
-        var delta = -server_utc_offset + local_offset;
+        var delta = -server_utc_offset - local_offset;
         var date = new Date((Math.floor(startTime) + delta) * 1000);
         $("#datepicker-cs").val(rrdDateTimeString(date));
         date = new Date((Math.floor(endTime) + delta) * 1000);
