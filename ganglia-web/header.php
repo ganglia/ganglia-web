@@ -110,11 +110,11 @@ if ($cs) {
             $end_timestamp = $ce;
         }
     } else {
-        $end_timestamp = strtotime("+1 $range", $start_timestamp);
+        $end_timestamp = $start_timestamp - $conf['time_ranges'][$range];
     }
 } else {
     $end_timestamp = time();
-    $start_timestamp = strtotime("-1 $range", $end_timestamp);
+    $start_timestamp = $end_timestamp - $conf['time_ranges'][$range];
 }
 
 $data->assign("start_timestamp", $start_timestamp);
