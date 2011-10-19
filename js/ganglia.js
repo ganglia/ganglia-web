@@ -8,6 +8,7 @@ $(function(){
   // Follow tab's URL instead of loading its content via ajax
   var tabs = $("#tabs");
   if (tabs[0]) {
+    tabs.tabs();
     // Restore previously selected tab
     var selected_tab = $.cookie("ganglia-selected-tab-" + window.name);
     if ((selected_tab != null) && (selected_tab.length > 0)) {
