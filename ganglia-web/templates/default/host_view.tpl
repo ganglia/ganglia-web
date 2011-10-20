@@ -371,4 +371,5 @@ g_mgMap["{$mgId}"] = "{$group}";
 </table>
 </center>
 </div>
+<input type="hidden" name="metric_group" value="">
 <!-- End host_view.tpl -->
