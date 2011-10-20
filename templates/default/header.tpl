@@ -25,15 +25,6 @@
         {$is_metrics_picker_disabled} 
 
 	$(".submit_button").button();
-
-	// Store the metric group url parameter in the hidden input.
-	// The value may be refined by host_view processing
-	var metric_group = "{$metric_group}";
-        if (metric_group != "") {
-          var stored_groups = $('input[name="metric_group"]');
-          if (stored_groups.val() == "")
-            stored_groups.val(metric_group);
-        }
     });
 
   $(function () {
