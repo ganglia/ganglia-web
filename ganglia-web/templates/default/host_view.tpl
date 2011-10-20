@@ -129,6 +129,9 @@ function toggleMetricGroup(mgId, mgDiv) {
 }
 
 $(function() {
+  var stored_groups = $('input[name="metric_group"]');
+  stored_groups.val("{$g_open_metric_groups}");
+
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect
   function runEffect(id){
@@ -283,7 +286,7 @@ $(function() {
 {$optional_reports}
 <div style='clear: left'></div>
 {if $may_edit_cluster}
-<div><button id="edit_optional_graphs_button">Edit Optional Graphs</button></div>
+<div style="text-align:center"><button id="edit_optional_graphs_button">Edit Optional Graphs</button></div>
 {/if}
 </div>
 
@@ -367,6 +370,6 @@ g_mgMap["{$mgId}"] = "{$group}";
 </tr>
 </table>
 </center>
-<input type="hidden" name="metric_group" value="{$g_open_metric_groups}">
 </div>
+<input type="hidden" name="metric_group" value="">
 <!-- End host_view.tpl -->

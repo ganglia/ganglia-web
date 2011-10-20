@@ -6,81 +6,101 @@ $(function(){
   }
 
   // Follow tab's URL instead of loading its content via ajax
-  $("#tabs").tabs();
-  // Restore previously selected tab
-  var selected_tab = $.cookie("ganglia-selected-tab-" + window.name);
-  if ((selected_tab != null) && (selected_tab.length > 0)) {
-    try {
-      var tab_index = parseInt(selected_tab, 10);
-      if (!isNaN(tab_index) && (tab_index >= 0)) {
-        //alert("ganglia-selected-tab: " + tab_index);
-        $("#tabs").tabs("select", tab_index);
-        switch (tab_index) {
-          case 3:
-            autoRotationChooser();
-            break;
-        }
-      }
-    } catch (err) {
+  var tabs = $("#tabs");
+  if (tabs[0]) {
+    tabs.tabs();
+    // Restore previously selected tab
+    var selected_tab = $.cookie("ganglia-selected-tab-" + window.name);
+    if ((selected_tab != null) && (selected_tab.length > 0)) {
       try {
+        var tab_index = parseInt(selected_tab, 10);
+        if (!isNaN(tab_index) && (tab_index >= 0)) {
+          //alert("ganglia-selected-tab: " + tab_index);
+          tabs.tabs("select", tab_index);
+          switch (tab_index) {
+            case 3:
+              autoRotationChooser();
+              break;
+          }
+        }
+      } catch (err) {
+        try {
           alert("Error(ganglia.js): Unable to select tab: " + 
                 tab_index + ". " + err.getDescription());
-      } catch (err) {
+        } catch (err) {
           // If we can't even show the error, fail silently.
+        }
       }
     }
+
+    tabs.bind("tabsselect", function(event, ui) {
+      // Store selected tab in a session cookie
+      $.cookie("ganglia-selected-tab-" + window.name, ui.index);
+    });
   }
 
-  $("#tabs").bind("tabsselect", function(event, ui) {
-    // Store selected tab in a session cookie
-    $.cookie("ganglia-selected-tab-" + window.name, ui.index);
-  });
+  var range_menu = $( "#range_menu" );
+  if (range_menu[0])
+    range_menu.buttonset();
+  var sort_menu = $( "#sort_menu" );
+  if (sort_menu[0])
+    sort_menu.buttonset();
 
-  $( "#range_menu" ).buttonset();
-  $( "#sort_menu" ).buttonset();
+  var metric_search_input = jQuery('#metric-search input[name="q"]');
+  if (metric_search_input[0])
+    metric_search_input.liveSearch({url: 'search.php?q=', typeDelay: 500});
 
-  jQuery('#metric-search input[name="q"]').liveSearch({url: 'search.php?q=', typeDelay: 500});
+  var search_field_q = $( "#search-field-q");
+  if (search_field_q[0]) {
+    search_field_q.keyup(function() {
+      $.cookie("ganglia-search-field-q" + window.name, $(this).val());
+    });
 
-  $( "#search-field-q").keyup(function() {
-    $.cookie("ganglia-search-field-q" + window.name, $(this).val());
-  });
+    var search_value = $.cookie("ganglia-search-field-q" + window.name);
+    if (search_value != null && search_value.length > 0)
+      search_field_q.val(search_value);
+  }
 
-  var search_value = $.cookie("ganglia-search-field-q" + window.name);
-  if (search_value != null && search_value.length > 0)
-    $("#search-field-q").val(search_value);
-
-  $( "#datepicker-cs" ).datepicker({
+  var datepicker_cs = $( "#datepicker-cs" );
+  if (datepicker_cs[0])
+    datepicker_cs.datepicker({
 	  showOn: "button",
 	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
 	  buttonImageOnly: true
-  });
-  $( "#datepicker-ce" ).datepicker({
+    });
+
+  var datepicker_ce = $( "#datepicker-ce" );
+  if (datepicker_ce[0])
+    datepicker_ce.datepicker({
 	  showOn: "button",
 	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
 	  buttonImageOnly: true
-  });
+    });
 
-  $( "#create-new-view-dialog" ).dialog({
-    autoOpen: false,
-    height: 200,
-    width: 350,
-    modal: true,
-    close: function() {
-      getViewsContent();
-      $("#create-new-view-layer").toggle();
-      $("#create-new-view-confirmation-layer").html("");
-    }
-  });
+  var create_new_view_dialog = $( "#create-new-view-dialog" );
+  if (create_new_view_dialog[0])
+    create_new_view_dialog.dialog({
+      autoOpen: false,
+      height: 200,
+      width: 350,
+      modal: true,
+      close: function() {
+        getViewsContent();
+        $("#create-new-view-layer").toggle();
+        $("#create-new-view-confirmation-layer").html("");
+      }
+    });
 
-  $( "#metric-actions-dialog" ).dialog({
-    autoOpen: false,
-    height: 250,
-    width: 450,
-    modal: true
-  });
-
+  var metric_actions_dialog = $( "#metric-actions-dialog" );
+  if (metric_actions_dialog[0]) 
+    metric_actions_dialog.dialog({
+      autoOpen: false,
+      height: 250,
+      width: 450,
+      modal: true
+    });
 });
 
 function selectTab(tab_index) {
@@ -214,6 +234,14 @@ function ganglia_submit(clearonly) {
   document.getElementById("datepicker-ce").value = "";
   if (! clearonly)
     document.ganglia_form.submit();
+}
+
+function detachViews() {
+  var selected_view = $.cookie("ganglia-selected-view-" + window.name);
+  var href = "views.php?standalone=1";
+  if (selected_view != null)
+    href += "&view_name=" + encodeURIComponent(selected_view);
+  location.href = href;
 }
 
 /* ----------------------------------------------------------------------------

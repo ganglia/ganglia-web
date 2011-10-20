@@ -1,4 +1,4 @@
-<?php
+<?php session_start();
 /* $Id: header.php 2548 2011-04-06 18:51:07Z vvuksan $ */
 
 # RFM - These definitions are here to eliminate "undefined variable"
@@ -55,7 +55,7 @@ if ($initgrid or $gridwalk)
 
 # Invariant: back pointer is second-to-last element of gridstack. Grid stack
 # never has duplicate entries.
-# RFM - The original line caused an error when count($gridstack) = 1.  This
+# RFM - The original line caused an error when count($gridstack) = 1. This
 # should fix that.
 $parentgrid = $parentlink = NULL;
 if(count($gridstack) > 1) {
@@ -147,7 +147,7 @@ $data->assign("alt_view", $alt_view);
 # Build the node_menu
 $node_menu = "";
 
-if ($parentgrid) 
+if ($parentgrid)
    {
       $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">".
          "$parentgrid $meta_designator</A></B> ";
@@ -155,7 +155,7 @@ if ($parentgrid)
    }
 
 # Show grid.
-$mygrid =  ($self == "unspecified") ? "" : $self;
+$mygrid = ($self == "unspecified") ? "" : $self;
 $node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
 $node_menu .= "<B>&gt;</B>\n";
 
@@ -164,7 +164,7 @@ if ($physical)
 
 //////////////////////////////////////////////////////////////////////////////
 // Cluster name has been specified. It comes right after
-// Grid > 
+// Grid >
 //////////////////////////////////////////////////////////////////////////////
 if ( $clustername ) {
    $url = rawurlencode($clustername);
@@ -212,8 +212,7 @@ if ( $context == "views" ) {
    $available_views = get_available_views();
 
    foreach ( $available_views as $index => $view ) {
-      if ( $viewname == $view["view_name"])
-         $extra_options = "selected";
+      $extra_options = ($viewname == $view["view_name"]) ? "selected" : "";
       $node_menu .= "<option value=\"" . $view["view_name"] . "\" $extra_options >" . $view['view_name'] . "</option>";
       unset($extra_options);
    }
@@ -302,9 +301,9 @@ if (!$physical) {
    foreach ($context_ranges as $v) {
       $url=rawurlencode($v);
       if ($v == $range)
-	$checked = "checked=\"checked\"";
+$checked = "checked=\"checked\"";
       else
-	$checked = "";
+$checked = "";
       $range_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
 
    }
@@ -327,13 +326,13 @@ if (is_array($context_metrics) and $context == "cluster")
             $metric_menu[] = "\"$url\"";
          }
 
-      $data->assign("available_metrics", join(",", $metric_menu) );       
+      $data->assign("available_metrics", join(",", $metric_menu) );
       $data->assign("is_metrics_picker_disabled", "");
 
    } else {
       // We have to disable the sort_menu if we are not in the cluster context
       $data->assign("is_metrics_picker_disabled", '$("#sort_menu").toggle(); ');
-      $data->assign("available_metrics", "" );       
+      $data->assign("available_metrics", "" );
    }
 
 
@@ -358,12 +357,12 @@ if ($context == "meta" or $context == "cluster")
 
       $sort_menu = "<B>Sorted</B>&nbsp;&nbsp;";
       foreach ($context_sorts as $v) {
-	  $url=rawurlencode($v);
-	  if ($v == $sort)
-	    $checked = "checked=\"checked\"";
-	  else
-	    $checked = "";
-	  $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
+$url=rawurlencode($v);
+if ($v == $sort)
+$checked = "checked=\"checked\"";
+else
+$checked = "";
+$sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
 
       }
 
@@ -391,7 +390,7 @@ if ($context == "physical" or $context == "cluster" or $context == 'host' )
           if ($size == "default")
               continue;
           $size_menu .= "<OPTION VALUE=\"$size\"";
-          if (    ( isset($clustergraphsize) && ($size === $clustergraphsize)) 
+          if ( ( isset($clustergraphsize) && ($size === $clustergraphsize))
                || (!isset($clustergraphsize) && ($size === 'small' )) || ( !isset($_GET['z']) && $context == 'host' && $size == "medium" ) ) {
               $size_menu .= " SELECTED";
           }
@@ -456,21 +455,21 @@ if ( $context == "cluster" ) {
 
   if ( isset($user['max_graphs']) && is_numeric($user['max_graphs']) )
     $max_graphs = $user['max_graphs'];
-  else 
+  else
     $max_graphs = $conf['max_graphs'];
   
   $max_graphs_values = "<option value=0>all</option>";
   foreach ( $max_graphs_options as $key => $value ) {
-      if ( $max_graphs == $value ) 
-	$max_graphs_values .= "<option selected>" . $value . "</option>";
+      if ( $max_graphs == $value )
+$max_graphs_values .= "<option selected>" . $value . "</option>";
       else
-	$max_graphs_values .= "<option>" . $value . "</option>";
+$max_graphs_values .= "<option>" . $value . "</option>";
 
   }
 
   $data->assign("additional_filter_options", 'Show only nodes matching <input name=host_regex ' .$set_host_regex_value . '>'
    . '<input class=submit_button type="SUBMIT" VALUE="Filter">'
-   . '&nbsp;Max graphs to show <select onChange="ganglia_submit();" name="max_graphs">' . $max_graphs_values . '</select>'
+   . '&nbsp;<span class="nobr">Max graphs to show <select onChange="ganglia_submit();" name="max_graphs">' . $max_graphs_values . '</select></span>'
     );
 } else
   $data->assign("additional_filter_options", '');
@@ -487,14 +486,12 @@ if($conf['auth_system'] == 'enabled') {
 
 if ( $conf['overlay_events'] == true )
   $data->assign('overlay_events', true);
-  
-
 
 # Make sure that no data is cached..
-header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    # Date in the past
+header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); # Date in the past
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modified
-header ("Cache-Control: no-cache, must-revalidate");  # HTTP/1.1
-header ("Pragma: no-cache");                          # HTTP/1.0
+header ("Cache-Control: no-cache, must-revalidate"); # HTTP/1.1
+header ("Pragma: no-cache"); # HTTP/1.0
 
 $dwoo->output($tpl, $data);
 

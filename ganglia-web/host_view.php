@@ -260,7 +260,14 @@ if (isset($c_metrics) and is_array($c_metrics))
    }
 $data->assign("c_metrics_data", $c_metrics_data);
 
-$open_groups = ( isset($_GET['metric_group']) ) ? explode ("_|_", $_GET['metric_group']) : NULL;
+$open_groups = NULL;
+if (isset($_GET['metric_group']) && ($_GET['metric_group'] != "")) {
+  $open_groups = explode ("_|_", $_GET['metric_group']);
+} else {
+  if (isset($_SESSION['metric_group']) && ($_SESSION['metric_group'] != ""))
+    $open_groups = explode ("_|_", $_SESSION['metric_group']);
+}
+
 $g_new_open_groups = ""; // Updated definition of currently open metric groups
 
 # Show graphs.
@@ -320,6 +327,8 @@ if ( is_array($g_metrics) && is_array($g_metrics_group) )
          }
       $data->assign("host_metrics_count", $host_metrics);
    }
+
+$_SESSION['metric_group'] = $g_new_open_groups;
 
 if ( $conf['graph_engine'] == "flot" ) {
   $data->assign("graph_height", $conf['graph_sizes'][$size]["height"] + 50);

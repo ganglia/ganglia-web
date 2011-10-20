@@ -5,15 +5,15 @@
 <title>Ganglia:: {$page_title}</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <meta http-equiv="refresh" content="{$refresh}">
-<script language="javascript"  src="js/jquery-1.6.2.min.js"></script>
-<script language="javascript"  src="js/jquery-ui-1.8.14.custom.min.js"></script>
-<script language="javascript"  src="js/jquery.liveSearch.js"></script>
-<script language="javascript"  src="js/ganglia.js"></script>
-<script language="javascript"  src="js/jquery.gangZoom.js"></script>
-<script language="javascript"  src="js/jquery.cookie.js"></script>
+<script type="text/javascript"  src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript"  src="js/jquery-ui-1.8.14.custom.min.js"></script>
+<script type="text/javascript"  src="js/jquery.liveSearch.js"></script>
+<script type="text/javascript"  src="js/ganglia.js"></script>
+<script type="text/javascript"  src="js/jquery.gangZoom.js"></script>
+<script type="text/javascript"  src="js/jquery.cookie.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
-<link rel="stylesheet" href="./styles.css" type="text/css" />
+<link type="text/css" href="./styles.css" rel="stylesheet" />
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var availablemetrics = [ {$available_metrics} ];
@@ -25,7 +25,6 @@
         {$is_metrics_picker_disabled} 
 
 	$(".submit_button").button();
-
     });
 
   $(function () {
@@ -50,28 +49,28 @@
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 38,
-        paddingBottom: 27,
+        paddingBottom: 27
     }, defaults));
 
     $(".host_default_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 30,
         paddingTop: 37,
-        paddingBottom: 50,
+        paddingBottom: 50
     }, defaults));
 
     $(".host_large_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 29,
         paddingTop: 37,
-        paddingBottom: 56,
+        paddingBottom: 56
     }, defaults));
 
     $(".cluster_zoomable").gangZoom($.extend({
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 37,
-        paddingBottom: 50,
+        paddingBottom: 50
     }, defaults));
 
     function rrdDateTimeString(date) {
@@ -148,7 +147,6 @@
 </tr>
 
   </TABLE>
-
 
 <HR SIZE="1" NOSHADE>
 <!-- End header.tpl -->

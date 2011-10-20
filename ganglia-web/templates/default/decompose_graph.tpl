@@ -38,7 +38,7 @@
         <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$item.url_args}&amp;csv=1';return false;">CSV</button>
         <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$item.url_args}&amp;json=1';return false;">JSON</button>
         <button title="Enlarge Graph" onClick="enlargeGraph('{$item.url_args}'); return false;" class="cupid-green">Enlarge</button>
-        <br /><a href="graph_all_periods.php?{$item.url_args}"><img class="noborder {$additional_host_img_css_classes}" src="graph.php?{$item.url_args}" /></a>
+        <br /><a href="graph_all_periods.php?{$item.url_args}"><img class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$item.url_args}" /></a>
       </div>
       {/foreach}
     {/if}

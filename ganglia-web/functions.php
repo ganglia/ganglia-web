@@ -809,9 +809,17 @@ function get_view_graph_elements($view) {
 	    $name = $item['graph'];
 	  }
 
-	  $hostname = $item['hostname'];
-          $cluster = array_key_exists($hostname, $index_array['cluster']) ?
-	    $index_array['cluster'][$hostname] : NULL;
+	  if (isset($item['hostname'])) {
+            $hostname = $item['hostname'];
+            $cluster = array_key_exists($hostname, $index_array['cluster']) ?
+	      $index_array['cluster'][$hostname] : NULL;
+          } else if (isset($item['cluster'])) {
+	    $hostname = "";
+            $cluster = $item['cluster'];
+	  } else {
+            $hostname = "";
+            $cluster = "";
+	  }
 
 	  $graph_args_array[] = "h=$hostname";
 	  $graph_args_array[] = "c=$cluster";

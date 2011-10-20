@@ -22,6 +22,16 @@ $(function() {
       $("#vl").val());
   });
 
+  $("#x").change(function() {
+    $.cookie("ganglia-aggregate-graph-upper" + window.name,
+      $("#x").val());
+  });
+
+  $("#n").change(function() {
+    $.cookie("ganglia-aggregate-graph-lower" + window.name,
+      $("#n").val());
+  });
+
   $("#title").change(function() {
     $.cookie("ganglia-aggregate-graph-title" + window.name,
       $("#title").val());
@@ -52,6 +62,14 @@ $(function() {
     var vl = $.cookie("ganglia-aggregate-graph-vl" + window.name);
     if (vl != null)
       $("#vl").val(vl);
+
+    var upper = $.cookie("ganglia-aggregate-graph-upper" + window.name);
+    if (upper != null)
+      $("#x").val(upper);
+
+    var lower = $.cookie("ganglia-aggregate-graph-lower" + window.name);
+    if (lower != null)
+      $("#n").val(lower);
   
     if (hreg != null && metric != null)
       return true;

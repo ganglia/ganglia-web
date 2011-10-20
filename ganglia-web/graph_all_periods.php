@@ -147,7 +147,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 
   } else {
 
-    print '<a href="./graph.php?r=' . $key . '&z=' . $xlargesize . $query_string . '"><img class="noborder" title="Last ' . $key . '" src="graph.php?r=' . $key . '&z=' . $largesize . $query_string . '"></a>';
+    print '<a href="./graph.php?r=' . $key . '&z=' . $xlargesize . $query_string . '"><img class="noborder" style="margin-top:5px;" title="Last ' . $key . '" src="graph.php?r=' . $key . '&z=' . $largesize . $query_string . '"></a>';
 
   }
 
