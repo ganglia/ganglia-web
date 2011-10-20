@@ -157,7 +157,5 @@
 
   </TABLE>
 
-<input type="hidden" name="metric_group" value="">
-
 <HR SIZE="1" NOSHADE>
 <!-- End header.tpl -->

@@ -1,4 +1,4 @@
-<?php
+<?php session_start();
 /* $Id: header.php 2548 2011-04-06 18:51:07Z vvuksan $ */
 
 # RFM - These definitions are here to eliminate "undefined variable"
@@ -94,15 +94,6 @@ if ($cs)
 if ($ce)
     $get_metric_string .= "&amp;ce=" . rawurlencode($ce);
 
-$metric_group = array_key_exists('metric_group', $_GET) ? $_GET['metric_group'] : NULL;
-if ( isset($metric_group) ) {
-  $data->assign('metric_group', $metric_group);
-  $metric_group = "&amp;metric_group=" . rawurlencode($metric_group);
-} else {
-  $data->assign('metric_group', "");
-  $metric_group = "";
-}
-
 $start_timestamp = null;
 $end_timestamp = null;
 if ($cs) {
@@ -158,14 +149,14 @@ $node_menu = "";
 
 if ($parentgrid)
    {
-      $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string$metric_group\">".
+      $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">".
          "$parentgrid $meta_designator</A></B> ";
       $node_menu .= "<B>&gt;</B>\n";
    }
 
 # Show grid.
 $mygrid = ($self == "unspecified") ? "" : $self;
-$node_menu .= "<B><A HREF=\"./?$get_metric_string$metric_group\">$mygrid $meta_designator</A></B> ";
+$node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
 $node_menu .= "<B>&gt;</B>\n";
 
 if ($physical)
