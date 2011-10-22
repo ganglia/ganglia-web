@@ -253,7 +253,7 @@ function enlargeGraph(graphArgs) {
     $("#enlargeTooltip").remove();
   });
 //  $('#enlarge-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
-  $.get('enlarge_graph.php', "flot=1&" + graphArgs, function(data) {
+  $.get('inspect_graph.php', "flot=1&" + graphArgs, function(data) {
     $('#enlarge-graph-dialog-content').html(data);
   })
 }

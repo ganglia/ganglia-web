@@ -217,7 +217,7 @@ $(function() {
 	Available Metric actions.
   </div>
 </div>
-<div id="enlarge-graph-dialog" title="Enlarge Graph">
+<div id="enlarge-graph-dialog" title="Inspect Graph">
   <div id="enlarge-graph-dialog-content">
   </div>
 </div>
@@ -348,7 +348,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 {/if}
 <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;csv=1';return false;">CSV</button>
 <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;json=1';return false;">JSON</button>
-<button title="Enlarge Graph" onClick="enlargeGraph('{$g_metric.graphargs}'); return false;" class="cupid-green">Enlarge</button>
+<button title="Inspect Graph" onClick="enlargeGraph('{$g_metric.graphargs}'); return false;" class="shiny-blue">Inspect</button>
 <br>
 {if $graph_engine == "flot"}
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>

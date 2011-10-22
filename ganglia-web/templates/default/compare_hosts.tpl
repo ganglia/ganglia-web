@@ -19,7 +19,7 @@
 	Available Metric actions.
 </div>
 </div>
-<div id="enlarge-graph-dialog" title="Enlarge Graph">
+<div id="enlarge-graph-dialog" title="Inspect Graph">
   <div id="enlarge-graph-dialog-content">
   </div>
 </div>
