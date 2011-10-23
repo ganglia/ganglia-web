@@ -1263,19 +1263,26 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
     // Find matching metrics
     foreach ( $mreg as $key => $query ) {
       foreach ( $index_array['metrics'] as $key => $m_name ) {
-        if ( preg_match("/$query/i", $key ) ) {
-          $metric_matches[] = $key;
+        if ( preg_match("/$query/i", $key, $metric_subexpr ) ) {
+          if (isset($metric_subexpr) && count($metric_subexpr) > 1) {
+            $legend = "";
+            for ($i = 1; $i < count($metric_subexpr); $i++)
+              $legend .= $metric_subexpr[$i];
+	    $metric_matches[$key] = $legend;
+            error_log("legend = $legend");
+          } else
+            $metric_matches[$key] = $key;
         }
       }
     }
-    asort($metric_matches);
+    ksort($metric_matches);
   }
   
   if( isset($metric_matches)){
     $metric_matches_unique = array_unique($metric_matches);
   }
   else{
-    $metric_matches_unique = array($metric_name);
+    $metric_matches_unique = array($metric_name => $metric_name);
   }
 
   if ( isset($matches)) {
@@ -1290,7 +1297,7 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
       $host_name = $out[0];
       $cluster_name = $out[1];
 
-      foreach ( $metric_matches_unique as $key => $m_name ) {
+      foreach ( $metric_matches_unique as $m_name => $legend ) {
 
         // We need to cycle the available colors
         $color_index = $counter % $color_count;
@@ -1304,8 +1311,8 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
           $label = strip_domainname($host_name);
         else
           $label = $host_name;
-        if( isset($metric_matches) and sizeof($metric_matches_unique)>1)
-          $label.=" $m_name";
+        if( isset($metric_matches) and sizeof($metric_matches_unique) > 1)
+          $label.=" $legend";
 
         $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
           "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
