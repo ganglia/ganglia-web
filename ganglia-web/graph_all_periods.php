@@ -35,12 +35,12 @@ $ignore_keys_list = array("r", "z", "st", "cs", "ce", "hc");
 
 foreach ($_GET as $key => $value) {
   if ( ! in_array($key, $ignore_keys_list) && ! is_array($value))
-    $query_string_array[] = "$key=$value";
+    $query_string_array[] = "$key=" . urlencode($value);
 
   // $_GET argument is an array. Rebuild it to pass it on
   if ( is_array($value) ) {
     foreach ( $value as $index => $value2 )
-      $query_string_array[] = $key . "[]=" . $value2;
+      $query_string_array[] = $key . "[]=" . urlencode($value2);
 
   }
 }
@@ -136,7 +136,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
    ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>' .
-  '&nbsp;<a target="_blank" href="./?r=' . $key . $query_string .'&dg=1"><button title="Decompose graph" class="shiny-blue">Decompose</button></a>' .
+  '&nbsp;<a target="_blank" href="./?r=' . $key . $query_string .'&dg=1"><button title="Decompose graph" class="cupid-green">Decompose</button></a>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
