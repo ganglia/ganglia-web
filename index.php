@@ -8,13 +8,13 @@ include_once "./ganglia.php";
 include_once "./get_ganglia.php";
 include_once "./dwoo/dwooAutoload.php";
 
-$resource = GangliaAcl::ALL_CLUSTERS;
+$resource = 'clusters/*';
 if( $context == "grid" ) {
-  $resource = $grid;
+  $resource = '*';
 } else if ( $context == "cluster" || $context == "host" ) {
-  $resource = $clustername; 
+  $resource = "clusters/$clustername"; 
 }
-if( ! checkAccess( $resource, GangliaAcl::VIEW, $conf ) ) {
+if( ! checkAccess( $resource, 'view', $conf ) ) {
   header( "HTTP/1.1 403 Access Denied" );
   die("<html><head><title>Access Denied</title><body><h4>Sorry, you do not have access to this resource.</h4></body></html>");
 }

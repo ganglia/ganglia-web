@@ -3,7 +3,7 @@
 include_once("./eval_conf.php");
 include_once("./functions.php");
 
-if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
+if( ! checkAccess('views/*', 'view', $conf) ) {
   die("You do not have access to view views.");
 }
 
@@ -11,7 +11,7 @@ if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
 // Create new view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 if ( isset($_GET['create_view']) ) {
-  if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+  if( ! checkAccess( 'views/*', 'edit', $conf ) ) {
     $output = "You do not have access to edit views.";
   } else {
     // Check whether the view name already exists
@@ -55,7 +55,7 @@ if ( isset($_GET['create_view']) ) {
 // Delete view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 if ( isset($_GET['delete_view']) ) {
-  if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+  if( ! checkAccess( 'views/*', 'edit', $conf ) ) {
     $output = "You do not have access to edit views.";
   } else {
     // Check whether the view name already exists
@@ -87,7 +87,7 @@ if ( isset($_GET['delete_view']) ) {
 // Add to view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 if ( isset($_GET['add_to_view']) ) {
-  if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+  if( ! checkAccess( 'views/*', 'edit', $conf ) ) {
     $output = "You do not have access to edit views.";
   } else {
     $view_exists = 0;
@@ -227,7 +227,7 @@ if ( isset($_GET['view_name']) ) {
 
   <?php
     if( ! isset($_GET['standalone']) && 
-        checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+        checkAccess( 'views/*', 'edit', $conf ) ) {
        print '<button onclick="return false" id="create_view_button">Create View</button>';
     }
     if ( ! isset($_GET['standalone']) && 

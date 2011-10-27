@@ -7,8 +7,8 @@ $data->assign("extra", template("host_extra.tpl"));
 
 $data->assign("cluster", $clustername);
 $data->assign("host", $hostname);
-$data->assign("may_edit_cluster", checkAccess( $clustername, GangliaAcl::EDIT, $conf ) );
-$data->assign("may_edit_views", checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf) );
+$data->assign("may_edit_cluster", checkAccess( "clusters/$clustername", 'edit', $conf ) );
+$data->assign("may_edit_views", checkAccess( 'views/*', 'edit', $conf) );
 $data->assign("node_image", node_image($metrics));
 $data->assign("sort",$sort);
 $data->assign("range",$range);
@@ -61,7 +61,7 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
 
     if ( $conf['graph_engine'] == "flot" ) {
       $optional_reports .= '<div class="flotheader"><span class="flottitle">' . $report_name . '</span>';
-      if(checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf)) {
+      if(checkAccess('views/*', 'edit', $conf)) {
         $optional_reports .= "<button class=\"cupid-green\" title=\"Metric Actions - Add to View, etc\" onclick=\"metricActions('" . $hostname . "','" . $report_name ."','graph','');  return false;\">+</button>";
       } 
       $optional_reports .= " <button title=\"Export to CSV\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;csv=1';return false;\">CSV</button>
@@ -70,7 +70,7 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
       $optional_reports .= '<div id="placeholder_' . $graph_args . '&amp;g=' . $report_name .'&amp;z=medium&amp;c=' . $cluster_url . '_legend" class="flotlegend"></div>';
     } else {
       $optional_reports .= "<div class='img_view'>";
-      if(checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf)) {
+      if(checkAccess('views/*', 'edit', $conf)) {
         $optional_reports .= "<button class=\"cupid-green\" title=\"Metric Actions - Add to View, etc\" onclick=\"metricActions('" . $hostname . "','" . $report_name ."','graph','');  return false;\">+</button>";
       } 
       $optional_reports .= " <button title=\"Export to CSV\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;csv=1';return false;\">CSV</button>

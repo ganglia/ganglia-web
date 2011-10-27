@@ -4,7 +4,7 @@ $tpl = new Dwoo_Template_File( template("views_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("range",$range);
 
-if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
+if( ! checkAccess('views/*', 'view', $conf) ) {
   die("You do not have access to view views.");
 }
 
