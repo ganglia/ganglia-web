@@ -16,13 +16,13 @@ $events_json = file_get_contents($conf['overlay_events_file']);
 
 $events_array = json_decode($events_json, TRUE);
 
-if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
+if( ! checkAccess('views/*', 'view', $conf) ) {
   api_return_error("You do not have access to view views.");
 }
 
 switch ( $_GET['action'] ) {
   case 'create_view': 
-  if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+  if( ! checkAccess( 'views/*', 'edit', $conf ) ) {
     api_return_error("You do not have access to edit views.");
   } else {
     // Check whether the view name already exists
@@ -57,7 +57,7 @@ switch ( $_GET['action'] ) {
 // Delete view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
   case 'delete_view':
-  if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+  if( ! checkAccess( 'views/*', 'edit', $conf ) ) {
     api_return_error("You do not have access to edit views.");
   } else {
     // Check whether the view name already exists
@@ -89,7 +89,7 @@ switch ( $_GET['action'] ) {
 // Add to view
 //////////////////////////////////////////////////////////////////////////////////////////////////////
   case 'add_to_view':
-  if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+  if( ! checkAccess( 'views/*', 'edit', $conf ) ) {
     api_return_error("You do not have access to edit views.");
   } else {
     $view_exists = 0;

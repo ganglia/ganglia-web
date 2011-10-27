@@ -137,7 +137,7 @@ if ($context == "cluster") {
 } elseif ($context=="host") {
    $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>";
 } elseif ( $context == "views") {
-   if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
+   if(  checkAccess( 'views/*', 'edit', $conf ) ) {
        $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';
    }
 }

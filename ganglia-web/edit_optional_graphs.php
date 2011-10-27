@@ -21,7 +21,7 @@ if ( $hostname != "none" ) {
 }
 
 $error = false;
-if( ! checkAccess( $clustername, GangliaAcl::EDIT, $conf ) ) {
+if( ! checkAccess( "clusters/$clustername", 'edit', $conf ) ) {
   $error = "You do not have permission to make changes in cluster '$clustername'.";
 // Does host exist in the metric cache. If it doesn't something's wrong
 } else if ( ! isset($index_array['cluster'][$hostname] ) && $hostname != "none" ) {

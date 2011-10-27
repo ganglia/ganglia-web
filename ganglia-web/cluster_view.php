@@ -7,7 +7,7 @@ $data->assign("extra", template("cluster_extra.tpl"));
 
 $data->assign("images","./templates/${conf['template_name']}/images");
 
-$data->assign("user_may_edit", checkAccess( $clustername, GangliaAcl::EDIT, $conf ) );
+$data->assign("user_may_edit", checkAccess( "clusters/$clustername", 'edit', $conf ) );
 $data->assign("graph_engine", $conf['graph_engine']);
 
 $cpu_num = !$showhosts ? $metrics["cpu_num"]['SUM'] : cluster_sum("cpu_num", $metrics);
