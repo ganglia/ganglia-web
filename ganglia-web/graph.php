@@ -316,9 +316,14 @@ switch ( $conf['graph_engine'] ) {
     if (isset($conf['rrdtool_slope_mode']) && $conf['rrdtool_slope_mode'] == True)
         $rrdtool_graph['slope-mode'] = '';
   
-    if (isset($rrdtool_graph['title']))
-       if (isset($title))
-          $rrdtool_graph['title'] = $title . " " . $rrdtool_graph['title'] . " last $range";
+    if (isset($rrdtool_graph['title']) && isset($title)) {
+      if ($conf['decorated_graph_title'])
+        $rrdtool_graph['title'] = $title . " " . 
+                                  $rrdtool_graph['title'] . 
+                                  " last $range";
+      else
+        $rrdtool_graph['title'] = $rrdtool_graph['title'];
+    }
 
     $command = $conf['rrdtool'] . " graph - $rrd_options ";
 
