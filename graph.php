@@ -453,7 +453,8 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
       $output_array[] = array( "ds_name"      => $ds_name, 
                                "cluster_name" => $out[5], 
                                "host_name"    => $out[6], 
-                               "metric_name"  => $out[7] );
+                               "metric_name"  => $out[7],
+                               "target" => $out[5] . "_" . $out[6]. "_" . $out[7]);
       $rrdtool_graph_args .= $value . " " . "XPORT:" . $ds_name . ":" . $metric_name . " ";
     }
   }
@@ -480,14 +481,15 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 
   foreach ( $xml->data->row as $key => $objects ) {
     $values = get_object_vars($objects);
+
     // If $values["v"] is an array we have multiple data sources/metrics and we 
     // need to iterate over those
     if ( is_array($values["v"]) ) {
       foreach ( $values["v"] as $key => $value ) {
-        $output_array[$key]["metrics"][] = array( "timestamp" => intval($values['t']), "value" => floatval($value));
+        $output_array[$key]["datapoints"][] = array( floatval($value), intval($values['t']) );
       }
     } else {
-      $output_array[0]["metrics"][] = array( "timestamp" => intval($values['t']), "value" => floatval($values['v']));
+      $output_array[0]["datapoints"][] = array( floatval($values["v"]), intval($values['t']) );
     }
 
   }
@@ -505,8 +507,8 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
   if ( $user['flot_output'] ) {
 
     foreach ( $output_array as $key => $metric_array ) {
-      foreach ( $metric_array['metrics'] as $key => $values ) {
-    $data_array[] = array ( $values['timestamp'] * 1000,  $values['value']);  
+      foreach ( $metric_array['datapoints'] as $key => $values ) {
+    $data_array[] = array ( $values[1], $values[0] * 1000 );  
       }
 
       $flot_array[] = array( 'label' =>  strip_domainname($metric_array['host_name']) . " " . $metric_array['metric_name'], 
