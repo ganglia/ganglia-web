@@ -1319,7 +1319,6 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
             for ($i = 1; $i < count($metric_subexpr); $i++)
               $legend .= $metric_subexpr[$i];
 	    $metric_matches[$key] = $legend;
-            error_log("legend = $legend");
           } else
             $metric_matches[$key] = $key;
         }
