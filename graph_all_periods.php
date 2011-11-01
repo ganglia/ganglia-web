@@ -1,4 +1,3 @@
-<!DOCTYPE html> 
 <html>
 <head>
 <title>Ganglia: Graph all periods</title>
