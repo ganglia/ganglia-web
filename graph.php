@@ -40,6 +40,7 @@ $graphite_url = '';
 
 $user['json_output'] = isset($_GET["json"]) ? 1 : NULL; 
 $user['csv_output'] = isset($_GET["csv"]) ? 1 : NULL; 
+$user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL; 
 $user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
 
 
@@ -437,7 +438,7 @@ switch ( $conf['graph_engine'] ) {
 } // end of switch ( $conf['graph_engine'])
 
 // Output to JSON
-if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
+if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $user['graphlot_output'] ) {
 
   $rrdtool_graph_args = "";
 
@@ -544,6 +545,26 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
       }
       print "\n";
     }
+
+  }
+
+  // Implement Graphite style Raw Data
+  if ( $user['graphlot_output'] ) {
+
+    header("Content-Type: application/json");
+
+    $last_index = sizeof($output_array[0]["datapoints"]) - 1;
+  
+    $output_vals['step'] = $output_array[0]["datapoints"][1][1] - $output_array[0]["datapoints"][0][1];
+    $output_vals['name'] = "stats." . $output_array[0]["metric_name"];
+    $output_vals['start'] = $output_array[0]["datapoints"][0][1];
+    $output_vals['end'] = $output_array[0]["datapoints"][$last_index][1];
+
+    foreach ( $output_array[0]["datapoints"] as $index => $array ) {
+      $output_vals['data'][] = $array[0];
+    } 
+
+    print json_encode(array($output_vals, $output_vals));
 
   }
 
