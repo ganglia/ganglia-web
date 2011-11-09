@@ -1,5 +1,11 @@
 <!-- Begin cluster_view.tpl -->
+{if $heatmap}
+<script type="text/javascript" src="js/protovis-r3.2.js"></script>
 <script type="text/javascript">
+var heatmap = [
+{$heatmap}
+];
+{/if}
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect
@@ -47,7 +53,6 @@ $(function() {
       return false;
     });
 
-
 });
 </script>
 
@@ -67,6 +72,11 @@ $(function() {
   a.button { padding: .15em 1em; text-decoration: none; }
   #effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
   #effect h3 { margin: 0; padding: 0.4em; text-align: center; }
+  #heatmap-fig {
+    width: 250px;
+    height: 250px;
+  }
+
 </style>
 
 <div id="metric-actions-dialog" title="Metric Actions">
@@ -131,10 +141,36 @@ $(function() {
 
 <tr>
  <td align="center" valign="top">
-{if $php_gd}
+{if $php_gd && !$heatmap}
   <img src="./pie.php?{$pie_args}" title="Pie Chart" border="0" />
-{else}
-  No image support in this build of PHP.
+{/if}
+{if $heatmap}
+Utilization heatmap<br />
+<div id="heatmap-fig">
+    <script type="text/javascript+protovis">
+
+var w = heatmap[0].length,
+    h = heatmap.length;
+
+var vis = new pv.Panel()
+    .width(w * {$heatmap_size})
+    .height(h * {$heatmap_size})
+    .margin(2)
+    .strokeStyle("#aaa")
+    .lineWidth(4)
+    .antialias(false);
+
+vis.add(pv.Image)
+    .imageWidth(w)
+    .imageHeight(h)
+    .image(pv.Scale.linear()
+        .domain(0, 0.25, 0.5, 0.75, 1.00)
+        .range("#e2ecff", "#caff98", "#ffde5e" , "#ffa15e","#ff634f")
+        .by(function(i, j) heatmap[j][i]));
+
+vis.render();
+    </script>
+ </div>
 {/if}
  </td>
 </tr>
@@ -166,6 +202,7 @@ $("#metrics-picker").val("{$metric_name}");
    <span class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</span>
    </font>
 {/if}
+
   </td>
 </tr>
 </table>
