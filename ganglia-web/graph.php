@@ -242,7 +242,12 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
       $counter++;
     } // end of foreach ( $host_list as 
   } else {
-    $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $_GET['hreg'], $_GET['mreg']);
+    $exclude_host_from_legend_label = ($_GET['lgnd_xh'] == "true") ? TRUE : FALSE;
+    $graph_config = build_aggregate_graph_config ($graph_type, 
+                                                  $line_width, 
+                                                  $_GET['hreg'], 
+                                                  $_GET['mreg'],
+                                                  $exclude_host_from_legend_label);
   }
 
   // Set up 
@@ -256,8 +261,6 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   } else {
     $title = "Aggregate";
   }
-
-
 }
 
 //////////////////////////////////////////////////////////////////////////////

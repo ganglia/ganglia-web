@@ -790,6 +790,10 @@ function get_view_graph_elements($view) {
 	  if ( isset($item['metric']) ) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	  }
+
+	  if ( isset($item['exclude_host_from_legend_label']) ) {
+	    $graph_args_array[] = "lgnd_xh=" . $item['exclude_host_from_legend_label'];
+	  }
 	  
 	  $graph_args_array[] = "aggregate=1";
 	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array), 
@@ -1285,7 +1289,11 @@ function ganglia_cache_metrics() {
 //////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////
-function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
+function build_aggregate_graph_config ($graph_type, 
+                                       $line_width, 
+                                       $hreg,
+                                       $mreg,
+                                       $exclude_host_from_legend_label) {
 
   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
   
@@ -1356,12 +1364,17 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
           continue;
 
         $label = '';
-        if ($conf['strip_domainname'] == True )
-          $label = strip_domainname($host_name);
-        else
-          $label = $host_name;
-        if( isset($metric_matches) and sizeof($metric_matches_unique) > 1)
-          $label.=" $legend";
+        if ($exclude_host_from_legend_label) {
+	  $label = $legend;
+        } else {
+          if ($conf['strip_domainname'] == True )
+            $label = strip_domainname($host_name);
+          else
+            $label = $host_name;
+
+ 	  if (isset($metric_matches) and sizeof($metric_matches_unique) > 1)
+            $label .= " $legend";
+	}
 
         $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
           "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
