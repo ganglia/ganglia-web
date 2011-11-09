@@ -509,7 +509,7 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $use
 
     foreach ( $output_array as $key => $metric_array ) {
       foreach ( $metric_array['datapoints'] as $key => $values ) {
-    $data_array[] = array ( $values[1], $values[0] * 1000 );  
+        $data_array[] = array ( $values[1]*1000, $values[0]);  
       }
 
       $flot_array[] = array( 'label' =>  strip_domainname($metric_array['host_name']) . " " . $metric_array['metric_name'], 
