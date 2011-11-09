@@ -5,7 +5,9 @@
 var heatmap = [
 {$heatmap}
 ];
+</script>
 {/if}
+<script type="text/javascript">
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect
