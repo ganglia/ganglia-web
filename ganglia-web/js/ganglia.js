@@ -118,11 +118,18 @@ function highlightSelectedView(view_name) {
 
 function selectView(view_name) {
   highlightSelectedView(view_name);
-  $.cookie('ganglia-selected-view-' + window.name, view_name); 
-  var range = $.cookie('ganglia-view-range-' + window.name);
-  if (range == null)
-    range = '1hour';
-  getViewsContentJustGraphs(view_name, range, '', '');
+  $.cookie('ganglia-selected-view-' + window.name, view_name);
+  var cs = $.cookie('ganglia-view-cs-' + window.name); 
+  var ce = $.cookie('ganglia-view-ce-' + window.name); 
+  if (cs != null && cs != '' && ce != null && ce != '') {
+    alert(cs + ", " + ce);
+    getViewsContentJustGraphs(view_name, '', cs, ce);
+  } else {
+    var range = $.cookie('ganglia-view-range-' + window.name);
+    if (range == null)
+      range = '1hour';
+    getViewsContentJustGraphs(view_name, range, '', '');
+  }
 }
 
 function getViewsContent() {
@@ -146,15 +153,50 @@ function getViewsContent() {
       });;
     $( "#view_range_chooser" ).buttonset();
 
+    // Restore previously selected time range
+    var cs = $.cookie("ganglia-view-cs-" + window.name);
+    if (cs != null && cs != '')
+      $("#view-cs").val(cs);
+    else
+      cs = null;
+
+    var ce = $.cookie("ganglia-view-ce-" + window.name);
+    if (ce != null && ce == '')
+      $("#view-ce").val(ce);
+    else
+      ce = null;
+
+    var range = null;
+    if (cs == null && ce == null) {
+      range = $.cookie("ganglia-view-range-" + window.name);
+      if (range == null)
+        range = "hour";
+    }
+
     // Restore previously selected view
     var view_name = document.getElementById('view_name');
     var selected_view = $.cookie("ganglia-selected-view-" + window.name);
     if (selected_view != null) {
         view_name.value = selected_view;
-	var range = $.cookie("ganglia-view-range-" + window.name);
-	if (range == null)
+      	var cs = $.cookie("ganglia-view-cs-" + window.name);
+        if (cs != null && cs == '')
+          cs = null;
+      	var ce = $.cookie("ganglia-view-ce-" + window.name);
+        if (ce != null && ce == '')
+          ce = null;
+        if (cs != null || ce != null) {
+          if (cs != null)
+            $("#view-cs").val(cs);
+          if (ce != null)
+            $("#view-ce").val(ce);
+          if (cs != null && ce != null)
+	    $("#view-custom-go").click();
+        } else {
+	  var range = $.cookie("ganglia-view-range-" + window.name);
+	  if (range == null)
           range = "hour";
-	$("#view-range-"+range).click();
+	  $("#view-range-"+range).click();
+        }
     } else
       view_name.value = "default";
     highlightSelectedView(view_name.value);

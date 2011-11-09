@@ -287,16 +287,23 @@ $(function(){
       else
 	$checked = "";
 
-      $range_menu .= "<input onChange=\"$.cookie('ganglia-view-range-' + window.name, '" . $v . "'); $('#view-cs').val(''); $('#view-ce').val(''); getViewsContentJustGraphs($('#view_name').val(), '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
+      $range_menu .= "<input onChange=\"$.cookie('ganglia-view-range-' + window.name, '" . $v . "'); $('#view-cs').val(''); $('#view-ce').val(''); $.cookie('ganglia-view-cs-' + window.name, ''); $.cookie('ganglia-view-ce-' + window.name, ''); getViewsContentJustGraphs($('#view_name').val(), '" . $v . "', '','');\" type=\"radio\" id=\"view-range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"view-range-$v\">$v</label>";
 
    }
   print $range_menu;
 ?>
       &nbsp;&nbsp;or <span class="nobr">from 
-  <input type="text" title="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." name="cs" id="view-cs" size="17"> to 
-  <input type="text" title="Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." name="ce" id="view-ce" size="17"> 
-  <input type="button" onclick="getViewsContentJustGraphs($('#view_name').val(), '', $('#view-cs').val(), $('#view-ce').val() ); return false;" value="Go">
-  <input type="button" value="Clear" onclick="$('#view-cs').val(''); $('#view-ce').val('') ; return false;">
+<?php
+  $custom_range = "<input onChange=\"$.cookie('ganglia-view-cs-' + window.name, $('#view-cs').val())\" type=\"text\" title=\"Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc.\" name=\"cs\" id=\"view-cs\" size=\"17\"> to ";
+ 
+  $custom_range .= "<input onChange=\"$.cookie('ganglia-view-ce-' + window.name, $('#view-ce').val())\" type=\"text\" title=\"Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc.\" name=\"ce\" id=\"view-ce\" size=\"17\">";
+ 
+  $custom_range .= "<input type=\"button\" onclick=\"getViewsContentJustGraphs($('#view_name').val(), '', $('#view-cs').val(), $('#view-ce').val() ); return false;\" value=\"Go\" id=\"view-custom-go\">";
+
+  $custom_range .= "<input type=\"button\" value=\"Clear\" onclick=\"$('#view-cs').val(''); $('#view-ce').val(''); $.cookie('ganglia-view-cs-' + window.name, ''); $.cookie('ganglia-view-ce-' + window.name, ''); return false;\">";
+
+      print $custom_range;
+?>
 		    </span></form><p>&nbsp;</p>
       </div>
 
