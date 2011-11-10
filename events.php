@@ -58,11 +58,23 @@ Following is a list of known overlay events<p>
 </tr>
 <?php
 
+function start_time_cmp($ev1, $ev2) {
+  $start1 = $ev1['start_time'];
+  $start2 = $ev2['start_time'];
+
+  if ($start1 == $start2)
+    return 0;
+
+  return ($start1 < $start2) ? 1 : -1;
+}
+
 include_once("./eval_conf.php");
 
 $events_json = file_get_contents($conf['overlay_events_file']);
 
 $events_array = json_decode($events_json, TRUE);
+
+usort($events_array, 'start_time_cmp');
 
 foreach ( $events_array as $id => $event ) {
   $description = isset($event['description']) ? $event['description'] : "";
