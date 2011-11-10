@@ -40,6 +40,7 @@ $graphite_url = '';
 
 $user['json_output'] = isset($_GET["json"]) ? 1 : NULL; 
 $user['csv_output'] = isset($_GET["csv"]) ? 1 : NULL; 
+$user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL; 
 $user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
 
 
@@ -445,7 +446,7 @@ switch ( $conf['graph_engine'] ) {
 } // end of switch ( $conf['graph_engine'])
 
 // Output to JSON
-if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
+if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $user['graphlot_output'] ) {
 
   $rrdtool_graph_args = "";
 
@@ -461,7 +462,8 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
       $output_array[] = array( "ds_name"      => $ds_name, 
                                "cluster_name" => $out[5], 
                                "host_name"    => $out[6], 
-                               "metric_name"  => $out[7] );
+                               "metric_name"  => $out[7],
+                               "target" => $out[5] . "_" . $out[6]. "_" . $out[7]);
       $rrdtool_graph_args .= $value . " " . "XPORT:" . $ds_name . ":" . $metric_name . " ";
     }
   }
@@ -488,14 +490,15 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
 
   foreach ( $xml->data->row as $key => $objects ) {
     $values = get_object_vars($objects);
+
     // If $values["v"] is an array we have multiple data sources/metrics and we 
     // need to iterate over those
     if ( is_array($values["v"]) ) {
       foreach ( $values["v"] as $key => $value ) {
-        $output_array[$key]["metrics"][] = array( "timestamp" => intval($values['t']), "value" => floatval($value));
+        $output_array[$key]["datapoints"][] = array( floatval($value), intval($values['t']) );
       }
     } else {
-      $output_array[0]["metrics"][] = array( "timestamp" => intval($values['t']), "value" => floatval($values['v']));
+      $output_array[0]["datapoints"][] = array( floatval($values["v"]), intval($values['t']) );
     }
 
   }
@@ -513,8 +516,8 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
   if ( $user['flot_output'] ) {
 
     foreach ( $output_array as $key => $metric_array ) {
-      foreach ( $metric_array['metrics'] as $key => $values ) {
-    $data_array[] = array ( $values['timestamp'] * 1000,  $values['value']);  
+      foreach ( $metric_array['datapoints'] as $key => $values ) {
+        $data_array[] = array ( $values[1]*1000, $values[0]);  
       }
 
       $flot_array[] = array( 'label' =>  strip_domainname($metric_array['host_name']) . " " . $metric_array['metric_name'], 
@@ -550,6 +553,26 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] ) {
       }
       print "\n";
     }
+
+  }
+
+  // Implement Graphite style Raw Data
+  if ( $user['graphlot_output'] ) {
+
+    header("Content-Type: application/json");
+
+    $last_index = sizeof($output_array[0]["datapoints"]) - 1;
+  
+    $output_vals['step'] = $output_array[0]["datapoints"][1][1] - $output_array[0]["datapoints"][0][1];
+    $output_vals['name'] = "stats." . $output_array[0]["metric_name"];
+    $output_vals['start'] = $output_array[0]["datapoints"][0][1];
+    $output_vals['end'] = $output_array[0]["datapoints"][$last_index][1];
+
+    foreach ( $output_array[0]["datapoints"] as $index => $array ) {
+      $output_vals['data'][] = $array[0];
+    } 
+
+    print json_encode(array($output_vals, $output_vals));
 
   }
 
