@@ -185,7 +185,6 @@ if ( $clustername ) {
    # No cluster has been specified, so drop in a list
    $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
    $node_menu .= "<option value=\"\">--Choose a Source\n";
-   $node_menu .= "<option value=\"Views\">Views\n";
    ksort($grid);
    foreach( $grid as $k => $v )
       {
