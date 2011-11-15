@@ -144,7 +144,7 @@ foreach ( $sorted_sources as $source => $val )
 
       # I dont like this either, but we need to have private clusters because some
       # users are skittish about publishing the load info.
-      if(checkAccess("clusters/$source", 'view', $conf)) 
+      if(checkAccess($source, GangliaAcl::VIEW, $conf)) 
          {
             $sources[$source]["alt_view"] = "<FONT SIZE=\"-2\">$alt_url</FONT>";
             $sources[$source]["public"] = 1;
@@ -185,7 +185,7 @@ if ($conf['show_meta_snapshot']=="yes") {
    foreach ($sorted_sources as $c=>$value) {
       if ($c==$self) continue;
       if ($c=="AAAAA.$self") continue;  # SORT HACK; see above
-      if (! checkAccess("clusters/$c", 'view', $conf)) {
+      if (! checkAccess($c, GangliaAcl::VIEW, $conf)) {
          $Private[$c] = template("images/cluster_private.jpg");
          continue;
       }

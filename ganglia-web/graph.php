@@ -113,13 +113,13 @@ switch ($context)
 }
 
 
-$resource = 'clusters/*';
+$resource = GangliaAcl::ALL_CLUSTERS;
 if( $context == "grid" ) {
-  $resource = "*";
+  $resource = $grid;
 } else if ( $context == "cluster" || $context == "host" ) {
-  $resource = "clusters/$clustername";
+  $resource = $clustername; 
 }
-if( ! checkAccess( $resource, 'view', $conf ) ) {
+if( ! checkAccess( $resource, GangliaAcl::VIEW, $conf ) ) {
   header( "HTTP/1.1 403 Access Denied" );
   header ("Content-type: image/jpg");
   echo file_get_contents( $ganglia_dir.'/img/access-denied.jpg');
