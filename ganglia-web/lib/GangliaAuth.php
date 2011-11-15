@@ -18,7 +18,7 @@ class GangliaAuth {
   }
 
   public function __construct() {
-    // separated for testability. need to disable construtor in some tests & run init later.
+    // separated for testability. need to disable constructor in some tests & run init later.
     $this->init();
   }
 
