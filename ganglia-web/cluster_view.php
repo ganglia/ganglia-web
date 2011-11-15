@@ -408,5 +408,35 @@ if ( sizeof($overflow_list) > 0 ) {
 }
 $data->assign("overflow_list", $overflow_list);
 
+# Creates a heatmap
+if ( isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1 ) {
+  $num_hosts = count($host_load);
+
+  $matrix = ceil(sqrt($num_hosts));
+
+  $xindex = 0;
+  $yindex = 0;
+
+  foreach ( $host_load as $key => $value ) {
+    if ( $xindex >= $matrix ) {
+      $string_array[] = "[" . join(",", $matrix_array[$yindex]) . "]";
+      $yindex++;
+      $xindex = 0;
+    }
+
+  $matrix_array[$yindex][$xindex] = $value;
+  $xindex++;
+
+  }
+
+  $string_array[] = "[" . join(",", $matrix_array[$yindex]) . "]";
+
+  $heatmap = join(",", $string_array);
+
+  $data->assign("heatmap", $heatmap);
+  $data->assign("heatmap_size", floor(250/$matrix));
+
+}
+
 $dwoo->output($tpl, $data);
 ?>
