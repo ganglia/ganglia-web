@@ -1046,16 +1046,17 @@ function build_graphite_series( $config, $host_cluster = "" ) {
   return $output;
 }
 
+
 /**
  * Check if current user has a privilege (view, edit, etc) on a resource.
  * If resource is unspecified, we assume GangliaAcl::ALL.
  *
  * Examples
- *   checkAccess( '*', 'edit', $conf ); // user has global edit?
- *   checkAccess( '*', 'view', $conf ); // user has global view?
- *   checkAccess( "clusters/$cluster", 'edit', $conf ); // user can edit current cluster?
- *   checkAccess( 'clusters/cluster1', 'edit', $conf ); // user has edit privilege on cluster1?
- *   checkAccess( 'clusters/cluster1', 'edit', $conf ); // user has view privilege on cluster1?
+ *   checkAccess( GangliaAcl::ALL_CLUSTERS, GangliaAcl::EDIT, $conf ); // user has global edit?
+ *   checkAccess( GangliaAcl::ALL_CLUSTERS, GangliaAcl::VIEW, $conf ); // user has global view?
+ *   checkAccess( $cluster, GangliaAcl::EDIT, $conf ); // user can edit current cluster?
+ *   checkAccess( 'cluster1', GangliaAcl::EDIT, $conf ); // user has edit privilege on cluster1?
+ *   checkAccess( 'cluster1', GangliaAcl::VIEW, $conf ); // user has view privilege on cluster1?
  */
 function checkAccess($resource, $privilege, $conf) {
   
@@ -1068,7 +1069,7 @@ function checkAccess($resource, $privilege, $conf) {
   
   switch( $conf['auth_system'] ) {
     case 'readonly':
-      $out = ($privilege == 'view');
+      $out = ($privilege == GangliaAcl::VIEW);
       break;
       
     case 'enabled':
@@ -1078,21 +1079,20 @@ function checkAccess($resource, $privilege, $conf) {
       $auth = GangliaAuth::getInstance();
       
       if(!$auth->isAuthenticated()) {
-        // no group vs. individual distinction, so our default is the 'guests' role.
-        $role = 'guests';
+        $user = GangliaAcl::GUEST;
       } else {
-        $role = $auth->getUser();
+        $user = $auth->getUser();
       }
       
       if(!$acl->has($resource)) {
-        $resource = '*';
+        $resource = GangliaAcl::ALL_CLUSTERS;
       }
       
       $out = false;
-      if($acl->hasRole($role)) {
-        $out = (bool) $acl->isAllowed($role, $resource, $privilege);
+      if($acl->hasRole($user)) {
+        $out = (bool) $acl->isAllowed($user, $resource, $privilege);
       }
-      // error_log("checkAccess() role=$role, resource=$resource, priv=$privilege == $out");
+      // error_log("checkAccess() user=$user, resource=$resource, priv=$privilege == $out");
       break;
     
     case 'disabled':
