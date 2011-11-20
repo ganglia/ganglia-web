@@ -3,13 +3,23 @@
 ##########################################################################################
 # Author; Vladimir Vuksan
 # This is a Ganglia Nagios plugins that alerts based on values extracted from Ganglia
+# It is similar to check_metric however it allows you to check multiple values and
+# generate a single result. For example if you have multiple disks on the system
+# you want a single check that will alert whenever 
 #
 # You need to supply following GET values
 #
 #  host = "Hostname"
+#  checks = is a list of checks separated  with a colon. Check is defined by
+#  comma delimiting following
 #  metric_name e.g. load_one, bytes_out
 #  operator for critical condition e.g. less, more, equal, notequal
 #  critical_value e.g. value for critical
+#
+#  Example would be
+#
+#  ?host=mytestserver.com&checks=disk_rootfs,more,10:disk_tmp,more,20
+#
 ##########################################################################################
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
@@ -18,13 +28,12 @@ include_once $conf['ganglia_dir'] . "/eval_conf.php";
 # To turn on debug set to 1
 $debug = 0;
 
-if ( isset($_GET['host']) && isset($_GET['metric_name']) && isset($_GET['operator']) && isset($_GET['critical_value']) ) {
+if ( isset($_GET['host']) && isset($_GET['checks']) ) {
    $host = $_GET['host'];
-   $metric_name = $_GET['metric_name'];
-   $operator = $_GET['operator'];
-   $critical_value = $_GET['critical_value'];
+   # Checks are : delimited
+   $checks = explode(":", $_GET['checks']);
 } else {
-   die("You need to supply host, metric_name, operator and critical_value");
+   die("You need to supply host and list of checks");
 }
 global $metrics;
 
@@ -81,23 +90,46 @@ for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
 
 # Host has been found in the Ganglia tree
 if ( $host_found == 1 ) {
-  # Check for the existence of a metric
-  if ( isset($metrics[$fqdn][$metric_name]['VAL']) ) {
-    $metric_value = $metrics[$fqdn][$metric_name]['VAL'];
+   
+  $results_ok = array();
+  $results_notok = array();
+   
+  # Loop through all the checks
+  foreach ( $checks as $index => $check ) {
+
+   # Separate check into it's pieces
+   $pieces = explode(",", $check);
+   $metric_name = $pieces[0];
+   $operator = $pieces[1];
+   $critical_value = $pieces[2];
+   unset($pieces);
+   
+   # Check for the existence of a metric
+   if ( isset($metrics[$fqdn][$metric_name]['VAL']) ) {
+     $metric_value = $metrics[$fqdn][$metric_name]['VAL'];
+   } else {
+     $results_notok[] =  "UNKNOWN " . $metric_name . " not found";
+   }
+   
+   $ganglia_units = $metrics[$fqdn][$metric_name]['UNITS'];
+   
+   if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
+      $results_ok[] =  "OK " . $metric_name . " = " . $metric_value . " " . $ganglia_units;
+   } else {
+      $results_notok[] =  "CRITICAL " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
+   }
+  
+  } // end of foreach ( $checks as $index => $check
+  
+  if ( sizeof( $results_notok ) == 0 ) {
+     print "OK|" . join(", ", $results_ok);
+     exit(0);
   } else {
-    echo("UNKNOWN|" . $metric_name . " - Invalid metric request for this host. Please check metric exists.");
-    exit(3);
+     print "CRITICAL|" . join(", ", $results_notok) . " -- " . join(" ", $results_ok);
+     exit(2);
   }
   
-  $ganglia_units = $metrics[$fqdn][$metric_name]['UNITS'];
-  
-  if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
-   print "OK|" . $metric_name . " value = " . $metric_value . " " . $ganglia_units;
-   exit (0);
-  } else {
-    print "CRITICAL|" . $metric_name . " value = ". $metric_value . " " . $ganglia_units;
-    exit (2);
-  } 
+  print_r($messages); print_r($exit_codes);
   
 } else {
    echo("UNKNOWN|" . $metric_name . " - Hostname info not available. Likely invalid hostname");
