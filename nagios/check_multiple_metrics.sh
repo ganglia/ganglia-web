@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-GANGLIA_URL="http://localhost/ganglia2/nagios/check_metric.php"
+GANGLIA_URL="http://localhost/ganglia2/nagios/check_multiple_metrics.php"
 
 # Build the rest of the arguments into the arg string for the URL.
 CHECK_ARGS=''
