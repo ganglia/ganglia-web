@@ -17,6 +17,15 @@ $size = isset($_GET["z"]) && in_array( $_GET[ 'z' ], $conf['graph_sizes_keys'] )
 
 # If graph arg is not specified default to metric
 $graph      = isset($_GET["g"])  ?  sanitize ( $_GET["g"] )   : "metric";
+
+$graph_arguments = NULL;
+$pos = strpos($graph, ",");
+if ($pos !== FALSE) {
+  $graph_report = substr($graph, 0, $pos);
+  $graph_arguments = substr($graph, $pos + 1);
+  $graph = $graph_report;
+}
+
 $grid       = isset($_GET["G"])  ?  sanitize ( $_GET["G"] )   : NULL;
 $self       = isset($_GET["me"]) ?  sanitize ( $_GET["me"] )  : NULL;
 $vlabel     = isset($_GET["vl"]) ?  sanitize ( $_GET["vl"] )  : NULL;
@@ -243,7 +252,9 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
       $counter++;
     } // end of foreach ( $host_list as 
   } else {
-    $exclude_host_from_legend_label = ($_GET['lgnd_xh'] == "true") ? TRUE : FALSE;
+    $exclude_host_from_legend_label = 
+      (array_key_exists('lgnd_xh', $_GET) && 
+       $_GET['lgnd_xh'] == "true") ? TRUE : FALSE;
     $graph_config = build_aggregate_graph_config ($graph_type, 
                                                   $line_width, 
                                                   $_GET['hreg'], 
@@ -281,7 +292,11 @@ switch ( $conf['graph_engine'] ) {
       if( is_file( $php_report_file ) ) {
         include_once $php_report_file;
         $graph_function = "graph_${graph}";
-        $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
+        if (isset($graph_arguments)) {
+          eval('$graph_function($rrdtool_graph,' . $graph_arguments . ');');
+        } else
+          $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
+        }
       } else if ( is_file( $json_report_file ) ) {
         $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
 
