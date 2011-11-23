@@ -43,8 +43,18 @@ $(function(){
           var view_name = $.cookie('ganglia-selected-view-' + window.name);
           qs.SET('vn', (view_name != null && view_name != '') ? view_name : '');
         }
-      } else
+      } else 
 	qs.REMOVE('vn');
+	
+      
+      if (ui.index == 4) {
+        if (qs.get('ch') == '') {
+          qs.SET('ch', 1);
+        }
+      } else 
+	qs.REMOVE('ch');
+      
+      
       document.location.search = qs.toString(); 
     });
   }
