@@ -41,7 +41,7 @@ $(function(){
       if (ui.index == 2) {
         if (qs.get('vn') == '') {
           var view_name = $.cookie('ganglia-selected-view-' + window.name);
-          qs.SET('vn', (view_name != null && view_name != '') ? view_name : '');
+          qs.SET('vn', (view_name != null && view_name != '') ? view_name : "default");
         }
       } else 
 	qs.REMOVE('vn');
