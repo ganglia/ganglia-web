@@ -8,7 +8,7 @@
   margin: 0 0 10px 10px;
 }
 </style>
-<div id="enlarge-graph-dialog" title="Inspect Graph">
+<div id="enlarge-graph-dialog" style="display: none" title="Inspect Graph">
   <div id="enlarge-graph-dialog-content">
   </div>
 </div>
@@ -22,11 +22,16 @@ if ( ! isset($_GET['embed'] ) ) {
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
-<div id="metric-actions-dialog" title="Metric Actions">
+<div id="metric-actions-dialog" style="display: none" title="Metric Actions">
 <div id="metric-actions-dialog-content">
 	Available Metric actions.
 </div>
 </div>
+<script>
+  $(function() {
+    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+  });
+</script>
 <?php
 } // end of if ( ! isset($_GET['embed'] ) ) {
 
