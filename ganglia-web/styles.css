@@ -401,3 +401,9 @@ button.shiny-blue {
     -o-box-shadow: inset 0 0 5px 2px #1a47a0, 0 1px 0 #eeeeee;
     box-shadow: inset 0 0 5px 2px #1a47a0, 0 1px 0 #eeeeee; }
 
+/* css for timepicker */
+.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+.ui-timepicker-div dl{ text-align: left; }
+.ui-timepicker-div dl dt{ height: 25px; }
+.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+.ui-timepicker-div td { font-size: 90%; }
