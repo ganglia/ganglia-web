@@ -163,6 +163,9 @@ function start_cluster ($parser, $tagname, $attrs)
             $metrics[$hostname]['last_reported']['NAME'] = "REPORTED";
             $metrics[$hostname]['last_reported']['VAL'] = uptime($cluster['LOCALTIME'] - $attrs['REPORTED']);
             $metrics[$hostname]['last_reported']['TYPE'] = "string";
+            $metrics[$hostname]['last_reported_timestamp']['NAME'] = "REPORTED TIMESTAMP";
+            $metrics[$hostname]['last_reported_timestamp']['VAL'] = $attrs['REPORTED'];
+            $metrics[$hostname]['last_reported_timestamp']['TYPE'] = "uint32";
             $metrics[$hostname]['ip_address']['NAME'] = "IP";
             $metrics[$hostname]['ip_address']['VAL'] = $attrs['IP'];
             $metrics[$hostname]['ip_address']['TYPE'] = "string";
