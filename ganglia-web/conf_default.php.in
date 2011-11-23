@@ -61,6 +61,7 @@ $conf['graphdir']='./graph.d';
 
 # Display statistical values on RRD graphs; i.e.: average, min, max
 $conf['graphreport_stats'] = true;
+$conf['graphreport_stat_items'] = array("now", "min", "avg", "max");
 
 #
 # If you want to grab data from a different ganglia source specify it here.
@@ -316,5 +317,10 @@ $conf['graph_colors'] = array("0000A3", "FF3300", "FFCC33", "00CC66", "B88A00", 
 
 # Are heatmaps enabled
 $conf['heatmaps_enabled'] = 0;
+
+# Decorated titles are of the form cluster/host, graph_title/metric, 
+# time range. By setting this attribute to false the clsuter/host and 
+# time range items are excluded.
+$conf['decorated_graph_title'] = true;
 
 ?>

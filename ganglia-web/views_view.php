@@ -31,8 +31,16 @@ if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
 
 $data->assign("additional_host_img_css_classes", $additional_host_img_css_classes);
 
-foreach ( $available_views as $view_id => $view ) {
+$existing_views = '';
+foreach ( $available_views as $view ) {
+ $v = $view['view_name'];
+ $existing_views .= '<li><a class="nobr" href="#" id="' . viewId($v) . '" onClick="selectView(\'' . $v . '\'); return false;">' . $v . '</a></li>';
+}
+$data->assign("existing_views", $existing_views);
+$data->assign("view_name", $user["viewname"]);
 
+$view_items = NULL;
+foreach ( $available_views as $view_id => $view ) {
  if ( $view['view_name'] == $user["viewname"] ) {
 
     $view_elements = get_view_graph_elements($view);
@@ -62,7 +70,8 @@ foreach ( $available_views as $view_id => $view ) {
  }  // end of if ( $view['view_name'] == $view_name
 } // end of foreach ( $views as $view_id 
 
-$data->assign("view_items", $view_items);
+if (isset($view_items))
+  $data->assign("view_items", $view_items);
 $dwoo->output($tpl, $data);
 
 ?>

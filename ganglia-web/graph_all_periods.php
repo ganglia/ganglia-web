@@ -1,4 +1,3 @@
-<!DOCTYPE html> 
 <html>
 <head>
 <title>Ganglia: Graph all periods</title>
@@ -35,12 +34,12 @@ $ignore_keys_list = array("r", "z", "st", "cs", "ce", "hc");
 
 foreach ($_GET as $key => $value) {
   if ( ! in_array($key, $ignore_keys_list) && ! is_array($value))
-    $query_string_array[] = "$key=$value";
+    $query_string_array[] = "$key=" . urlencode($value);
 
   // $_GET argument is an array. Rebuild it to pass it on
   if ( is_array($value) ) {
     foreach ( $value as $index => $value2 )
-      $query_string_array[] = $key . "[]=" . $value2;
+      $query_string_array[] = $key . "[]=" . urlencode($value2);
 
   }
 }

@@ -11,6 +11,8 @@
 <script type="text/javascript"  src="js/ganglia.js"></script>
 <script type="text/javascript"  src="js/jquery.gangZoom.js"></script>
 <script type="text/javascript"  src="js/jquery.cookie.js"></script>
+<script type="text/javascript"  src="js/jquery.query-2.1.7.js"></script>
+<script type="text/javascript"  src="js/jquery-ui-timepicker-addon.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <link type="text/css" href="./styles.css" rel="stylesheet" />
@@ -107,6 +109,7 @@
 <ul>
   <li><a href="#tabs-main">Main</a></li>
   <li><a href="#tabs-search">Search</a></li>
+  <li><a href="#tabs-main">Views</a></li>
   <li><a href="aggregate_graphs.php">Aggregate Graphs</a></li>
 {if $overlay_events}
   <li><a href="events.php">Events</a></li>
@@ -142,10 +145,10 @@
   </div>
   </td>
   </tr>
-
+{if $node_menu != ""}
   <tr><td colspan="2">{$node_menu}&nbsp;&nbsp;{$additional_filter_options}</td>
 </tr>
-
+{/if}
   </TABLE>
 
 <HR SIZE="1" NOSHADE>

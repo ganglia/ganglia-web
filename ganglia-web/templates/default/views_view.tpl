@@ -12,7 +12,8 @@
       .button()
       .click(function() {
 	$( "#create-new-view-dialog" ).dialog( "open" );
-    });;
+    });
+    highlightSelectedView('{$view_name}');
   });
 </script>
 
@@ -21,9 +22,20 @@
   </div>
 </div>
 
-
+<table id="views_table">
+<tr><td valign="top">
+<div id="views_menu">
+  <p>Existing views:</p>
+  <ul id="navlist">
+    {$existing_views}
+  </ul>
+</div>
+</td>
+<td valign="top>
+<div>
 <div id="views-content">
   <div id=view_graphs>
+    {if isset($number_of_view_items)}
     {if $number_of_view_items == 0 }
     <div class="ui-widget">
       <div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
@@ -44,6 +56,12 @@
       </div>
       {/foreach}
     {/if}
+    {/if}
   </div>
 </div>
 <div style="clear: left"></div>
+</div>
+</td>
+</tr>
+</table>
+<input type='hidden' name='vn' id='vn' value='{$view_name}'>

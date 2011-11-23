@@ -9,7 +9,7 @@
 
 include_once ( dirname(__FILE__) . "/lib/json.php" );
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Allows a form of inheritance for template files.
 # If a file does not exist in the chosen template, the
 # default is used. Cuts down on code duplication.
@@ -28,7 +28,7 @@ function template ($name)
    }
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Creates a hidden input field in a form. Used to save CGI variables.
 function hiddenvar ($name, $var)
 {
@@ -41,7 +41,7 @@ function hiddenvar ($name, $var)
    return $hidden;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Gives a readable time string, from a "number of seconds" integer.
 # Often used to compute uptime.
 function uptime($uptimeS)
@@ -57,7 +57,7 @@ function uptime($uptimeS)
    return sprintf("$uptimeD day$s, %d:%02d:%02d",$uptimeH,$uptimeM,$uptimeS);
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Try to determine a nodes location in the cluster. Attempts to find the
 # LOCATION attribute first. Requires the host attribute array from 
 # $hosts[$cluster][$name], where $name is the hostname.
@@ -82,7 +82,7 @@ function findlocation($attrs)
 }
 
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 function cluster_sum($name, $metrics)
 {
    $sum = 0;
@@ -95,7 +95,7 @@ function cluster_sum($name, $metrics)
    return $sum;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 function cluster_min($name, $metrics)
 {
    $min = "";
@@ -112,7 +112,7 @@ function cluster_min($name, $metrics)
    return array($min, $minhost);
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #
 # A useful function for giving the correct picture for a given
 # load. Scope is "node | cluster | grid". Value is 0 <= v <= 1.
@@ -140,7 +140,7 @@ function load_image ($scope, $value)
    return $image;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # A similar function that specifies the background color for a graph
 # based on load. Quantizes the load figure into 6 sets.
 function load_color ($value)
@@ -169,7 +169,7 @@ function load_color ($value)
    return $color;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #
 # Just a useful function to print the HTML for
 # the load/death of a cluster node
@@ -202,7 +202,7 @@ function node_image ($metrics)
    return $image;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #
 # Finds the min/max over a set of metric graphs. Nodes is
 # an array keyed by host names.
@@ -273,7 +273,7 @@ function find_limits($nodes, $metricname)
       return array($min, $max);
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #
 # Finds the avg of the given cluster & metric from the summary rrds.
 #
@@ -300,7 +300,7 @@ function find_avg($clustername, $hostname, $metricname)
     return $avg;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #
 # Generates the colored Node cell HTML. Used in Physical
 # view and others. Intended to be used to build a table, output
@@ -391,7 +391,7 @@ function nodebox($hostname, $verbose, $title="", $extrarow="")
    return $cell;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Alternate between even and odd row styles.
 function rowstyle()
 {
@@ -403,7 +403,7 @@ function rowstyle()
    return $style;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Organize hosts by rack locations.
 # Works with or without "location" host attributes.
 function physical_racks()
@@ -465,7 +465,7 @@ function physical_racks()
    return $racks;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Return a version of the string which is safe for display on a web page.
 # Potentially dangerous characters are converted to HTML entities.  
 # Resulting string is not URL-encoded.
@@ -473,20 +473,20 @@ function clean_string( $string )
 {
   return htmlentities( $string );
 }
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 function sanitize ( $string ) {
   return  escapeshellcmd( clean_string( rawurldecode( $string ) ) ) ;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # If arg is a valid number, return it.  Otherwise, return null.
 function clean_number( $value )
 {
   return is_numeric( $value ) ? $value : null;
 }
 
-#-------------------------------------------------------------------------------
-# Return true if string is a 3 or 6 character hex color.  Return false otherwise.
+#------------------------------------------------------------------------------
+# Return true if string is a 3 or 6 character hex color.Return false otherwise.
 function is_valid_hex_color( $string )
 {
   $return_value = false;
@@ -499,7 +499,7 @@ function is_valid_hex_color( $string )
     
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Return a shortened version of a FQDN
 # if "hostname" is numeric only, assume it is an IP instead
 # 
@@ -513,7 +513,7 @@ function strip_domainname( $hostname ) {
     }
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Read a file containing key value pairs
 function file_to_hash($filename, $sep)
 {
@@ -529,7 +529,7 @@ function file_to_hash($filename, $sep)
   return $params;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Read a file containing key value pairs
 # Multiple values permitted for each key
 function file_to_hash_multi($filename, $sep)
@@ -546,7 +546,7 @@ function file_to_hash_multi($filename, $sep)
   return $params;
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Obtain a list of distinct values from an array of arrays
 function hash_get_distinct_values($h)
 {
@@ -565,7 +565,7 @@ function hash_get_distinct_values($h)
 
 $filter_defs = array();
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Scan $conf['filter_dir'] and populate $filter_defs
 function discover_filters()
 {
@@ -606,7 +606,7 @@ function discover_filters()
 
 $filter_permit_list = NULL;
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Initialise the filter permit list, if necessary
 function filter_init()
 {
@@ -666,7 +666,7 @@ function filter_init()
 
 }
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Decide whether the given source is permitted by the filters, if any
 function filter_permit($source_name)
 {
@@ -682,9 +682,9 @@ function filter_permit($source_name)
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // Get all the available views
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 function get_available_views() {
   global $conf;
   
@@ -728,12 +728,12 @@ function get_available_views() {
 
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // Get image graph URLS
-// This function returns an array of graph URLs to be used when rendering the view. It returns
-// only the base ie. cluster, host, metric information. It is up to the caller to add proper
-// size information, time ranges etc.
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+// This function returns an array of graph URLs to be used when rendering the 
+// view. It returns only the base ie. cluster, host, metric information. 
+// It is up to the caller to add proper size information, time ranges etc.
+///////////////////////////////////////////////////////////////////////////////
 function get_view_graph_elements($view) {
 
   global $conf, $index_array;
@@ -790,6 +790,10 @@ function get_view_graph_elements($view) {
 	  if ( isset($item['metric']) ) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	  }
+
+	  if ( isset($item['exclude_host_from_legend_label']) ) {
+	    $graph_args_array[] = "lgnd_xh=" . $item['exclude_host_from_legend_label'];
+	  }
 	  
 	  $graph_args_array[] = "aggregate=1";
 	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array), 
@@ -845,9 +849,9 @@ function get_view_graph_elements($view) {
     break;
     ;;
 
-    ////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // Currently only supports matching hosts.
-    ////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     case "regex":
       foreach ( $view['items'] as $item_id => $item ) {
 	// Is it a metric or a graph(report)
@@ -887,9 +891,56 @@ function get_view_graph_elements($view) {
 
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+function legendEntry($vname, $legend_items) {
+  $legend = "";
+  if (in_array("now", $legend_items))
+    $legend .= "VDEF:{$vname}_last={$vname},LAST ";
+
+  if (in_array("min", $legend_items))
+    $legend .= "VDEF:{$vname}_min={$vname},MINIMUM ";
+
+  if (in_array("avg", $legend_items))
+    $legend .= "VDEF:{$vname}_avg={$vname},AVERAGE ";
+
+  if (in_array("max", $legend_items))
+    $legend .= "VDEF:{$vname}_max={$vname},MAXIMUM ";
+
+  $terminate = FALSE;
+  if (in_array("now", $legend_items)) {
+    $legend .= "GPRINT:'{$vname}_last':'Now\:%5.1lf%s";
+    $terminate = TRUE;
+  }
+
+  if (in_array("min", $legend_items)) {
+    if ($terminate)
+      $legend .= "' ";
+    $legend .= "GPRINT:'{$vname}_min':'Min\:%5.1lf%s";
+    $terminate = TRUE;
+  }
+
+  if (in_array("avg", $legend_items)) {
+    if ($terminate)
+      $legend .= "' ";
+    $legend .= "GPRINT:'{$vname}_avg':'Avg\:%5.1lf%s";
+    $terminate = TRUE;
+  }
+
+  if (in_array("max", $legend_items)) {
+    if ($terminate)
+      $legend .= "' ";
+    $legend .= "GPRINT:'{$vname}_max':'Max\:%5.1lf%s";
+    $terminate = TRUE;
+  }
+  
+  if ($terminate)
+    $legend .= "\\l' ";
+
+  return $legend;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Populate $rrdtool_graph from $config (from JSON file).
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   
   global $context, $hostname, $range, $rrd_dir, $size, $conf;
@@ -900,25 +951,27 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
    
   $title = sanitize( $graph_config[ 'title' ] );
   $rrdtool_graph[ 'title' ] = $title; 
-  // If vertical label is empty or non-existent set it to space otherwise rrdtool will fail
-  if ( ! isset($graph_config[ 'vertical_label' ]) || $graph_config[ 'vertical_label' ] == "" ) {
+  // If vertical label is empty or non-existent set it to space otherwise 
+  // rrdtool will fail
+  if ( ! isset($graph_config[ 'vertical_label' ]) || 
+       $graph_config[ 'vertical_label' ] == "" ) {
      $rrdtool_graph[ 'vertical-label' ] = " ";   
   } else {
-     $rrdtool_graph[ 'vertical-label' ] = sanitize( $graph_config[ 'vertical_label' ] );
+     $rrdtool_graph[ 'vertical-label' ] = 
+       sanitize( $graph_config[ 'vertical_label' ] );
   }
 
-  $rrdtool_graph['lower-limit']    = '0';
+  $rrdtool_graph['lower-limit'] = '0';
   
   if( isset($graph_config['height_adjustment']) ) {
-    $rrdtool_graph['height'] += ($size == 'medium') ? $graph_config['height_adjustment'] : 0;
+    $rrdtool_graph['height'] += 
+      ($size == 'medium') ? $graph_config['height_adjustment'] : 0;
   } else {
     $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
-    if( $conf['graphreport_stats'] ) {
-      $rrdtool_graph['height'] += ($size == 'medium') ? 52 : 0;
-    }
   } 
   
-  // find longest label length, so we pad the others accordingly to get consistent column alignment
+  // find longest label length, so we pad the others accordingly to get 
+  // consistent column alignment
   $max_label_length = 0;
   foreach( $graph_config[ 'series' ] as $item ) {
     $max_label_length = max( strlen( $item[ 'label' ] ), $max_label_length );
@@ -934,7 +987,8 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   // Loop through all the graph items
   foreach( $graph_config[ 'series' ] as $index => $item ) {
      // ignore item if context is not defined in json template
-     if ( isSet($item[ 'contexts' ]) and in_array($context, $item['contexts'])==false )
+     if ( isSet($item[ 'contexts' ]) and 
+          in_array($context, $item['contexts']) == false )
          continue;
 
      $rrd_dir = $conf['rrds'] . "/" . $item['clustername'] . "/" . $item['hostname'];
@@ -951,56 +1005,56 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
      
        $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
 
-       // use custom DS defined in json template if it's defined (default = 'sum')
-       if ( isset($item[ 'ds' ]) ) {
-           $DS = sanitize( $item[ 'ds' ] );
-           $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
-       } else {
-           $series .= " DEF:'$unique_id'='$metric_file':'sum':AVERAGE ";
-       }
+       // use custom DS defined in json template if it's 
+       // defined (default = 'sum')
+       $DS = "sum";
+       if ( isset($item[ 'ds' ]) )
+         $DS = sanitize( $item[ 'ds' ] );
+       $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
 
        // By default graph is a line graph
-       isset( $item['type']) ? $item_type = $item['type'] : $item_type = "line";
+       isset( $item['type']) ? 
+         $item_type = $item['type'] : $item_type = "line";
 
        // TODO sanitize color
        switch ( $item_type ) {
        
          case "line":
            // Make sure it's a recognized line type
-           isset($item['line_width']) && in_array( $item['line_width'], $line_widths) ? $line_width = $item['line_width'] : $line_width = "1";
-           $series .= "LINE" . $line_width . ":'$unique_id'#${item['color']}:'${label}' ";
+           isset($item['line_width']) && 
+           in_array( $item['line_width'], $line_widths) ? 
+             $line_width = $item['line_width'] : $line_width = "1";
+           $series .= "LINE" . 
+                      $line_width . 
+                      ":'$unique_id'#{$item['color']}:'{$label}' ";
            break;
        
          case "stack":
            // First element in a stack has to be AREA
            if ( $stack_counter == 0 ) {
-             $series .= "AREA:'$unique_id'#${item['color']}:'${label}' ";
+             $series .= "AREA";
              $stack_counter++;
            } else {
-             $series .= "STACK:'$unique_id'#${item['color']}:'${label}' ";
+             $series .= "STACK";
            }
+           $series .= ":'$unique_id'#${item['color']}:'${label}' ";
            break;
         } // end of switch ( $item_type )
      
-        if ( $conf['graphreport_stats'] ) {
-          $series .= "VDEF:${unique_id}_last=${unique_id},LAST "
-               . "VDEF:${unique_id}_min=${unique_id},MINIMUM "
-               . "VDEF:${unique_id}_avg=${unique_id},AVERAGE "
-               . "VDEF:${unique_id}_max=${unique_id},MAXIMUM "
-               . "GPRINT:'${unique_id}_last':'Now\:%5.1lf%s' "
-               . "GPRINT:'${unique_id}_min':'Min\:%5.1lf%s' "
-               . "GPRINT:'${unique_id}_avg':'Avg\:%5.1lf%s' "
-               . "GPRINT:'${unique_id}_max':'Max\:%5.1lf%s\\l' ";
-        }
+        if ( $conf['graphreport_stats'] )
+          $series .= legendEntry($unique_id, $conf['graphreport_stat_items']);
+
      } // end of if ( is_file($metric_file) ) {
      
   } // end of foreach( $graph_config[ 'series' ] as $index => $item )
 
-  // If we end up with the empty series it means that no RRD files matched. This can happen
-  // if we are trying to create a report and metrics for this host were not collected. If that
-  // happens we should create an empty graph
+  // If we end up with the empty series it means that no RRD files matched. 
+  // This can happen if we are trying to create a report and metrics for 
+  // this host were not collected. If that happens we should create an 
+  // empty graph
   if ( $series == "" ) 
-    $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"No matching metrics detected"';   
+    $rrdtool_graph[ 'series' ] = 
+      'HRULE:1#FFCC33:"No matching metrics detected"';   
   else
     $rrdtool_graph[ 'series' ] = $series;
   
@@ -1008,9 +1062,9 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   return $rrdtool_graph;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // Graphite graphs
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 function build_graphite_series( $config, $host_cluster = "" ) {
   $targets = array();
   $colors = array();
@@ -1235,7 +1289,11 @@ function ganglia_cache_metrics() {
 //////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////
-function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
+function build_aggregate_graph_config ($graph_type, 
+                                       $line_width, 
+                                       $hreg,
+                                       $mreg,
+                                       $exclude_host_from_legend_label) {
 
   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
   
@@ -1263,19 +1321,25 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
     // Find matching metrics
     foreach ( $mreg as $key => $query ) {
       foreach ( $index_array['metrics'] as $key => $m_name ) {
-        if ( preg_match("/$query/i", $key ) ) {
-          $metric_matches[] = $key;
+        if ( preg_match("/$query/i", $key, $metric_subexpr ) ) {
+          if (isset($metric_subexpr) && count($metric_subexpr) > 1) {
+            $legend = "";
+            for ($i = 1; $i < count($metric_subexpr); $i++)
+              $legend .= $metric_subexpr[$i];
+	    $metric_matches[$key] = $legend;
+          } else
+            $metric_matches[$key] = $key;
         }
       }
     }
-    asort($metric_matches);
+    ksort($metric_matches);
   }
   
   if( isset($metric_matches)){
     $metric_matches_unique = array_unique($metric_matches);
   }
   else{
-    $metric_matches_unique = array($metric_name);
+    $metric_matches_unique = array($metric_name => $metric_name);
   }
 
   if ( isset($matches)) {
@@ -1290,7 +1354,7 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
       $host_name = $out[0];
       $cluster_name = $out[1];
 
-      foreach ( $metric_matches_unique as $key => $m_name ) {
+      foreach ( $metric_matches_unique as $m_name => $legend ) {
 
         // We need to cycle the available colors
         $color_index = $counter % $color_count;
@@ -1300,12 +1364,17 @@ function build_aggregate_graph_config ($graph_type, $line_width, $hreg, $mreg) {
           continue;
 
         $label = '';
-        if ($conf['strip_domainname'] == True )
-          $label = strip_domainname($host_name);
-        else
-          $label = $host_name;
-        if( isset($metric_matches) and sizeof($metric_matches_unique)>1)
-          $label.=" $m_name";
+        if ($exclude_host_from_legend_label) {
+	  $label = $legend;
+        } else {
+          if ($conf['strip_domainname'] == True )
+            $label = strip_domainname($host_name);
+          else
+            $label = $host_name;
+
+ 	  if (isset($metric_matches) and sizeof($metric_matches_unique) > 1)
+            $label .= " $legend";
+	}
 
         $graph_config['series'][] = array ( "hostname" => $host_name , "clustername" => $cluster_name,
           "metric" => $m_name,  "color" => $conf['graph_colors'][$color_index], "label" => $label, "line_width" => $line_width, "type" => $graph_type);
