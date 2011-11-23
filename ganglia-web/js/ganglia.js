@@ -46,7 +46,7 @@ $(function(){
       } else 
 	qs.REMOVE('vn');
 	
-      
+      // Also special processing for compare hosts
       if (ui.index == 4) {
         if (qs.get('ch') == '') {
           qs.SET('ch', 1);
