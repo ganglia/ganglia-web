@@ -18,7 +18,7 @@ $(function(){
           //alert("ganglia-selected-tab: " + tab_index);
           tabs.tabs("select", tab_index);
           switch (tab_index) {
-            case 3:
+            case 4:
               autoRotationChooser();
               break;
           }
@@ -36,6 +36,16 @@ $(function(){
     tabs.bind("tabsselect", function(event, ui) {
       // Store selected tab in a session cookie
       $.cookie("ganglia-selected-tab-" + window.name, ui.index);
+      // Special processing for Views tab selection
+      var qs = $.query.load(window.location.href);
+      if (ui.index == 2) {
+        if (qs.get('vn') == '') {
+          var view_name = $.cookie('ganglia-selected-view-' + window.name);
+          qs.SET('vn', (view_name != null && view_name != '') ? view_name : '');
+        }
+      } else
+	qs.REMOVE('vn');
+      document.location.search = qs.toString(); 
     });
   }
 
@@ -63,16 +73,17 @@ $(function(){
 
   var datepicker_cs = $( "#datepicker-cs" );
   if (datepicker_cs[0])
-    datepicker_cs.datepicker({
+    datepicker_cs.datetimepicker({
 	  showOn: "button",
 	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
 	  buttonImageOnly: true
     });
 
+  $( "#datepicker-cs").datetimepicker();
   var datepicker_ce = $( "#datepicker-ce" );
   if (datepicker_ce[0])
-    datepicker_ce.datepicker({
+    datepicker_ce.datetimepicker({
 	  showOn: "button",
 	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
@@ -112,27 +123,21 @@ function viewId(view_name) {
 }
 
 function highlightSelectedView(view_name) {
-  $("#navlist a").css('background-color', '#FFFFFF');	
-  $("#" + viewId(view_name)).css('background-color', 'rgb(238,238,238)');
+  if (view_name != null && view_name != '') {
+    $("#navlist a").css('background-color', '#FFFFFF');	
+    $("#" + viewId(view_name)).css('background-color', 'rgb(238,238,238)');
+  }
 }
 
 function selectView(view_name) {
   highlightSelectedView(view_name);
+  $('#vn').val(view_name);
   $.cookie('ganglia-selected-view-' + window.name, view_name);
-  var cs = $.cookie('ganglia-view-cs-' + window.name); 
-  var ce = $.cookie('ganglia-view-ce-' + window.name); 
-  if (cs != null && cs != '' && ce != null && ce != '') {
-    alert(cs + ", " + ce);
-    getViewsContentJustGraphs(view_name, '', cs, ce);
-  } else {
-    var range = $.cookie('ganglia-view-range-' + window.name);
-    if (range == null)
-      range = '1hour';
-    getViewsContentJustGraphs(view_name, range, '', '');
-  }
+  ganglia_form.submit();
 }
 
 function getViewsContent() {
+  alert("getViewsContent");
   $.get('views.php', "" , function(data) {
     $("#tabs-views-content").html('<img src="img/spinner.gif">');
     $("#tabs-views-content").html(data);

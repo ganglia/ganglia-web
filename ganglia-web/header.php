@@ -147,125 +147,110 @@ $data->assign("alt_view", $alt_view);
 # Build the node_menu
 $node_menu = "";
 
-if ($parentgrid)
-   {
-      $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">".
-         "$parentgrid $meta_designator</A></B> ";
-      $node_menu .= "<B>&gt;</B>\n";
-   }
+if ($context != "views") {
+  if ($parentgrid) {
+    $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">". "$parentgrid $meta_designator</A></B> ";
+    $node_menu .= "<B>&gt;</B>\n";
+ }
 
-# Show grid.
-$mygrid = ($self == "unspecified") ? "" : $self;
-$node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
-$node_menu .= "<B>&gt;</B>\n";
+  # Show grid.
+  $mygrid = ($self == "unspecified") ? "" : $self;
+  $node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
+  $node_menu .= "<B>&gt;</B>\n";
 
-if ($physical)
-   $node_menu .= hiddenvar("p", $physical);
+  if ($physical)
+    $node_menu .= hiddenvar("p", $physical);
 
-//////////////////////////////////////////////////////////////////////////////
-// Cluster name has been specified. It comes right after
-// Grid >
-//////////////////////////////////////////////////////////////////////////////
-if ( $clustername ) {
-   $url = rawurlencode($clustername);
-   $node_menu .= "<b><a href=\"./?c=$url&amp;$get_metric_string\">$clustername</a></b> ";
-   $node_menu .= "<b>&gt;</b>\n";
-   $node_menu .= hiddenvar("c", $clustername);
-} else if ( $viewname ) {
-   $url = "Views";
-   $node_menu .= "<b><a href=\"./?vn=default&amp;$get_metric_string\">Views</a></b> ";
-   $node_menu .= "<b>&gt;</b>\n";
-} else if ( $context == "decompose_graph" ) {
-   $node_menu .= '<input type="hidden" name="dg" value="1">';
-   $node_menu .= "Decompose Graph";
-} else if ( $context == "compare_hosts") { 
-   $node_menu .= '<input type="hidden" name="ch" value="1">';
-   $node_menu .= "Compare Hosts";
-}  else {
-   # No cluster has been specified, so drop in a list
-   $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
-   $node_menu .= "<option value=\"\">--Choose a Source\n";
-   ksort($grid);
-   foreach( $grid as $k => $v )
-      {
-         if ($k==$self) continue;
-         if (isset($v['GRID']) and $v['GRID'])
-            {
-               $url = $v['AUTHORITY'];
-               $node_menu .="<OPTION VALUE=\"$url\">$k $meta_designator\n";
-            }
-         else
-            {
-               $url = rawurlencode($k);
-               $node_menu .="<OPTION VALUE=\"$url\">$k\n";
-            }
+  /////////////////////////////////////////////////////////////////////////////
+  // Cluster name has been specified. It comes right after
+  // Grid >
+  /////////////////////////////////////////////////////////////////////////////
+  if ( $clustername ) {
+    $url = rawurlencode($clustername);
+    $node_menu .= "<b><a href=\"./?c=$url&amp;$get_metric_string\">$clustername</a></b> ";
+    $node_menu .= "<b>&gt;</b>\n";
+    $node_menu .= hiddenvar("c", $clustername);
+  } else if ( $viewname ) {
+    $url = "Views";
+    $node_menu .= "<b><a href=\"./?vn=default&amp;$get_metric_string\">Views</a></b> ";
+    $node_menu .= "<b>&gt;</b>\n";
+  } else if ( $context == "decompose_graph" ) {
+    $node_menu .= '<input type="hidden" name="dg" value="1">';
+    $node_menu .= "Decompose Graph";
+  } else if ( $context == "compare_hosts") { 
+    $node_menu .= '<input type="hidden" name="ch" value="1">';
+    $node_menu .= "Compare Hosts";
+  }  else {
+    # No cluster has been specified, so drop in a list
+    $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
+    $node_menu .= "<option value=\"\">--Choose a Source\n";
+    ksort($grid);
+    foreach ( $grid as $k => $v ) {
+      if ($k==$self) continue;
+      if (isset($v['GRID']) and $v['GRID']) {
+        $url = $v['AUTHORITY'];
+        $node_menu .="<OPTION VALUE=\"$url\">$k $meta_designator\n";
+      } else {
+        $url = rawurlencode($k);
+        $node_menu .="<OPTION VALUE=\"$url\">$k\n";
       }
-   $node_menu .= "</select>\n";
-}
+    }
+    $node_menu .= "</select>\n";
+  }
 
-if ( $context == "views" ) {
-   
-   $node_menu .= "<select name=\"vn\" OnChange=\"ganglia_form.submit();\">";
-   $node_menu .= "<option value=\"\">--Choose a View</option>";
+  if ( $context == "views" ) { 
+    $node_menu .= "<select name=\"vn\" OnChange=\"ganglia_form.submit();\">";
+    $node_menu .= "<option value=\"\">--Choose a View</option>";
 
-   $available_views = get_available_views();
+    $available_views = get_available_views();
 
-   foreach ( $available_views as $index => $view ) {
+    foreach ( $available_views as $index => $view ) {
       $extra_options = ($viewname == $view["view_name"]) ? "selected" : "";
       $node_menu .= "<option value=\"" . $view["view_name"] . "\" $extra_options >" . $view['view_name'] . "</option>";
       unset($extra_options);
    }
    
-   $node_menu .= "</select>";
-   
-}
+   $node_menu .= "</select>";   
+  }
 
-/////////////////////////////////////////////////////////////////////////////////
-// We are in the cluster view pop up a list box of nodes
-/////////////////////////////////////////////////////////////////////////////////
-if ( $clustername && !$hostname ) {
-   # Drop in a host list if we have hosts
-   if (!$showhosts) {
-         $node_menu .= "[Summary Only]";
-   }
-   elseif (is_array($hosts_up) || is_array($hosts_down))
-      {
-         $node_menu .= "<select name=\"h\" OnChange=\"ganglia_form.submit();\">";
-         $node_menu .= "<option value=\"\">--Choose a Node</option>";
-         if(is_array($hosts_up))
-            {
-               uksort($hosts_up, "strnatcmp");
-               foreach($hosts_up as $k=> $v)
-                  {
-                     $url = rawurlencode($k);
-                     $node_menu .= "<option value=\"$url\">$k\n";
-                  }
-            }
-         if(is_array($hosts_down))
-            {
-               uksort($hosts_down, "strnatcmp");
-               foreach($hosts_down as $k=> $v)
-                  {
-                     $url = rawurlencode($k);
-                     $node_menu .= "<option value=\"$url\">$k\n";
-                  }
-            }
-         $node_menu .= "</select>\n";
+  /////////////////////////////////////////////////////////////////////////////
+  // We are in the cluster view pop up a list box of nodes
+  /////////////////////////////////////////////////////////////////////////////
+  if ( $clustername && !$hostname ) {
+    # Drop in a host list if we have hosts
+    if (!$showhosts) {
+      $node_menu .= "[Summary Only]";
+    } elseif (is_array($hosts_up) || is_array($hosts_down)) {
+      $node_menu .= "<select name=\"h\" OnChange=\"ganglia_form.submit();\">";
+      $node_menu .= "<option value=\"\">--Choose a Node</option>";
+      if (is_array($hosts_up)) {
+        uksort($hosts_up, "strnatcmp");
+        foreach ($hosts_up as $k=> $v) {
+          $url = rawurlencode($k);
+          $node_menu .= "<option value=\"$url\">$k\n";
+        }
       }
-   else
-      {
-         $node_menu .= "<B>No Hosts</B>\n";
+      if (is_array($hosts_down)) {
+        uksort($hosts_down, "strnatcmp");
+        foreach ($hosts_down as $k=> $v) {
+          $url = rawurlencode($k);
+          $node_menu .= "<option value=\"$url\">$k\n";
+        }
       }
-} else {
-   $node_menu .= "<B>$hostname</B>\n";
-   $node_menu .= hiddenvar("h", $hostname);
+      $node_menu .= "</select>\n";
+    } else {
+      $node_menu .= "<B>No Hosts</B>\n";
+    }
+  } else {
+    $node_menu .= "<B>$hostname</B>\n";
+    $node_menu .= hiddenvar("h", $hostname);
+  }
+
+  # Save other CGI variables
+  $node_menu .= hiddenvar("cr", $controlroom);
+  $node_menu .= hiddenvar("js", $jobstart);
+  $node_menu .= hiddenvar("jr", $jobrange);
 }
-
-# Save other CGI variables
-$node_menu .= hiddenvar("cr", $controlroom);
-$node_menu .= hiddenvar("js", $jobstart);
-$node_menu .= hiddenvar("jr", $jobrange);
-
 $data->assign("node_menu", $node_menu);
 
 
