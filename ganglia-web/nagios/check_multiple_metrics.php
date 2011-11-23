@@ -109,6 +109,7 @@ if ( $host_found == 1 ) {
      $metric_value = $metrics[$fqdn][$metric_name]['VAL'];
    } else {
      $results_notok[] =  "UNKNOWN " . $metric_name . " not found";
+     continue;
    }
    
    $ganglia_units = $metrics[$fqdn][$metric_name]['UNITS'];
