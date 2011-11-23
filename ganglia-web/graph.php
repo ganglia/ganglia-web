@@ -292,11 +292,10 @@ switch ( $conf['graph_engine'] ) {
       if( is_file( $php_report_file ) ) {
         include_once $php_report_file;
         $graph_function = "graph_${graph}";
-        if (isset($graph_arguments)) {
+        if (isset($graph_arguments))
           eval('$graph_function($rrdtool_graph,' . $graph_arguments . ');');
-        } else
+        else
           $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
-        }
       } else if ( is_file( $json_report_file ) ) {
         $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
 
