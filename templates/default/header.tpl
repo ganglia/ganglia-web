@@ -111,6 +111,7 @@
   <li><a href="#tabs-search">Search</a></li>
   <li><a href="#tabs-main">Views</a></li>
   <li><a href="aggregate_graphs.php">Aggregate Graphs</a></li>
+  <li><a href="#tabs-main">Compare Hosts</a></li>
 {if $overlay_events}
   <li><a href="events.php">Events</a></li>
 {/if}
