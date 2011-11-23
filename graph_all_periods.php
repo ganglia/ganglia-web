@@ -8,6 +8,10 @@
   margin: 0 0 10px 10px;
 }
 </style>
+<div id="enlarge-graph-dialog" style="display: none" title="Inspect Graph">
+  <div id="enlarge-graph-dialog-content">
+  </div>
+</div>
 <?php
 if ( ! isset($_GET['embed'] ) ) {
 ?>
@@ -18,11 +22,16 @@ if ( ! isset($_GET['embed'] ) ) {
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
-<div id="metric-actions-dialog" title="Metric Actions">
+<div id="metric-actions-dialog" style="display: none" title="Metric Actions">
 <div id="metric-actions-dialog-content">
 	Available Metric actions.
 </div>
 </div>
+<script>
+  $(function() {
+    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+  });
+</script>
 <?php
 } // end of if ( ! isset($_GET['embed'] ) ) {
 
@@ -134,7 +143,8 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
    <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' .$query_string . '\'); return false;">+</button>
    ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
-  '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a>' .
+  '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a> ' .
+  '<button title="Inspect Graph" onClick="enlargeGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
@@ -156,5 +166,11 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 // will start looking goofy
 ?>
 <div style="clear: left"></div>
+<script>
+  $(function() {
+    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+  });
+</script>
+
 </body>
 </html>
