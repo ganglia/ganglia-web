@@ -23,19 +23,6 @@
 <table border="0" width="100%">
 
 <tr>
-  <td class="cluster" colspan="3">
-    <a href="?vn=default&r=hour"><strong>Views</strong></a> {$source.alt_view}
-  </td>
-</tr>
-<tr>
-<td colspan="3">&nbsp;</td>
-</tr>
-<tr>
-  <td class="cluster" colspan="3">
-    <a href="?ch=1&r=hour"><strong>Compare hosts</strong></a> {$source.alt_view}
-  </td>
-</tr>
-<tr>
 <td colspan="3">&nbsp;</td>
 </tr>
 

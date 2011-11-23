@@ -5,17 +5,17 @@
 <title>Ganglia:: {$page_title}</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <meta http-equiv="refresh" content="{$refresh}">
-<script type="text/javascript"  src="js/jquery-1.6.2.min.js"></script>
-<script type="text/javascript"  src="js/jquery-ui-1.8.14.custom.min.js"></script>
-<script type="text/javascript"  src="js/jquery.liveSearch.js"></script>
-<script type="text/javascript"  src="js/ganglia.js"></script>
-<script type="text/javascript"  src="js/jquery.gangZoom.js"></script>
-<script type="text/javascript"  src="js/jquery.cookie.js"></script>
-<script type="text/javascript"  src="js/jquery.query-2.1.7.js"></script>
-<script type="text/javascript"  src="js/jquery-ui-timepicker-addon.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <link type="text/css" href="./styles.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery.liveSearch.js"></script>
+<script type="text/javascript" src="js/ganglia.js"></script>
+<script type="text/javascript" src="js/jquery.gangZoom.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/jquery.query-2.1.7.js"></script>
+<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var availablemetrics = [ {$available_metrics} ];
@@ -111,6 +111,7 @@
   <li><a href="#tabs-search">Search</a></li>
   <li><a href="#tabs-main">Views</a></li>
   <li><a href="aggregate_graphs.php">Aggregate Graphs</a></li>
+  <li><a href="#tabs-main">Compare Hosts</a></li>
 {if $overlay_events}
   <li><a href="events.php">Events</a></li>
 {/if}
