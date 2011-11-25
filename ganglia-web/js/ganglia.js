@@ -41,7 +41,9 @@ $(function(){
       if (ui.index == 2) {
         if (qs.get('vn') == '') {
           var view_name = $.cookie('ganglia-selected-view-' + window.name);
-          qs.SET('vn', (view_name != null && view_name != '') ? view_name : "default");
+          qs.SET('vn',
+                 (view_name != null && view_name != '') ? 
+                    view_name : "default");
         }
       } else 
 	qs.REMOVE('vn');
@@ -59,10 +61,10 @@ $(function(){
     });
   }
 
-  var range_menu = $( "#range_menu" );
+  var range_menu = $("#range_menu");
   if (range_menu[0])
     range_menu.buttonset();
-  var sort_menu = $( "#sort_menu" );
+  var sort_menu = $("#sort_menu");
   if (sort_menu[0])
     sort_menu.buttonset();
 
@@ -70,7 +72,7 @@ $(function(){
   if (metric_search_input[0])
     metric_search_input.liveSearch({url: 'search.php?q=', typeDelay: 500});
 
-  var search_field_q = $( "#search-field-q");
+  var search_field_q = $("#search-field-q");
   if (search_field_q[0]) {
     search_field_q.keyup(function() {
       $.cookie("ganglia-search-field-q" + window.name, $(this).val());
@@ -108,13 +110,19 @@ $(function(){
       width: 350,
       modal: true,
       close: function() {
-        getViewsContent();
         $("#create-new-view-layer").toggle();
         $("#create-new-view-confirmation-layer").html("");
+        $.get('views_view.php?views_menu=1',
+              function(data) {
+	        $("#views_menu").html(data);
+                var vn = selectedView();
+                if (vn != null)
+                  highlightSelectedView(vn);
+              });
       }
     });
 
-  var metric_actions_dialog = $( "#metric-actions-dialog" );
+  var metric_actions_dialog = $("#metric-actions-dialog");
   if (metric_actions_dialog[0]) 
     metric_actions_dialog.dialog({
       autoOpen: false,
@@ -146,92 +154,14 @@ function selectView(view_name) {
   ganglia_form.submit();
 }
 
-function getViewsContent() {
-  alert("getViewsContent");
-  $.get('views.php', "" , function(data) {
-    $("#tabs-views-content").html('<img src="img/spinner.gif">');
-    $("#tabs-views-content").html(data);
-/*
-    $("#tabs-views-content").html(
-      '<div class="ui-widget">' +
-        '<div class="ui-state-default ui-corner-all" style="padding: 0 .7em;">
-          '<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>' +
-        '</div>' +
-      '</div>'
-    );
-*/
-
-    $("#create_view_button")
-      .button()
-      .click(function() {
-	$( "#create-new-view-dialog" ).dialog( "open" );
-      });;
-    $( "#view_range_chooser" ).buttonset();
-
-    // Restore previously selected time range
-    var cs = $.cookie("ganglia-view-cs-" + window.name);
-    if (cs != null && cs != '')
-      $("#view-cs").val(cs);
-    else
-      cs = null;
-
-    var ce = $.cookie("ganglia-view-ce-" + window.name);
-    if (ce != null && ce == '')
-      $("#view-ce").val(ce);
-    else
-      ce = null;
-
-    var range = null;
-    if (cs == null && ce == null) {
-      range = $.cookie("ganglia-view-range-" + window.name);
-      if (range == null)
-        range = "hour";
-    }
-
-    // Restore previously selected view
-    var view_name = document.getElementById('view_name');
-    var selected_view = $.cookie("ganglia-selected-view-" + window.name);
-    if (selected_view != null) {
-        view_name.value = selected_view;
-      	var cs = $.cookie("ganglia-view-cs-" + window.name);
-        if (cs != null && cs == '')
-          cs = null;
-      	var ce = $.cookie("ganglia-view-ce-" + window.name);
-        if (ce != null && ce == '')
-          ce = null;
-        if (cs != null || ce != null) {
-          if (cs != null)
-            $("#view-cs").val(cs);
-          if (ce != null)
-            $("#view-ce").val(ce);
-          if (cs != null && ce != null)
-	    $("#view-custom-go").click();
-        } else {
-	  var range = $.cookie("ganglia-view-range-" + window.name);
-	  if (range == null)
-          range = "hour";
-	  $("#view-range-"+range).click();
-        }
-    } else
-      view_name.value = "default";
-    highlightSelectedView(view_name.value);
-  });
-  return false;
-}
-
-// This one avoids 
-function getViewsContentJustGraphs(viewName,range, cs, ce) {
-    $("#view_graphs").html('<img src="img/spinner.gif">');
-    $.get('views.php', "view_name=" + viewName + "&just_graphs=1&r=" + range + "&cs=" + cs + "&ce=" + ce, function(data) {
-	$("#view_graphs").html(data);
-	document.getElementById('view_name').value = viewName;
-     });
-    return false;
+function selectedView() {
+  var vn = $.cookie('ganglia-selected-view-' + window.name);
+  return (vn == null || vn == '') ? null : vn;
 }
 
 function createView() {
   $("#create-new-view-confirmation-layer").html('<img src="img/spinner.gif">');
-  $.get('views.php', $("#create_view_form").serialize() , function(data) {
+  $.get('views_view.php', $("#create_view_form").serialize() , function(data) {
     $("#create-new-view-layer").toggle();
     $("#create-new-view-confirmation-layer").html(data);
   });
@@ -239,48 +169,47 @@ function createView() {
 }
 
 function addItemToView() {
-  $.get('views.php', $("#add_metric_to_view_form").serialize() + "&add_to_view=1" , function(data) {
-      $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
-      $("#metric-actions-dialog-content").html(data);
-  });
+  $.get('views_view.php', 
+        $("#add_metric_to_view_form").serialize() + "&add_to_view=1", 
+        function(data) {$("#metric-actions-dialog-content").html(data);});
   return false;  
 }
 function metricActions(host_name,metric_name,type,graphargs) {
     $( "#metric-actions-dialog" ).dialog( "open" );
     $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
-    $.get('actions.php', "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type + graphargs, function(data) {
-      $("#metric-actions-dialog-content").html(data);
-     });
+    $.get('actions.php',
+          "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type + graphargs, 
+          function(data) {$("#metric-actions-dialog-content").html(data);});
     return false;
 }
 
 function createAggregateGraph() {
-  if ( $('#hreg').val() == "" ||  $('#metric_chooser').val() == "" ) {
+  if ($('#hreg').val() == "" || $('#metric_chooser').val() == "") {
       alert("Host regular expression and metric name can't be blank");
       return false;
   }
   $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-  $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1&embed=1" , function(data) {
-    $("#aggregate_graph_display").html(data);
-  });
+  $.get('graph_all_periods.php', 
+        $("#aggregate_graph_form").serialize() + "&aggregate=1&embed=1", 
+        function(data) {$("#aggregate_graph_display").html(data);});
   return false;
 }
 
 function metricActionsAggregateGraph(args) {
-    $( "#metric-actions-dialog" ).dialog( "open" );
-    $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
-    $.get('actions.php', "action=show_views" + args, function(data) {
-      $("#metric-actions-dialog-content").html(data);
-     });
+  $("#metric-actions-dialog").dialog("open");
+  $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
+  $.get('actions.php', 
+        "action=show_views" + args, 
+        function(data) {$("#metric-actions-dialog-content").html(data);});
     return false;
 }
 
 
 function autoRotationChooser() {
   $("#tabs-autorotation-chooser").html('<img src="img/spinner.gif">');
-  $.get('autorotation.php', "" , function(data) {
-      $("#tabs-autorotation-chooser").html(data);
-  });
+  $.get('autorotation.php', 
+        "", 
+        function(data) {$("#tabs-autorotation-chooser").html(data);});
 }
 function updateViewTimeRange() {
   alert("Not implemented yet");
@@ -293,24 +222,16 @@ function ganglia_submit(clearonly) {
     document.ganglia_form.submit();
 }
 
-function detachViews() {
-  var selected_view = $.cookie("ganglia-selected-view-" + window.name);
-  var href = "views.php?standalone=1";
-  if (selected_view != null)
-    href += "&view_name=" + encodeURIComponent(selected_view);
-  location.href = href;
-}
-
 /* ----------------------------------------------------------------------------
  Enlarges a graph using Flot
 -----------------------------------------------------------------------------*/
 function enlargeGraph(graphArgs) {
   $("#enlarge-graph-dialog").dialog('open');
-  $("#enlarge-graph-dialog").bind( "dialogbeforeclose", function(event, ui) {
-    $("#enlargeTooltip").remove();
-  });
+  $("#enlarge-graph-dialog").bind("dialogbeforeclose", 
+                                  function(event, ui) {
+                                    $("#enlargeTooltip").remove();});
 //  $('#enlarge-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
-  $.get('inspect_graph.php', "flot=1&" + graphArgs, function(data) {
-    $('#enlarge-graph-dialog-content').html(data);
-  })
+  $.get('inspect_graph.php',
+        "flot=1&" + graphArgs, 
+        function(data) {$('#enlarge-graph-dialog-content').html(data);})
 }
