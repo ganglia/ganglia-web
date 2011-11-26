@@ -15,7 +15,7 @@
 <?php
 if ( ! isset($_GET['embed'] ) ) {
 ?>
-<script TYPE="text/javascript" SRC="js/jquery-1.6.2.min.js"></script>
+<script TYPE="text/javascript" SRC="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.liveSearch.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
