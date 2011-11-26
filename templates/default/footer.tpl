@@ -31,6 +31,8 @@
   <div id="create-new-view-confirmation-layer"></div>
 </div>
 
+<div id="tabs-mobile"></div>
+
 <div id="tabs-autorotation">
 Invoke automatic rotation system. Automatic rotation rotates all of the graphs/metrics specified in a view waiting 
 30 seconds in between each. This will run as long as you have this page open.
