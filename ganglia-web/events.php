@@ -74,19 +74,21 @@ $events_json = file_get_contents($conf['overlay_events_file']);
 
 $events_array = json_decode($events_json, TRUE);
 
-usort($events_array, 'start_time_cmp');
+if (sizeof($events_array) > 0) {
+  usort($events_array, 'start_time_cmp');
 
-foreach ( $events_array as $id => $event ) {
-  $description = isset($event['description']) ? $event['description'] : "";
-  $end_time = isset($event['end_time']) ? date("Y-m-d H:i:s", $event['end_time']) : "";
-  print "<tr><td>" . date("Y-m-d H:i:s", $event['start_time']) . "</td>" .
-    "<td>" . $end_time . "</td>" .
-    "<td>" . $event['summary'] . "</td>" .
-    "<td>" . $description . "</td>" .
-    "<td>" . $event['grid'] . "</td>" .
-    "<td>" . $event['cluster'] . "</td>" .
-    "<td>" . $event['host_regex'] . "</td>" .
-    "</tr>";
+  foreach ( $events_array as $id => $event ) {
+    $description = isset($event['description']) ? $event['description'] : "";
+    $end_time = isset($event['end_time']) ? date("Y-m-d H:i:s", $event['end_time']) : "";
+    print "<tr><td>" . date("Y-m-d H:i:s", $event['start_time']) . "</td>" .
+      "<td>" . $end_time . "</td>" .
+      "<td>" . $event['summary'] . "</td>" .
+      "<td>" . $description . "</td>" .
+      "<td>" . $event['grid'] . "</td>" .
+      "<td>" . $event['cluster'] . "</td>" .
+      "<td>" . $event['host_regex'] . "</td>" .
+      "</tr>";
+  }
 }
 ?>
 </table>
