@@ -116,7 +116,7 @@
   <li><a href="events.php">Events</a></li>
 {/if}
   <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
-  <li><a href="#mobile" onclick="location.href='mobile.php';">Mobile</a></li>
+  <li><a href="#tabs-mobile" onclick="window.location.href='mobile.php';">Mobile</a></li>
 </ul>
 
 <div id="tabs-main">
