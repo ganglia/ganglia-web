@@ -19,6 +19,25 @@ $user['gridname'] = isset($_GET["G"]) ?
 $user['viewname'] = isset($_GET["vn"]) ?
     escapeshellcmd( clean_string( rawurldecode($_GET["vn"]) ) ) : NULL;
 
+if ($user['viewname'] == NULL) {
+  if (isset($_COOKIE['ganglia-window-name'])) {
+    $wn = $_COOKIE['ganglia-window-name'];
+    //error_log("window name = $wn");
+    if (isset($_COOKIE["ganglia-selected-tab-{$wn}"])) {
+      $tab_num = $_COOKIE["ganglia-selected-tab-{$wn}"];
+      //error_log("selected tab = $tab_num");
+      if ($tab_num == 2)  { // View tab is selected
+        if (isset($_COOKIE["ganglia-selected-view-{$wn}"])) {
+          $vn = $_COOKIE["ganglia-selected-view-{$wn}"];
+          //error_log("selected view = $vn");
+          $user['viewname'] = escapeshellcmd(clean_string(rawurldecode($vn)));
+	} else
+	  $user['viewname'] = '';
+      }
+    }
+  } 
+}
+
 if($conf['case_sensitive_hostnames'] == 1) {
     $user['hostname'] = isset($_GET["h"]) ?
         escapeshellcmd( clean_string( rawurldecode($_GET["h"]) ) ) : NULL;
@@ -87,8 +106,20 @@ if ( isset($_GET['max_graphs']) && is_numeric($_GET['max_graphs'] ) )
   $user['max_graphs'] = $_GET['max_graphs'];
 
 /////////////////////////////////////////////////////////////////////////////
-// 
+ 
 $user['compare_hosts'] = isset($_GET["ch"]) ? 1 : NULL;
+if ($user['compare_hosts'] == NULL) {
+  if (isset($_COOKIE['ganglia-window-name'])) {
+    $wn = $_COOKIE['ganglia-window-name'];
+    //error_log("window name = $wn");
+    if (isset($_COOKIE["ganglia-selected-tab-{$wn}"])) {
+      $tab_num = $_COOKIE["ganglia-selected-tab-{$wn}"];
+      //error_log("selected tab = $tab_num");
+      if ($tab_num == 4)
+        $user['compare_hosts'] = 1;
+    }
+  } 
+}
 
 $user['decompose_graph'] = isset($_GET["dg"]) ? 1 : NULL;
 

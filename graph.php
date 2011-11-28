@@ -118,8 +118,7 @@ switch ($context)
           $title = $raw_host;
     break;
   default:
-    $title = $clustername;
-    exit;
+    break;
 }
 
 

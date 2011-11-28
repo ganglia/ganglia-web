@@ -146,7 +146,7 @@ $data->assign("alt_view", $alt_view);
 
 # Build the node_menu
 $node_menu = "";
-if ($context != "views") {
+if (($context != 'views') && ($context != 'compare_hosts')) {
   if ($parentgrid) {
     $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">". "$parentgrid $meta_designator</A></B> ";
     $node_menu .= "<B>&gt;</B>\n";
@@ -172,9 +172,6 @@ if ($context != "views") {
   } else if ($context == "decompose_graph") {
     $node_menu .= '<input type="hidden" name="dg" value="1">';
     $node_menu .= "Decompose Graph";
-  } else if ($context == "compare_hosts") { 
-    $node_menu .= '<input type="hidden" name="ch" value="1">';
-    $node_menu .= "Compare Hosts";
   }  else {
     # No cluster has been specified, so drop in a list
     $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
