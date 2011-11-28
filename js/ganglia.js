@@ -5,6 +5,13 @@ $(function(){
     window.name = d.getTime();
   }
 
+  g_overlay_events = ($("#overlay_events").val() == "true");
+  g_tabName = ["m", "s", "v", "agg", "ch"];
+  if (g_overlay_events)
+    g_tabName.push("ev");
+  g_tabName.push("rot");
+  g_tabName.push("mob");
+
   // Follow tab's URL instead of loading its content via ajax
   var tabs = $("#tabs");
   if (tabs[0]) {
@@ -17,11 +24,8 @@ $(function(){
         if (!isNaN(tab_index) && (tab_index >= 0)) {
           //alert("ganglia-selected-tab: " + tab_index);
           tabs.tabs("select", tab_index);
-          switch (tab_index) {
-            case 4:
-              autoRotationChooser();
-              break;
-          }
+          if (g_tabName[tab_index] == "rot")
+            autoRotationChooser();
         }
       } catch (err) {
         try {
@@ -34,9 +38,8 @@ $(function(){
     }
 
     tabs.bind("tabsselect", function(event, ui) {
-      // Store selected tab in a session cookie
+      $("#selected_tab").val(g_tabName[ui.index]);
       $.cookie("ganglia-selected-tab-" + window.name, ui.index);
-      $.cookie("ganglia-window-name", window.name);
       if (ui.index == 0 ||
           ui.index == 2 ||
           ui.index == 4)
@@ -133,6 +136,7 @@ function highlightSelectedView(view_name) {
 function selectView(view_name) {
   highlightSelectedView(view_name);
   $.cookie('ganglia-selected-view-' + window.name, view_name);
+  $("#vn").val(view_name);
   ganglia_form.submit();
 }
 
