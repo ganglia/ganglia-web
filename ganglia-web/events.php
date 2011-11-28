@@ -79,8 +79,8 @@ if (sizeof($events_array) > 0) {
 
   foreach ( $events_array as $id => $event ) {
     $description = isset($event['description']) ? $event['description'] : "";
-    $end_time = isset($event['end_time']) ? date("Y-m-d H:i:s", $event['end_time']) : "";
-    print "<tr><td>" . date("Y-m-d H:i:s", $event['start_time']) . "</td>" .
+    $end_time = isset($event['end_time']) ? date("Y/m/d H:i", $event['end_time']) : "";
+    print "<tr><td>" . date("Y/m/d H:i", $event['start_time']) . "</td>" .
       "<td>" . $end_time . "</td>" .
       "<td>" . $event['summary'] . "</td>" .
       "<td>" . $description . "</td>" .

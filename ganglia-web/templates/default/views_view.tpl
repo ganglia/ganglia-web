@@ -64,4 +64,4 @@
 </td>
 </tr>
 </table>
-<input type='hidden' name='vn' id='vn' value='{$view_name}'>
+
