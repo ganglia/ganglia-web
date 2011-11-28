@@ -18,7 +18,7 @@
 #
 #  Example would be
 #
-#  ?host=mytestserver.com&checks=disk_rootfs,more,10:disk_tmp,more,20
+#  ?hreg=apache\tomcat&checks=disk_rootfs,more,10:disk_tmp,more,20
 #
 ##########################################################################################
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
@@ -28,12 +28,12 @@ include_once $conf['ganglia_dir'] . "/eval_conf.php";
 # To turn on debug set to 1
 $debug = 0;
 
-if ( isset($_GET['host']) && isset($_GET['checks']) ) {
-   $host = $_GET['host'];
+if ( isset($_GET['hreg']) && isset($_GET['checks']) ) {
+   $host_reg = $_GET['hreg'];
    # Checks are : delimited
    $checks = explode(":", $_GET['checks']);
 } else {
-   die("You need to supply host and list of checks");
+   die("You need to supply hreg (host regex) and list of checks of format metrics,operator,critical value. Multiple checks can be supplied separated using a colon");
 }
 global $metrics;
 
@@ -77,62 +77,54 @@ if ( ! is_array( $metrics ) ) {
 
 # Get a list of all hosts
 $ganglia_hosts_array = array_keys($metrics);
-$host_found = 0;
 
-# Find a FQDN of a supplied server name.
-for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
- if ( strpos(  $ganglia_hosts_array[$i], $host ) !== false  ) {
- $fqdn = $ganglia_hosts_array[$i];
- $host_found = 1;
- break;
- }
-}
+$results_ok = array();
+$results_notok = array();
 
-# Host has been found in the Ganglia tree
-if ( $host_found == 1 ) {
-   
-  $results_ok = array();
-  $results_notok = array();
-   
-  # Loop through all the checks
-  foreach ( $checks as $index => $check ) {
+# Loop through all hosts looking for matches
+foreach ( $ganglia_hosts_array as $index => $hostname ) {
 
-   # Separate check into it's pieces
-   $pieces = explode(",", $check);
-   $metric_name = $pieces[0];
-   $operator = $pieces[1];
-   $critical_value = $pieces[2];
-   unset($pieces);
+   # Find matching hosts and make sure they are alive
+   if ( preg_match("/" . $host_reg  .  "/", $hostname) && ( time() - $metrics[$hostname]['last_reported_timestamp']['VAL']) < 60) {
+
+      # Loop through all the checks
+      foreach ( $checks as $index => $check ) {
    
-   # Check for the existence of a metric
-   if ( isset($metrics[$fqdn][$metric_name]['VAL']) ) {
-     $metric_value = $metrics[$fqdn][$metric_name]['VAL'];
-   } else {
-     $results_notok[] =  "UNKNOWN " . $metric_name . " not found";
-     continue;
-   }
-   
-   $ganglia_units = $metrics[$fqdn][$metric_name]['UNITS'];
-   
-   if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
-      $results_ok[] =  "OK " . $metric_name . " = " . $metric_value . " " . $ganglia_units;
-   } else {
-      $results_notok[] =  "CRITICAL " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
-   }
-  
-  } // end of foreach ( $checks as $index => $check
-  
-  if ( sizeof( $results_notok ) == 0 ) {
-     print "OK|" . join(", ", $results_ok);
-     exit(0);
-  } else {
-     print "CRITICAL|" . join(", ", $results_notok) . " -- " . join(" ", $results_ok);
-     exit(2);
-  }
-    
+	 # Separate check into it's pieces
+	 $pieces = explode(",", $check);
+	 $metric_name = $pieces[0];
+	 $operator = $pieces[1];
+	 $critical_value = $pieces[2];
+	 unset($pieces);
+	 
+	 # Check for the existence of a metric
+	 if ( isset($metrics[$hostname][$metric_name]['VAL']) ) {
+	   $metric_value = $metrics[$hostname][$metric_name]['VAL'];
+	 } else {
+	   $results_notok[] =  "UNKNOWN " . $hostname . " " . $metric_name . " not found";
+	   continue;
+	 }
+	 
+	 $ganglia_units = $metrics[$hostname][$metric_name]['UNITS'];
+	 
+	 if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
+	    $results_ok[] =  "OK " . $hostname . " " . $metric_name . " = " . $metric_value . " " . $ganglia_units;
+	 } else {
+	    $results_notok[] =  "CRITICAL " . $hostname . " " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
+	 }
+     
+      } // end of foreach ( $checks as $index => $check
+     
+   } //  end of if ( preg_match("/" . $host_reg 
+
+} // end of foreach ( $ganglia_hosts_array as $index => $hostname ) {
+
+if ( sizeof( $results_notok ) == 0 ) {
+	print "OK|" . join(", ", $results_ok);
+	exit(0);
 } else {
-   echo("UNKNOWN|" . $metric_name . " - Hostname info not available. Likely invalid hostname");
-   exit(3);
+	print "CRITICAL|" . join(", ", $results_notok) . " -- " . join(" ", $results_ok);
+	exit(2);
 }
 
 ?>
