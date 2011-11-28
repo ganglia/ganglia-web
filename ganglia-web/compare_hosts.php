@@ -5,26 +5,37 @@ $data = new Dwoo_Data();
 $data->assign("range",$range);
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
-$size = $size == 'medium' ? 'default' : $size; //set to 'default' to preserve old behavior
+//set to 'default' to preserve old behavior
+$size = $size == 'medium' ? 'default' : $size; 
 
 retrieve_metrics_cache();
 
-foreach ( $_GET['hreg'] as $key => $query ) {
-  foreach ( $index_array['hosts'] as $key => $host_name ) {
-    if ( preg_match("/$query/i", $host_name ) ) {
-      // We can have same hostname in multiple clusters
-      $matches[] = array ( "hostname" => $host_name, "clustername" => $index_array['cluster'][$host_name]); 
+$matches = array();
+if (array_key_exists('hreg', $_GET)) {
+  foreach ( $_GET['hreg'] as $key => $query ) {
+    if ($query != '') {
+      foreach ( $index_array['hosts'] as $key => $host_name ) {
+        if ( preg_match("/$query/i", $host_name ) ) {
+          // We can have same hostname in multiple clusters
+          $matches[] = 
+            array ("hostname" => $host_name, 
+                   "clustername" => $index_array['cluster'][$host_name]);
+        }
+      }
     }
   }
 }
 
 #print "<PRE>";print_r($index_array['metrics']);
 
+$host_metrics = array();
+$host_cluster = array();
 foreach ( $matches as $index => $match ) {
   $hostname = $match['hostname'];
   $host_cluster[] = $match['hostname'] . "|" . $match['clustername'];
   foreach ( $index_array['metrics'] as $metric_name => $hosts ) {
-    if ( array_search( $hostname , $hosts ) !== FALSE && ! isset($host_metrics[$metric_name]) ) {
+    if ( array_search( $hostname , $hosts ) !== FALSE && 
+         ! isset($host_metrics[$metric_name]) ) {
       $host_metrics[$metric_name] = 1; 
     }
   }
@@ -36,24 +47,27 @@ $host_list = join(",", $host_cluster);
 ksort($host_metrics);
 #print "<PRE>";print_r($host_metrics);
 
+$hmetrics = array();
 foreach ( $host_metrics as $name => $value )
   $hmetrics[] = $name;
 
 
 $hreg = "";
-
-foreach ( $_GET['hreg'] as $index => $arg ) {
-  $hreg .= "&hreg[]=" . $arg;
+if (array_key_exists('hreg', $_GET)) {
+  foreach ( $_GET['hreg'] as $index => $arg ) {
+    $hreg .= "&hreg[]=" . $arg;
+  }
 }
 
-if ( isset($_GET['hreg'])) {
+if ( isset($_GET['hreg']) ) {
   $data->assign("hreg_arg", $_GET['hreg'][0]);
 } else {
   $data->assign("hreg_arg", "");
 }
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
-$size = $size == 'medium' ? 'default' : $size; //set to 'default' to preserve old behavior
+//set to 'default' to preserve old behavior
+$size = $size == 'medium' ? 'default' : $size; 
 
 $additional_host_img_css_classes = "";
 if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )

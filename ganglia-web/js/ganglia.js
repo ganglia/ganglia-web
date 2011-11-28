@@ -36,28 +36,11 @@ $(function(){
     tabs.bind("tabsselect", function(event, ui) {
       // Store selected tab in a session cookie
       $.cookie("ganglia-selected-tab-" + window.name, ui.index);
-      // Special processing for Views tab selection
-      var qs = $.query.load(window.location.href);
-      if (ui.index == 2) {
-        if (qs.get('vn') == '') {
-          var view_name = $.cookie('ganglia-selected-view-' + window.name);
-          qs.SET('vn',
-                 (view_name != null && view_name != '') ? 
-                    view_name : "default");
-        }
-      } else 
-	qs.REMOVE('vn');
-	
-      // Also special processing for compare hosts
-      if (ui.index == 4) {
-        if (qs.get('ch') == '') {
-          qs.SET('ch', 1);
-        }
-      } else 
-	qs.REMOVE('ch');
-      
-      
-      document.location.search = qs.toString(); 
+      $.cookie("ganglia-window-name", window.name);
+      if (ui.index == 0 ||
+          ui.index == 2 ||
+          ui.index == 4)
+        ganglia_form.submit();
     });
   }
 
@@ -149,7 +132,6 @@ function highlightSelectedView(view_name) {
 
 function selectView(view_name) {
   highlightSelectedView(view_name);
-  $('#vn').val(view_name);
   $.cookie('ganglia-selected-view-' + window.name, view_name);
   ganglia_form.submit();
 }
