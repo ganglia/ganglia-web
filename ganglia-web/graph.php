@@ -593,6 +593,22 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $use
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// Nagios event integration support
+//////////////////////////////////////////////////////////////////////////////
+$nagios_events = array();
+if ( $conf['overlay_nagios_events'] && ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
+  $nagios_pull_url = $conf['overlay_nagios_base_url'] . '/cgi-bin/api.cgi?action=host.gangliaevents&host=' . urlencode($raw_host) . '&start=' . urlencode($start) . '&end=' . urlencode($end);
+  $raw_nagios_events = @file_get_contents($nagios_pull_url, 0, stream_context_create(array('http' => array('timeout' => 5), 'https' => array('timeout' => 5))));
+  if (strlen($raw_nagios_events) > 3) {
+    $nagios_events = json_decode( $raw_nagios_events, TRUE );
+    // Handle any "ERROR" formatted messages and wipe resulting array.
+    if (isset($nagios_events['response_type']) && $nagios_events['response_type'] == 'ERROR') {
+      $nagios_events = array();
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////
 // Check whether user wants to overlay events on graphs
 //////////////////////////////////////////////////////////////////////////////
 if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" && ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
@@ -624,6 +640,14 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" && ! in_array
     // Preserve original rrdtool command. That's the one we'll run regex checks
     // against
     $original_command = $command;
+
+    // Combine the nagios_events array, if it exists
+    if (count($nagios_events) > 0) {
+      // World's dumbest array merge:
+      foreach ($nagios_events AS $ne) {
+        $events_array[] = $ne;
+      }
+    }
 
     foreach ($events_array as $key => $row) {
       $timestamp[$key]  = $row['start_time'];
