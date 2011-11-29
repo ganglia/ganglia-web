@@ -3,23 +3,24 @@
 ##########################################################################################
 # Author; Vladimir Vuksan
 # This is a Ganglia Nagios plugins that alerts based on values extracted from Ganglia
-# It is similar to check_metric however it allows you to check multiple values and
-# generate a single result. For example if you have multiple disks on the system
-# you want a single check that will alert whenever 
+# It is similar to check_metric however it allows you to check multiple values and across
+# a number of different hosts based on a regular expressions. 
 #
 # You need to supply following GET values
 #
-#  host = "Hostname"
+#  hreg = "This is regular expression you want to test against"
 #  checks = is a list of checks separated  with a colon. Check is defined by
-#  comma delimiting following
-#  metric_name e.g. load_one, bytes_out
-#  operator for critical condition e.g. less, more, equal, notequal
-#  critical_value e.g. value for critical
+#    - comma delimiting following
+#    - metric_name e.g. load_one, bytes_out
+#    - operator for critical condition e.g. less, more, equal, notequal
+#    - critical_value e.g. value for critical
 #
 #  Example would be
 #
 #  ?hreg=apache\tomcat&checks=disk_rootfs,more,10:disk_tmp,more,20
 #
+# This will match any hosts with apache and tomcat in their names and check disk_rootfs
+# and disk_tmp on them
 ##########################################################################################
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
