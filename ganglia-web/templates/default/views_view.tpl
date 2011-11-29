@@ -1,11 +1,11 @@
-<style>
+<style type="text/css">
 .img_view {
   float: left;
   margin: 0 0 10px 10px;
 }
 </style>
 
-<script>
+<script type="text/javascript">
   $(function() {
     $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     $("#create_view_button")
@@ -31,7 +31,7 @@
   </ul>
 </div>
 </td>
-<td valign="top>
+<td valign="top">
 <div>
 <div id="views-content">
   <div id=view_graphs>
