@@ -448,6 +448,9 @@ if($conf['auth_system'] == 'enabled') {
 if ( $conf['overlay_events'] == true )
   $data->assign('overlay_events', true);
 
+$data->assign('selected_tab', $user['selected_tab']);
+$data->assign('view_name', $user['viewname']);
+
 # Make sure that no data is cached..
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); # Date in the past
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modified

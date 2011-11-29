@@ -150,6 +150,12 @@
 </tr>
 {/if}
   </TABLE>
-
+<input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
+<input type="hidden" id="vn" name="vn" value="{$view_name}">
+{if $overlay_events}
+<input type="hidden" id="overlay_events" value="true">
+{else}
+<input type="hidden" id="overlay_events" value="false">
+{/if}
 <HR SIZE="1" NOSHADE>
 <!-- End header.tpl -->
