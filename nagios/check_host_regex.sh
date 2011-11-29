@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-GANGLIA_URL="http://localhost/ganglia2/nagios/check_multiple_metrics.php"
+GANGLIA_URL="http://localhost/ganglia2/nagios/check_host_regex.php"
 
 # Build the rest of the arguments into the arg string for the URL.
 CHECK_ARGS=''
@@ -31,7 +31,7 @@ else
    exit 1 
 fi
 
-RESULT=`curl -s ${GANGLIA_URL}?${CHECK_ARGS}`
+RESULT=`curl -s "${GANGLIA_URL}?${CHECK_ARGS}"`
 EXIT_CODE=`echo $RESULT | cut -f1 -d'|'`
 
 IFS='|'

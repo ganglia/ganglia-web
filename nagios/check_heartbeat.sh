@@ -31,7 +31,7 @@ else
    exit 1 
 fi
 
-RESULT=`curl -s ${GANGLIA_URL}?${CHECK_ARGS}`
+RESULT=`curl -s "${GANGLIA_URL}?${CHECK_ARGS}"`
 EXIT_CODE=`echo $RESULT | cut -f1 -d'|'`
 
 IFS='|'
