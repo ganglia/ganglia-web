@@ -832,7 +832,7 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "vl=" .$item['vertical_label'];
 
 	  if (isset($item['title']))
-	    $graph_args_array[] = "title=" .$item['title'];
+	    $graph_args_array[] = "title=" . urlencode($item['title']);
 
 	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array), 
 	    "hostname" => $hostname,

@@ -248,7 +248,7 @@ foreach ($available_views as $view_id => $view) {
         
      foreach ($view_elements as $id => $element) {
        $view_items[] = array ("legend" => isset($element['hostname']) ? $element['hostname'] : "Aggregate graph",
-                               "url_args" => htmlentities($element['graph_args']) . "&amp;z=medium&r=" . $range . $graphargs,
+                               "url_args" => htmlentities($element['graph_args']) . "&amp;z=medium&amp;r=" . $range . $graphargs,
                                "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0
         );
       }
