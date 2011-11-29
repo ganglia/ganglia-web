@@ -75,7 +75,7 @@ foreach ( $reports["included_reports"] as $index => $report_name ) {
       } 
       $optional_reports .= " <button title=\"Export to CSV\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;csv=1';return false;\">CSV</button>
       <button title=\"Export to JSON\" class=\"cupid-green\" onClick=\"javascript:location.href='./graph.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url&amp;json=1';return false;\">JSON</button>
-      <button title=\"Inspect Graph\" onClick=\"enlargeGraph('" . $graph_args . "&amp;g=" . $report_name . "&amp;z=large&amp;c=" . $cluster_url . "'); return false;\" class=\"shiny-blue\">Inspect</button>     
+      <button title=\"Inspect Graph\" onClick=\"inspectGraph('" . $graph_args . "&amp;g=" . $report_name . "&amp;z=large&amp;c=" . $cluster_url . "'); return false;\" class=\"shiny-blue\">Inspect</button>     
       <br /><img $additional_cluster_img_html_args border=\"0\" title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\" style=\"padding:2px;\" />
       </div>
       ";

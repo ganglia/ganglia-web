@@ -6,7 +6,7 @@
 </style>
 <script>
   $(function() {
-    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     $("#create_view_button")
       .button()
       .click(function() {
@@ -19,8 +19,8 @@
 	Available Metric actions.
 </div>
 </div>
-<div id="enlarge-graph-dialog" title="Inspect Graph">
-  <div id="enlarge-graph-dialog-content">
+<div id="inspect-graph-dialog" title="Inspect Graph">
+  <div id="inspect-graph-dialog-content">
   </div>
 </div>
 <div id="decompose-graph-content">
@@ -37,7 +37,7 @@
       <div class="img_view">
         <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$item.url_args}&amp;csv=1';return false;">CSV</button>
         <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$item.url_args}&amp;json=1';return false;">JSON</button>
-        <button title="Inspect Graph" onClick="enlargeGraph('{$item.url_args}'); return false;" class="shiny-blue">Inspect</button>
+        <button title="Inspect Graph" onClick="inspectGraph('{$item.url_args}'); return false;" class="shiny-blue">Inspect</button>
         <br /><a href="graph_all_periods.php?{$item.url_args}"><img class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$item.url_args}" /></a>
       </div>
       {/foreach}
