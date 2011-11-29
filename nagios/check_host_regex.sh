@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-GANGLIA_URL="http://localhost/ganglia2/nagios/check_heartbeat.php"
+GANGLIA_URL="http://localhost/ganglia2/nagios/check_host_regex.php"
 
 # Build the rest of the arguments into the arg string for the URL.
 CHECK_ARGS=''
@@ -27,7 +27,7 @@ then
     CHECK_ARGS=${CHECK_ARGS}"&"${ARG}
   done
 else
-   echo "Sample invocation $0 host=localhost.localdomain threshold=20"
+   echo "Sample invocation $0 host_regex=web|apache checks=load_one,more,1:load_five,more,2"
    exit 1 
 fi
 
