@@ -129,9 +129,7 @@ if ( $host_found == 1 ) {
      print "CRITICAL|" . join(", ", $results_notok) . " -- " . join(" ", $results_ok);
      exit(2);
   }
-  
-  print_r($messages); print_r($exit_codes);
-  
+    
 } else {
    echo("UNKNOWN|" . $metric_name . " - Hostname info not available. Likely invalid hostname");
    exit(3);

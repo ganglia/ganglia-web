@@ -294,6 +294,11 @@ $conf['metric_groups_initially_collapsed'] = false;
 # in events.json
 $conf['overlay_events'] = false;
 
+# Settings for allowing the Nagios API to be used as an additional
+# event source. Will only be enabled if overlay_nagios_events is true.
+$conf['overlay_nagios_events'] = false;
+$conf['overlay_nagios_base_url'] = 'http://localhost/nagios';
+
 # If you have periodic events that happen often e.g. they will make the
 # graph poorly. By default we exclude events on monthly and yearly graphs
 $conf['overlay_events_exclude_ranges'] = array("month", "year");
