@@ -8,8 +8,8 @@
   margin: 0 0 10px 10px;
 }
 </style>
-<div id="enlarge-graph-dialog" style="display: none" title="Inspect Graph">
-  <div id="enlarge-graph-dialog-content">
+<div id="inspect-graph-dialog" style="display: none" title="Inspect Graph">
+  <div id="inspect-graph-dialog-content">
   </div>
 </div>
 <?php
@@ -29,7 +29,7 @@ if ( ! isset($_GET['embed'] ) ) {
 </div>
 <script>
   $(function() {
-    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
   });
 </script>
 <?php
@@ -144,7 +144,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
    ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
   '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a> ' .
-  '<button title="Inspect Graph" onClick="enlargeGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>' .
+  '<button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
@@ -168,7 +168,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 <div style="clear: left"></div>
 <script>
   $(function() {
-    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
   });
 </script>
 

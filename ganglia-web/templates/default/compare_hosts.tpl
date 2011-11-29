@@ -9,8 +9,8 @@
 	Available Metric actions.
 </div>
 </div>
-<div id="enlarge-graph-dialog" title="Inspect Graph">
-  <div id="enlarge-graph-dialog-content">
+<div id="inspect-graph-dialog" title="Inspect Graph">
+  <div id="inspect-graph-dialog-content">
   </div>
 </div>
 <div>

@@ -211,13 +211,13 @@ function ganglia_submit(clearonly) {
 /* ----------------------------------------------------------------------------
  Enlarges a graph using Flot
 -----------------------------------------------------------------------------*/
-function enlargeGraph(graphArgs) {
-  $("#enlarge-graph-dialog").dialog('open');
-  $("#enlarge-graph-dialog").bind("dialogbeforeclose", 
+function inspectGraph(graphArgs) {
+  $("#inspect-graph-dialog").dialog('open');
+  $("#inspect-graph-dialog").bind("dialogbeforeclose", 
                                   function(event, ui) {
                                     $("#enlargeTooltip").remove();});
-//  $('#enlarge-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
+//  $('#inspect-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
   $.get('inspect_graph.php',
         "flot=1&" + graphArgs, 
-        function(data) {$('#enlarge-graph-dialog-content').html(data);})
+        function(data) {$('#inspect-graph-dialog-content').html(data);})
 }
