@@ -21,6 +21,15 @@ if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
 }
 
 switch ( $_GET['action'] ) {
+  case 'list':
+    $views = get_available_views();
+    $view_list = array();
+    foreach ($views AS $k => $view) {
+      if ($view['view_name'] != '') $view_list[] = $view['view_name'];
+    }
+    print json_encode($view_list);
+    break; // end list
+
   case 'create_view': 
   if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
     api_return_error("You do not have access to edit views.");
