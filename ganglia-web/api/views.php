@@ -1,6 +1,6 @@
 <?php
 
-header("Content-Type: text/plain");
+header("Content-Type: text/json");
 
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
@@ -21,6 +21,33 @@ if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
 }
 
 switch ( $_GET['action'] ) {
+  case 'get':
+    $available_views = get_available_views();
+
+    $found_view = false;
+    foreach ( $available_views as $view_id => $view ) {
+      if ( $view['view_name'] == $_GET['view_name'] ) {
+        $found_view = true;
+      }
+    }
+    if (!$found_view) {
+      api_return_error("That view does not exist.");
+    }
+    $view_suffix = str_replace(" ", "_", $_GET['view_name']);
+    $view_filename = $conf['views_dir'] . "/view_" . $view_suffix . ".json";
+    $this_view = json_decode(file_get_contents($view_filename), TRUE);
+    api_return_ok($this_view);
+    break; // end get
+
+  case 'list':
+    $views = get_available_views();
+    $view_list = array();
+    foreach ($views AS $k => $view) {
+      if ($view['view_name'] != '') $view_list[] = $view['view_name'];
+    }
+    api_return_ok($view_list);
+    break; // end list
+
   case 'create_view': 
   if( ! checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
     api_return_error("You do not have access to edit views.");
