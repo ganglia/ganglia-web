@@ -7,7 +7,7 @@
 
 <script type="text/javascript">
   $(function() {
-    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     $("#create_view_button")
       .button()
       .click(function() {
@@ -17,8 +17,8 @@
   });
 </script>
 
-<div id="enlarge-graph-dialog" title="Inspect Graph">
-  <div id="enlarge-graph-dialog-content">
+<div id="inspect-graph-dialog" title="Inspect Graph">
+  <div id="inspect-graph-dialog-content">
   </div>
 </div>
 
