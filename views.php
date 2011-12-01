@@ -186,13 +186,13 @@ if ( sizeof($available_views) == -1 ) {
   <?php
 } else {
 
-  if ( !isset($_GET['view_name']) ) {
+  if ( !isset($_GET['view_name']) && !isset($_GET['vn']) ) {
     if ( sizeof($available_views) == 1 )
       $view_name = $available_views[0]['view_name'];
     else
       $view_name = "default";
   } else {
-    $view_name = $_GET['view_name'];
+    $view_name = isset($_GET['view_name']) ? $_GET['view_name'] : $_GET['vn'];
   }
 
   if ( isset($_GET['standalone']) ) {
@@ -202,6 +202,7 @@ if ( sizeof($available_views) == -1 ) {
 <script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
 <?php
@@ -314,7 +315,7 @@ $(function(){
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // Displays graphs in the graphs div
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  print "<div id=view_graphs>";
+  print "<div id=\"view_graphs\">";
 
   // Let's find the view definition
   foreach ( $available_views as $view_id => $view ) {
