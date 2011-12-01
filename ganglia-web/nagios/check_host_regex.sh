@@ -27,7 +27,7 @@ then
     CHECK_ARGS=${CHECK_ARGS}"&"${ARG}
   done
 else
-   echo "Sample invocation $0 host_regex=web|apache checks=load_one,more,1:load_five,more,2"
+   echo "Sample invocation $0 hreg=web|apache checks=load_one,more,1:load_five,more,2"
    exit 1 
 fi
 
