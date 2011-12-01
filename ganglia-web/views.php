@@ -130,6 +130,10 @@ if ( isset($_GET['add_to_view']) ) {
             $item_array["lower_limit"] = $_GET['n'];
           }
 
+          if ( isset($_GET['c']) ) {
+            $item_array["cluster"] = $_GET['c'];
+          }
+
           $view['items'][] = $item_array;
           unset($item_array);
 

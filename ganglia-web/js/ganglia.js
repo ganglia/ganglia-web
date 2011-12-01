@@ -183,9 +183,9 @@ function createAggregateGraph() {
 
 function metricActionsAggregateGraph(args) {
   $("#metric-actions-dialog").dialog("open");
-  $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
+  $("#metric-actions-dialog-content").html('<img src="img/spinner.gif" />');
   $.get('actions.php', 
-        "action=show_views" + args, 
+        "action=show_views" + args + "&aggregate=1", 
         function(data) {$("#metric-actions-dialog-content").html(data);});
     return false;
 }
