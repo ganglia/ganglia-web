@@ -3,24 +3,23 @@
 ##########################################################################################
 # Author; Vladimir Vuksan
 # This is a Ganglia Nagios plugins that alerts based on values extracted from Ganglia
-# It is similar to check_metric however it allows you to check multiple values and across
-# a number of different hosts based on a regular expressions. 
+# It is similar to check_metric however it allows you to check multiple values and
+# generate a single result. For example if you have multiple disks on the system
+# you want a single check that will alert whenever 
 #
 # You need to supply following GET values
 #
-#  hreg = "This is regular expression you want to test against"
+#  host = "Hostname"
 #  checks = is a list of checks separated  with a colon. Check is defined by
-#    - comma delimiting following
-#    - metric_name e.g. load_one, bytes_out
-#    - operator for critical condition e.g. less, more, equal, notequal
-#    - critical_value e.g. value for critical
+#  comma delimiting following
+#  metric_name e.g. load_one, bytes_out
+#  operator for critical condition e.g. less, more, equal, notequal
+#  critical_value e.g. value for critical
 #
 #  Example would be
 #
 #  ?hreg=apache\tomcat&checks=disk_rootfs,more,10:disk_tmp,more,20
 #
-# This will match any hosts with apache and tomcat in their names and check disk_rootfs
-# and disk_tmp on them
 ##########################################################################################
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
@@ -121,10 +120,10 @@ foreach ( $ganglia_hosts_array as $index => $hostname ) {
 } // end of foreach ( $ganglia_hosts_array as $index => $hostname ) {
 
 if ( sizeof( $results_notok ) == 0 ) {
-	print "OK|" . join(", ", $results_ok);
+	print "OK|# Services OK = " . count($results_ok);
 	exit(0);
 } else {
-	print "CRITICAL|" . join(", ", $results_notok) . " -- " . join(" ", $results_ok);
+	print "CRITICAL|# Services OK = " . count($results_ok) . ", CRIT/UNK = " . count($results_notok) . " ; " . join(", ", $results_notok);
 	exit(2);
 }
 
