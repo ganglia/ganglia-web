@@ -92,10 +92,10 @@ if ( $host_found == 1 ) {
   $ganglia_units = $metrics[$fqdn][$metric_name]['UNITS'];
   
   if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
-   print "OK|" . $metric_name . " value = " . $metric_value . " " . $ganglia_units;
+   print "OK|" . $metric_name . " = " . $metric_value . " " . $ganglia_units;
    exit (0);
   } else {
-    print "CRITICAL|" . $metric_name . " value = ". $metric_value . " " . $ganglia_units;
+    print "CRITICAL|" . $metric_name . " = ". $metric_value . " " . $ganglia_units;
     exit (2);
   } 
   

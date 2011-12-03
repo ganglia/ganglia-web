@@ -123,10 +123,10 @@ if ( $host_found == 1 ) {
   } // end of foreach ( $checks as $index => $check
   
   if ( sizeof( $results_notok ) == 0 ) {
-     print "OK|" . join(", ", $results_ok);
+     print "OK| Num OK: " . count($results_ok);
      exit(0);
   } else {
-     print "CRITICAL|" . join(", ", $results_notok) . " -- " . join(" ", $results_ok);
+     print "CRITICAL| Num CRIT/UNK: " . count($results_notok) . " Num OK: " . count($results_ok) .  " -- " . join(", ", $results_notok);
      exit(2);
   }
     
