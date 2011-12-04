@@ -467,8 +467,8 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $use
   preg_match_all("| DEF:(.*):AVERAGE|U", " " . $rrdtool_graph['series'], $matches);
 
   foreach ( $matches[0] as $key => $value ) {
-    if ( preg_match("/(DEF:\'?)(.*)(\'?=\')(.*)\/(.*)\/(.*)\/(.*)(\.rrd)/", $value, $out ) ) {
-      $ds_name = $out[2];
+    if ( preg_match("/(DEF:\'?)([^\']+)(\'?=\')(.*)\/(.*)\/(.*)\/(.*)(\.rrd)/", $value, $out ) ) {
+      $ds_name = "'" . $out[2] . "'";
       $cluster_name = $out[5];
       $host_name = $out[6];
       $metric_name = $out[7];
