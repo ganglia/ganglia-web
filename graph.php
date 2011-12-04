@@ -559,14 +559,13 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $use
 
     print "\n";
 
-    foreach ( $output_array[0]["metrics"] as $key => $row ) {
-      print date("c", $row["timestamp"]);
+    foreach ($output_array[0]['datapoints'] as $key => $row) {
+      print date("c", $row[1]);
       for ( $j = 0 ; $j < $num_of_metrics ; $j++ ) {
-        print "," .$output_array[$j]["metrics"][$key]["value"];
+        print "," . $output_array[$j]["datapoints"][0][0];
       }
       print "\n";
     }
-
   }
 
   // Implement Graphite style Raw Data
