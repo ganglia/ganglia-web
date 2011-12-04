@@ -160,7 +160,7 @@ $(function() {
 	    $( "#edit_optional_graphs_button" ).button();
 	    $( "#save_optional_graphs_button" ).button();
 	    $( "#close_edit_optional_graphs_link" ).button();
-	    $( "#enlarge-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+	    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     });
 
     $("#edit_optional_graphs_button").click(function(event) {
@@ -217,8 +217,8 @@ $(function() {
 	Available Metric actions.
   </div>
 </div>
-<div id="enlarge-graph-dialog" title="Inspect Graph">
-  <div id="enlarge-graph-dialog-content">
+<div id="inspect-graph-dialog" title="Inspect Graph">
+  <div id="inspect-graph-dialog-content">
   </div>
 </div>
 
@@ -348,7 +348,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 {/if}
 <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;csv=1';return false;">CSV</button>
 <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;json=1';return false;">JSON</button>
-<button title="Inspect Graph" onClick="enlargeGraph('{$g_metric.graphargs}'); return false;" class="shiny-blue">Inspect</button>
+<button title="Inspect Graph" onClick="inspectGraph('{$g_metric.graphargs}'); return false;" class="shiny-blue">Inspect</button>
 <br>
 {if $graph_engine == "flot"}
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>

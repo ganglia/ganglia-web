@@ -130,6 +130,10 @@ if ( isset($_GET['add_to_view']) ) {
             $item_array["lower_limit"] = $_GET['n'];
           }
 
+          if ( isset($_GET['c']) ) {
+            $item_array["cluster"] = $_GET['c'];
+          }
+
           $view['items'][] = $item_array;
           unset($item_array);
 
@@ -186,22 +190,24 @@ if ( sizeof($available_views) == -1 ) {
   <?php
 } else {
 
-  if ( !isset($_GET['view_name']) ) {
+  if ( !isset($_GET['view_name']) && !isset($_GET['vn']) ) {
     if ( sizeof($available_views) == 1 )
       $view_name = $available_views[0]['view_name'];
     else
       $view_name = "default";
   } else {
-    $view_name = $_GET['view_name'];
+    $view_name = isset($_GET['view_name']) ? $_GET['view_name'] : $_GET['vn'];
   }
 
   if ( isset($_GET['standalone']) ) {
+    $base = isset($_GET['base']) ? $_GET['base'] . "/" : "";
     ?>
 <html><head>
-<script TYPE="text/javascript" SRC="js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
-<script type="text/javascript" src="js/ganglia.js"></script>
-<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="<?php print $base; ?>js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="<?php print $base; ?>js/jquery-ui-1.8.14.custom.min.js"></script>
+<script type="text/javascript" src="<?php print $base; ?>js/ganglia.js"></script>
+<script type="text/javascript" src="<?php print $base; ?>js/jquery.cookie.js"></script>
+<script type="text/javascript" src="<?php print $base; ?>js/jquery-ui-timepicker-addon.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
 <?php
@@ -314,7 +320,7 @@ $(function(){
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
   // Displays graphs in the graphs div
   ///////////////////////////////////////////////////////////////////////////////////////////////////////
-  print "<div id=view_graphs>";
+  print "<div id=\"view_graphs\">";
 
   // Let's find the view definition
   foreach ( $available_views as $view_id => $view ) {
@@ -333,8 +339,8 @@ $(function(){
 	foreach ( $view_elements as $id => $element ) {
 	    $legend = isset($element['hostname']) ? $element['hostname'] : "Aggregate graph";
 	    print "
-	    <a href=\"./graph_all_periods.php?" . htmlentities($element['graph_args']) ."&amp;z=large\">
-	    <img title=\"" . $legend . " - " . $element['name'] . "\" border=0 SRC=\"./graph.php?" . htmlentities($element['graph_args']) . "&amp;z=medium" . $range_args .  "\" style=\"padding:2px;\"></A>";
+	    <a href=\"" . ( isset($_GET['base']) ? $_GET['base'] : '.' ) . "/graph_all_periods.php?" . htmlentities($element['graph_args']) ."&amp;z=large\">
+	    <img title=\"" . $legend . " - " . $element['name'] . "\" border=0 SRC=\"" . ( isset($_GET['base']) ? $_GET['base'] : '.' ) . "/graph.php?" . htmlentities($element['graph_args']) . "&amp;z=small" . $range_args .  "\" style=\"padding:2px;\"></A>";
 
 	}
       } else {

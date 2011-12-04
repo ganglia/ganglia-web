@@ -1,0 +1,32 @@
+
+#views span {
+  margin-right: 5px;
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  font-variant: small-caps;
+  padding: 5px;
+}
+
+#views span:hover {
+  cursor: hand;
+}
+
+/* Keep list of views wrapping around rather than scrolling */
+#viewlist {
+  width: 98%
+}
+
+#viewport {
+  margin-top: 10px;
+}
+
+#viewport .loader {
+  display: block !important;
+}
+
+#ajaxloader {
+  margin-top: 10px;
+  align: center;
+  display: none;
+}
+
