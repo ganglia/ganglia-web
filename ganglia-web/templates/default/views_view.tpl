@@ -51,8 +51,14 @@
         {if $view_item.aggregate_graph == 1}
         <button title="Decompose aggregate graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&amp;dg=1';return false;">Decompose</button>
         {/if}
-        <button title="Inspect Graph" onClick="enlargeGraph('{$view_item.url_args}'); return false;" class="shiny-blue">Inspect</button>
-        <br /><a href="graph_all_periods.php?{$view_item.url_args}"><img class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$view_item.url_args}" /></a>
+        <button title="Inspect Graph" onClick="inspectGraph('{$view_item.url_args}'); return false;" class="shiny-blue">Inspect</button>
+        <br />
+{if $graph_engine == "flot"}
+<div id="placeholder_{$view_item.url_args}" class="flotgraph2 img_view"></div>
+<div id="placeholder_{$view_item.url_args}_legend" class="flotlegend"></div>
+{else}
+<a href="graph_all_periods.php?{$view_item.url_args}"><img class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$view_item.url_args}" /></a>
+{/if}
       </div>
       {/foreach}
     {/if}
