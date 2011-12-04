@@ -791,6 +791,10 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	  }
 
+	  if ( isset($item['cluster']) ) {
+	    $graph_args_array[] = "c=" . $item['cluster'];
+	  }
+
 	  if ( isset($item['exclude_host_from_legend_label']) ) {
 	    $graph_args_array[] = "lgnd_xh=" . $item['exclude_host_from_legend_label'];
 	  }

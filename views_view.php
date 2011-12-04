@@ -139,6 +139,9 @@ if (isset($_GET['add_to_view'])) {
           if ( isset($_GET['n']) && is_numeric($_GET['n'])) {
             $item_array["lower_limit"] = $_GET['n'];
           }
+          if ( isset($_GET['c']) ) {
+            $item_array["cluster"] = $_GET['c'];
+          }
 
           $view['items'][] = $item_array;
           unset($item_array);
@@ -151,6 +154,8 @@ if (isset($_GET['add_to_view'])) {
             $items["vertical_label"] = $_GET['vertical_label'];
 	  if (isset($_GET['title']))
             $items["title"] = $_GET['title'];
+	  if (isset($_GET['c']))
+            $items["cluster"] = $_GET['c'];
 	  $view['items'][] = $items;
 	} else
 	  $view['items'][] = array("hostname" => $_GET['host_name'], 
