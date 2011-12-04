@@ -785,7 +785,7 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "vl=" .$item['vertical_label'];
 
 	  if (isset($item['title']))
-	    $graph_args_array[] = "title=" .$item['title'];
+	    $graph_args_array[] = "title=" . urlencode($item['title']);
 
 	  if ( isset($item['metric']) ) {
 	    $graph_args_array[] = "m=" . $item['metric'];
@@ -813,7 +813,7 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	    $name = $item['metric'];
 	  } else {
-	    $graph_args_array[] = "g=" . $item['graph'];
+	    $graph_args_array[] = "g=" . urlencode($item['graph']);
 	    $name = $item['graph'];
 	  }
 

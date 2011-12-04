@@ -49,7 +49,7 @@
         <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;csv=1';return false;">CSV</button>
         <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;json=1';return false;">JSON</button>
         {if $view_item.aggregate_graph == 1}
-        <button title="Decompose aggregate graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&dg=1';return false;">Decompose</button>
+        <button title="Decompose aggregate graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&amp;dg=1';return false;">Decompose</button>
         {/if}
         <button title="Inspect Graph" onClick="enlargeGraph('{$view_item.url_args}'); return false;" class="shiny-blue">Inspect</button>
         <br /><a href="graph_all_periods.php?{$view_item.url_args}"><img class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$view_item.url_args}" /></a>
