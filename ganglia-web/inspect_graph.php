@@ -60,6 +60,7 @@ $(function () {
     $('<div id="tooltip">' + contents + '</div>').css( {
       position: 'absolute',
       display: 'none',
+      'z-index': 2000,
       top: y + 5,
       left: x + 5,
       border: '1px solid #fdd',
