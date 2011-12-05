@@ -56,6 +56,17 @@ $(function () {
   });
   choiceContainer.find("input").click(plotAccordingToChoices);
 
+  function utcTimeStr(tstamp) {
+    var date = new Date(tstamp);
+    var hr = date.getUTCHours();
+    if (hr < 10)
+      hr = "0" + hr; 
+    var min = date.getUTCMinutes();
+    if (min < 10)
+      min = "0" + min; 
+    return hr + ":" + min;
+  }
+
   function showTooltip(x, y, contents) {
     $('<div id="tooltip">' + contents + '</div>').css( {
       position: 'absolute',
@@ -91,7 +102,7 @@ $(function () {
       });
 
     $("#placeholder").bind("plothover", function (event, pos, item) {
-        $("#x").text(pos.x.toFixed(2));
+        $("#x").text(utcTimeStr(pos.x));
         $("#y").text(pos.y.toFixed(2));
 
         if (item) {
@@ -99,11 +110,9 @@ $(function () {
                 previousPoint = item.dataIndex;
                 
                 $("#tooltip").remove();
-                var x = item.datapoint[0].toFixed(2),
-                    y = item.datapoint[1].toFixed(2);
-                
+                var y = item.datapoint[1].toFixed(2);
                 showTooltip(item.pageX, item.pageY,
-                            item.series.label + " of " + x + " = " + y);
+                            item.series.label + " at " + utcTimeStr(item.datapoint[0]) + " = " + y);
             }
         }
         else {
