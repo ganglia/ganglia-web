@@ -15,9 +15,6 @@
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="placeholder" style="width:800px;height:500px;"></div>
-<p id="hoverdata">Mouse hovers at
-    (<span id="x">0</span>, <span id="y">0</span>). <span id="clickdata"></span></p>
-
 
 <p id="choices">Show:</p>
 <?php
@@ -64,7 +61,10 @@ $(function () {
     var min = date.getUTCMinutes();
     if (min < 10)
       min = "0" + min; 
-    return hr + ":" + min;
+    var sec = date.getUTCSeconds();
+    if (sec < 10)
+      sec = "0" + sec; 
+    return hr + ":" + min + ":" + sec;
   }
 
   function showTooltip(x, y, contents) {
