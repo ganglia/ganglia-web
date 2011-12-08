@@ -240,13 +240,21 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
       $parts = explode("|", $host_cluster);
       $hostname = $parts[0];
       $clustername = $parts[1];
-      $graph_config['series'][] = array( "hostname" => $hostname,
-        "clustername" => $clustername,
-        "metric" => $metric_name,
-        "color" => $conf['graph_colors'][$color_index],
-        "line_width" => $line_width,
-        "label" => $hostname,
-        "type" => $graph_type);
+
+      $series = array("hostname" => $hostname,
+                      "clustername" => $clustername,
+                      "fill" => "true", 
+                      "metric" => $metric_name,  
+                      "color" => $conf['graph_colors'][$color_index], 
+                      "label" => $hostname, 
+                      "type" => $graph_type);
+
+      if ($graph_type == "line" || $graph_type == "area") {
+        $series['line_width'] = $line_width;
+      } else {
+        $series['stack'] = "1";
+      }
+      $graph_config['series'][] = $series;
       
       $counter++;
     } // end of foreach ( $host_list as 
@@ -464,22 +472,35 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $use
   $rrdtool_graph_args = "";
 
   // First find RRDtool DEFs by parsing $rrdtool_graph['series']
-  preg_match_all("| DEF:(.*):AVERAGE|U", " " . $rrdtool_graph['series'], $matches);
-
+  preg_match_all("/([^V]DEF|CDEF):([^ ]*)/", 
+                 " " . $rrdtool_graph['series'], 
+                 $matches);
   foreach ( $matches[0] as $key => $value ) {
-    if ( preg_match("/(DEF:\'?)([^\']+)(\'?=\')(.*)\/(.*)\/(.*)\/(.*)(\.rrd)/", $value, $out ) ) {
-      $ds_name = "'" . $out[2] . "'";
-      $cluster_name = $out[5];
-      $host_name = $out[6];
-      $metric_name = $out[7];
-      $output_array[] = array( "ds_name"      => $ds_name, 
-                               "cluster_name" => $out[5], 
-                               "host_name"    => $out[6], 
-                               "metric_name"  => $out[7],
-                               "target" => $out[5] . "_" . $out[6]. "_" . $out[7]);
-      $rrdtool_graph_args .= $value . " " . "XPORT:" . $ds_name . ":" . $metric_name . " ";
+    $rrdtool_graph_args .= $value . " ";
+  }
+
+  preg_match_all("/(LINE[0-9]*|AREA|STACK):\'[^']*\'[^']*\'[^']*\'[^ ]* /",
+                 " " . $rrdtool_graph['series'], 
+                 $matches);
+  foreach ( $matches[0] as $key => $value ) {
+    if ( preg_match("/(LINE[0-9]*:\'|AREA:\'|STACK:\')([^']*)(\')([^']*)(\')([^']*)(')/", $value, $out ) ) {
+      $ds_name = $out[2];
+      $cluster_name = "";
+      $host_name = "";
+      $metric_type = "line";
+      if (preg_match("/(STACK:|AREA:)/", $value, $ignore)) {
+        $metric_type = "stack";
+      }
+      $metric_name = $out[6];
+      $output_array[] = array( "ds_name" => $ds_name, 
+                               "cluster_name" => $cluster_name,
+                               "graph_type" => $metric_type,
+                               "host_name" => $host_name, 
+                               "metric_name" => $metric_name );
+      $rrdtool_graph_args .=  " " . "XPORT:'" . $ds_name . "':'" . $metric_name . "' ";
     }
   }
+
 
   // This command will export values for the specified format in XML
   $command = $conf['rrdtool'] . " xport --start " . $rrdtool_graph['start'] . " --end " .  $rrdtool_graph['end'] . " " . $rrdtool_graph_args;
@@ -533,8 +554,13 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $use
         $data_array[] = array ( $values[1]*1000, $values[0]);  
       }
 
-      $flot_array[] = array( 'label' =>  strip_domainname($metric_array['host_name']) . " " . $metric_array['metric_name'], 
-      'data' => $data_array);
+      $gdata = array('label' => strip_domainname($metric_array['host_name']) . 
+                                                 " " . 
+                                                 $metric_array['metric_name'], 
+                     'data' => $data_array);
+      if ($metric_array['graph_type'] == "stack")
+        $gdata['stack'] = '1';
+      $flot_array[] = $gdata;
 
       unset($data_array);
 
@@ -559,13 +585,14 @@ if ( $user['json_output'] || $user['csv_output'] || $user['flot_output'] || $use
 
     print "\n";
 
-    foreach ($output_array[0]['datapoints'] as $key => $row) {
+    foreach ( $output_array[0]['datapoints'] as $key => $row ) {
       print date("c", $row[1]);
       for ( $j = 0 ; $j < $num_of_metrics ; $j++ ) {
-        print "," . $output_array[$j]["datapoints"][0][0];
+        print "," . $output_array[$j]["datapoints"][$key][0];
       }
       print "\n";
     }
+
   }
 
   // Implement Graphite style Raw Data
