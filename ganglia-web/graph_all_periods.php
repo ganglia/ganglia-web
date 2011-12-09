@@ -116,7 +116,7 @@ if ( ! isset($_GET['embed'] ) ) {
 
 <body>
 <?php
-if ( isset($_GET['mobile'])) {
+if ( isset($_REQUEST['mobile'])) {
 ?>
     <div data-role="page" class="ganglia-mobile" id="view-home">
     <div data-role="header">
@@ -128,8 +128,8 @@ if ( isset($_GET['mobile'])) {
 <?php
 }
 
-// Skip printing if this is an aggregate graphs 
-if ( ! isset($_GET['embed'] )  ) {
+// Skip printing if this is an embedded graph e.g. from Aggregate graph screen
+if ( ! isset($_REQUEST['embed'] )  ) {
 ?>
 <b>Host/Cluster/Host Regex: </b><?php print $description ?>&nbsp;<b>Metric/Graph/Metric Regex: </b><?php 
   print $metric_description; 
@@ -137,15 +137,31 @@ if ( ! isset($_GET['embed'] )  ) {
 <?php
 }
 
+
+if ( preg_match("/aggregate=1/", $query_string) )
+  $is_aggregate = true;
+else
+  $is_aggregate = false;
+
 foreach ( $conf['time_ranges'] as $key => $value ) {
 
-   print '<div class="img_view">
-   <span style="padding-left: 4em; padding-right: 4em; text-weight: bold;">' . $key . '</span>
-   <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' .$query_string . '\'); return false;">+</button>
-   ' .
-  '<a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
-  '<a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a> ' .
-  '<button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>' .
+  print '<div class="img_view">
+  <span style="padding-left: 4em; padding-right: 4em; text-weight: bold;">' . $key . '</span>';
+  
+  // Check if it's an aggregate graph
+  if ( $is_aggregate  ) {
+    print '<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' .$query_string . '\'); return false;">+</button>';
+  }
+
+   print  ' <a href="./graph.php?r=' . $key . $query_string .'&csv=1"><button title="Export to CSV" class="cupid-green">CSV</button></a> ' .
+   ' <a href="./graph.php?r=' . $key . $query_string .'&json=1"><button title="Export to JSON" class="cupid-green">JSON</button></a> ';
+
+   // Check if it's an aggregate graph
+  if ( $is_aggregate  ) {
+      print ' <button title="Decompose aggregate graph" class="shiny-blue" onClick="openDecompose(\'?r=' . $key . $query_string  . '&dg=1\');return false;">Decompose</button>';
+  }
+ 
+  print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
@@ -171,6 +187,12 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
   $(function() {
     $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
   });
+
+  function openDecompose($url) {
+    $.cookie("ganglia-selected-tab-" + window.name, 0);
+    location.href=$url;
+  }
+
 </script>
 
 </body>
