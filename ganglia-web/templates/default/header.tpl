@@ -4,7 +4,6 @@
 <head>
 <title>Ganglia:: {$page_title}</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-<meta http-equiv="refresh" content="{$refresh}">
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <link type="text/css" href="./styles.css" rel="stylesheet" />
@@ -18,6 +17,13 @@
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var availablemetrics = [ {$available_metrics} ];
+
+    function refresh() {
+      ganglia_form.submit();
+    }
+
+    var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+
     $(function(){
         $( "#metrics-picker" ).autocomplete({
           source: availablemetrics
@@ -92,7 +98,7 @@
 </script>
 {$custom_time_head}
 </head>
-<body style="background-color: #ffffff;">
+<body style="background-color: #ffffff;" onunload="g_refresh_timer=null">
 {if $auth_system_enabled}
 <div style="float:right">
   {if $username}
