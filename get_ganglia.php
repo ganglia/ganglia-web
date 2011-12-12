@@ -20,18 +20,18 @@ if (!count($grid) and !count($cluster))
    }
 
 # If we only have one cluster source, suppress MetaCluster output.
-#if (count($grid) <= 2 and $context=="meta")
-#   {
-#      # Lets look for one cluster (the other is our grid).
-#      foreach($grid as $source)
-#         if (isset($source['CLUSTER']) and $source['CLUSTER'])
-#            {
-#               $standalone = 1;
-#               $context = "cluster";
-#               # Need to refresh data with new context.
-#               Gmetad($conf['ganglia_ip'], $conf['ganglia_port']);
-#               $clustername = $source['NAME'];
-#            }
-#   }
+if (count($grid) <= 2 and $context=="meta")
+   {
+      # Lets look for one cluster (the other is our grid).
+      foreach($grid as $source)
+         if (isset($source['CLUSTER']) and $source['CLUSTER'])
+            {
+               $standalone = 1;
+               $context = "cluster";
+               # Need to refresh data with new context.
+               Gmetad($conf['ganglia_ip'], $conf['ganglia_port']);
+               $clustername = $source['NAME'];
+            }
+   }
 
 ?>
