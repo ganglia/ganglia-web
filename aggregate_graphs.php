@@ -78,9 +78,14 @@ $(function() {
   }
 
   function createAggregateGraph() {
-    $("#show_direct_link").html("<a href='graph_all_periods.php?" + $("#aggregate_graph_form").serialize() + "&aggregate=1'>Direct Link to this aggregate graph</a>");
+    if ($('#hreg').val() == "" || $('#metric_chooser').val() == "") {
+      alert("Host regular expression and metric name can't be blank");
+      return false;
+    }
+    var params = $("#aggregate_graph_form").serialize() + "&aggregate=1";
+    $("#show_direct_link").html("<a href='graph_all_periods.php?" + params + "'>Direct Link to this aggregate graph</a>");
     $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-    $.get('graph_all_periods.php', $("#aggregate_graph_form").serialize() + "&aggregate=1&embed=1" , function(data) {
+    $.get('graph_all_periods.php', params + "&embed=1" , function(data) {
       $("#aggregate_graph_display").html(data);
     });
     return false;
@@ -98,7 +103,6 @@ $(function() {
   if (restoreAggregateGraph())
     createAggregateGraph();
   });
-
 });
 </script>
 <div id="aggregate_graph_header">
@@ -134,7 +138,7 @@ $(function() {
 </table>
 </form>
 </div>
-<div id="show_direct_link"></div>
+<div style="margin-bottom:5px;" id="show_direct_link"></div>
 <div id="aggregate_graph_display">
 
 </div>
