@@ -188,7 +188,7 @@ $("#metrics-picker").val("{$metric_name}");
   <font size="-1">
   <span class="nobr">Show Hosts Scaled:
   {foreach $showhosts_levels id showhosts implode=""}
-  {$showhosts.name}<input type=radio name="sh" value="{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}>
+  <input type=radio name="sh" value="{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}><label>{$showhosts.name}</label>
   {/foreach}
   </span>
   </font>
