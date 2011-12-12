@@ -39,7 +39,8 @@ $(function(){
 
     tabs.bind("tabsselect", function(event, ui) {
       $("#selected_tab").val(g_tabName[ui.index]);
-      $.cookie("ganglia-selected-tab-" + window.name, ui.index);
+      if (g_tabName[ui.index] != "mob")
+        $.cookie("ganglia-selected-tab-" + window.name, ui.index);
       if (ui.index == 0 ||
           ui.index == 2 ||
           ui.index == 4)
@@ -167,18 +168,6 @@ function metricActions(host_name,metric_name,type,graphargs) {
           "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type + graphargs, 
           function(data) {$("#metric-actions-dialog-content").html(data);});
     return false;
-}
-
-function createAggregateGraph() {
-  if ($('#hreg').val() == "" || $('#metric_chooser').val() == "") {
-      alert("Host regular expression and metric name can't be blank");
-      return false;
-  }
-  $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-  $.get('graph_all_periods.php', 
-        $("#aggregate_graph_form").serialize() + "&aggregate=1&embed=1", 
-        function(data) {$("#aggregate_graph_display").html(data);});
-  return false;
 }
 
 function metricActionsAggregateGraph(args) {
