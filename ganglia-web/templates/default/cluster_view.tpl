@@ -75,8 +75,8 @@ $(function() {
   #effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
   #effect h3 { margin: 0; padding: 0.4em; text-align: center; }
   #heatmap-fig {
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
   }
 
 </style>
@@ -106,7 +106,7 @@ $(function() {
 <table border="0" cellspacing=5 width="100%">
 <tr>
   <td class="title" colspan="2">
-  <font size="+1">Overview of {$cluster}</font>
+  <font size="+1">Overview of {$cluster} @ {$localtime}</font>
   </td>
 </tr>
 
@@ -119,7 +119,6 @@ $(function() {
  <tr><td>&nbsp;</td></tr>
  <tr><td colspan=2><font class="nobr">Current Load Avg (15, 5, 1m):</font><br>&nbsp;&nbsp;<b>{$cluster_load}</b></td></tr>
  <tr><td colspan=2>Avg Utilization (last {$range}):<br>&nbsp;&nbsp;<b>{$cluster_util}</b></td></tr>
- <tr><td colspan=2>Localtime:<br>&nbsp;&nbsp;<b>{$localtime}</b></td></tr>
  </table>
 
 {if isset($extra)}

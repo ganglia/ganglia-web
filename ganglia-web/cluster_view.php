@@ -431,10 +431,12 @@ if ( isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1 ) {
 
   $string_array[] = "[" . join(",", $matrix_array[$yindex]) . "]";
 
+  $conf['heatmap_size'] = 200;
+
   $heatmap = join(",", $string_array);
 
   $data->assign("heatmap", $heatmap);
-  $data->assign("heatmap_size", floor(250/$matrix));
+  $data->assign("heatmap_size", floor($conf['heatmap_size']/$matrix));
 
 }
 
