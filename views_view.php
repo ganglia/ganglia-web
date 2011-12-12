@@ -143,6 +143,11 @@ if (isset($_GET['add_to_view'])) {
             $item_array["cluster"] = $_GET['c'];
           }
 
+          if ( isset($_GET['h']) ) { $item_array['host'] = $_GET['h']; unset($item_array['host_regex']); }
+          if ( isset($_GET['m']) ) { $item_array['metric'] = $_GET['m']; unset($item_array['metric_regex']); }
+          if ( isset($_GET['g']) ) { $item_array['graph'] = $_GET['g']; }
+          if ($item_array['host_regex'] == null) $item_array['host_regex'] = '.*';
+
           $view['items'][] = $item_array;
           unset($item_array);
 
