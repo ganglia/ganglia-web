@@ -8,6 +8,20 @@
 }
 </style>
 <script>
+  function createAggregateGraph() {
+    if ($('#hreg').val() == "" || $('#metric_chooser').val() == "") {
+      alert("Host regular expression and metric name can't be blank");
+      return false;
+    }
+    var params = $("#aggregate_graph_form").serialize() + "&aggregate=1";
+    $("#show_direct_link").html("<a href='graph_all_periods.php?" + params + "'>Direct Link to this aggregate graph</a>");
+    $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
+    $.get('graph_all_periods.php', params + "&embed=1" , function(data) {
+      $("#aggregate_graph_display").html(data);
+    });
+    return false;
+  }
+
 $(function() {
 
   $( ".ag_buttons" ).button();
@@ -75,20 +89,6 @@ $(function() {
       return true;
     else
       return false;
-  }
-
-  function createAggregateGraph() {
-    if ($('#hreg').val() == "" || $('#metric_chooser').val() == "") {
-      alert("Host regular expression and metric name can't be blank");
-      return false;
-    }
-    var params = $("#aggregate_graph_form").serialize() + "&aggregate=1";
-    $("#show_direct_link").html("<a href='graph_all_periods.php?" + params + "'>Direct Link to this aggregate graph</a>");
-    $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-    $.get('graph_all_periods.php', params + "&embed=1" , function(data) {
-      $("#aggregate_graph_display").html(data);
-    });
-    return false;
   }
 
   $( "#metric_chooser" ).autocomplete({
