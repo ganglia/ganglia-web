@@ -6,6 +6,14 @@ $(function(){
   }
 
   g_overlay_events = ($("#overlay_events").val() == "true");
+
+  var g_tabIndex = {'m' : 0, 's' : 1, 'v' : 2, 'agg' : 3, 'ch' : 4};
+  var i = 5;
+  if (g_overlay_events)
+    g_tabIndex["ev"] = i++;
+  g_tabIndex["rot"] = i++;
+  g_tabIndex["mob"] = i++;
+
   g_tabName = ["m", "s", "v", "agg", "ch"];
   if (g_overlay_events)
     g_tabName.push("ev");
@@ -17,20 +25,18 @@ $(function(){
   if (tabs[0]) {
     tabs.tabs();
     // Restore previously selected tab
-    var selected_tab = $.cookie("ganglia-selected-tab-" + window.name);
-    if ((selected_tab != null) && (selected_tab.length > 0)) {
+    var selected_tab = $("#selected_tab").val();
+    //alert("selected_tab = " + selected_tab);
+    if (typeof g_tabIndex[selected_tab] != 'undefined') {
       try {
-        var tab_index = parseInt(selected_tab, 10);
-        if (!isNaN(tab_index) && (tab_index >= 0)) {
-          //alert("ganglia-selected-tab: " + tab_index);
-          tabs.tabs("select", tab_index);
-          if (g_tabName[tab_index] == "rot")
-            autoRotationChooser();
-        }
+        //alert("Selecting tab: " + selected_tab);
+        tabs.tabs("select", g_tabIndex[selected_tab]);
+        if (selected_tab == "rot")
+          autoRotationChooser();
       } catch (err) {
         try {
           alert("Error(ganglia.js): Unable to select tab: " + 
-                tab_index + ". " + err.getDescription());
+                selected_tab + ". " + err.getDescription());
         } catch (err) {
           // If we can't even show the error, fail silently.
         }
