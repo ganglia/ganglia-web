@@ -67,11 +67,11 @@ if ( isset($_GET['mobile'])) {
 $query_string = "&" . join("&", $query_string_array);
 
 // Descriptive host/aggregate graph
-if (isset($_GET['h']))
+if (isset($_GET['h']) && ($_GET['h'] != ''))
   $description = $_GET['h'];
-else if (isset($_GET['c']))
+else if (isset($_GET['c']) && ($_GET['c'] != ''))
   $description = $_GET['c'];
-else if (is_array($_GET['hreg']) )
+else if (is_array($_GET['hreg']))
   $description = join(",", $_GET['hreg']);
 else
   $description = "Unknown";
@@ -190,7 +190,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 
   function openDecompose($url) {
     $.cookie("ganglia-selected-tab-" + window.name, 0);
-    location.href=$url;
+    location.href="./index.php" + $url + "&tab=m";
   }
 
 </script>
