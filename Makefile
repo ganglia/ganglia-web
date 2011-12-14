@@ -37,7 +37,7 @@ version.php:	version.php.in
 	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
 
 dist-dir:	default
-	rsync --exclude "$(DIST_DIR)" --exclude ".svn" --exclude ".git*" --exclude "*~" -a . $(DIST_DIR) && \
+	rsync --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*~" -a . $(DIST_DIR) && \
 	cp -a $(TARGETS) $(DIST_DIR)
 
 install:	dist-dir
