@@ -5,6 +5,7 @@
 #show_direct_link {
   background-color: #eeeeee;
   text-align: center;
+  padding: 5px;
 }
 </style>
 <script>
