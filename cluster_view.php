@@ -408,7 +408,10 @@ if ( sizeof($overflow_list) > 0 ) {
 }
 $data->assign("overflow_list", $overflow_list);
 
-# Creates a heatmap
+
+////////////////////////////////////////////////////////////////////////////////
+// Creates a heatmap
+////////////////////////////////////////////////////////////////////////////////
 if ( isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1 ) {
   $num_hosts = count($host_load);
 
@@ -439,6 +442,14 @@ if ( isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1 ) {
   $data->assign("heatmap_size", floor($conf['heatmap_size']/$matrix));
 
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Show stacked graphs
+////////////////////////////////////////////////////////////////////////////////
+if ( isset($conf['show_stacked_graphs']) and $conf['show_stacked_graphs'] == 1  and ! preg_match("/_report/", $metricname) ) {
+   $data->assign("stacked_graph_args","m=$metricname&c=$cluster_url&r=$range&st=$cluster[LOCALTIME]");
+}
+
 
 $dwoo->output($tpl, $data);
 ?>
