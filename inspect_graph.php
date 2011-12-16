@@ -55,6 +55,13 @@ $(function () {
 
   function utcTimeStr(tstamp) {
     var date = new Date(tstamp);
+
+    var month = date.getUTCMonth();
+    if ( month < 10 )
+      month = "0" + month;
+    var day = date.getUTCDay();
+    if ( day < 10 )
+      day = "0" + day;
     var hr = date.getUTCHours();
     if (hr < 10)
       hr = "0" + hr; 
@@ -64,7 +71,7 @@ $(function () {
     var sec = date.getUTCSeconds();
     if (sec < 10)
       sec = "0" + sec; 
-    return hr + ":" + min + ":" + sec;
+    return date.getUTCFullYear() + "-" + month + "-" + day + " " + hr + ":" + min + ":" + sec;
   }
 
   function showTooltip(x, y, contents) {

@@ -825,7 +825,14 @@ if($command || $graphite_url) {
         switch ( $conf['graph_engine'] ) {  
       case "flot":
           case "rrdtool":
-            passthru($command);
+            if (strlen($command) < 100000) {
+              passthru($command);
+            } else {
+              $tf = tempnam("/tmp", "ganglia-graph");
+              file_put_contents($tf, $command);
+              passthru("/bin/bash $tf");
+              unlink($tf);
+            }
             break;
           case "graphite":
             echo file_get_contents($graphite_url);

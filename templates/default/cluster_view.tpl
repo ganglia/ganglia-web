@@ -77,8 +77,7 @@ $(function() {
   #heatmap-fig {
     width: 200px;
     height: 200px;
-  }
-
+  } 
 </style>
 
 <div id="metric-actions-dialog" title="Metric Actions">
@@ -182,16 +181,15 @@ vis.render();
 $("#metrics-picker").val("{$metric_name}");
 </script>
 
+
+<div id="cluster_view_chooser">
 <table border="0" width="100%">
   <tr>
-  <td class="title">
-  <font size="-1">
-  <span class="nobr">Show Hosts Scaled:
+  <td class="title" style="font-size: 12px">
+  Show Hosts Scaled:
   {foreach $showhosts_levels id showhosts implode=""}
-  {$showhosts.name}<input type=radio name="sh" value="{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}>
-  {/foreach}
-  </span>
-  </font>
+  <input type="radio" name="sh" value="{$id}" id="shch{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}><label for="shch{$id}">{$showhosts.name}</label>
+  {/foreach}&nbsp;
   |
   <span class="nobr">{$cluster} <strong>{$metric}</strong>
   last <strong>{$range}</strong>
@@ -203,10 +201,10 @@ $("#metrics-picker").val("{$metric_name}");
    <span class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</span>
    </font>
 {/if}
-
   </td>
 </tr>
 </table>
+</div>
 
 <center>
 <table id=graph_sorted_list>
@@ -229,4 +227,9 @@ $("#metrics-picker").val("{$metric_name}");
 </p>
 {/if}
 </center>
+<script>
+$(function() {
+  $( "#cluster_view_chooser" ).buttonset();
+});
+</script>
 <!-- End cluster_view.tpl -->
