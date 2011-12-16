@@ -8,8 +8,6 @@ $conf['ganglia_dir'] = dirname(__FILE__);
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
 include_once $conf['ganglia_dir'] . "/functions.php";
-include_once $conf['ganglia_dir'] . "/ganglia.php";
-include_once $conf['ganglia_dir'] . "/get_ganglia.php";
 
 $clustername = $_GET['c'];
 $metricname = $_GET['m'];
@@ -40,20 +38,24 @@ $total_cmd = " CDEF:'total'=0";
 # We'll get the list of hosts from here
 retrieve_metrics_cache();
 
-$counter = 0;
+unset($hosts);
 
 foreach($index_array['cluster'] as $host => $cluster ) {
     
     if ( $cluster == $clustername ) {
+        $hosts[] = $host;
+    }
+}
+
+foreach ( $hosts as $index => $host ) {
         $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
         if (file_exists($filename)) {
             $c++;
             $command .= " DEF:'a$c'='$filename':'sum':AVERAGE";
             $total_cmd .= ",a$c,+";
         }
-    }
 }
-
+    
 $mean_cmd = " CDEF:'mean'=total,$c,/";
 
 $first = array_shift($hosts);
