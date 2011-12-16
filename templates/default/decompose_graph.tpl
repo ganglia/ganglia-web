@@ -5,6 +5,19 @@
 }
 </style>
 <script>
+  function refreshDecomposeGraph() {
+    $("#decompose-graphs img").each(function (index) {
+	var src = $(this).attr("src");
+	if (src.indexOf("graph.php") == 0) {
+          var l = src.indexOf("&_=");
+          if (l != -1)
+            src = src.substring(0, l);
+	  var d = new Date();
+	  $(this).attr("src", src + "&_=" + d.getTime());
+	}    
+    });
+  }
+
   $(function() {
     $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     $("#create_view_button")

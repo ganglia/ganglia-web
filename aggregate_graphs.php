@@ -9,17 +9,34 @@
 }
 </style>
 <script>
+  function refreshAggregateGraph() {
+    $("#aggregate_graph_display img").each(function (index) {
+	var src = $(this).attr("src");
+	if (src.indexOf("graph.php") == 0) {
+          var l = src.indexOf("&_=");
+          if (l != -1)
+            src = src.substring(0, l);
+	  var d = new Date();
+	  $(this).attr("src", src + "&_=" + d.getTime());
+	}    
+    });
+  }
+
   function createAggregateGraph() {
     if ($('#hreg').val() == "" || $('#metric_chooser').val() == "") {
       alert("Host regular expression and metric name can't be blank");
       return false;
     }
+
     var params = $("#aggregate_graph_form").serialize() + "&aggregate=1";
     $("#show_direct_link").html("<a href='graph_all_periods.php?" + params + "'>Direct Link to this aggregate graph</a>");
     $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-    $.get('graph_all_periods.php', params + "&embed=1" , function(data) {
+    $.ajax({url: 'graph_all_periods.php', 
+	    cache: false,
+	    data: params + "&embed=1" , 
+	    success: function(data) {
       $("#aggregate_graph_display").html(data);
-    });
+	}});
     return false;
   }
 

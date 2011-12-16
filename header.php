@@ -1,6 +1,12 @@
 <?php session_start();
 /* $Id: header.php 2548 2011-04-06 18:51:07Z vvuksan $ */
 
+if (isset($_GET['date_only'])) {
+  $d = date("r");
+  echo $d;
+  exit(0);
+}
+
 # RFM - These definitions are here to eliminate "undefined variable"
 # error messages in ssl_error_log.
 !isset($initgrid) and $initgrid = 0;

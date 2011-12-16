@@ -18,11 +18,36 @@
     var server_utc_offset={$server_utc_offset};
     var availablemetrics = [ {$available_metrics} ];
 
-    function refresh() {
-      ganglia_form.submit();
+    var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+
+    function refreshHeader() {
+      $.get('header.php?date_only=1', function(data) {
+        var title = $("#page_title").text();
+        var l = title.lastIndexOf(" for ");
+        title = title.substring(0, l);
+        title += " for " + data;
+        $("#page_title").text(title);
+	});
     }
 
-    var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+    function refresh() {
+      var selected_tab = $("#selected_tab").val();
+      if (selected_tab == "agg") {
+        refreshAggregateGraph();
+        g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+      } else if (selected_tab == "v") {
+        refreshHeader();
+        if ($.isFunction(window.refreshView)) {
+          refreshView();
+          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+        } else if ($.isFunction(window.refreshDecomposeGraph)) {
+          refreshDecomposeGraph();
+          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+        } else
+          ganglia_form.submit();
+      } else
+        ganglia_form.submit();
+    }
 
     $(function(){
         $( "#metrics-picker" ).autocomplete({
@@ -129,7 +154,7 @@
   <table id="table_top_chooser" width="100%" cellpadding="4" cellspacing="0" border="0">
   <tr bgcolor="#DDDDDD">
      <td bgcolor="#DDDDDD">
-     <big><b>{$page_title} for {$date}</b></big>
+     <big><b id="page_title">{$page_title} for {$date}</b></big>
      </td>
      <td bgcolor="#DDDDDD" align="right">
      <input class="submit_button" type="submit" value="Get Fresh Data" />
