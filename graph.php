@@ -639,8 +639,7 @@ if ( $conf['overlay_nagios_events'] && ! in_array($range, $conf['overlay_events_
 //////////////////////////////////////////////////////////////////////////////
 if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" && ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
 
-  $events_json = file_get_contents($conf['overlay_events_file']);
-  $events_array = json_decode($events_json, TRUE);
+  $events_array = ganglia_events_get();
 
   if (!empty($events_array)) {
     

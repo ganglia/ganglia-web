@@ -9,6 +9,14 @@
 
 include_once ( dirname(__FILE__) . "/lib/json.php" );
 
+#
+# Load event API driver.
+#
+$driver = ucfirst(strtolower( !isset($conf['overlay_events_provider']) ? "Json" : $conf['overlay_events_provider'] ));
+if (file_exists( dirname(__FILE__) . "/lib/Events/Driver_${driver}.php")) {
+  include_once( dirname(__FILE__) . "/lib/Events/Driver_${driver}.php" );
+}
+
 #------------------------------------------------------------------------------
 # Allows a form of inheritance for template files.
 # If a file does not exist in the chosen template, the

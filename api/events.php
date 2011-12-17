@@ -31,9 +31,7 @@ if ( !isset($_GET['action']) ) {
   api_return_error( "Error: You need to specify an action at a minimum" );
 }
 
-$events_json = file_get_contents($conf['overlay_events_file']);
-
-$events_array = json_decode($events_json, TRUE);
+$events_array = ganglia_events_get();
 
 switch ( $_GET['action'] ) {
  
