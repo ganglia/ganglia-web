@@ -14,6 +14,7 @@ header("Content-Type: text/plain");
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
+include_once $conf['ganglia_dir'] . "/lib/function.php";
 include_once $conf['ganglia_dir'] . "/lib/common_api.php";
 
 if ( ! $conf['overlay_events'] ) {
@@ -31,12 +32,9 @@ if ( !isset($_GET['action']) ) {
   api_return_error( "Error: You need to specify an action at a minimum" );
 }
 
-$events_array = ganglia_events_get();
-
 switch ( $_GET['action'] ) {
  
   case "add":
-
     if ( ! isset($_GET['start_time']) || ! isset($_GET['summary']) || ! isset($_GET['host_regex']) ) {
       api_return_error( "Error: You need to supply start_time, summary, host_regex at a minimum" );
     }
@@ -62,20 +60,13 @@ switch ( $_GET['action'] ) {
 
     if ( isset($_GET['end_time']) )
       $event['end_time'] = $_GET['end_time'] == "now" ? time() : strtotime($_GET['end_time']);
-  
-    $events_array[] = $event;
 
-    $json = json_encode($events_array);
-
-    if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
-      api_return_error( "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong." );
-    } else {
-      $message = array( "status" => "ok", "event_id" => $event_id);
-    }
-
+    $message = ganglia_events_add( $event );
     break;
 
   case "edit":
+
+    $events_array = ganglia_events_get();
 
     $event_found = 0;
     if ( isset($_GET['event_id']) ) {
@@ -133,6 +124,8 @@ switch ( $_GET['action'] ) {
 
   case "remove":
   case "delete":
+
+    $events_array = ganglia_events_get();
 
     $event_found = 0;
     if ( isset($_GET['event_id']) ) {
