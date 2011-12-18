@@ -14,7 +14,7 @@ header("Content-Type: text/plain");
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
-include_once $conf['ganglia_dir'] . "/lib/function.php";
+include_once $conf['ganglia_dir'] . "/functions.php";
 include_once $conf['ganglia_dir'] . "/lib/common_api.php";
 
 if ( ! $conf['overlay_events'] ) {
