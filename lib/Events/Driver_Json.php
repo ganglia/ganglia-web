@@ -6,7 +6,7 @@ include_once $conf['ganglia_dir'] . "/eval_conf.php";
 include_once $conf['ganglia_dir'] . "/lib/common_api.php";
 
 //////////////////////////////////////////////////////////////////////////////
-// Add an event to  the JSON
+// Add an event to the JSON event array
 //////////////////////////////////////////////////////////////////////////////
 function ganglia_events_add( $event ) {
 	global $conf;
@@ -22,19 +22,53 @@ function ganglia_events_add( $event ) {
 } // end method ganglia_events_add
 
 //////////////////////////////////////////////////////////////////////////////
-// Gets a list of all events
+// Gets a list of all events in an optional time range
 //////////////////////////////////////////////////////////////////////////////
-function ganglia_events_get() {
-	global $conf;
-	$events_json = file_get_contents($conf['overlay_events_file']);
-	$events_array = json_decode($events_json, TRUE);
-	return $events_array;
+function ganglia_events_get( $start = NULL, $end = NULL ) {
+  global $conf;
+  $events_json = file_get_contents($conf['overlay_events_file']);
+  $orig_events_array = json_decode($events_json, TRUE);
+  
+  // Save some time, pass back if no values given
+  if ( $start == NULL && $end == NULL ) {
+    return $orig_events_array;
+  }
+
+  $events_array = array();
+  foreach ( $events_array AS $k => $v ) {
+    if ( ( $start == NULL || $start > $v['start_time'] ) && ( $end == NULL || $end < $v['start_time'] ) ) {
+      $events_array[] = $v;
+    }
+  }
+  return $events_array;
 } // end method ganglia_events_get
 
-
+function ganglia_event_delete( $event_id ) {
+  global $conf;
+  $orig_events_array = ganglia_events_get();
+  $events_array = array();
+  $event_found = 0;
+  foreach ( $orig_events_array AS $k => $v ) {
+    if ( $v['event_id'] != $event_id ) {
+      $events_array[] = $v;
+    } else {
+      $event_found = 1;
+    }
+  }
+  if ( $event_found == 1 ) {
+    $json = json_encode($events_array);
+    if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
+      api_return_error( "Can't write to " . $conf['overlay_events_file'] . ". Please check permissions." );
+    } else {
+      $message = array( "status" => "ok", "event_id" => $event_id );
+    }
+  }
+  api_return_error( "Event ID ". $event_id . " not found" );
+  return NULL; // never reached
+} // end method ganglia_event_delete
 
 function ganglia_event_modify( $event ) {
-	global $conf;
+  global $conf;
   $event_found = 0;
   $events_array = ganglia_events_get();
   $new_events_array = array();

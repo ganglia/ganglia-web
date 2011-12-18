@@ -71,38 +71,10 @@ switch ( $_GET['action'] ) {
   case "remove":
   case "delete":
 
-    $events_array = ganglia_events_get();
-
-    $event_found = 0;
-    if ( isset($_GET['event_id']) ) {
-      foreach ( $events_array as $key => $event ) {
-	if ( $event['event_id'] == $_GET['event_id'] ) {
-	  $event_found = 1;
-	} else {
-	  $new_events_array[] = $event;
-	}
-
-      } // end of foreach ( $events_array as $key => $event
-
-      if ( $event_found == 1 ) {
-
-	$json = json_encode($new_events_array);
-
-	if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
-          api_return_error( "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong." );
-	} else {
-	  $message = array( "status" => "ok", "message" => "Event ID " . $event_id . " removed successfully" );
-	}
-
-      } else {
-	  api_return_error( "Event ID ". $event_id . " not found" );
-      }
-      
-      unset($new_events_array);
-
-    } else {
+    if ( !isset( $_GET['event_id'] ) ) {
       api_return_error( "No event_id has been supplied." );
     }
+    $message = ganglia_event_delete( $_GET['event_id'] );
 
     break;
 

@@ -639,29 +639,32 @@ if ( $conf['overlay_nagios_events'] && ! in_array($range, $conf['overlay_events_
 //////////////////////////////////////////////////////////////////////////////
 if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" && ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
 
-  $events_array = ganglia_events_get();
+  $color_count = sizeof($conf['graph_colors']);
+  $counter = 0;
+  $color_counter = 0;
+
+  // In order not to pollute the command line with all the possible VRULEs
+  // we need to find the time range for the graph
+  if ( $rrdtool_graph['end'] == "-N" or $rrdtool_graph['end'] == "N") {
+    $end = time();
+  } else if ( is_numeric($rrdtool_graph['end']) ) {
+    $end = $rrdtool_graph['end'];
+  }
+
+  if ( preg_match("/\-([0-9]*)(s)/", $rrdtool_graph['start'] , $out ) ) {
+    $start = time() - $out[1];
+  } else if ( is_numeric($rrdtool_graph['start']) ) {
+    $start = $rrdtool_graph['start'];
+  } else {
+    // If it's not 
+    $start = time() - 157680000;
+  }
+
+  // Get array of events for time range
+  $events_array = ganglia_events_get( $start, $end );
 
   if (!empty($events_array)) {
     
-    $color_count = sizeof($conf['graph_colors']);
-    $counter = 0;
-    $color_counter = 0;
-
-    // In order not to pollute the command line with all the possible VRULEs
-    // we need to find the time range for the graph
-    if ( $rrdtool_graph['end'] == "-N" or $rrdtool_graph['end'] == "N")
-      $end = time();
-    else if ( is_numeric($rrdtool_graph['end']) )
-      $end = $rrdtool_graph['end'];
-
-    if ( preg_match("/\-([0-9]*)(s)/", $rrdtool_graph['start'] , $out ) ) {
-      $start = time() - $out[1];
-    } else if ( is_numeric($rrdtool_graph['start']) )
-      $start = $rrdtool_graph['start'];
-    else
-      // If it's not 
-      $start = time() - 157680000;
-
     // Preserve original rrdtool command. That's the one we'll run regex checks
     // against
     $original_command = $command;
