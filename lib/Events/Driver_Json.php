@@ -110,7 +110,7 @@ function ganglia_event_modify( $event ) {
     if ( file_put_contents($conf['overlay_events_file'], $json) === FALSE ) {
       api_return_error( "Can't write to file " . $conf['overlay_events_file'] . ". Perhaps permissions are wrong." );
     } else {
-      $message = array( "status" => "ok", "message" => "Event ID " . $event_id . " removed successfully" );
+      $message = array( "status" => "ok", "message" => "Event ID " . $event_id . " modified successfully" );
     }
   } // end if event_found
 

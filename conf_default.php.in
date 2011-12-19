@@ -307,10 +307,13 @@ $conf['overlay_events_exclude_ranges'] = array("month", "year");
 # lines, anything else (including blanks) means a dashed line.
 $conf['overlay_events_line_type'] = "dashed";
 
-# What is the provider use to provide events. Currently only JSON files supported
+# What is the provider use to provide events.
+# Examples: "json", "mdb2"
 $conf['overlay_events_provider'] = "json";
 # Where is the Overlay events file stored
 $conf['overlay_events_file'] = $conf['conf_dir'] . "/events.json";
+# If using MDB2, connection string:
+$conf['overlay_events_dsn'] = "mysql://dbuser:dbpasword@localhost/ganglia";
 
 # For event shading.  Value in hex, 'FF' = 100% opaque.
 # the _shade_ value should be less than _tick_
