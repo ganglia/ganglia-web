@@ -18,6 +18,32 @@ if( file_exists( $base_dir . "/conf.php" ) ) {
 }
 
 $errors = array();
+
+if ($conf['overlay_events'] && ($conf['overlay_events_provider'] == "json")) {
+  $events_file = $conf['overlay_events_file'];
+  if (!file_exists($events_file)) {
+    $f = fopen($events_file, "w");
+    if ($f === FALSE)
+      $errors[] = "Unable to create overlay events file: " . $events_file;
+    else {
+      fclose($f);
+      chmod($events_file, 0755);
+    }
+  }
+
+  $event_color_map_file = $conf['overlay_events_color_map_file']; 
+  if (!file_exists($event_color_map_file)) {
+    $f = fopen($event_color_map_file, "w");
+    if ($f === FALSE)
+      $errors[] = "Unable to create event color map file: " . 
+	$event_color_map_file;
+    else {
+      fclose($f);
+      chmod($event_color_map_file, 0755);
+    }
+  }
+}
+
 // Installation validity checks
 if ( ! isset($conf['rrds']) ||  ! is_readable($conf['rrds']) ) {
   $errors[] = "RRDs directory '${conf['rrds']}' is not readable.<br/>".

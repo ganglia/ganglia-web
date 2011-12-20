@@ -45,6 +45,9 @@
           g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
         } else
           ganglia_form.submit();
+      } else if (selected_tab == "ev") {
+        refreshOverlayEvent();
+        g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
       } else
         ganglia_form.submit();
     }

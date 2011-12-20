@@ -312,6 +312,7 @@ $conf['overlay_events_line_type'] = "dashed";
 $conf['overlay_events_provider'] = "json";
 # Where is the Overlay events file stored
 $conf['overlay_events_file'] = $conf['conf_dir'] . "/events.json";
+$conf['overlay_events_color_map_file'] = $conf['conf_dir'] . "/event_color.json";
 # If using MDB2, connection string:
 $conf['overlay_events_dsn'] = "mysql://dbuser:dbpasword@localhost/ganglia";
 
