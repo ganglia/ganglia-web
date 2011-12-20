@@ -1,26 +1,46 @@
+<?php
+if (!isset($_GET['events_only'])) {
+?>
 <script>
+function refreshOverlayEvent() {
+  var d = new Date();
+  $.get('events.php?events_only=1&_=' + d.getTime(), function(data) {
+    $("#overlay_event_table").html(data);
+  });
+}
+
 $(function(){
-  $( "#add-event-dialog" ).dialog({autoOpen: false,height: 300,width: 550,modal: true});
-  $( "#event-start-date" ).datepicker({ showOn: "button", buttonImage: "img/calendar.gif", buttonImageOnly: true });
-  $( "#event-end-date" ).datepicker({showOn: "button", buttonImage: "img/calendar.gif", buttonImageOnly: true });
-//  $('#event-start-time').timepicker({showOn: 'button',button: '.timepicker_button_trigger'});
-//  $('#event-end-time').timepicker({showOn: 'button',button: '.timepicker_button_trigger'});
+  $( "#add-event-dialog" ).dialog({autoOpen: false,
+	                           height: 300,
+                                   width: 550,
+                                   modal: true});
+  $( "#event-start-date" ).datetimepicker({showOn: "button",
+      	                                   constrainInput: false,
+                                           buttonImage: "img/calendar.gif", 
+                                           buttonImageOnly: true});
+  $( "#event-end-date" ).datetimepicker({showOn: "button",
+                                       	 constrainInput: false,
+                                         buttonImage: "img/calendar.gif",
+                                         buttonImageOnly: true});
   $('#add-event-button').button();
 });
+
 function eventActions(action) {
   $("#event-message").html('<img src="img/spinner.gif">');
   var queryString = "";
-  if ( ( $("#event-start-date").val() != "" ) && ( $("#event-start-time").val() != "" ) )
-    queryString = queryString + "&start_time=" + $("#event-start-date").val() + " " + $("#event-start-time").val();
-  if ( ($("#event-end-date").val() != "") && ($("#event-end-time").val() != "" ))
-    queryString = queryString + "&end_time=" + $("#event-end-date").val() + " " + $("#event-end-time").val();
+  if ($("#event-start-date").val() != "")
+    queryString += "&start_time=" + $("#event-start-date").val();
+  if ($("#event-end-date").val() != "")
+    queryString += "&end_time=" + $("#event-end-date").val();
   if ( $("#host_reg").val() != "" ) {
-    queryString = queryString + "&host_regex=" + $("#host_regex").val();    
+    queryString += "&host_regex=" + $("#host_regex").val();    
   } else {
     alert("You need to specify Host Regex");
     return false;
   }
-  $.get('api/events.php', "action=" + action + "&summary=" + $("#event_summary").val() + queryString, function(data) {
+  $.get('api/events.php', 
+        "action=" + action + 
+        "&summary=" + $("#event_summary").val() + queryString, function(data) {
       $("#event-message").html(data);
   });
 }
@@ -30,12 +50,10 @@ function eventActions(action) {
 You can specify either start date or end date or both.<p>
 <table width=90%>
 <form id="event-actions-form">
-<tr><td>Event Summary:</td><td colspan=2><input type="text" name="summary" id="event_summary" size=20></td></tr>
-<tr><td>Host Regex:</td><td colspan=2><input type="text" name="host_regex" id="host_regex" size=20></td></tr>
-<tr><td>Start Date:</td><td><input type="text" title="Start Date" name="start_date" id="event-start-date" size=10>
-   <td><input type=text size=5 id="event-start-time"></td></tr>
-<tr><td>End Date:</td><td><input type="text" title="End Date" name="end_date" id="event-end-date" size=10>
-   <td><input type=text size=5 id="event-end-time"></td></tr>
+<tr><td>Event Summary:</td><td><input type="text" name="summary" id="event_summary" size=20></td></tr>
+<tr><td>Host Regex:</td><td><input type="text" name="host_regex" id="host_regex" size=20></td></tr>
+<tr><td>Start Date:</td><td><input type="text" title="Start Date" name="start_date" id="event-start-date" size=20></td></tr>
+<tr><td>End Date:</td><td><input type="text" title="End Date" name="end_date" id="event-end-date" size=20></td></tr>
 <tr><td>
 <button onclick="eventActions('add');" id="add-event-button">Add</button>
 </td><td colspan=2><div id="event-message"></div></td></tr>
@@ -46,7 +64,10 @@ You can specify either start date or end date or both.<p>
 Following is a list of known overlay events<p>
 
 
-<table width=90%>
+<?php 
+} 
+?>
+<table id="overlay_event_table" width=90%>
 <tr>
 <th>Start Time</th>
 <th>End Time</th>
