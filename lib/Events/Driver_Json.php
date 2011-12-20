@@ -35,7 +35,7 @@ function ganglia_events_get( $start = NULL, $end = NULL ) {
   }
 
   $events_array = array();
-  foreach ( $events_array AS $k => $v ) {
+  foreach ( $orig_events_array AS $k => $v ) {
     if ( ( $start == NULL || $start > $v['start_time'] ) && ( $end == NULL || $end < $v['start_time'] ) ) {
       $events_array[] = $v;
     }
