@@ -159,9 +159,12 @@ if (($context != 'views') && ($context != 'compare_hosts')) {
   }
 
   # Show grid.
-  $mygrid = ($self == "unspecified") ? "" : $self;
-  $node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
-  $node_menu .= "<B>&gt;</B>\n";
+  if ((($self != "unspecified") && !$parentgrid) ||
+      $conf['always_display_grid_view']) {
+    $mygrid = ($self == "unspecified") ? "" : $self;
+    $node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
+    $node_menu .= "<B>&gt;</B>\n";
+  }
 
   if ($physical)
     $node_menu .= hiddenvar("p", $physical);
