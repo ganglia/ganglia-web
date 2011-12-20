@@ -311,6 +311,7 @@ $conf['overlay_events_line_type'] = "dashed";
 $conf['overlay_events_provider'] = "json";
 # Where is the Overlay events file stored
 $conf['overlay_events_file'] = $conf['conf_dir'] . "/events.json";
+$conf['overlay_events_color_map_file'] = $conf['conf_dir'] . "/event_color.json";
 
 # For event shading.  Value in hex, 'FF' = 100% opaque.
 # the _shade_ value should be less than _tick_
