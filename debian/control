@@ -3,8 +3,10 @@ Section: net
 Priority: optional
 Maintainer: Jeff Buchbinder <jeff@freemedsoftware.org>
 Homepage: http://www.ganglia.info/
-Build-Depends: debhelper (>> 5.0.0), rsync
+Build-Depends: debhelper (>= 7.0.0), rsync
 Standards-Version: 3.8.4
+Vcs-Git: git://github.com/vvuksan/ganglia-misc.git
+Vcs-Browser: http://github.com/vvuksan/ganglia-misc
 
 Package: ganglia-webfrontend
 Architecture: all
