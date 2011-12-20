@@ -329,4 +329,8 @@ $conf['heatmaps_enabled'] = 1;
 # time range items are excluded.
 $conf['decorated_graph_title'] = true;
 
+# If set to yes, will display stacked graph (aggregated metric across hosts) in cluster view
+$conf['show_stacked_graphs'] = 0;
+
+
 ?>

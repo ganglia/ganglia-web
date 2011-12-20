@@ -20,6 +20,10 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 endif
 
 
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
 config.status: configure
 	dh_testdir
 build: build-stamp

@@ -12,9 +12,7 @@ if ( !isset($_GET['action']) ) {
   api_return_error( "Error: You need to specify an action at a minimum" );
 }
 
-$events_json = file_get_contents($conf['overlay_events_file']);
-
-$events_array = json_decode($events_json, TRUE);
+$events_array = ganglia_events_get();
 
 if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
   api_return_error("You do not have access to view views.");

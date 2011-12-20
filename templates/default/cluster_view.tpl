@@ -175,6 +175,20 @@ vis.render();
  </td>
 </tr>
 </table>
+{if $stacked_graph_args}
+<table>
+<tr>
+  <td class=title colspan="2">
+  <font size="+1">Stacked Graph</font> 
+  </td>
+</tr>
+<tr>
+  <td>
+  <center><img src="stacked.php?{$stacked_graph_args}" alt="{$cluster} {$metric}"></center>
+  </td>
+</tr>
+</table>
+{/if}
 
 <script type="text/javascript">
 // Need to set the field value to metric name

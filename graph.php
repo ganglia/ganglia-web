@@ -643,11 +643,10 @@ if ( $conf['overlay_nagios_events'] &&
 //////////////////////////////////////////////////////////////////////////////
 // Check whether user wants to overlay events on graphs
 //////////////////////////////////////////////////////////////////////////////
-if ( $conf['overlay_events'] && 
-     $conf['graph_engine'] == "rrdtool" && 
-     ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
-  $events_json = file_get_contents($conf['overlay_events_file']);
-  $events_array = json_decode($events_json, TRUE);
+if ($conf['overlay_events'] && 
+    $conf['graph_engine'] == "rrdtool" && 
+    ! in_array($range, $conf['overlay_events_exclude_ranges'])) {
+  $events_array = ganglia_events_get();
 
   if (!empty($events_array)) {
     $event_color_json = 
