@@ -41,10 +41,10 @@ dist-dir:	default
 	cp -a $(TARGETS) $(DIST_DIR)
 
 install:	dist-dir
-	mkdir -p $(DESTDIR) $(GWEB_DWOO) && \
-	rsync --exclude debian -a $(DIST_DIR)/conf/ $(DESTDIR)/$(GANGLIA_STATEDIR)/conf && \
+	mkdir -p $(DESTDIR) $(DESTDIR)$(GWEB_DWOO) && \
+	rsync --exclude debian -a $(DIST_DIR)/conf/ $(DESTDIR)$(GANGLIA_STATEDIR)/conf && \
 	cp -a $(DIST_DIR)/* $(DESTDIR) && \
-	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_DWOO) $(DESTDIR)/$(GANGLIA_STATEDIR)/conf
+	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)$(GWEB_DWOO) $(DESTDIR)$(GANGLIA_STATEDIR)/conf
 
 dist-gzip:	dist-dir
 	if [ -f $(DIST_TARBALL) ]; then \
@@ -53,5 +53,5 @@ dist-gzip:	dist-dir
 	tar -czf $(DIST_TARBALL) $(DIST_DIR)/*
 
 uninstall:
-	rm -rf $(DESTDIR) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
+	rm -rf $(DESTDIR)
 
