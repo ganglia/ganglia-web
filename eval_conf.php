@@ -30,7 +30,9 @@ if ($conf['overlay_events'] && ($conf['overlay_events_provider'] == "json")) {
       chmod($events_file, 0755);
     }
   }
+}
 
+if ($conf['overlay_events']) {
   $event_color_map_file = $conf['overlay_events_color_map_file']; 
   if (!file_exists($event_color_map_file)) {
     $f = fopen($event_color_map_file, "w");
