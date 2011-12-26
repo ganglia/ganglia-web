@@ -667,7 +667,7 @@ if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" && ! in_array
   }
 
   // Get array of events for time range
-  $events_array = ganglia_events_get();
+  $events_array = ganglia_events_get($start, $end);
 
   if (!empty($events_array)) {
     $event_color_json = 
