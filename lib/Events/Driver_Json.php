@@ -24,7 +24,7 @@ function ganglia_events_add( $event ) {
 } // end method ganglia_events_add
 
 //////////////////////////////////////////////////////////////////////////////
-// Gets a list of all events in an optional time range
+// Gets a list of all events that overlap with a specified time range
 //////////////////////////////////////////////////////////////////////////////
 function ganglia_events_get( $start = NULL, $end = NULL ) {
   global $conf;
@@ -37,10 +37,25 @@ function ganglia_events_get( $start = NULL, $end = NULL ) {
   }
 
   $events_array = array();
-  foreach ( $orig_events_array AS $k => $v ) {
-    if ( ( $start == NULL || $start > $v['start_time'] ) &&
-	 ( $end == NULL || $end < $v['start_time'] ) ) {
-      $events_array[] = $v;
+  foreach ($orig_events_array AS $k => $evt) {
+    if ($evt['end_time'] != NULL) { // Duration event
+      if ($start == NULL) {
+        if ($evt['start_time'] <= $end && $evt['end_time'] >= $end)
+	  $events_array[] = $evt;
+      } else if ($end == NULL) {
+        if ($evt['start_time'] <= $start && $evt['end_time'] >= $start)
+	  $events_array[] = $evt;
+      } else {
+        if ($evt['end_time'] >= $start && $evt['start_time'] <= $end)
+	  $events_array[] = $evt;
+      }
+    } else { // Instantaneous event
+      if ($start == NULL && $evt['start_time'] == $end)
+	$events_array[] = $evt;
+      else if ($end == NULL && $evt['start_time'] == $start)
+	$events_array[] = $evt;
+      else if ($evt['start_time'] >= $start && $evt['start_time'] <= $end)
+	$events_array[] = $evt;
     }
   }
   return $events_array;
