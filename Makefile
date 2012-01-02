@@ -37,14 +37,13 @@ version.php:	version.php.in
 	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
 
 dist-dir:	default
-	rsync --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*~" -a . $(DIST_DIR) && \
-	cp -a $(TARGETS) $(DIST_DIR)
+	rsync --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" -a . $(DIST_DIR)
 
 install:	dist-dir
-	mkdir -p $(DESTDIR)/$(GWEB_DWOO) && \
-	rsync --exclude debian -a $(DIST_DIR)/conf/ $(DESTDIR)/$(GANGLIA_STATEDIR)/conf && \
-	cp -a $(DIST_DIR)/* $(DESTDIR) && \
-	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_DWOO) $(DESTDIR)/$(GANGLIA_STATEDIR)/conf
+	mkdir -p $(GWEB_DWOO) && \
+	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
+	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR) && \
+	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf	
 
 dist-gzip:	dist-dir
 	if [ -f $(DIST_TARBALL) ]; then \
