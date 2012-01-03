@@ -25,7 +25,7 @@ TARGETS = conf_default.php gweb.spec version.php
 default:	$(TARGETS)
 
 clean:
-	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL)
+	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
 
 conf_default.php:	conf_default.php.in
 	sed -e "s|@varstatedir@|$(GWEB_STATEDIR)|" conf_default.php.in > conf_default.php
@@ -37,7 +37,7 @@ version.php:	version.php.in
 	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
 
 dist-dir:	default
-	rsync --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" -a . $(DIST_DIR)
+	rsync --exclude "rpmbuild" --exclude "*.gz" --exclude "Makefile" --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" --exclude "#*#" --exclude "gweb.spec" -a . $(DIST_DIR)
 
 install:	dist-dir
 	mkdir -p $(GWEB_DWOO) && \
@@ -50,6 +50,16 @@ dist-gzip:	dist-dir
 	rm -rf $(DIST_TARBALL) ;\
 	fi ;\
 	tar -czf $(DIST_TARBALL) $(DIST_DIR)/*
+
+rpm: dist-gzip
+	rm -rf rpmbuild
+	mkdir rpmbuild
+	mkdir rpmbuild/SOURCES 
+	mkdir rpmbuild/BUILD 
+	mkdir rpmbuild/RPMS 
+	mkdir rpmbuild/SRPMS
+	cp $(DIST_TARBALL) rpmbuild/SOURCES
+	rpmbuild --define '_topdir $(PWD)/rpmbuild' -bb gweb.spec
 
 uninstall:
 	rm -rf $(DESTDIR) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
