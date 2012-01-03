@@ -37,12 +37,10 @@ written in the PHP5 language and uses the Dwoo templating engine.
 
 %__mkdir -p $RPM_BUILD_ROOT/%{web_prefixdir}
 %__cp -rf * $RPM_BUILD_ROOT/%{web_prefixdir}
-%__rm -f $RPM_BUILD_ROOT/%{web_prefixdir}/bootstrap
-%__rm -f $RPM_BUILD_ROOT/%{web_prefixdir}/Makefile*
-%__rm -f $RPM_BUILD_ROOT/%{web_prefixdir}/*.in
-%__rm -f $RPM_BUILD_ROOT/%{web_prefixdir}/conf
+%__rm -rf $RPM_BUILD_ROOT/%{web_prefixdir}/conf
 %__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/filters
 %__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/conf
+%__cp -rf conf/* $RPM_BUILD_ROOT@varstatedir@/ganglia/conf
 %__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/dwoo
 
 %files
@@ -50,19 +48,9 @@ written in the PHP5 language and uses the Dwoo templating engine.
 %attr(0755,nobody,nobody)@varstatedir@/ganglia/filters
 %attr(0755,apache,apache)@varstatedir@/ganglia/conf
 %attr(0755,apache,apache)@varstatedir@/ganglia/dwoo
-%dir %{web_prefixdir}/
-#%dir %{web_prefixdir}/conf
-#%dir %{web_prefixdir}/css
-#%dir %{web_prefixdir}/dwoo
-#%dir %{web_prefixdir}/img
-#%dir %{web_prefixdir}/js
 %{web_prefixdir}/*
+/var/lib/ganglia/conf/*
 %config(noreplace) %{web_prefixdir}/conf_default.php
-#%{web_prefixdir}/conf/*
-#%{web_prefixdir}/css/*
-#%{web_prefixdir}/dwoo/*
-#%{web_prefixdir}/img/*
-#%{web_prefixdir}/js/*
 
 %clean
 %__rm -rf $RPM_BUILD_ROOT
