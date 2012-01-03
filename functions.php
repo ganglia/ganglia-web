@@ -1078,13 +1078,15 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
 // Graphite graphs
 ///////////////////////////////////////////////////////////////////////////////
 function build_graphite_series( $config, $host_cluster = "" ) {
+  global $context;
   $targets = array();
   $colors = array();
   // Keep track of stacked items
   $stacked = 0;
 
   foreach( $config[ 'series' ] as $item ) {
-   
+    if ( isSet($item[ 'contexts' ]) and in_array($context, $item['contexts'])==false )
+      continue;
     if ( $item['type'] == "stack" )
       $stacked++;
 
