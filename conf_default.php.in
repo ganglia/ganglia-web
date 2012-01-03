@@ -199,6 +199,9 @@ $conf['graph_engine'] = "rrdtool";
 #$conf['graph_engine'] = "graphite";
 $conf['graphite_url_base'] = "http://127.0.0.1/render";
 $conf['graphite_rrd_dir'] = "/opt/graphite/storage/rrd";
+# Don't forget a trailing "." when specifying a prefix.
+# Default is empty.
+$conf['graphite_prefix'] = "";
 
 # One of the bottlenecks is that to get individual metrics we query gmetad which
 # returns every single host and all the metrics. If you have lots of hosts and lots of 

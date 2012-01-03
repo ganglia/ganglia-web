@@ -150,7 +150,7 @@ if(!$user['clustername'] && !$user['hostname'] && $user['controlroom']) {
 if (!$user['range'])
     $user['range'] = $conf['default_time_range'];
 
-$end = "N";
+$end = "now";
 
 # $conf['time_ranges'] defined in conf.php
 if( $user['range'] == 'job' && isSet( $user['jobrange'] ) ) {
