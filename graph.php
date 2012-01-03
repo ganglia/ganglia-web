@@ -431,11 +431,11 @@ switch ( $conf['graph_engine'] ) {
     if ( isset($graph_config) ) {
       switch ( $graph_config["report_type"] ) {
         case "template":
-          $target = str_replace("HOST_CLUSTER", $host_cluster, $graph_config["graphite"]);
+          $target = str_replace("HOST_CLUSTER", $conf['graphite_prefix'] . $host_cluster, $graph_config["graphite"]);
           break;
     
         case "standard":
-          $target = build_graphite_series( $graph_config, $host_cluster );
+          $target = build_graphite_series( $graph_config, $conf['graphite_prefix'] . $host_cluster );
           break;
     
         default:
@@ -452,13 +452,16 @@ switch ( $conf['graph_engine'] ) {
     }
       } else {
     // It's a simple metric graph
-    $target = "target=$host_cluster.$metric_name.sum&hideLegend=true&vtitle=" . urlencode($vlabel) . "&areaMode=all";
+    $target = "target=" . $conf['graphite_prefix'] . "$host_cluster.$metric_name.sum&hideLegend=true&vtitle=" . urlencode($vlabel) . "&areaMode=all&colorList=". $conf['default_metric_color'];
     $title = " ";
       }
 
     } // end of if ( ! isset($graph_config) ) {
     
-    $graphite_url = $conf['graphite_url_base'] . "?width=$width&height=$height&" . $target . "&from=" . $start . "&yMin=0&bgcolor=FFFFFF&fgcolor=000000&title=" . urlencode($title . " last " . $range);
+    if ($cs) $start = date("H:i_Ymd",strtotime($cs));
+    if ($ce) $end = date("H:i_Ymd",strtotime($ce));
+    if ($max == 0) $max = "";
+    $graphite_url = $conf['graphite_url_base'] . "?width=$width&height=$height&" . $target . "&from=" . $start . "&until=" . $end . "&yMin=" . $min . "&yMax=" . $max . "&bgcolor=FFFFFF&fgcolor=000000&title=" . urlencode($title . " last " . $range);
     break;
 
 } // end of switch ( $conf['graph_engine'])
@@ -468,6 +471,12 @@ if ( $user['json_output'] ||
      $user['csv_output'] || 
      $user['flot_output'] || 
      $user['graphlot_output'] ) {
+
+  if ($conf['graph_engine'] == "graphite") {
+    if ( $user['json_output'] == 1 ) { $output_format = "json"; }
+    elseif ( $user['csv_output'] == 1 ) { $output_format = "csv"; }
+    echo file_get_contents($graphite_url . "&format=" . $output_format);
+  } else {
 
   $rrdtool_graph_args = "";
 
@@ -608,7 +617,7 @@ if ( $user['json_output'] ||
 
     print json_encode(array($output_vals, $output_vals));
   }
-
+  }
   exit(0);
 }
 
