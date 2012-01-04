@@ -51,7 +51,7 @@ dist-gzip:	dist-dir
 	fi ;\
 	tar -czf $(DIST_TARBALL) $(DIST_DIR)/*
 
-rpm: dist-gzip
+rpm: dist-gzip gweb.spec
 	rm -rf rpmbuild
 	mkdir rpmbuild
 	mkdir rpmbuild/SOURCES 
