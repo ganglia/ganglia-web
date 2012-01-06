@@ -3,9 +3,9 @@
 #
 # Gmetad-webfrontend version. Used to check for updates.
 #
-$conf['ganglia_dir'] = dirname(__FILE__);
+$conf['gweb_root'] = dirname(__FILE__);
 
-include_once $conf['ganglia_dir'] . "/version.php";
+include_once $conf['gweb_root'] . "/version.php";
 
 #
 # 'readonly': No authentication is required.  All users may view all resources.  No edits are allowed.
@@ -31,7 +31,8 @@ $conf['gmetad_root'] = "@varstatedir@/ganglia";
 $conf['rrds'] = "${conf['gmetad_root']}/rrds";
 
 # Where Dwoo (PHP templating engine) store compiled templates
-$conf['dwoo_compiled_dir'] = "${conf['gmetad_root']}/dwoo";
+$conf['dwoo_compiled_dir'] = "${conf['gweb_root']}/lib/dwoo/compiled";
+$conf['dwoo_cache_dir'] = "${conf['gweb_root']}/lib/dwoo/cache";
 
 # Where to store web-based configuration
 $conf['views_dir'] = $conf['gmetad_root'] . '/conf';

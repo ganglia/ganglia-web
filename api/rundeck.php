@@ -25,14 +25,14 @@
 
 header("Content-Type: text/plain");
 
-$conf['ganglia_dir'] = dirname(dirname(__FILE__));
+$conf['gweb_root'] = dirname(dirname(__FILE__));
 
-include_once $conf['ganglia_dir'] . "/eval_conf.php";
-include_once $conf['ganglia_dir'] . "/functions.php";
-include_once $conf['ganglia_dir'] . "/get_context.php";
+include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
+include_once $conf['gweb_root'] . "/get_context.php";
 $context = "cluster";
-include_once $conf['ganglia_dir'] . "/ganglia.php";
-include_once $conf['ganglia_dir'] . "/get_ganglia.php";
+include_once $conf['gweb_root'] . "/ganglia.php";
+include_once $conf['gweb_root'] . "/get_ganglia.php";
 
 foreach ( $metrics as $node => $metric_array ) {
 

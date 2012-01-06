@@ -4,10 +4,10 @@
 // Authors: Cal Henderson and Gilad Raphaelli
 //////////////////////////////////////////////////////////////////////////////
 
-$conf['ganglia_dir'] = dirname(__FILE__);
+$conf['gweb_root'] = dirname(__FILE__);
 
-include_once $conf['ganglia_dir'] . "/eval_conf.php";
-include_once $conf['ganglia_dir'] . "/functions.php";
+include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
 
 $clustername = $_GET['c'];
 $metricname = $_GET['m'];

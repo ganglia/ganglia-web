@@ -1,6 +1,6 @@
 <?php
 
-include_once $conf['ganglia_dir'] . "/lib/json.php";
+include_once $conf['gweb_root'] . "/lib/json.php";
 
 // Common error handling
 function api_return_error ( $message ) {

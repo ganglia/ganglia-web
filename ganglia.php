@@ -9,9 +9,9 @@
 # information as we need to make the page.
 #
 
-$ganglia_dir = dirname(__FILE__);
+$gweb_root = dirname(__FILE__);
 
-include_once($ganglia_dir . "/version.php");
+include_once($gweb_root . "/version.php");
 
 $error="";
 

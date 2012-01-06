@@ -22,9 +22,9 @@
         }
         // Set up for cluster summary
         $context = "index_array";
-        include_once $conf['ganglia_dir'] . "/functions.php";
-        include_once $conf['ganglia_dir'] . "/ganglia.php";
-        include_once $conf['ganglia_dir'] . "/get_ganglia.php";
+        include_once $conf['gweb_root'] . "/functions.php";
+        include_once $conf['gweb_root'] . "/ganglia.php";
+        include_once $conf['gweb_root'] . "/get_ganglia.php";
 
         foreach ( $index_array['cluster'] as $hostname => $elements ) {
             $hosts[] = $hostname;

@@ -175,7 +175,7 @@ $available_reports = array();
  Find available graphs by looking in the GANGLIA_DIR/graph.d directory
  anything that matches _report.php
 ----------------------------------------------------------------------- */
-if ($handle = opendir($conf['ganglia_dir'] . '/graph.d')) {
+if ($handle = opendir($conf['gweb_root'] . '/graph.d')) {
 
     // If we are using RRDtool reports can be json or PHP suffixes
     if ( $conf['graph_engine'] == "rrdtool" )

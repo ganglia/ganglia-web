@@ -4,7 +4,7 @@ include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
 
-$ganglia_dir = dirname(__FILE__);
+$gweb_root = dirname(__FILE__);
 
 # RFM - Added all the isset() tests to eliminate "undefined index"
 # messages in ssl_error_log.
@@ -127,7 +127,7 @@ if( $context == "grid" ) {
 if( ! checkAccess( $resource, GangliaAcl::VIEW, $conf ) ) {
   header( "HTTP/1.1 403 Access Denied" );
   header ("Content-type: image/jpg");
-  echo file_get_contents( $ganglia_dir.'/img/access-denied.jpg');
+  echo file_get_contents( $gweb_root.'/img/access-denied.jpg');
   die();
 }
 
@@ -419,7 +419,7 @@ switch ( $conf['graph_engine'] ) {
     
     $report_name = sanitize($_GET['g']);
     
-    $report_definition_file = $conf['ganglia_dir'] . "/graph.d/" . $report_name . ".json";
+    $report_definition_file = $conf['gweb_root'] . "/graph.d/" . $report_name . ".json";
     // Check whether report is defined in graph.d directory
     if ( is_file($report_definition_file) ) {
       $graph_config = json_decode(file_get_contents($report_definition_file), TRUE);
