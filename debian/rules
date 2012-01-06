@@ -32,4 +32,6 @@ override_dh_auto_install:
 		 debian/ganglia-webfrontend/etc/ganglia-webfrontend
 	cp -f debian/conf.php \
 		 debian/ganglia-webfrontend/etc/ganglia-webfrontend
+	cp -f debian/conf_redirect.php \
+		 debian/ganglia-webfrontend/usr/share/ganglia-webfrontend/conf.php
 
