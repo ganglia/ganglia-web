@@ -1,5 +1,4 @@
 <?php
-# $Id: conf_default.php.in 2557 2011-04-11 01:51:43Z vvuksan $
 #
 # Gmetad-webfrontend version. Used to check for updates.
 #

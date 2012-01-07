@@ -1,5 +1,5 @@
-<?php session_start();
-/* $Id: header.php 2548 2011-04-06 18:51:07Z vvuksan $ */
+<?php
+session_start();
 
 if (isset($_GET['date_only'])) {
   $d = date("r");

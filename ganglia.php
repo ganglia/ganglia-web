@@ -1,5 +1,4 @@
 <?php
-/* $Id: ganglia.php 2535 2011-03-26 19:14:06Z vvuksan $ */
 #
 # Parses ganglia XML tree.
 #
