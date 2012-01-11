@@ -46,8 +46,8 @@ written in the PHP5 language and uses the Dwoo templating engine.
 %files
 %defattr(-,root,root)
 %attr(0755,nobody,nobody)@varstatedir@/ganglia/filters
-%attr(0755,apache,apache)@varstatedir@/ganglia/conf
-%attr(0755,apache,apache)@varstatedir@/ganglia/dwoo
+%attr(0755,@varapacheuser@,@varapacheuser@)@varstatedir@/ganglia/conf
+%attr(0755,@varapacheuser@,@varapacheuser@)@varstatedir@/ganglia/dwoo
 %{web_prefixdir}/*
 /var/lib/ganglia/conf/*
 %config(noreplace) %{web_prefixdir}/conf_default.php
