@@ -38,6 +38,7 @@ $load_color = isset($_GET["l"]) &&
                 sanitize($_GET["l"]) : NULL;
 $summary = isset($_GET["su"]) ? 1 : 0;
 $debug = isset($_GET['debug']) ? clean_number(sanitize($_GET["debug"])) : 0;
+$showEvents = isset($_GET["event"]) ? sanitize ($_GET["event"]) : "show";
 
 $command    = '';
 $graphite_url = '';
@@ -625,7 +626,8 @@ if ( $user['json_output'] ||
 // Nagios event integration support
 //////////////////////////////////////////////////////////////////////////////
 $nagios_events = array();
-if ( $conf['overlay_nagios_events'] && 
+if ( $showEvents == "show" &&
+     $conf['overlay_nagios_events'] && 
      ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
   $nagios_pull_url = 
     $conf['overlay_nagios_base_url'] . 
@@ -652,7 +654,10 @@ if ( $conf['overlay_nagios_events'] &&
 //////////////////////////////////////////////////////////////////////////////
 // Check whether user wants to overlay events on graphs
 //////////////////////////////////////////////////////////////////////////////
-if ( $conf['overlay_events'] && $conf['graph_engine'] == "rrdtool" && ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
+if ( $showEvents == "show" &&
+     $conf['overlay_events'] && 
+     $conf['graph_engine'] == "rrdtool" && 
+     ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
 
   $color_count = sizeof($conf['graph_colors']);
   $counter = 0;
