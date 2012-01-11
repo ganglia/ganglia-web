@@ -10,9 +10,8 @@
 #
 #  hreg = "Host regular expression"
 #  checks = "Comma delimited list of checks"
-#
 #  Example would be if you wanted to make sure number that subversion tag on all 
-#  deployed file was the same
+#  deployed files was the same
 #
 #  ?hreg=apache\tomcat&checks=svn_revision
 #
@@ -122,7 +121,10 @@ $output = "";
 foreach ( $results as $metric_name => $metrics_results ) {
   if ( sizeof($metrics_results["values"]) > 1 ) {
     $ok=false;
-    $output .= " CRIT " . $metric_name . " different values => " . join("," ,  $metrics_results["values"]);
+    $output .= " CRIT " . $metric_name . " differs values => ";
+    foreach ( $metrics_results["values"] as $index => $value ) {
+      $output .= $value . " ( "  . join("," ,  $metrics_results["members"][$index]) . " ) ";
+    }
   } else {
     $output .= ", " .$metric_name . " same => " . sizeof($metrics_results["members"][0]) . " nodes";
   }
