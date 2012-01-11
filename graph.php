@@ -665,7 +665,7 @@ if ( $showEvents == "show" &&
 
   // In order not to pollute the command line with all the possible VRULEs
   // we need to find the time range for the graph
-  if ( $rrdtool_graph['end'] == "-N" or $rrdtool_graph['end'] == "N") {
+  if ( $rrdtool_graph['end'] == "-now" or $rrdtool_graph['end'] == "now") {
     $end = time();
   } else if ( is_numeric($rrdtool_graph['end']) ) {
     $end = $rrdtool_graph['end'];
@@ -705,7 +705,7 @@ if ( $showEvents == "show" &&
 
     // In order not to pollute the command line with all the possible VRULEs
     // we need to find the time range for the graph
-    if ( $rrdtool_graph['end'] == "-N" or $rrdtool_graph['end'] == "N")
+    if ( $rrdtool_graph['end'] == "-now" or $rrdtool_graph['end'] == "now")
       $end = time();
     else if ( is_numeric($rrdtool_graph['end']) )
       $end = $rrdtool_graph['end'];
