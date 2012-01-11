@@ -2,11 +2,11 @@
 
 header("Content-Type: text/json");
 
-$conf['ganglia_dir'] = dirname(dirname(__FILE__));
+$conf['gweb_root'] = dirname(dirname(__FILE__));
 
-include_once $conf['ganglia_dir'] . "/eval_conf.php";
-include_once $conf['ganglia_dir'] . "/functions.php";
-include_once $conf['ganglia_dir'] . "/lib/common_api.php";
+include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
+include_once $conf['gweb_root'] . "/lib/common_api.php";
 
 if ( !isset($_GET['action']) ) {
   api_return_error( "Error: You need to specify an action at a minimum" );

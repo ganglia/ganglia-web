@@ -22,7 +22,7 @@ if( ! checkAccess( $resource, GangliaAcl::VIEW, $conf ) ) {
 
 try
    {
-      $dwoo = new Dwoo($conf['dwoo_compiled_dir']);
+      $dwoo = new Dwoo($conf['dwoo_compiled_dir'], $conf['dwoo_cache_dir']);
    }
 catch (Exception $e)
    {

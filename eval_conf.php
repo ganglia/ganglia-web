@@ -57,6 +57,11 @@ if ( ! isset($conf['dwoo_compiled_dir']) || ! is_writeable($conf['dwoo_compiled_
   "Please adjust <code>\$conf['dwoo_compiled_dir']</code>."; 
 }
 
+if ( ! isset($conf['dwoo_compiled_dir']) || ! is_writeable($conf['dwoo_compiled_dir']) ) {
+  $errors[] = "DWOO cache directory '${conf['dwoo_cache_dir']}' is not writeable.<br/>".
+  "Please adjust <code>\$conf['dwoo_cache_dir']</code>."; 
+}
+
 if( ! isSet($conf['views_dir']) || ! is_readable($conf['views_dir']) ) {
   $errors[] = "Views directory '${conf['views_dir']}' is not readable.<br/>".
   "Please adjust <code>\$conf['views_dir']</code>.";

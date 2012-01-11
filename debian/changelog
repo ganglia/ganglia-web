@@ -1,6 +1,18 @@
-ganglia-webfrontend (2.2.1-1) unstable; urgency=low
+ganglia-webfrontend (2.2.1) unstable; urgency=low
 
+  [ Dave Rawks ]
+  * More tweaks to packaging to fit with debian policy
+  * Moved apache config to install in apache2's conf.d
+  * Added a conf.php which includes from /etc/ganglia-webfrontend/conf.php
+
+ -- Dave Rawks <drawks@kumonga>  Thu, 29 Dec 2011 14:42:00 -0800
+
+ganglia-webfrontend (2.2.0-0) unstable; urgency=low
+
+  [ Jeff Buchbinder ]
   * Add debian packaging.
 
- -- Jeff Buchbinder <jeff@freemedsoftware.org>  Sat, 13 Aug 2011 10:33:41 -0400
+  [ Dave Rawks ]
+  * Corrected several problems with debian packaging
 
+ -- Dave Rawks <drawks@kumonga>  Thu, 29 Dec 2011 11:27:04 -0800

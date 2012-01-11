@@ -21,9 +21,9 @@
 #  ?host=mytestserver.com&checks=disk_rootfs,more,10:disk_tmp,more,20
 #
 ##########################################################################################
-$conf['ganglia_dir'] = dirname(dirname(__FILE__));
+$conf['gweb_root'] = dirname(dirname(__FILE__));
 
-include_once $conf['ganglia_dir'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/eval_conf.php";
 
 # To turn on debug set to 1
 $debug = 0;
@@ -56,9 +56,9 @@ if ( ! is_array( $metrics ) ) {
 		  error_log("DEBUG: Querying GMond for new data\n");
   }
   $context = "cluster";
-  include_once $conf['ganglia_dir'] . "/functions.php";
-  include_once $conf['ganglia_dir'] . "/ganglia.php";
-  include_once $conf['ganglia_dir'] . "/get_ganglia.php";
+  include_once $conf['gweb_root'] . "/functions.php";
+  include_once $conf['gweb_root'] . "/ganglia.php";
+  include_once $conf['gweb_root'] . "/get_ganglia.php";
   # Massage the metrics to minimize the cache file by caching only attributes
   # we care about
   foreach ( $metrics as $host => $host_metrics ) {

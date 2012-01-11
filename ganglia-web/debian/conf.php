@@ -1,12 +1,4 @@
 <?php
-# $Id: conf_default.php.in 2557 2011-04-11 01:51:43Z vvuksan $
-#
-# Gmetad-webfrontend version. Used to check for updates.
-#
-$conf['gweb_root'] = dirname(__FILE__);
-
-include_once $conf['gweb_root'] . "/version.php";
-
 #
 # 'readonly': No authentication is required.  All users may view all resources.  No edits are allowed.
 #  'enabled': Guest users may view public clusters.  Login is required to make changes.  
@@ -27,16 +19,12 @@ $conf['template_name'] = "default";
 #
 
 # Where gmetad stores the rrd archives.
-$conf['gmetad_root'] = "@varstatedir@/ganglia";
+$conf['gmetad_root'] = "/var/lib/ganglia";
 $conf['rrds'] = "${conf['gmetad_root']}/rrds";
 
-# Where Dwoo (PHP templating engine) store compiled templates
-$conf['dwoo_compiled_dir'] = "${conf['gweb_root']}/lib/dwoo/compiled";
-$conf['dwoo_cache_dir'] = "${conf['gweb_root']}/lib/dwoo/cache";
-
 # Where to store web-based configuration
-$conf['views_dir'] = $conf['gmetad_root'] . '/conf';
-$conf['conf_dir'] = $conf['gmetad_root'] . '/conf';
+$conf['views_dir'] = '/usr/share/ganglia-webfrontend/conf';
+$conf['conf_dir'] = '/usr/share/ganglia-webfrontend/conf';
 
 # Where to find filter configuration files, if not set filtering
 # will be disabled
@@ -200,9 +188,6 @@ $conf['graph_engine'] = "rrdtool";
 #$conf['graph_engine'] = "graphite";
 $conf['graphite_url_base'] = "http://127.0.0.1/render";
 $conf['graphite_rrd_dir'] = "/opt/graphite/storage/rrd";
-# Don't forget a trailing "." when specifying a prefix.
-# Default is empty.
-$conf['graphite_prefix'] = "";
 
 # One of the bottlenecks is that to get individual metrics we query gmetad which
 # returns every single host and all the metrics. If you have lots of hosts and lots of 
@@ -316,16 +301,14 @@ $conf['overlay_events_line_type'] = "dashed";
 $conf['overlay_events_provider'] = "json";
 # Where is the Overlay events file stored
 $conf['overlay_events_file'] = $conf['conf_dir'] . "/events.json";
-
-# If using MDB2, connection string:
-$conf['overlay_events_dsn'] = "mysql://dbuser:dbpassword@localhost/ganglia";
-
 $conf['overlay_events_color_map_file'] = $conf['conf_dir'] . "/event_color.json";
+# If using MDB2, connection string:
+$conf['overlay_events_dsn'] = "mysql://dbuser:dbpasword@localhost/ganglia";
 
 # For event shading.  Value in hex, 'FF' = 100% opaque.
 # the _shade_ value should be less than _tick_
 $conf['overlay_events_tick_alpha']  = '30';
-$conf['overlay_events_shade_alpha'] = '20';
+$conf['overlay_events_shade_alpha'] = '50';
 
 # Colors to use e.g. in graph_colors
 $conf['graph_colors'] = array("0000A3", "FF3300", "FFCC33", "00CC66", "B88A00", "33FFCC", "809900", "FF3366", "FF33CC", "CC33FF", "CCFF33", "FFFF66", "33CCFF");

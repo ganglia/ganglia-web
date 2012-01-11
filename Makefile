@@ -5,8 +5,8 @@ APACHE_USER = apache
 
 # Gweb version
 GWEB_MAJOR_VERSION = 2
-GWEB_MINOR_VERSION = 1
-GWEB_MICRO_VERSION = 8
+GWEB_MINOR_VERSION = 2
+GWEB_MICRO_VERSION = 1
 
 # Gweb statedir (where RRD files, Dwoo templates are stored)
 GWEB_STATEDIR = /var/lib

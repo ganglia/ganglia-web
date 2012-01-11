@@ -1,9 +1,9 @@
 <?php
 
-$conf['ganglia_dir'] = dirname(dirname(dirname(__FILE__)));
+$conf['gweb_root'] = dirname(dirname(dirname(__FILE__)));
 
-include_once $conf['ganglia_dir'] . "/eval_conf.php";
-include_once $conf['ganglia_dir'] . "/lib/common_api.php";
+include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/lib/common_api.php";
 
 //////////////////////////////////////////////////////////////////////////////
 // Add an event to the JSON event array

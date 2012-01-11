@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 set -e
 
@@ -10,6 +10,9 @@ if [ "$1" = "configure" ]; then
     db_get ganglia-webfrontend/webserver
     autoconfigure="$RET"
     webserver="apache2"
+
+    chown www-data /usr/share/ganglia-webfrontend/lib/dwoo/cache
+    chown www-data /usr/share/ganglia-webfrontend/lib/dwoo/compiled
 
     if [ "$autoconfigure" = true ]; then
         test -x /usr/sbin/$webserver || continue
