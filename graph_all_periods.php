@@ -22,6 +22,7 @@ if ( ! isset($_GET['embed'] ) ) {
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
 <div id="metric-actions-dialog" style="display: none" title="Metric Actions">
 <div id="metric-actions-dialog-content">
@@ -29,8 +30,22 @@ if ( ! isset($_GET['embed'] ) ) {
 </div>
 </div>
 <script>
+function showEvents(graphId, showEvents) {
+    var graph = $("#" + graphId);
+    var src = graph.attr("src");
+    if (src.indexOf("graph.php") != 0)
+      return;
+    var paramStr = "&event=";
+    paramStr += showEvents ? "hide" : "show";
+    var d = new Date();
+    paramStr += "&_=" + d.getTime();
+    src = jQuery.param.querystring(src, paramStr);
+    graph.attr("src", src);
+  }
+
   $(function() {
     $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $(":checkbox").each(function() {$(this).button();});
   });
 </script>
 <?php
@@ -161,7 +176,11 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
       print ' <button title="Decompose aggregate graph" class="shiny-blue" onClick="openDecompose(\'?r=' . $key . $query_string  . '&dg=1\');return false;">Decompose</button>';
   }
  
-  print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>' .
+  print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>';
+
+  $graphId = 'graph_img_' . $key;
+
+  print ' <input title="Show Events" type="checkbox" id="show_events_' . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="show_events_' . $key . '">Show Events</label>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
@@ -172,7 +191,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 
   } else {
 
-    print '<a href="./graph.php?r=' . $key . '&z=' . $xlargesize . $query_string . '"><img class="noborder" style="margin-top:5px;" title="Last ' . $key . '" src="graph.php?r=' . $key . '&z=' . $largesize . $query_string . '"></a>';
+    print '<a href="./graph.php?r=' . $key . '&z=' . $xlargesize . $query_string . '"><img class="noborder" id="' . $graphId . '" style="margin-top:5px;" title="Last ' . $key . '" src="graph.php?r=' . $key . '&z=' . $largesize . $query_string . '"></a>';
 
   }
 
