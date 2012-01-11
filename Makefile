@@ -25,32 +25,41 @@ TARGETS = conf_default.php gweb.spec version.php
 default:	$(TARGETS)
 
 clean:
-	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL)
+	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
 
 conf_default.php:	conf_default.php.in
 	sed -e "s|@varstatedir@|$(GWEB_STATEDIR)|" conf_default.php.in > conf_default.php
 
 gweb.spec:	gweb.spec.in
-	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ -e "s|@varstatedir@|$(GWEB_STATEDIR)|" gweb.spec.in > gweb.spec
+	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ -e "s|@varstatedir@|$(GWEB_STATEDIR)|" -e "s|@varapacheuser@|$(APACHE_USER)|g" gweb.spec.in > gweb.spec
 
 version.php:	version.php.in
 	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
 
 dist-dir:	default
-	rsync --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*~" -a . $(DIST_DIR) && \
-	cp -a $(TARGETS) $(DIST_DIR)
+	rsync --exclude "rpmbuild" --exclude "*.gz" --exclude "Makefile" --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" --exclude "#*#" --exclude "gweb.spec" -a . $(DIST_DIR)
 
 install:	dist-dir
-	mkdir -p $(DESTDIR)/$(GWEB_DWOO) && \
-	rsync --exclude debian -a $(DIST_DIR)/conf/ $(DESTDIR)/$(GANGLIA_STATEDIR)/conf && \
-	cp -a $(DIST_DIR)/* $(DESTDIR) && \
-	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_DWOO) $(DESTDIR)/$(GANGLIA_STATEDIR)/conf
+	mkdir -p $(GWEB_DWOO) && \
+	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
+	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR) && \
+	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf	
 
 dist-gzip:	dist-dir
 	if [ -f $(DIST_TARBALL) ]; then \
 	rm -rf $(DIST_TARBALL) ;\
 	fi ;\
 	tar -czf $(DIST_TARBALL) $(DIST_DIR)/*
+
+rpm: dist-gzip gweb.spec
+	rm -rf rpmbuild
+	mkdir rpmbuild
+	mkdir rpmbuild/SOURCES 
+	mkdir rpmbuild/BUILD 
+	mkdir rpmbuild/RPMS 
+	mkdir rpmbuild/SRPMS
+	cp $(DIST_TARBALL) rpmbuild/SOURCES
+	rpmbuild --define '_topdir $(PWD)/rpmbuild' -bb gweb.spec
 
 uninstall:
 	rm -rf $(DESTDIR) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
