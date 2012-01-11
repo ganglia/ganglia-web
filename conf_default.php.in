@@ -31,8 +31,8 @@ $conf['gmetad_root'] = "@varstatedir@/ganglia";
 $conf['rrds'] = "${conf['gmetad_root']}/rrds";
 
 # Where Dwoo (PHP templating engine) store compiled templates
-$conf['dwoo_compiled_dir'] = "${conf['gweb_root']}/lib/dwoo/compiled";
-$conf['dwoo_cache_dir'] = "${conf['gweb_root']}/lib/dwoo/cache";
+$conf['dwoo_compiled_dir'] = "${conf['gmetad_root']}/dwoo/compiled";
+$conf['dwoo_cache_dir'] = "${conf['gmetad_root']}/dwoo/cache";
 
 # Where to store web-based configuration
 $conf['views_dir'] = $conf['gmetad_root'] . '/conf';
