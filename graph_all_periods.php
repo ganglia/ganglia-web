@@ -180,7 +180,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 
   $graphId = 'graph_img_' . $key;
 
-  print ' <input title="Show Events" type="checkbox" id="show_events_' . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="show_events_' . $key . '">Show Events</label>' .
+  print ' <input title="Hide/Show Events" type="checkbox" id="show_events_' . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="show_events_' . $key . '">Show Events</label>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
