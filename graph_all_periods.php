@@ -30,13 +30,30 @@ if ( ! isset($_GET['embed'] ) ) {
 </div>
 </div>
 <script>
-function showEvents(graphId, showEvents) {
+var SHOW_EVENTS_BASE_ID = "show_events_";
+var SHOW_EVENTS_BASE_ID_LEN = SHOW_EVENTS_BASE_ID.length;
+var GRAPH_BASE_ID = "graph_img_";
+
+function showAllEvents(show) {
+  $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+      if (show)
+        $(this).attr("checked", 'checked');
+      else
+        $(this).removeAttr("checked");
+      $(this).button('refresh');
+      var graphId = GRAPH_BASE_ID + 
+	$(this).attr('id').slice(SHOW_EVENTS_BASE_ID_LEN);
+      showEvents(graphId, show);
+    });
+}
+
+function showEvents(graphId, show) {
     var graph = $("#" + graphId);
     var src = graph.attr("src");
     if (src.indexOf("graph.php") != 0)
       return;
     var paramStr = "&event=";
-    paramStr += showEvents ? "hide" : "show";
+    paramStr += show ? "show" : "hide"
     var d = new Date();
     paramStr += "&_=" + d.getTime();
     src = jQuery.param.querystring(src, paramStr);
@@ -45,7 +62,14 @@ function showEvents(graphId, showEvents) {
 
   $(function() {
     $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
-    $(":checkbox").each(function() {$(this).button();});
+    $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+        $(this).button();
+        $(this).attr("checked", 'checked');
+	$(this).button('refresh');
+    });
+    $("#show_all_events").button();
+    $("#show_all_events").attr("checked", 'checked');
+    $("#show_all_events").button('refresh');
   });
 </script>
 <?php
@@ -56,6 +80,9 @@ include_once "./eval_conf.php";
 // build a query string but drop r and z since those designate time window and size. Also if the 
 // get arguments are an array rebuild them. For example with hreg (host regex)
 $ignore_keys_list = array("r", "z", "st", "cs", "ce", "hc");
+
+$SHOW_EVENTS_BASE_ID = "show_events_";
+$GRAPH_BASE_ID = "graph_img_";
 
 foreach ($_GET as $key => $value) {
   if ( ! in_array($key, $ignore_keys_list) && ! is_array($value))
@@ -146,9 +173,9 @@ if ( isset($_REQUEST['mobile'])) {
 // Skip printing if this is an embedded graph e.g. from Aggregate graph screen
 if ( ! isset($_REQUEST['embed'] )  ) {
 ?>
-<b>Host/Cluster/Host Regex: </b><?php print $description ?>&nbsp;<b>Metric/Graph/Metric Regex: </b><?php 
+  <b>Host/Cluster/Host Regex: </b><?php print $description ?>&nbsp;<b>Metric/Graph/Metric Regex: </b><?php 
   print $metric_description; 
-?><br />
+  ?>&nbsp;&nbsp;<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events</label><br />
 <?php
 }
 
@@ -178,9 +205,9 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
  
   print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>';
 
-  $graphId = 'graph_img_' . $key;
+  $graphId = $GRAPH_BASE_ID . $key;
 
-  print ' <input title="Hide/Show Events" type="checkbox" id="show_events_' . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="show_events_' . $key . '">Show Events</label>' .
+  print ' <input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $key . '">Hide/Show Events</label>' .
   '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
