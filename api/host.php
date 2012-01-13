@@ -34,6 +34,32 @@ function form_image_url ( $page, $args ) {
 }
 
 switch ( $_GET['action'] ) {
+  case 'list':
+    $rrd_dir = $conf['rrds'];
+    $rrd_escaped = str_replace('/', '\/', $rrd_dir);
+    $cmd = "find " . escapeshellarg($rrd_dir) . " -type d | grep -v __SummaryInfo__ | sed -e 's/^${rrd_escaped}\///'";
+    $l = explode( "\n", `$cmd` );
+    $clusters = array();
+    $hosts = array();
+    foreach ($l AS $v) {
+      if ($v == $rrd_dir) {
+        continue; // skip base directory
+      }
+      if (strpos($v, "/") === false) {
+        continue; // skip clusters
+      }
+      if (strpos($v, ";") !== false) {
+        continue; // skip weird invalid directories
+      }
+      list( $_cluster, $_host ) = split( '/', $v );
+      $hosts[$_host]['clusters'][] = $_cluster;
+      $clusters[$_cluster][] = $_host;
+    }
+    api_return_ok(array(
+        'clusters' => $clusters
+      , 'hosts' => $hosts
+    ));
+    break; // end list
   case 'get':
     retrieve_metrics_cache();
     if ($debug == 1) {
