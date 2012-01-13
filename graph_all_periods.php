@@ -23,7 +23,7 @@ if ( ! isset($_GET['embed'] ) ) {
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet" />
 <div id="metric-actions-dialog" style="display: none" title="Metric Actions">
 <div id="metric-actions-dialog-content">
 	Available Metric actions.
