@@ -1,5 +1,4 @@
- <?php
- /* $Id: cluster_view.php 2588 2011-05-02 21:19:54Z vvuksan $ */
+<?php
 $tpl = new Dwoo_Template_File( template("cluster_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("php_gd", (function_exists('imagegif') or function_exists('imagepng')));

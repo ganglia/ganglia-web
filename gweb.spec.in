@@ -1,6 +1,3 @@
-#
-# $Id: gweb.spec.in 2539 2011-03-27 21:26:38Z vvuksan $
-#
 Summary: Ganglia Web Frontend
 Name: gweb
 Version: @GWEB_VERSION@
