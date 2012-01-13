@@ -7,7 +7,6 @@
 
 
     /*
-    ** $Id: pie.php 1573 2008-07-20 06:33:25Z carenas $
     **
     ** PHP Class for creating pie charts using the GD library functions
     **

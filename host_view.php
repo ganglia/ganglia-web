@@ -1,6 +1,4 @@
 <?php
-/* $Id: host_view.php 2576 2011-04-20 19:53:33Z bernardli $ */
-
 $tpl = new Dwoo_Template_File( template("host_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("extra", template("host_extra.tpl"));
