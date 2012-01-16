@@ -40,7 +40,8 @@ dist-dir:	default
 	rsync --exclude "rpmbuild" --exclude "*.gz" --exclude "Makefile" --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" --exclude "#*#" --exclude "gweb.spec" -a . $(DIST_DIR)
 
 install:	dist-dir
-	mkdir -p $(GWEB_DWOO) && \
+	mkdir -p $(GWEB_DWOO)/compiled && \
+	mkdir -p $(GWEB_DWOO)/cache && \
 	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
 	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR) && \
 	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf	
