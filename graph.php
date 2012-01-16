@@ -1,5 +1,4 @@
 <?php
-/* $Id: graph.php 2591 2011-05-10 13:42:54Z vvuksan $ */
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";

@@ -19,7 +19,7 @@ if ( ! isset($_GET['embed'] ) ) {
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet" />
 <script type="text/javascript">
   $(function() {
     $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
@@ -204,7 +204,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 // will start looking goofy
 ?>
 <div style="clear: left"></div>
-<script>
+<script type="text/javascript">
   $(function() {
     $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
   });

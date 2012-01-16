@@ -1,5 +1,4 @@
 <?php
-/* $Id: footer.php 2334 2010-09-08 22:29:27Z bernardli $ */
 $tpl = new Dwoo_Template_File( template("footer.tpl") );
 $data = new Dwoo_Data(); 
 $data->assign("webfrontend_version",$version["webfrontend"]);

@@ -208,7 +208,7 @@ if ( sizeof($available_views) == -1 ) {
 <script type="text/javascript" src="<?php print $base; ?>js/ganglia.js"></script>
 <script type="text/javascript" src="<?php print $base; ?>js/jquery.cookie.js"></script>
 <script type="text/javascript" src="<?php print $base; ?>js/jquery-ui-timepicker-addon.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet" />
 <LINK rel="stylesheet" href="./styles.css" type="text/css">
 <?php
 if ( isset($_GET['view_name']) ) {
