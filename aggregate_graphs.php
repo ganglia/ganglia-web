@@ -13,11 +13,8 @@
     $("#aggregate_graph_display img").each(function (index) {
 	var src = $(this).attr("src");
 	if (src.indexOf("graph.php") == 0) {
-          var l = src.indexOf("&_=");
-          if (l != -1)
-            src = src.substring(0, l);
 	  var d = new Date();
-	  $(this).attr("src", src + "&_=" + d.getTime());
+	  $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
 	}    
     });
   }
