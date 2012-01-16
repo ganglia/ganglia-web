@@ -123,7 +123,7 @@ $(function(){
       width: 450,
       modal: true
     });
-});
+  });
 
 function selectTab(tab_index) {
   $("#tabs").tabs("select", tab_index);
@@ -216,3 +216,47 @@ function inspectGraph(graphArgs) {
         "flot=1&" + graphArgs, 
         function(data) {$('#inspect-graph-dialog-content').html(data);})
 }
+
+var SHOW_EVENTS_BASE_ID = "show_events_";
+var SHOW_EVENTS_BASE_ID_LEN = SHOW_EVENTS_BASE_ID.length;
+var GRAPH_BASE_ID = "graph_img_";
+
+function initShowEvent() {
+  $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+    $(this).button();
+    $(this).attr("checked", 'checked');
+    $(this).button('refresh');
+  });
+
+  if ($("#show_all_events").length > 0) {
+    $("#show_all_events").button();
+    $("#show_all_events").attr("checked", 'checked');
+    $("#show_all_events").button('refresh');
+  }
+}
+
+function showAllEvents(show) {
+  $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+      if (show)
+        $(this).attr("checked", 'checked');
+      else
+        $(this).removeAttr("checked");
+      $(this).button('refresh');
+      var graphId = GRAPH_BASE_ID + 
+	$(this).attr('id').slice(SHOW_EVENTS_BASE_ID_LEN);
+      showEvents(graphId, show);
+    });
+}
+
+function showEvents(graphId, show) {
+    var graph = $("#" + graphId);
+    var src = graph.attr("src");
+    if (src.indexOf("graph.php") != 0)
+      return;
+    var paramStr = "&event=";
+    paramStr += show ? "show" : "hide"
+    var d = new Date();
+    paramStr += "&_=" + d.getTime();
+    src = jQuery.param.querystring(src, paramStr);
+    graph.attr("src", src);
+  }
