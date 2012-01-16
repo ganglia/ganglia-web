@@ -14,6 +14,7 @@
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var availablemetrics = [ {$available_metrics} ];
