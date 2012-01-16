@@ -57,7 +57,7 @@ if ( ! isset($conf['dwoo_compiled_dir']) || ! is_writeable($conf['dwoo_compiled_
   "Please adjust <code>\$conf['dwoo_compiled_dir']</code>."; 
 }
 
-if ( ! isset($conf['dwoo_compiled_dir']) || ! is_writeable($conf['dwoo_compiled_dir']) ) {
+if ( ! isset($conf['dwoo_cache_dir']) || ! is_writeable($conf['dwoo_cache_dir']) ) {
   $errors[] = "DWOO cache directory '${conf['dwoo_cache_dir']}' is not writeable.<br/>".
   "Please adjust <code>\$conf['dwoo_cache_dir']</code>."; 
 }
