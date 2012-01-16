@@ -10,11 +10,8 @@
     $("#view_graphs img").each(function (index) {
 	var src = $(this).attr("src");
 	if (src.indexOf("graph.php") == 0) {
-          var l = src.indexOf("&_=");
-          if (l != -1)
-            src = src.substring(0, l);
 	  var d = new Date();
-	  $(this).attr("src", src + "&_=" + d.getTime());
+	  $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
 	}    
     });
   }
@@ -57,7 +54,12 @@
       </div>
     </div>
     {else}
+      {$SHOW_EVENTS_BASE_ID = 'show_events_'}
+      {$GRAPH_BASE_ID = 'graph_img_'}
+      {$i = 0}
       {foreach $view_items view_item}
+      {$graphId = cat($GRAPH_BASE_ID "view_" $i)}
+      {$showEventsId = cat($SHOW_EVENTS_BASE_ID "view_" $i)}
       <div class="img_view">
         <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;csv=1';return false;">CSV</button>
         <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;json=1';return false;">JSON</button>
@@ -65,14 +67,16 @@
         <button title="Decompose aggregate graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&amp;dg=1&amp;tab=v';return false;">Decompose</button>
         {/if}
         <button title="Inspect Graph" onClick="inspectGraph('{$view_item.url_args}'); return false;" class="shiny-blue">Inspect</button>
+        <input title="Hide/Show Events" type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
         <br />
 {if $graph_engine == "flot"}
 <div id="placeholder_{$view_item.url_args}" class="flotgraph2 img_view"></div>
 <div id="placeholder_{$view_item.url_args}_legend" class="flotlegend"></div>
 {else}
-<a href="graph_all_periods.php?{$view_item.url_args}"><img class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$view_item.url_args}" /></a>
+<a href="graph_all_periods.php?{$view_item.url_args}"><img id="{$graphId}" class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$view_item.url_args}" /></a>
 {/if}
       </div>
+      {math "$i + 1" assign=i}
       {/foreach}
     {/if}
     {/if}

@@ -121,6 +121,8 @@
         date = new Date((Math.floor(endTime) + delta) * 1000);
         $("#datepicker-ce").val(rrdDateTimeString(date));
     }
+
+    initShowEvent();
   });
 
 
@@ -165,11 +167,11 @@
      </td>
   </tr>
   <tr>
-     <td colspan="1">
+     <td>
     <div id="range_menu">{$range_menu}{$custom_time}</div>
      </td>
-     <td>
-      <b>{$alt_view}</b>
+     <td align="right">
+      {$additional_buttons}&nbsp;&nbsp;<b>{$alt_view}</b>
      </td>
   </tr>
   <tr>
