@@ -54,8 +54,6 @@
       </div>
     </div>
     {else}
-      {$SHOW_EVENTS_BASE_ID = 'show_events_'}
-      {$GRAPH_BASE_ID = 'graph_img_'}
       {$i = 0}
       {foreach $view_items view_item}
       {$graphId = cat($GRAPH_BASE_ID "view_" $i)}
