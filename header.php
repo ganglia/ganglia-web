@@ -461,11 +461,11 @@ $data->assign('selected_tab', $user['selected_tab']);
 $data->assign('view_name', $user['viewname']);
 
 $additional_buttons = "";
-if ($context == "views") {
+if ($context == "views" || $context == "decompose_graph") {
   $additional_buttons = '<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label for="show_all_events">Hide/Show Events</label>';
 }
 $data->assign('additional_buttons', $additional_buttons);
- 
+
 # Make sure that no data is cached..
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); # Date in the past
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modified

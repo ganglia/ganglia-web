@@ -115,14 +115,7 @@ $(function(){
       }
     });
 
-  var metric_actions_dialog = $("#metric-actions-dialog");
-  if (metric_actions_dialog[0]) 
-    metric_actions_dialog.dialog({
-      autoOpen: false,
-      height: 250,
-      width: 450,
-      modal: true
-    });
+  initMetricActionsDialog();	
   });
 
 function selectTab(tab_index) {
@@ -167,6 +160,18 @@ function addItemToView() {
         function(data) {$("#metric-actions-dialog-content").html(data);});
   return false;  
 }
+
+function initMetricActionsDialog() {
+  var metric_actions_dialog = $("#metric-actions-dialog");
+  if (metric_actions_dialog[0]) 
+    metric_actions_dialog.dialog({
+      autoOpen: false,
+      height: 250,
+      width: 450,
+      modal: true
+    });
+}
+
 function metricActions(host_name,metric_name,type,graphargs) {
     $( "#metric-actions-dialog" ).dialog( "open" );
     $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
