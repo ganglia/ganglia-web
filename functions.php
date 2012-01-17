@@ -235,10 +235,24 @@ function find_limits($nodes, $metricname)
 
    $max=0;
    $min=0;
-   foreach ( $nodes as $host => $value )
-      {
-         $out = array();
 
+   foreach ( $nodes as $host => $value ) {
+      $out = array();
+
+      if ($conf['graph_engine'] == "graphite") {
+         $host = str_replace(".","_", $host);
+         $data = json_decode(file_get_contents("${conf['graphite_url_base']}?format=json&target=cactiStyle(ganglia.$clustername.$host.$metricname.sum)&from=$start&until=$end"));
+
+         $target = $data->{'target'};
+         $thismin = preg_match("Min:<digit>\d+", $target);
+         if (!is_numeric($thismin)) continue;
+         $thismax = preg_match("Max:<digit>\d+", $target);
+         if (!is_numeric($thismax)) continue;
+
+         if ($max < $thismax) $max = $thismax;
+         if ($min > $thismin) $min = $thismin;
+
+      } else {
          $rrd_dir = "${conf['rrds']}/$clustername/$host";
          $rrd_file = "$rrd_dir/$metricname.rrd";
          if (file_exists($rrd_file)) {
@@ -277,7 +291,7 @@ function find_limits($nodes, $metricname)
             #echo "$host: $thismin - $thismax (now $value)<br>\n";
          }
       }
-      
+   }
       return array($min, $max);
 }
 
