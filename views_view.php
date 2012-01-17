@@ -1,6 +1,7 @@
 <?php
 include_once("./eval_conf.php");
 include_once("./functions.php");
+include_once("./global.php");
 
 if (! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf))
   die("You do not have access to view views.");
@@ -271,6 +272,10 @@ foreach ($available_views as $view_id => $view) {
 
 if (isset($view_items))
   $data->assign("view_items", $view_items);
+
+$data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);
+$data->assign('SHOW_EVENTS_BASE_ID', $SHOW_EVENTS_BASE_ID);
+ 
 $dwoo->output($tpl, $data);
 
 ?>
