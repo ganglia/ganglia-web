@@ -256,7 +256,8 @@ function showAllEvents(show) {
 function showEvents(graphId, show) {
     var graph = $("#" + graphId);
     var src = graph.attr("src");
-    if (src.indexOf("graph.php") != 0)
+    if ((src.indexOf("graph.php") != 0) &&
+        (src.indexOf("./graph.php") != 0))
       return;
     var paramStr = "&event=";
     paramStr += show ? "show" : "hide"
