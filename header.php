@@ -461,7 +461,7 @@ $data->assign('selected_tab', $user['selected_tab']);
 $data->assign('view_name', $user['viewname']);
 
 $additional_buttons = "";
-if ($context == "views" || $context == "decompose_graph") {
+if ($context == 'views' || $context == 'decompose_graph' || $context == 'host') {
   $additional_buttons = '<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label for="show_all_events">Hide/Show Events</label>';
 }
 $data->assign('additional_buttons', $additional_buttons);

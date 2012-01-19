@@ -1446,4 +1446,104 @@ function retrieve_metrics_cache () {
 
 } // end of function get_metrics_cache () {
 
+function getHostOverViewData($hostname, 
+                             $metrics, 
+                             $cluster,
+                             $hosts_up, 
+                             $hosts_down, 
+                             $always_timestamp, 
+                             $always_constant, 
+                             $data) {
+  $data->assign("extra", template("host_extra.tpl"));
+
+  $data->assign("host", $hostname);
+  $data->assign("node_image", node_image($metrics));
+
+  if ($hosts_up)
+    $data->assign("node_msg", "This host is up and running."); 
+  else
+    $data->assign("node_msg", "This host is down."); 
+
+  # No reason to go on if this node is down.
+  if ($hosts_down)
+    return;
+
+  foreach ($metrics as $name => $v) {
+    if ($v['TYPE'] == "string" or $v['TYPE']=="timestamp" or
+        (isset($always_timestamp[$name]) and $always_timestamp[$name])) {
+      $s_metrics[$name] = $v;
+    } elseif ($v['SLOPE'] == "zero" or
+              (isset($always_constant[$name]) and $always_constant[$name])) {
+      $c_metrics[$name] = $v;
+    }
+  }
+
+  # in case this is not defined, set to LOCALTIME so uptime will be 0 in the display
+  $boottime = null;
+  if (isset($metrics['boottime']['VAL']))
+    $boottime = $metrics['boottime']['VAL'];
+  else
+    $boottime = $cluster['LOCALTIME'];
+
+  # Add the uptime metric for this host. Cannot be done in ganglia.php,
+  # since it requires a fully-parsed XML tree. The classic contructor problem.
+  $s_metrics['uptime']['TYPE'] = "string";
+  $s_metrics['uptime']['VAL'] = uptime($cluster['LOCALTIME'] - $boottime);
+  $s_metrics['uptime']['TITLE'] = "Uptime";
+
+  # Add the gmond started timestamps & last reported time (in uptime format) from
+  # the HOST tag:
+  $s_metrics['gmond_started']['TYPE'] = "timestamp";
+  $s_metrics['gmond_started']['VAL'] = $hosts_up['GMOND_STARTED'];
+  $s_metrics['gmond_started']['TITLE'] = "Gmond Started";
+  $s_metrics['last_reported']['TYPE'] = "string";
+  $s_metrics['last_reported']['VAL'] = uptime($cluster['LOCALTIME'] - $hosts_up['REPORTED']);
+  $s_metrics['last_reported']['TITLE'] = "Last Reported";
+
+  $s_metrics['ip_address']['TITLE'] = "IP Address";
+  $s_metrics['ip_address']['VAL'] = $hosts_up['IP'];
+  $s_metrics['ip_address']['TYPE'] = "string";
+  $s_metrics['location']['TITLE'] = "Location";
+  $s_metrics['location']['VAL'] = $hosts_up['LOCATION'];
+  $s_metrics['location']['TYPE'] = "string";
+
+  # String metrics
+  if (is_array($s_metrics)) {
+    $s_metrics_data = array();
+    ksort($s_metrics);
+    foreach ($s_metrics as $name => $v) {
+      # RFM - If units aren't defined for metric, make it be the empty string
+      ! array_key_exists('UNITS', $v) and $v['UNITS'] = "";
+      if (isset($v['TITLE'])) {
+        $s_metrics_data[$name]["name"] = $v['TITLE'];
+      } else {
+        $s_metrics_data[$name]["name"] = $name;
+      }
+      if ($v['TYPE']=="timestamp" or 
+          (isset($always_timestamp[$name]) and $always_timestamp[$name])) {
+        $s_metrics_data[$name]["value"] = date("r", $v['VAL']);
+      } else {
+        $s_metrics_data[$name]["value"] = $v['VAL'] . " " . $v['UNITS'];
+      }
+    }
+  }
+  $data->assign("s_metrics_data", $s_metrics_data);
+
+  # Constant metrics.
+  $c_metrics_data = null;
+  if (isset($c_metrics) and is_array($c_metrics)) {
+    $c_metrics_data = array();
+    ksort($c_metrics);
+    foreach ($c_metrics as $name => $v) {
+      if (isset($v['TITLE']))  {
+        $c_metrics_data[$name]["name"] =  $v['TITLE'];
+      } else {
+        $c_metrics_data[$name]["name"] = $name;
+      }
+      $c_metrics_data[$name]["value"] = "$v[VAL] $v[UNITS]";
+    }
+  }
+  $data->assign("c_metrics_data", $c_metrics_data);
+}
+
 ?>

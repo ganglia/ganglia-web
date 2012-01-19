@@ -49,6 +49,13 @@
       } else if (selected_tab == "ev") {
         refreshOverlayEvent();
         g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+      } else if (selected_tab == "m") {
+        if ($.isFunction(window.refreshHostView)) {
+          refreshHeader();
+          refreshHostView();
+          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+        } else
+          ganglia_form.submit();
       } else
         ganglia_form.submit();
     }
