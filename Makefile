@@ -22,6 +22,8 @@ DIST_TARBALL = $(DIST_DIR).tar.gz
 
 TARGETS = conf_default.php gweb.spec version.php
 
+all: default
+
 default:	$(TARGETS)
 
 clean:
