@@ -481,7 +481,7 @@ if ( $user['json_output'] ||
   $rrdtool_graph_args = "";
 
   // First find RRDtool DEFs by parsing $rrdtool_graph['series']
-  preg_match_all("/([^V]DEF|CDEF):(.*):(AVERAGE)/", 
+  preg_match_all("/([^V]DEF|CDEF):(.*)(:AVERAGE|\s)/", 
                  " " . $rrdtool_graph['series'], 
                  $matches);
   foreach ( $matches[0] as $key => $value ) {
