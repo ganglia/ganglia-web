@@ -46,7 +46,7 @@ $conf['conf_dir'] = $conf['gmetad_root'] . '/conf';
 $conf['rrdtool'] = "/usr/bin/rrdtool";
 
 # Render graphs with rrdtool's --slope-mode option
-$conf['rrdtool_slope_mode'] = false;
+$conf['rrdtool_slope_mode'] = true;
 
 # If rrdcached is being used, this argument must specify the 
 # socket to use.
@@ -295,7 +295,7 @@ $conf['metric_groups_initially_collapsed'] = false;
 
 # Overlay events on graphs. Those are defined by specifying all the events
 # in events.json
-$conf['overlay_events'] = false;
+$conf['overlay_events'] = true;
 
 # Settings for allowing the Nagios API to be used as an additional
 # event source. Will only be enabled if overlay_nagios_events is true.

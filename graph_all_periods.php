@@ -148,7 +148,7 @@ if ( ! isset($_REQUEST['embed'] )  ) {
   <b>Host/Cluster/Host Regex: </b><?php print $description ?>&nbsp;<b>Metric/Graph/Metric Regex: </b><?php print $metric_description;?>&nbsp;&nbsp;
 <?php }?>
 
-<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events</label><br />
+<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events All Graphs</label><br />
 
 <?php
 if (isset($_GET['embed'])) {

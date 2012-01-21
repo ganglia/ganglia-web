@@ -4,9 +4,9 @@ DESTDIR = /var/www/html/gweb
 APACHE_USER = apache
 
 # Gweb version
-GWEB_MAJOR_VERSION = 2
-GWEB_MINOR_VERSION = 2
-GWEB_MICRO_VERSION = 1
+GWEB_MAJOR_VERSION = 4
+GWEB_MINOR_VERSION = 0
+GWEB_MICRO_VERSION = 0
 
 # Gweb statedir (where RRD files, Dwoo templates are stored)
 GWEB_STATEDIR = /var/lib
@@ -21,6 +21,8 @@ DIST_DIR = gweb-$(GWEB_VERSION)
 DIST_TARBALL = $(DIST_DIR).tar.gz
 
 TARGETS = conf_default.php gweb.spec version.php
+
+all: default
 
 default:	$(TARGETS)
 
