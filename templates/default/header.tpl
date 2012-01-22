@@ -177,7 +177,7 @@
      <td>
     <div id="range_menu">{$range_menu}{$custom_time}</div>
      </td>
-     <td align="right">
+     <td align="right" class="nobr">
       {$additional_buttons}&nbsp;&nbsp;<b>{$alt_view}</b>
      </td>
   </tr>
