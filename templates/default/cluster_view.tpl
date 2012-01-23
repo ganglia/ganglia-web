@@ -102,7 +102,7 @@ $(function() {
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
 
-<table border="0" cellspacing=5 width="100%">
+<table border="0" cellspacing=4 width="100%">
 <tr>
   <td class="title" colspan="2">
   <font size="+1">Overview of {$cluster} @ {$localtime}</font>
@@ -126,7 +126,7 @@ $(function() {
  <hr>
 </td>
 <td rowspan=2 align="center" valign=top>
-<div id="optional_graphs" style="padding-bottom:2px;">
+<div id="optional_graphs" style="padding-bottom:4px">
   {$optional_reports}<br>
   {foreach $optional_graphs_data graph}
   <a href="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=large">
@@ -220,6 +220,7 @@ $("#metrics-picker").val("{$metric_name}");
 </table>
 </div>
 
+<div id="host_metric_graphs">
 <center>
 <table id=graph_sorted_list>
 <tr>
@@ -241,7 +242,8 @@ $("#metrics-picker").val("{$metric_name}");
 </p>
 {/if}
 </center>
-<script>
+</div>
+<script type="text/javascript">
 $(function() {
   $( "#cluster_view_chooser" ).buttonset();
 });

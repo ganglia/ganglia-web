@@ -135,13 +135,13 @@ $data->assign("cluster_url", $cluster_url);
 $alt_view = "";
 
 if ($context == "cluster") {
-   $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url\">Physical View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url';return false;\">Physical View</button>";
 } elseif ($context == "physical") {
-   $alt_view = "<a href=\"./?c=$cluster_url\">Full View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url';return false;\">Full View</button>";
 } elseif ($context=="node") {
-   $alt_view = "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string\">Host View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string';return false;\">Host View</button>";
 } elseif ($context=="host") {
-   $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url&amp;h=$node_url';return false;\">Node View</button>";
 } elseif ( $context == "views") {
    if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
        $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';

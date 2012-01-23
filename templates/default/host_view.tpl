@@ -246,7 +246,7 @@ $(function() {
   </div>
 </div>
 
-<div style="padding-bottom:5px;">
+<div>
 <button id="host_overview" class="button ui-state-default ui-corner-all">Host Overview</button>
 </div>
 
@@ -269,15 +269,15 @@ $(function() {
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
 
-<div id="optional_graphs">
+<div id="optional_graphs" style="padding-top:5px;">
 {$optional_reports}
 <div style='clear: left'></div>
 {if $may_edit_cluster}
-<div style="text-align:center;margin-bottom:5px;"><button id="edit_optional_graphs_button">Edit Optional Graphs</button></div>
+<div style="text-align:center"><button id="edit_optional_graphs_button">Edit Optional Graphs</button></div>
 {/if}
 </div>
 
-<div id="sort_column_dropdowns">
+<div id="sort_column_dropdowns" style="padding-top:5px;">
 <table border="0" width="100%">
 <tr>
   <td class="title">
@@ -296,9 +296,9 @@ $(function() {
 
 </div>
 
-<div id=metrics>
+<div id=metrics style="padding-top:5px">
 <center>
-<div style="padding-bottom:5px;padding-top:5px;">
+<div style="padding-bottom:5px;">
 <button id="expand_all_metric_groups" class="button ui-state-default ui-corner-all">Expand All Metric Groups</button>
 <button id="collapse_all_metric_groups" class="button ui-state-default ui-corner-all">Collapse All Metric Groups</button>
 </div>
