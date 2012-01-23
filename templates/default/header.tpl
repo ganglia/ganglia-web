@@ -68,6 +68,7 @@
         {$is_metrics_picker_disabled} 
 
 	$(".submit_button").button();
+	$(".header_btn").button();
     });
 
   $(function () {
@@ -177,8 +178,8 @@
      <td>
     <div id="range_menu">{$range_menu}{$custom_time}</div>
      </td>
-     <td align="right">
-      {$additional_buttons}&nbsp;&nbsp;<b>{$alt_view}</b>
+     <td align="right" class="nobr">
+      {$additional_buttons}&nbsp;&nbsp;{$alt_view}
      </td>
   </tr>
   <tr>
