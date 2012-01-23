@@ -49,6 +49,13 @@
       } else if (selected_tab == "ev") {
         refreshOverlayEvent();
         g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+      } else if (selected_tab == "m") {
+        if ($.isFunction(window.refreshHostView)) {
+          refreshHeader();
+          refreshHostView();
+          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+        } else
+          ganglia_form.submit();
       } else
         ganglia_form.submit();
     }
@@ -61,6 +68,7 @@
         {$is_metrics_picker_disabled} 
 
 	$(".submit_button").button();
+	$(".header_btn").button();
     });
 
   $(function () {
@@ -121,6 +129,8 @@
         date = new Date((Math.floor(endTime) + delta) * 1000);
         $("#datepicker-ce").val(rrdDateTimeString(date));
     }
+
+    initShowEvent();
   });
 
 
@@ -165,11 +175,11 @@
      </td>
   </tr>
   <tr>
-     <td colspan="1">
+     <td>
     <div id="range_menu">{$range_menu}{$custom_time}</div>
      </td>
-     <td>
-      <b>{$alt_view}</b>
+     <td align="right" class="nobr">
+      {$additional_buttons}&nbsp;&nbsp;{$alt_view}
      </td>
   </tr>
   <tr>

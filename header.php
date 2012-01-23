@@ -135,13 +135,13 @@ $data->assign("cluster_url", $cluster_url);
 $alt_view = "";
 
 if ($context == "cluster") {
-   $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url\">Physical View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url';return false;\">Physical View</button>";
 } elseif ($context == "physical") {
-   $alt_view = "<a href=\"./?c=$cluster_url\">Full View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url';return false;\">Full View</button>";
 } elseif ($context=="node") {
-   $alt_view = "<a href=\"./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string\">Host View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string';return false;\">Host View</button>";
 } elseif ($context=="host") {
-   $alt_view = "<a href=\"./?p=2&amp;c=$cluster_url&amp;h=$node_url\">Node View</a>";
+   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url&amp;h=$node_url';return false;\">Node View</button>";
 } elseif ( $context == "views") {
    if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
        $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';
@@ -459,6 +459,12 @@ if ( $conf['overlay_events'] == true )
 
 $data->assign('selected_tab', $user['selected_tab']);
 $data->assign('view_name', $user['viewname']);
+
+$additional_buttons = "";
+if ($context == 'views' || $context == 'decompose_graph' || $context == 'host') {
+  $additional_buttons = '<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label for="show_all_events">Hide/Show Events</label>';
+}
+$data->assign('additional_buttons', $additional_buttons);
 
 # Make sure that no data is cached..
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); # Date in the past

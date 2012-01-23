@@ -32,18 +32,19 @@ if ( ! isset($_GET['embed'] ) ) {
 <script type="text/javascript">
   $(function() {
     initShowEvent();
+<?php if ( isset($_GET['embed'] ) ) { ?>
+    initMetricActionsDialog();
+<?php } ?>
   });
 </script>
 
 <?php
 include_once "./eval_conf.php";
+include_once "./global.php";
 
 // build a query string but drop r and z since those designate time window and size. Also if the 
 // get arguments are an array rebuild them. For example with hreg (host regex)
 $ignore_keys_list = array("r", "z", "st", "cs", "ce", "hc");
-
-$SHOW_EVENTS_BASE_ID = "show_events_";
-$GRAPH_BASE_ID = "graph_img_";
 
 foreach ($_GET as $key => $value) {
   if ( ! in_array($key, $ignore_keys_list) && ! is_array($value))
@@ -147,7 +148,7 @@ if ( ! isset($_REQUEST['embed'] )  ) {
   <b>Host/Cluster/Host Regex: </b><?php print $description ?>&nbsp;<b>Metric/Graph/Metric Regex: </b><?php print $metric_description;?>&nbsp;&nbsp;
 <?php }?>
 
-<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events</label><br />
+<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events All Graphs</label><br />
 
 <?php
 if (isset($_GET['embed'])) {
@@ -166,7 +167,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
   
   // Check if it's an aggregate graph
   if ( $is_aggregate  ) {
-    print '<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' .$query_string . '\'); return false;">+</button>';
+    print '<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' . $query_string . '\'); return false;">+</button>';
   }
 
   print ' <button title="Export to CSV" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;csv=1\';return false">CSV</button> ';

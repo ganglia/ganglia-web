@@ -128,6 +128,30 @@ function toggleMetricGroup(mgId, mgDiv) {
   document.ganglia_form.submit();
 }
 
+function refreshHostView() {
+  $.get('host_overview.php?h={$hostname}&c={$cluster}', function(data) {
+    $('#host_overview_div').html(data);
+  });
+
+  $("#optional_graphs img").each(function (index) {
+    var src = $(this).attr("src");
+    if ((src.indexOf("graph.php") == 0) ||
+        (src.indexOf("./graph.php") == 0)) {
+      var d = new Date();
+      $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
+    }    
+  });
+
+  $("#metrics img").each(function (index) {
+    var src = $(this).attr("src");
+    if ((src.indexOf("graph.php") == 0)  ||
+        (src.indexOf("./graph.php") == 0)) {
+      var d = new Date();
+      $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
+    }    
+  });
+}
+
 $(function() {
   var stored_groups = $('input[name="metric_group"]');
   stored_groups.val("{$g_open_metric_groups}");
@@ -222,51 +246,14 @@ $(function() {
   </div>
 </div>
 
-<div style="padding-bottom:5px;">
+<div>
 <button id="host_overview" class="button ui-state-default ui-corner-all">Host Overview</button>
 </div>
 
 <div style="display: none;" id="host_overview_div">
-<br>
-<table border="0" width="100%">
-
-<tr>
- <td align="left" valign="TOP">
-
-<img src="{$node_image}" class="noborder" height="60" width="30" title="{$host}"/>
-{$node_msg}
-
-<table border="0" width="100%">
-<tr>
-  <td colspan="2" class="title">Time and String Metrics</td>
-</tr>
-
-{foreach $s_metrics_data s_metric}
-<tr>
- <td class="footer" width="30%">{$s_metric.name}</td><td>{$s_metric.value}</td>
-</tr>
-{/foreach}
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-  <td colspan="2" class="title">Constant Metrics</td>
-</tr>
-
-{foreach $c_metrics_data c_metric}
-<tr>
- <td class="footer" width="30%">{$c_metric.name}</td><td>{$c_metric.value}</td>
-</tr>
-{/foreach}
-</table>
-
- <hr />
-{if isset($extra)}
-{include(file="$extra")}
-{/if}
-</td> 
-</table>
+{include('host_overview.tpl')}
 </div>
+
 <style type="text/css">
 #edit_optional_graphs_button {
     font-size:12px;
@@ -282,7 +269,7 @@ $(function() {
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
 
-<div id="optional_graphs">
+<div id="optional_graphs" style="padding-top:5px;">
 {$optional_reports}
 <div style='clear: left'></div>
 {if $may_edit_cluster}
@@ -290,7 +277,7 @@ $(function() {
 {/if}
 </div>
 
-<div id="sort_column_dropdowns">
+<div id="sort_column_dropdowns" style="padding-top:5px;">
 <table border="0" width="100%">
 <tr>
   <td class="title">
@@ -309,9 +296,9 @@ $(function() {
 
 </div>
 
-<div id=metrics>
+<div id=metrics style="padding-top:5px">
 <center>
-<div style="padding-bottom:5px;padding-top:5px;">
+<div style="padding-bottom:5px;">
 <button id="expand_all_metric_groups" class="button ui-state-default ui-corner-all">Expand All Metric Groups</button>
 <button id="collapse_all_metric_groups" class="button ui-state-default ui-corner-all">Collapse All Metric Groups</button>
 </div>
@@ -339,6 +326,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 {/if}
 {if $g_metrics.visible}
 <table><tr>
+{$i = 0}
 {foreach $g_metrics["metrics"] g_metric}
 <td>
 <font style="font-size: 9px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font>
@@ -349,17 +337,23 @@ g_mgMap["{$mgId}"] = "{$group}";
 <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;csv=1';return false;">CSV</button>
 <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;json=1';return false;">JSON</button>
 <button title="Inspect Graph" onClick="inspectGraph('{$g_metric.graphargs}'); return false;" class="shiny-blue">Inspect</button>
-<br>
+
 {if $graph_engine == "flot"}
+<br>
 <div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>
 <div id="placeholder_{$g_metric.graphargs}_legend" class="flotlegend"></div>
 {else}
+{$graphId = cat($GRAPH_BASE_ID $mgId $i)}
+{$showEventsId = cat($SHOW_EVENTS_BASE_ID $mgId $i)}
+<input title="Hide/Show Events" type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
+<br>
 <a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
-<img class="noborder {$additional_host_img_css_classes}" style="margin:5px;" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
+<img id="{$graphId}" class="noborder {$additional_host_img_css_classes}" style="margin:5px;" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
 </A>
 {/if}
 </td>
 {$g_metric.new_row}
+{math "$i + 1" assign=i}
 {/foreach}
 </tr>
 </table>
