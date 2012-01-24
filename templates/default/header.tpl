@@ -93,7 +93,14 @@
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 38,
-        paddingBottom: 27
+        paddingBottom: 25
+    }, defaults));
+
+    $(".host_medium_zoomable").gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 38,
+        paddingBottom: 40
     }, defaults));
 
     $(".host_default_zoomable").gangZoom($.extend({
