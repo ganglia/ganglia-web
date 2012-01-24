@@ -144,7 +144,7 @@ $(function() {
 {if $php_gd && !$heatmap}
   <img src="./pie.php?{$pie_args}" title="Pie Chart" border="0" />
 {/if}
-{if $heatmap}
+{if $heatmap && $num_nodes > 0}
 Utilization heatmap<br />
 <div id="heatmap-fig">
     <script type="text/javascript+protovis">
