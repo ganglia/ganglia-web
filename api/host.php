@@ -30,7 +30,7 @@ function form_image_url ( $page, $args ) {
       $a[] = $k . "=" . urlencode($v);
     }
   }
-  return $page . "?" . join("&", $a);
+  return ( defined($conf['external_location']) ? $conf['external_location'] . '/' : "" ) . $page . "?" . join("&", $a);
 }
 
 switch ( $_GET['action'] ) {
