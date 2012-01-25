@@ -176,9 +176,10 @@ vis.render();
 </tr>
 </table>
 {if $stacked_graph_args}
+<center>
 <table>
 <tr>
-  <td class=title colspan="2">
+  <td class=title colspan="1">
   <font size="+1">Stacked Graph</font> 
   </td>
 </tr>
@@ -188,6 +189,7 @@ vis.render();
   </td>
 </tr>
 </table>
+</center>
 {/if}
 
 <script type="text/javascript">
