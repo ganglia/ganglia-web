@@ -343,7 +343,7 @@ $conf['heatmaps_enabled'] = 1;
 $conf['decorated_graph_title'] = true;
 
 # If set to yes, will display stacked graph (aggregated metric across hosts) in cluster view
-$conf['show_stacked_graphs'] = 0;
+$conf['show_stacked_graphs'] = 1;
 
 # If set to false the grid view under the main tab will be displayed only if 
 # the grid name is not "unspecified", or a parent grid has been defined.
