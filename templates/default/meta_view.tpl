@@ -52,7 +52,7 @@
     <a href="./graph_all_periods.php?{$source.graph_url}&amp;g=load_report&amp;z=large">
       <img src="./graph.php?{$source.graph_url}&amp;g=load_report&amp;z=medium"
            alt="{$source.name} LOAD" border="0" />
-    </a><br />
+    </a>
     <a href="./graph_all_periods.php?{$source.graph_url}&amp;g=cpu_report&amp;z=large">
       <img src="./graph.php?{$source.graph_url}&amp;g=cpu_report&amp;z=medium"
            alt="{$source.name} CPU" border="0" />
