@@ -179,7 +179,7 @@ vis.render();
 <table width="100%" border=0>
 <tr>
   <td class=title colspan="1">
-  <font size="+1">Stacked Graph</font> 
+  <font size="+1">Stacked Graph - {$metric}</font> 
   </td>
 </tr>
 <tr>
