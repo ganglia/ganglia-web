@@ -123,7 +123,6 @@ $(function() {
 {if isset($extra)}
 {include(file="$extra")}
 {/if}
- <hr>
 </td>
 <td rowspan=2 align="center" valign=top>
 <div id="optional_graphs" style="padding-bottom:4px">
@@ -177,7 +176,7 @@ vis.render();
 </table>
 {if $stacked_graph_args}
 <center>
-<table>
+<table width="100%" border=0>
 <tr>
   <td class=title colspan="1">
   <font size="+1">Stacked Graph</font> 
