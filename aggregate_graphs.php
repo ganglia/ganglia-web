@@ -146,7 +146,18 @@ $(function() {
 <tr>
 <td>Graph Type:</td><td>
 <div id="graph_type_menu"><input type="radio" name="gtype" value="line" checked>Line</input>
-<input type="radio" name="gtype" value="stack">Stacked</input></div></td>
+<input type="radio" name="gtype" value="stack">Stacked</input></div>
+</td>
+</tr>
+<tr>
+<td>Legend options:</td><td>
+<div id="graph_type_menu"><input type="radio" name="glegend" value="show" checked>Show hosts</input>
+<input type="radio" name="glegend" value="hide">Hide hosts</input></div>
+</td>
+</tr>
+<tr>
+<td>
+</td>
 <td>
 <button class="ag_buttons" onclick="createAggregateGraph(); return false">Create Graph</button></td>
 </tr>
