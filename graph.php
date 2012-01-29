@@ -217,6 +217,11 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   else
       $line_width = "2";
 
+  if ( isset($_GET["glegend"]) && in_array($_GET["glegend"], array("show", "hide") ) )
+      $graph_legend = $_GET["glegend"];
+  else
+      $graph_legend = "show";
+
 
   /////////////////////////////////////////////////////////////////////////////
   // In order to reduce the load on the machine when someone is doing host
@@ -262,6 +267,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
                                                   $line_width, 
                                                   $_GET['hreg'], 
                                                   $_GET['mreg'],
+                                                  $graph_legend,
                                                   $exclude_host_from_legend_label);
   }
 
@@ -328,7 +334,7 @@ switch ( $conf['graph_engine'] ) {
   
     # Make small graphs (host list) cleaner by removing the too-big
     # legend: it is displayed above on larger cluster summary graphs.
-    if ($size == "small" and ! isset($subtitle))
+    if (($size == "small" and ! isset($subtitle)) || ($graph_config["glegend"] == "hide"))
         $rrdtool_graph['extras'] = "-g";
 
     # add slope-mode if rrdtool_slope_mode is set
