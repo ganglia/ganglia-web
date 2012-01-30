@@ -75,6 +75,8 @@ foreach($hosts as $host) {
     $cx = $c/(1+count($hosts));
     $color = get_col($cx);
     $c++;
+    if ($conf['strip_domainname'])
+         $host = strip_domainname($host);
     $command .= " STACK:'a$c'#$color:'$host'";
 }
 
