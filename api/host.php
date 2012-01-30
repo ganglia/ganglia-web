@@ -160,7 +160,7 @@ switch ( $_GET['action'] ) {
         $graph_arguments['ti'] = $metrics[$cluster_url]['TITLE'];
       }
       $graph['description'] = isset($metrics[$cluster_url]['DESC']) ? $metrics[$cluster_url]['DESC'] : '';
-      $graph['title'] = isset($metrics[$cluster_url]['TITLE']) ? $metrics[$cluster_url]['TITLE'] : '';
+      $graph['title'] = isset($metrics[$cluster_url]['TITLE']) ? $metrics[$cluster_url]['TITLE'] : $rrd;
 
       # Setup an array of groups that can be used for sorting in group view
       if ( isset($metrics[$name]['GROUP']) ) {
