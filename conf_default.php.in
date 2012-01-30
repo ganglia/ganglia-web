@@ -350,4 +350,8 @@ $conf['show_stacked_graphs'] = 1;
 # If set to true the grid view will always be displayed even when only a
 # single cluster has been defined.
 $conf['always_display_grid_view'] = true;
+
+# If set to yes, will display the cluster overview graphs
+$conf['show_cluster_overview_graphs'] = 0;
+
 ?>
