@@ -237,6 +237,9 @@ if (isset($conf['show_stacked_graphs']) and
 
 }
 
+if (isset($conf['show_cluster_overview_graphs']) and $conf['show_cluster_overview_graphs'] == 1) {
+    $data->assign( "cluster_overview_graphs", $stacked_args );
+}
 
 $dwoo->output($tpl, $data);
 ?>
