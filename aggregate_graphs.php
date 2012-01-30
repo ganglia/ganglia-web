@@ -40,6 +40,8 @@
 $(function() {
 
   $( ".ag_buttons" ).button();
+  $( "#graph_type_menu" ).buttonset();
+  $( "#graph_legend_menu" ).buttonset();
 
   $("#hreg").change(function() {
     $.cookie("ganglia-aggregate-graph-hreg" + window.name,
@@ -145,14 +147,14 @@ $(function() {
 </tr>
 <tr>
 <td>Graph Type:</td><td>
-<div id="graph_type_menu"><input type="radio" name="gtype" value="line" checked>Line</input>
-<input type="radio" name="gtype" value="stack">Stacked</input></div>
+<div id="graph_type_menu"><input type="radio" name="gtype" id="gtline" value="line" checked /><label for="gtline">Line</label>
+<input type="radio" name="gtype" id="gtstack" value="stack" /><label for="gtstack">Stacked</label></div>
 </td>
 </tr>
 <tr>
 <td>Legend options:</td><td>
-<div id="graph_type_menu"><input type="radio" name="glegend" value="show" checked>Show hosts</input>
-<input type="radio" name="glegend" value="hide">Hide hosts</input></div>
+<div id="graph_legend_menu"><input type="radio" name="glegend" id="glshow" value="show" checked /><label for="glshow">Show legend</label>
+<input type="radio" name="glegend" id="glhide" value="hide" /><label for="glhide">Hide legend</label></div>
 </td>
 </tr>
 <tr>
