@@ -62,9 +62,13 @@
 
     $(function(){
         $( "#metrics-picker" ).autocomplete({
-          source: availablemetrics
+          source: availablemetrics,
+	  // When the autocomplete dialog closes submit the form
+	  close: function(event, ui) {
+		ganglia_form.submit();
+	    }
         });
-
+	
         {$is_metrics_picker_disabled} 
 
 	$(".submit_button").button();
@@ -192,7 +196,7 @@
   <tr>
   <td colspan="2">
   <div id="sort_menu">
-   <b>Metric</b>&nbsp;&nbsp; <input name="m" onclick="$('#metrics-picker').val('');" type=text id="metrics-picker" /><input type="submit" value="Go">&nbsp;&nbsp;
+   <b>Metric</b>&nbsp;&nbsp; <input name="m" onclick="$('#metrics-picker').val('');" type=text id="metrics-picker" />&nbsp;&nbsp;
      {$sort_menu}
   </div>
   </td>
