@@ -103,12 +103,12 @@ header ("Pragma: no-cache");
 if (isset($_GET['debug']))
     {
         header ("Content-type: text/plain");
-        echo $command;
+        echo sanitize($command);
     }
 else
     {
     header ("Content-type: image/png");
-    passthru($command);
+    passthru(sanitize($command));
     }
 
 function HSV_TO_RGB ($H, $S, $V){
