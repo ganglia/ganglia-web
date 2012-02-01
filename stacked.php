@@ -88,6 +88,7 @@ foreach($hosts as $host) {
     $command .= " STACK:'a$c'#000000";
 }
 
+$command = sanitize($command);
 $command .= $total_cmd . $mean_cmd;
 $command .= " COMMENT:'\\j'";
 $command .= " GPRINT:'total':AVERAGE:'Avg Total\: %5.2lf'";
@@ -103,12 +104,12 @@ header ("Pragma: no-cache");
 if (isset($_GET['debug']))
     {
         header ("Content-type: text/plain");
-        echo sanitize($command);
+        echo ($command);
     }
 else
     {
     header ("Content-type: image/png");
-    passthru(sanitize($command));
+    passthru($command);
     }
 
 function HSV_TO_RGB ($H, $S, $V){
