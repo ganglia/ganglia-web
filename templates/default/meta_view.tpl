@@ -48,42 +48,65 @@
 </td>
 
 {if isset($source.self_summary_graphs)}
-  <td align="RIGHT" valign="TOP">
+<td>
+ <table align="center" border="0">
+  <tr>
+
+   <td>
     <a href="./graph_all_periods.php?{$source.graph_url}&amp;g=load_report&amp;z=large">
       <img src="./graph.php?{$source.graph_url}&amp;g=load_report&amp;z=medium"
            alt="{$source.name} LOAD" border="0" />
-    </a><br />
+    </a>
+   </td>
+   <td>
+    <a href="./graph_all_periods.php?{$source.graph_url}&amp;g=mem_report&amp;z=large">
+      <img src="./graph.php?{$source.graph_url}&amp;g=mem_report&amp;z=medium"
+           alt="{$source.name} MEM" border="0" />
+    </a>
+   </td>
+  </tr>
+
+  <tr>
+   <td>
     <a href="./graph_all_periods.php?{$source.graph_url}&amp;g=cpu_report&amp;z=large">
       <img src="./graph.php?{$source.graph_url}&amp;g=cpu_report&amp;z=medium"
            alt="{$source.name} CPU" border="0" />
     </a>
-  </td>
-  <td valign="TOP">
-    <a href="./graph_all_periods.php?{$source.graph_url}&amp;g=mem_report&amp;z=large">
-      <img src="./graph.php?{$source.graph_url}&amp;g=mem_report&amp;z=medium"
-           alt="{$source.name} MEM" border="0" />
-    </a><br />
+   </td>
+   <td>
     <a href="./graph_all_periods.php?{$source.graph_url}&amp;g=network_report&amp;z=large">
       <img src="./graph.php?{$source.graph_url}&amp;g=network_report&amp;z=medium"
            alt="{$source.name} NETWORK" border="0" />
     </a>
-  </td>
+   </td>
+
+  </tr>
+ </table>
+</td>
 {/if}
 
 {if isset($source.summary_graphs)}
-  <td align="RIGHT" valign="TOP">
-  <a href="{$source.url}">
-    <img src="./graph.php?{$source.graph_url}&amp;g=load_report&amp;z=medium&amp;r={$source.range}"
-         alt="{$source.name} LOAD" border="0" />
-  </a>
-  </td>
+<td>
+ <table align="center" border="0">
+  <tr>
 
-  <td valign="TOP">
-  <a href="{$source.url}">
-    <img src="./graph.php?{$source.graph_url}&amp;g=network_report&amp;z=medium&amp;r={$source.range}"
-         alt="{$source.name} MEM" border="0" />
-  </a>
-  </td>
+      <td>
+      <a href="{$source.url}">
+        <img src="./graph.php?{$source.graph_url}&amp;g=load_report&amp;z=medium&amp;r={$source.range}"
+             alt="{$source.name} LOAD" border="0" />
+      </a>
+      </td>
+
+      <td>
+      <a href="{$source.url}">
+        <img src="./graph.php?{$source.graph_url}&amp;g=network_report&amp;z=medium&amp;r={$source.range}"
+             alt="{$source.name} MEM" border="0" />
+      </a>
+      </td>
+
+  </tr>
+ </td>
+</table>
 {/if}
 {/if}
 

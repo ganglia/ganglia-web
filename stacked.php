@@ -9,16 +9,16 @@ $conf['gweb_root'] = dirname(__FILE__);
 include_once $conf['gweb_root'] . "/eval_conf.php";
 include_once $conf['gweb_root'] . "/functions.php";
 
-$clustername = $_GET['c'];
-$metricname = $_GET['m'];
-$range = $_GET['r'];
+$clustername = $_REQUEST['c'];
+$metricname = $_REQUEST['m'];
+$range = $_REQUEST['r'];
 
 $start = $conf['time_ranges'][$range];
 
 $command = $conf['rrdtool'] . " graph - $rrd_options -E";
 $command .= " --start -${start}s";
 $command .= " --end N";
-$command .= " --width 500";
+$command .= " --width 700";
 $command .= " --height 300";
 $command .= " --title '$clustername aggregated $metricname last $range'";
 
@@ -42,8 +42,15 @@ unset($hosts);
 
 foreach($index_array['cluster'] as $host => $cluster ) {
     
+    // Check cluster name
     if ( $cluster == $clustername ) {
-        $hosts[] = $host;
+        // If host regex is specified make sure it matches
+        if ( isset($_REQUEST["host_regex"] ) ) {
+                if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) )
+                        $hosts[] = $host;        
+        } else {
+                $hosts[] = $host;
+        }
     }
 }
 
@@ -68,6 +75,8 @@ foreach($hosts as $host) {
     $cx = $c/(1+count($hosts));
     $color = get_col($cx);
     $c++;
+    if ($conf['strip_domainname'])
+         $host = strip_domainname($host);
     $command .= " STACK:'a$c'#$color:'$host'";
 }
 
@@ -79,6 +88,7 @@ foreach($hosts as $host) {
     $command .= " STACK:'a$c'#000000";
 }
 
+$command = sanitize($command);
 $command .= $total_cmd . $mean_cmd;
 $command .= " COMMENT:'\\j'";
 $command .= " GPRINT:'total':AVERAGE:'Avg Total\: %5.2lf'";
@@ -94,7 +104,7 @@ header ("Pragma: no-cache");
 if (isset($_GET['debug']))
     {
         header ("Content-type: text/plain");
-        echo $command;
+        echo ($command);
     }
 else
     {

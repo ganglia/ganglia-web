@@ -9,7 +9,7 @@
 }
 </style>
 <?php
-if ( ! isset($_GET['embed'] ) ) {
+if ( ! isset($_REQUEST['embed'] ) || ! isset($_REQUEST['mobile']) ) {
 ?>
 <script TYPE="text/javascript" SRC="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
@@ -146,11 +146,15 @@ if ( isset($_REQUEST['mobile'])) {
 if ( ! isset($_REQUEST['embed'] )  ) {
 ?>
   <b>Host/Cluster/Host Regex: </b><?php print $description ?>&nbsp;<b>Metric/Graph/Metric Regex: </b><?php print $metric_description;?>&nbsp;&nbsp;
-<?php }?>
+<?php }
 
+if ( ! isset($_REQUEST['mobile'] )  ) {
+
+?>
 <input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events All Graphs</label><br />
-
 <?php
+} // end of if ( ! isset($_REQUEST['mobile'] )  ) {
+
 if (isset($_GET['embed'])) {
   print "<div style='height:10px;'/>";
 }
@@ -162,29 +166,37 @@ else
 
 foreach ( $conf['time_ranges'] as $key => $value ) {
 
-  print '<div class="img_view">
-  <span style="padding-left: 4em; padding-right: 4em; text-weight: bold;">' . $key . '</span>';
+  print '<div class="img_view">';
   
-  // Check if it's an aggregate graph
-  if ( $is_aggregate  ) {
-    print '<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' . $query_string . '\'); return false;">+</button>';
-  }
+  if ( ! isset($_REQUEST['mobile']) ) {
 
-  print ' <button title="Export to CSV" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;csv=1\';return false">CSV</button> ';
+  print '<span style="padding-left: 4em; padding-right: 4em; text-weight: bold;">' . $key . '</span>';
 
-  print ' <button title="Export to JSON" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;json=1\';return false;">JSON</button> ';
+  // If this is for mobile hide some of the options
+  
+    // Check if it's an aggregate graph
+    if ( $is_aggregate  ) {
+      print '<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' . $query_string . '\'); return false;">+</button>';
+    }
+  
+    print ' <button title="Export to CSV" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;csv=1\';return false">CSV</button> ';
+  
+    print ' <button title="Export to JSON" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;json=1\';return false;">JSON</button> ';
+  
+     // Check if it's an aggregate graph
+    if ( $is_aggregate  ) {
+	print ' <button title="Decompose aggregate graph" class="shiny-blue" onClick="openDecompose(\'?r=' . $key . $query_string  . '&amp;dg=1\');return false;">Decompose</button>';
+    }
+   
+    print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>';
 
-   // Check if it's an aggregate graph
-  if ( $is_aggregate  ) {
-      print ' <button title="Decompose aggregate graph" class="shiny-blue" onClick="openDecompose(\'?r=' . $key . $query_string  . '&amp;dg=1\');return false;">Decompose</button>';
-  }
- 
-  print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>';
+    $graphId = $GRAPH_BASE_ID . $key;
 
-  $graphId = $GRAPH_BASE_ID . $key;
+    print ' <input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $key . '">Hide/Show Events</label>';
 
-  print ' <input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $key . '">Hide/Show Events</label>' .
-  '<br />';
+  } 
+
+  print  '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
   if ( $conf['graph_engine'] == "flot" ) {

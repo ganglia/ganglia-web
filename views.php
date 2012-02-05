@@ -121,7 +121,8 @@ if ( isset($_GET['add_to_view']) ) {
 
 	  $item_array = array( "aggregate_graph" => "true", "metric_regex" => $metric_regex_array, 
 	    "host_regex" => $host_regex_array, "graph_type" => $_GET['gtype'],
-	    "vertical_label" => $_GET['vl'], "title" => $_GET['title']);
+	    "vertical_label" => $_GET['vl'], "title" => $_GET['title'],
+      "glegend" => $_GET['glegend']);
 
           if ( isset($_GET['x']) && is_numeric($_GET['x'])) {
             $item_array["upper_limit"] = $_GET['x'];

@@ -4,8 +4,8 @@ DESTDIR = /var/www/html/gweb
 APACHE_USER = apache
 
 # Gweb version
-GWEB_MAJOR_VERSION = 4
-GWEB_MINOR_VERSION = 0
+GWEB_MAJOR_VERSION = 3
+GWEB_MINOR_VERSION = 3
 GWEB_MICRO_VERSION = 0
 
 # Gweb statedir (where RRD files, Dwoo templates are stored)

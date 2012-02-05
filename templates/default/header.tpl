@@ -62,13 +62,11 @@
 
     $(function() {
       $("#metrics-picker").combobox();
-    });
 
-    $(function(){
-        {$is_metrics_picker_disabled} 
+      {$is_metrics_picker_disabled} 
 
-        $(".submit_button").button();
-        $(".header_btn").button();
+      $(".submit_button").button();
+      $(".header_btn").button();
     });
 
   $(function () {

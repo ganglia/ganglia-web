@@ -799,6 +799,9 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	  }
 
+    if ( isset($item['glegend']) )
+      $graph_args_array[] = "glegend=" . $item["glegend"];
+
 	  if ( isset($item['cluster']) ) {
 	    $graph_args_array[] = "c=" . $item['cluster'];
 	  }
@@ -1307,6 +1310,7 @@ function build_aggregate_graph_config ($graph_type,
                                        $line_width, 
                                        $hreg,
                                        $mreg,
+                                       $glegend,
                                        $exclude_host_from_legend_label) {
 
   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
@@ -1317,6 +1321,7 @@ function build_aggregate_graph_config ($graph_type,
 
   $graph_config["report_name"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
   $graph_config["title"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
+  $graph_config["glegend"]=isset($glegend) ? sanitize($glegend) : "show";
 
   $counter = 0;
 

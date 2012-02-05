@@ -63,8 +63,8 @@ $data->assign("sort", $sort);
 $data->assign("range", $range);
 
 $showhosts_levels = array(
-   2 => array('checked'=>'', 'name'=>'Auto'),
-   1 => array('checked'=>'', 'name'=>'Same'),
+   1 => array('checked'=>'', 'name'=>'Auto'),
+   2 => array('checked'=>'', 'name'=>'Same'),
    0 => array('checked'=>'', 'name'=>'None'),
 );
 $showhosts_levels[$showhosts]['checked'] = 'checked';
@@ -161,10 +161,12 @@ if (isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1) {
 ///////////////////////////////////////////////////////////////////////////////
 if (isset($conf['show_stacked_graphs']) and 
     $conf['show_stacked_graphs'] == 1  and 
-    ! preg_match("/_report/", $metricname)) {
-   $data->assign(
-     "stacked_graph_args",
-     "m=$metricname&c=$cluster_url&r=$range&st=$cluster[LOCALTIME]");
+    ! preg_match("/_report$/", $metricname)) {
+      $stacked_args = "m=$metricname&c=$cluster_url&r=$range&st=$cluster[LOCALTIME]";
+      if ( isset($user['host_regex']) )
+        $stacked_args .= "&host_regex=" .  $user['host_regex'];
+      $data->assign( "stacked_graph_args", $stacked_args );
+
 }
 
 
