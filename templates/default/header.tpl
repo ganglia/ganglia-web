@@ -15,9 +15,9 @@
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
+<script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
-    var availablemetrics = [ {$available_metrics} ];
 
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
 
@@ -28,7 +28,7 @@
         title = title.substring(0, l);
         title += " for " + data;
         $("#page_title").text(title);
-	});
+        });
     }
 
     function refresh() {
@@ -60,19 +60,13 @@
         ganglia_form.submit();
     }
 
-    $(function(){
-        $( "#metrics-picker" ).autocomplete({
-          source: availablemetrics,
-	  // When the autocomplete dialog closes submit the form
-	  close: function(event, ui) {
-		ganglia_form.submit();
-	    }
-        });
-	
-        {$is_metrics_picker_disabled} 
+    $(function() {
+      $("#metrics-picker").combobox();
 
-	$(".submit_button").button();
-	$(".header_btn").button();
+      {$is_metrics_picker_disabled} 
+
+      $(".submit_button").button();
+      $(".header_btn").button();
     });
 
   $(function () {
@@ -196,7 +190,7 @@
   <tr>
   <td colspan="2">
   <div id="sort_menu">
-   <b>Metric</b>&nbsp;&nbsp; <input name="m" onclick="$('#metrics-picker').val('');" type=text id="metrics-picker" />&nbsp;&nbsp;
+   <b>Metric</b>&nbsp;&nbsp; <select name="m" id="metrics-picker">{$available_metrics}</select>&nbsp;&nbsp;<input type="submit" value="Go" title="Update host metric graphs">&nbsp;&nbsp;
      {$sort_menu}
   </div>
   </td>
