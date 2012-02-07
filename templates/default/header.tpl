@@ -132,11 +132,10 @@
         // getTimezoneOffset returns negative values east of UTC,
         // which is the opposite of PHP. we want negative values to the west.
         var local_offset = new Date().getTimezoneOffset() * 60 * -1;
-        var delta = (local_offset - server_utc_offset) * -1;
-        var date = new Date((Math.floor(startTime) + delta) * 1000);
-
+        var delta = local_offset - server_utc_offset;
+        var date = new Date((Math.floor(startTime) - delta) * 1000);
         $("#datepicker-cs").val(rrdDateTimeString(date));
-        date = new Date((Math.floor(endTime) + delta) * 1000);
+        date = new Date((Math.floor(endTime) - delta) * 1000);
         $("#datepicker-ce").val(rrdDateTimeString(date));
     }
 
