@@ -63,7 +63,7 @@
     $(function() {
       $("#metrics-picker").combobox();
 
-      {$is_metrics_picker_disabled} 
+      {$is_metrics_picker_disabled}
 
       $(".submit_button").button();
       $(".header_btn").button();
@@ -127,9 +127,14 @@
     }
 
     function setStartAndEnd(startTime, endTime) {
-        var local_offset = new Date().getTimezoneOffset() * 60;
-        var delta = -server_utc_offset - local_offset;
+        // we're getting local start/end times.
+
+        // getTimezoneOffset returns negative values east of UTC,
+        // which is the opposite of PHP. we want negative values to the west.
+        var local_offset = new Date().getTimezoneOffset() * 60 * -1;
+        var delta = (local_offset - server_utc_offset) * -1;
         var date = new Date((Math.floor(startTime) + delta) * 1000);
+
         $("#datepicker-cs").val(rrdDateTimeString(date));
         date = new Date((Math.floor(endTime) + delta) * 1000);
         $("#datepicker-ce").val(rrdDateTimeString(date));
