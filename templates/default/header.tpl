@@ -190,7 +190,7 @@
   <tr>
   <td colspan="2">
   <div id="sort_menu">
-   <b>Metric</b>&nbsp;&nbsp; <select name="m" id="metrics-picker">{$available_metrics}</select>&nbsp;&nbsp;<input type="submit" value="Go" title="Update host metric graphs">&nbsp;&nbsp;
+   <b>Metric</b>&nbsp;&nbsp; <select name="m" id="metrics-picker">{$available_metrics}</select>&nbsp;&nbsp;
      {$sort_menu}
   </div>
   </td>
