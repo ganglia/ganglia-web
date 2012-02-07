@@ -288,7 +288,7 @@ $conf['default_view_graph_size'] = 'medium';
 # The API can serve up graphs, but the URLs should be fully qualified.
 # The default value is a hack to serve up the called hostname when
 # possible. It is best to define this manually.
-$conf['external_location'] = defined($_SERVER) ? "http://" . $_SERVER['SERVER_NAME'] . "/ganglia-2" : "http://localhost/ganglia-2";
+$conf['external_location'] = "http://localhost/ganglia-2";
 
 # In earlier versions of gmetad, hostnames were handled in a case
 # sensitive manner
