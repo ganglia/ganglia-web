@@ -33,6 +33,7 @@
 							self._trigger( "selected", event, {
 								item: ui.item.option
 							});
+						        ganglia_form.submit();
 						},
 						change: function( event, ui ) {
 							if ( !ui.item ) {
