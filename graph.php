@@ -356,7 +356,7 @@ switch ( $conf['graph_engine'] ) {
 
     // Look ahead six months
     if ( $user['trend_line'] ) {
-      $rrdtool_graph['start'] = "-7884000s";
+      $rrdtool_graph['start'] = "-31974000s";
       $rrdtool_graph['end'] = "+15768000s";
     }
 
@@ -669,7 +669,7 @@ if ( $showEvents == "show" &&
 if ( $showEvents == "show" &&
      $conf['overlay_events'] && 
      $conf['graph_engine'] == "rrdtool" && 
-     ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
+     ! in_array($range, $conf['overlay_events_exclude_ranges']) && ! $user['trend_line'] ) {
 
   $color_count = sizeof($conf['graph_colors']);
   $counter = 0;
