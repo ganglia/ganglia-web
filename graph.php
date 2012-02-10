@@ -356,7 +356,7 @@ switch ( $conf['graph_engine'] ) {
 
     // Look ahead six months
     if ( $user['trend_line'] ) {
-      $rrdtool_graph['start'] = "-7884000";
+      $rrdtool_graph['start'] = "-7884000s";
       $rrdtool_graph['end'] = "+15768000s";
     }
 
