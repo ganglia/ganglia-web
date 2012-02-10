@@ -47,6 +47,7 @@ $user['csv_output'] = isset($_GET["csv"]) ? 1 : NULL;
 $user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL; 
 $user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
 
+$user['trend_line'] = isset($_GET["trend"]) ? 1 : NULL; 
 
 // Get hostname
 $raw_host = isset($_GET["h"]) ? sanitize($_GET["h"]) : "__SummaryInfo__";  
@@ -352,6 +353,12 @@ switch ( $conf['graph_engine'] ) {
     }
 
     $command = $conf['rrdtool'] . " graph - $rrd_options ";
+
+    // Look ahead six months
+    if ( $user['trend_line'] ) {
+      $rrdtool_graph['start'] = "-7884000";
+      $rrdtool_graph['end'] = "+15768000s";
+    }
 
     if ( $max ) {
       $rrdtool_graph['upper-limit'] = $max;
@@ -891,6 +898,16 @@ if ( $showEvents == "show" &&
     }
   } //End check for array
 }
+
+// Add a trend line
+if ( $user['trend_line'] ) {
+  
+    $command .= " VDEF:D2=sum,LSLSLOPE VDEF:H2=sum,LSLINT CDEF:avg2=sum,POP,D2,COUNT,*,H2,+";
+    $command .= " 'LINE3:avg2#53E2FF:Trend:dashes'";
+
+  
+}
+
 
 if ($debug) {
   error_log("Final rrdtool command:  $command");
