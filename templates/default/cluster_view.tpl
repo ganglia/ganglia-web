@@ -1,13 +1,45 @@
 <!-- Begin cluster_view.tpl -->
 {if $heatmap}
 <script type="text/javascript" src="js/protovis-r3.2.js"></script>
-<script type="text/javascript">
-var heatmap = [
-{$heatmap}
-];
-</script>
 {/if}
 <script type="text/javascript">
+function refreshClusterView() {
+  $.get('cluster_view.php?' + jQuery.param.querystring() + '&refresh', function(data) {
+    var item = data.split("<!-- || -->");
+
+    $('#cluster_title').html(item[1]);
+
+    $('#cluster_overview').html(item[2]);
+
+    if ($('#load_pie').size())
+      $('#load_pie').attr("src", item[3].replace(/&amp;/g, "&"));
+
+    if ($('#heatmap-fig').size()) {
+      eval("heatmap = [" + item[4] + "]")	;
+      vis.render();
+    }
+
+    if ($('#stacked_graph').size()) {
+      var localtimestamp = parseInt(item[0]);
+      var src = $('#stacked_graph').attr('src');
+      $('#stacked_graph').attr("src", jQuery.param.querystring(src, "&st=" + localtimestamp));
+    }
+
+    var host_metric_graphs = $('#host_metric_graphs');
+    host_metric_graphs.css('height', host_metric_graphs.height() + "px");
+    host_metric_graphs.html(item[5]);
+  });
+
+  $("#optional_graphs img").each(function (index) {
+    var src = $(this).attr("src");
+    if ((src.indexOf("graph.php") == 0) ||
+        (src.indexOf("./graph.php") == 0)) {
+      var d = new Date();
+      $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
+    }    
+  });
+}
+
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
   //run the currently selected effect
@@ -105,32 +137,26 @@ $(function() {
 <table border="0" cellspacing=4 width="100%">
 <tr>
   <td class="title" colspan="2">
-  <font size="+1">Overview of {$cluster} @ {$localtime}</font>
+  <font size="+1" id="cluster_title">Overview of {$cluster} @ {$localtime}</font>
   </td>
 </tr>
 
 <tr>
 <td align="left" valign="top">
-<table cellspacing=1 cellpadding=1 width="100%" border=0>
- <tr><td>CPUs Total:</td><td align=left><B>{$cpu_num}</B></td></tr>
- <tr><td width="60%">Hosts up:</td><td align=left><B>{$num_nodes}</B></td></tr>
- <tr><td>Hosts down:</td><td align=left><B>{$num_dead_nodes}</B></td></tr>
- <tr><td>&nbsp;</td></tr>
- <tr><td colspan=2><font class="nobr">Current Load Avg (15, 5, 1m):</font><br>&nbsp;&nbsp;<b>{$cluster_load}</b></td></tr>
- <tr><td colspan=2>Avg Utilization (last {$range}):<br>&nbsp;&nbsp;<b>{$cluster_util}</b></td></tr>
- </table>
-
+<div id="cluster_overview">
+{include('cluster_overview.tpl')}
+</div>
 {if isset($extra)}
 {include(file="$extra")}
 {/if}
 </td>
 <td rowspan=2 align="center" valign=top>
 <div id="optional_graphs" style="padding-bottom:4px">
-  {$optional_reports}<br>
-  {foreach $optional_graphs_data graph}
+{$optional_reports}<br>
+{foreach $optional_graphs_data graph}
   <a href="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=large">
   <img border=0 {$additional_cluster_img_html_args} title="{$cluster} {$graph.name}" src="./graph.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=medium"></a>
-  {/foreach}
+{/foreach}
 </div>
 {if $user_may_edit}
 <button id="edit_optional_graphs_button">Edit Optional Graphs</button>
@@ -141,12 +167,15 @@ $(function() {
 <tr>
  <td align="center" valign="top">
 {if $php_gd && !$heatmap}
-  <img src="./pie.php?{$pie_args}" title="Pie Chart" border="0" />
+  <img id="load_pie" src="./pie.php?{$pie_args}" border="0" />
 {/if}
 {if $heatmap && $num_nodes > 0}
 Utilization heatmap<br />
 <div id="heatmap-fig">
-    <script type="text/javascript+protovis">
+<script type="text/javascript+protovis">
+var heatmap = [
+{$heatmap}
+];
 
 var w = heatmap[0].length,
     h = heatmap.length;
@@ -174,6 +203,7 @@ vis.render();
  </td>
 </tr>
 </table>
+
 {if $stacked_graph_args}
 <center>
 <table width="100%" border=0>
@@ -184,7 +214,7 @@ vis.render();
 </tr>
 <tr>
   <td>
-  <center><img src="stacked.php?{$stacked_graph_args}" alt="{$cluster} {$metric}"></center>
+  <center><img id="stacked_graph" src="stacked.php?{$stacked_graph_args}" alt="{$cluster} {$metric}"></center>
   </td>
 </tr>
 </table>
@@ -222,28 +252,9 @@ $("#metrics-picker").val("{$metric_name}");
 </div>
 
 <div id="host_metric_graphs">
-<center>
-<table id=graph_sorted_list>
-<tr>
-{foreach $sorted_list host}
-{$host.metric_image}{$host.br}
-{/foreach}
-</tr>
-</table>
-
-{$overflow_list_header}
-{foreach $overflow_list host}
-{$host.metric_image}{$host.br}
-{/foreach}
-{$overflow_list_footer}
-
-{if isset($node_legend)}
-<p>
-(Nodes colored by 1-minute load) | <a href="./node_legend.html">Legend</A>
-</p>
-{/if}
-</center>
+{include('cluster_host_metric_graphs.tpl')}
 </div>
+
 <script type="text/javascript">
 $(function() {
   $( "#cluster_view_chooser" ).buttonset();
