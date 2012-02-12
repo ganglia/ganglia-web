@@ -717,7 +717,8 @@ function get_available_views() {
 	  // Check whether view type has been specified ie. regex. If not it's standard view
 	  isset($view['view_type']) ? $view_type = $view['view_type'] : $view_type = "standard";
 	  $available_views[] = array ( "file_name" => $view_config_file, "view_name" => $view['view_name'],
-	    "items" => $view['items'], "view_type" => $view_type);
+              "default_size" => $view['default_size'], "items" => $view['items'], "view_type" => $view_type);
+
 	  unset($view);
 
 	}
@@ -750,6 +751,15 @@ function get_view_graph_elements($view) {
 
   $view_elements = array();
 
+  // set the default size from the view or global config
+  if ( isset($conf['default_view_graph_size']) ) {
+    $default_size = $conf['default_view_graph_size'];
+  }
+  if ( isset($view['default_size']) ) {
+    $default_size = $view['default_size'];
+  }
+
+
   switch ( $view['view_type'] ) {
 
     case "standard":
@@ -776,6 +786,13 @@ function get_view_graph_elements($view) {
               $mreg[] = $regex_array["regex"];
 	    }
 	  }
+
+          if ( isset($item['size']) ) {
+            $graph_args_array[] = "z=" . $item['size'];
+          } else {
+            $graph_args_array[] = "z=" . $default_size;
+          }
+
 
 	  // If graph type is not specified default to line graph
 	  if ( isset($item['graph_type']) && in_array($item['graph_type'], array('line', 'stack') ) )
@@ -827,6 +844,11 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "g=" . urlencode($item['graph']);
 	    $name = $item['graph'];
 	  }
+          if ( isset($item['size']) ) {
+            $graph_args_array[] = "z=" . $item['size'];
+          } else {
+            $graph_args_array[] = "z=" . $default_size;
+          }
 
 	  if (isset($item['hostname'])) {
             $hostname = $item['hostname'];
