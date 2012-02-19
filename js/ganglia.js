@@ -222,6 +222,20 @@ function inspectGraph(graphArgs) {
         function(data) {$('#inspect-graph-dialog-content').html(data);})
 }
 
+
+/* ----------------------------------------------------------------------------
+  Draw a trend line on a graph. Reuse inspect graph dialog for now
+-----------------------------------------------------------------------------*/
+function drawTrendGraph(url) {
+  $("#inspect-graph-dialog").dialog('open');
+  $("#inspect-graph-dialog").bind("dialogbeforeclose", 
+                                  function(event, ui) {
+                                    $("#enlargeTooltip").remove();});
+  $("#inspect-graph-dialog").html('<img src="' + url + '" />');
+
+  
+}
+
 var SHOW_EVENTS_BASE_ID = "show_events_";
 var SHOW_EVENTS_BASE_ID_LEN = SHOW_EVENTS_BASE_ID.length;
 var GRAPH_BASE_ID = "graph_img_";
