@@ -224,7 +224,7 @@ function inspectGraph(graphArgs) {
 
 
 /* ----------------------------------------------------------------------------
-  Draw a trend line on a graph. Reuse inspect graph dialog for now
+  Draw a trend line on a graph.
 -----------------------------------------------------------------------------*/
 function drawTrendGraph(url) {
   $("#popup-dialog").dialog('open');

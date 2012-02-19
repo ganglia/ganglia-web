@@ -48,6 +48,8 @@ $user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL;
 $user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
 
 $user['trend_line'] = isset($_GET["trend"]) ? 1 : NULL; 
+# How many months ahead to look e.g. 6 months
+$user['trend_range'] = isset($_GET["trendrange"]) && is_numeric($_GET["trendrange"]) ? $_GET["trendrange"] : 6;
 
 // Get hostname
 $raw_host = isset($_GET["h"]) ? sanitize($_GET["h"]) : "__SummaryInfo__";  
@@ -356,8 +358,9 @@ switch ( $conf['graph_engine'] ) {
 
     // Look ahead six months
     if ( $user['trend_line'] ) {
-      $rrdtool_graph['start'] = "-31974000s";
-      $rrdtool_graph['end'] = "+15768000s";
+      # Show last 6 months of data when drawing a trend
+      $rrdtool_graph['start'] = "-15552000s";
+      $rrdtool_graph['end'] = "+" . $user["trend_range"] * 2592000 . "s";
     }
 
     if ( $max ) {
