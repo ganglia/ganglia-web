@@ -184,7 +184,7 @@ $(function() {
 	    $( "#edit_optional_graphs_button" ).button();
 	    $( "#save_optional_graphs_button" ).button();
 	    $( "#close_edit_optional_graphs_link" ).button();
-	    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+	    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     });
 
     $("#edit_optional_graphs_button").click(function(event) {
@@ -241,8 +241,8 @@ $(function() {
 	Available Metric actions.
   </div>
 </div>
-<div id="inspect-graph-dialog" title="Inspect Graph">
-  <div id="inspect-graph-dialog-content">
+<div id="popup-dialog" title="Inspect Graph">
+  <div id="popup-dialog-content">
   </div>
 </div>
 

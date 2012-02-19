@@ -212,14 +212,14 @@ function ganglia_submit(clearonly) {
  Enlarges a graph using Flot
 -----------------------------------------------------------------------------*/
 function inspectGraph(graphArgs) {
-  $("#inspect-graph-dialog").dialog('open');
-  $("#inspect-graph-dialog").bind("dialogbeforeclose", 
+  $("#popup-dialog").dialog('open');
+  $("#popup-dialog").bind("dialogbeforeclose", 
                                   function(event, ui) {
                                     $("#enlargeTooltip").remove();});
-//  $('#inspect-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
+//  $('#popup-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
   $.get('inspect_graph.php',
         "flot=1&" + graphArgs, 
-        function(data) {$('#inspect-graph-dialog-content').html(data);})
+        function(data) {$('#popup-dialog-content').html(data);})
 }
 
 
@@ -227,11 +227,11 @@ function inspectGraph(graphArgs) {
   Draw a trend line on a graph. Reuse inspect graph dialog for now
 -----------------------------------------------------------------------------*/
 function drawTrendGraph(url) {
-  $("#inspect-graph-dialog").dialog('open');
-  $("#inspect-graph-dialog").bind("dialogbeforeclose", 
+  $("#popup-dialog").dialog('open');
+  $("#popup-dialog").bind("dialogbeforeclose", 
                                   function(event, ui) {
                                     $("#enlargeTooltip").remove();});
-  $("#inspect-graph-dialog").html('<img src="' + url + '" />');
+  $("#popup-dialog-content").html('<img src="' + url + '" />');
 
   
 }
