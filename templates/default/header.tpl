@@ -151,6 +151,10 @@
 {$custom_time_head}
 </head>
 <body style="background-color: #ffffff;" onunload="g_refresh_timer=null">
+{if isset($user_header)}
+{include(file="user_header.tpl")}
+{/if}
+
 {if $auth_system_enabled}
 <div style="float:right">
   {if $username}

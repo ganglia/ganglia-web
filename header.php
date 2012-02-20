@@ -467,6 +467,9 @@ header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modifie
 header ("Cache-Control: no-cache, must-revalidate"); # HTTP/1.1
 header ("Pragma: no-cache"); # HTTP/1.0
 
+if (file_exists("./templates/${conf['template_name']}/user_header.tpl"))
+  $data->assign('user_header', "1");
+
 $dwoo->output($tpl, $data);
 
 ?>
