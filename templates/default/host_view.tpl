@@ -242,6 +242,7 @@ $(function() {
   </div>
 </div>
 <div id="popup-dialog" title="Inspect Graph">
+  <div id="popup-dialog-navigation"></div>
   <div id="popup-dialog-content">
   </div>
 </div>
