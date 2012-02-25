@@ -1,7 +1,7 @@
 <center>
 <div id="trend_range_menu">Extend trend line 
 <?php
-$months_ahead = array(3,6,9,12,18,24);
+$months_ahead = array(1,2,3,6,9,12,18,24);
 
 if ( !isset($_REQUEST['trendrange']) )
   $_REQUEST['trendrange'] = 6;
@@ -19,7 +19,7 @@ foreach ( $months_ahead as $index => $month ) {
 <?php
 }
 ?>
-months ahead</div>
+ months ahead</div>
 <br>
 </center>
 <script type="text/javascript">
