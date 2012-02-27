@@ -15,9 +15,9 @@
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
+<script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
-    var availablemetrics = [ {$available_metrics} ];
 
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
 
@@ -28,7 +28,7 @@
         title = title.substring(0, l);
         title += " for " + data;
         $("#page_title").text(title);
-	});
+        });
     }
 
     function refresh() {
@@ -50,7 +50,11 @@
         refreshOverlayEvent();
         g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
       } else if (selected_tab == "m") {
-        if ($.isFunction(window.refreshHostView)) {
+        if ($.isFunction(window.refreshClusterView)) {
+          refreshHeader();
+          refreshClusterView();
+          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+        } else if ($.isFunction(window.refreshHostView)) {
           refreshHeader();
           refreshHostView();
           g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
@@ -60,15 +64,13 @@
         ganglia_form.submit();
     }
 
-    $(function(){
-        $( "#metrics-picker" ).autocomplete({
-          source: availablemetrics
-        });
+    $(function() {
+      $("#metrics-picker").combobox();
 
-        {$is_metrics_picker_disabled} 
+      {$is_metrics_picker_disabled}
 
-	$(".submit_button").button();
-	$(".header_btn").button();
+      $(".submit_button").button();
+      $(".header_btn").button();
     });
 
   $(function () {
@@ -129,11 +131,15 @@
     }
 
     function setStartAndEnd(startTime, endTime) {
-        var local_offset = new Date().getTimezoneOffset() * 60;
-        var delta = -server_utc_offset - local_offset;
-        var date = new Date((Math.floor(startTime) + delta) * 1000);
+        // we're getting local start/end times.
+
+        // getTimezoneOffset returns negative values east of UTC,
+        // which is the opposite of PHP. we want negative values to the west.
+        var local_offset = new Date().getTimezoneOffset() * 60 * -1;
+        var delta = local_offset - server_utc_offset;
+        var date = new Date((Math.floor(startTime) - delta) * 1000);
         $("#datepicker-cs").val(rrdDateTimeString(date));
-        date = new Date((Math.floor(endTime) + delta) * 1000);
+        date = new Date((Math.floor(endTime) - delta) * 1000);
         $("#datepicker-ce").val(rrdDateTimeString(date));
     }
 
@@ -145,6 +151,10 @@
 {$custom_time_head}
 </head>
 <body style="background-color: #ffffff;" onunload="g_refresh_timer=null">
+{if isset($user_header)}
+{include(file="user_header.tpl")}
+{/if}
+
 {if $auth_system_enabled}
 <div style="float:right">
   {if $username}
@@ -192,7 +202,7 @@
   <tr>
   <td colspan="2">
   <div id="sort_menu">
-   <b>Metric</b>&nbsp;&nbsp; <input name="m" onclick="$('#metrics-picker').val('');" type=text id="metrics-picker" /><input type="submit" value="Go">&nbsp;&nbsp;
+   <b>Metric</b>&nbsp;&nbsp; <select name="m" id="metrics-picker">{$available_metrics}</select>&nbsp;&nbsp;
      {$sort_menu}
   </div>
   </td>

@@ -212,14 +212,31 @@ function ganglia_submit(clearonly) {
  Enlarges a graph using Flot
 -----------------------------------------------------------------------------*/
 function inspectGraph(graphArgs) {
-  $("#inspect-graph-dialog").dialog('open');
-  $("#inspect-graph-dialog").bind("dialogbeforeclose", 
+  $("#popup-dialog").dialog('open');
+  $("#popup-dialog").bind("dialogbeforeclose", 
                                   function(event, ui) {
                                     $("#enlargeTooltip").remove();});
-//  $('#inspect-graph-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
+//  $('#popup-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
   $.get('inspect_graph.php',
         "flot=1&" + graphArgs, 
-        function(data) {$('#inspect-graph-dialog-content').html(data);})
+        function(data) {$('#popup-dialog-content').html(data);})
+}
+
+
+/* ----------------------------------------------------------------------------
+  Draw a trend line on a graph.
+-----------------------------------------------------------------------------*/
+function drawTrendGraph(url) {
+  $("#popup-dialog").dialog('open');
+  $("#popup-dialog").bind("dialogbeforeclose", 
+                                  function(event, ui) {
+                                    $("#enlargeTooltip").remove();});
+  $.get('trend_navigation.php',
+        url,
+        function(data) {$('#popup-dialog-navigation').html(data);})
+
+  $("#popup-dialog-content").html('<img src="' + url + '" />');
+
 }
 
 var SHOW_EVENTS_BASE_ID = "show_events_";

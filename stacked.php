@@ -75,6 +75,8 @@ foreach($hosts as $host) {
     $cx = $c/(1+count($hosts));
     $color = get_col($cx);
     $c++;
+    if ($conf['strip_domainname'])
+         $host = strip_domainname($host);
     $command .= " STACK:'a$c'#$color:'$host'";
 }
 
@@ -86,6 +88,7 @@ foreach($hosts as $host) {
     $command .= " STACK:'a$c'#000000";
 }
 
+$command = sanitize($command);
 $command .= $total_cmd . $mean_cmd;
 $command .= " COMMENT:'\\j'";
 $command .= " GPRINT:'total':AVERAGE:'Avg Total\: %5.2lf'";
@@ -101,7 +104,7 @@ header ("Pragma: no-cache");
 if (isset($_GET['debug']))
     {
         header ("Content-type: text/plain");
-        echo $command;
+        echo ($command);
     }
 else
     {

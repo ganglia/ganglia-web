@@ -47,6 +47,9 @@ $user['csv_output'] = isset($_GET["csv"]) ? 1 : NULL;
 $user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL; 
 $user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
 
+$user['trend_line'] = isset($_GET["trend"]) ? 1 : NULL; 
+# How many months ahead to look e.g. 6 months
+$user['trend_range'] = isset($_GET["trendrange"]) && is_numeric($_GET["trendrange"]) ? $_GET["trendrange"] : 6;
 
 // Get hostname
 $raw_host = isset($_GET["h"]) ? sanitize($_GET["h"]) : "__SummaryInfo__";  
@@ -352,6 +355,13 @@ switch ( $conf['graph_engine'] ) {
     }
 
     $command = $conf['rrdtool'] . " graph - $rrd_options ";
+
+    // Look ahead six months
+    if ( $user['trend_line'] ) {
+      # Show last 6 months of data when drawing a trend
+      $rrdtool_graph['start'] = "-15552000s";
+      $rrdtool_graph['end'] = "+" . $user["trend_range"] * 2592000 . "s";
+    }
 
     if ( $max ) {
       $rrdtool_graph['upper-limit'] = $max;
@@ -662,7 +672,7 @@ if ( $showEvents == "show" &&
 if ( $showEvents == "show" &&
      $conf['overlay_events'] && 
      $conf['graph_engine'] == "rrdtool" && 
-     ! in_array($range, $conf['overlay_events_exclude_ranges']) ) {
+     ! in_array($range, $conf['overlay_events_exclude_ranges']) && ! $user['trend_line'] ) {
 
   $color_count = sizeof($conf['graph_colors']);
   $counter = 0;
@@ -891,6 +901,16 @@ if ( $showEvents == "show" &&
     }
   } //End check for array
 }
+
+// Add a trend line
+if ( $user['trend_line'] ) {
+  
+    $command .= " VDEF:D2=sum,LSLSLOPE VDEF:H2=sum,LSLINT CDEF:avg2=sum,POP,D2,COUNT,*,H2,+";
+    $command .= " 'LINE3:avg2#53E2FF:Trend:dashes'";
+
+  
+}
+
 
 if ($debug) {
   error_log("Final rrdtool command:  $command");

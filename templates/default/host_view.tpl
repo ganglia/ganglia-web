@@ -184,7 +184,7 @@ $(function() {
 	    $( "#edit_optional_graphs_button" ).button();
 	    $( "#save_optional_graphs_button" ).button();
 	    $( "#close_edit_optional_graphs_link" ).button();
-	    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+	    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     });
 
     $("#edit_optional_graphs_button").click(function(event) {
@@ -241,8 +241,9 @@ $(function() {
 	Available Metric actions.
   </div>
 </div>
-<div id="inspect-graph-dialog" title="Inspect Graph">
-  <div id="inspect-graph-dialog-content">
+<div id="popup-dialog" title="Inspect Graph">
+  <div id="popup-dialog-navigation"></div>
+  <div id="popup-dialog-content">
   </div>
 </div>
 
@@ -337,6 +338,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;csv=1';return false;">CSV</button>
 <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;json=1';return false;">JSON</button>
 <button title="Inspect Graph" onClick="inspectGraph('{$g_metric.graphargs}'); return false;" class="shiny-blue">Inspect</button>
+<button title="6 month trend" onClick="drawTrendGraph('./graph.php?{$g_metric.graphargs}&amp;trend=1&amp;z=xlarge'); return false;" class="shiny-blue">Trend</button>
 
 {if $graph_engine == "flot"}
 <br>

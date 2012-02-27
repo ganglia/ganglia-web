@@ -293,10 +293,10 @@ if (is_array($context_metrics) and $context == "cluster")
       foreach( $context_metrics as $key )
          {
             $url = rawurlencode($key);
-            $metric_menu[] = "\"$url\"";
+            $metric_menu[] = "<option value=\"$url\">$key</option>";
          }
 
-      $data->assign("available_metrics", join(",", $metric_menu) );
+      $data->assign("available_metrics", join("", $metric_menu) );
       $data->assign("is_metrics_picker_disabled", "");
 
    } else {
@@ -310,33 +310,28 @@ if (is_array($context_metrics) and $context == "cluster")
 # Show sort order if there is more than one physical machine present.
 #
 $sort_menu = "";
-if ($context == "meta" or $context == "cluster")
-   {
-      $context_sorts[]="ascending";
-      $context_sorts[]="descending";
-      $context_sorts[]="by name";
+if ($context == "meta" or $context == "cluster") {
+  $context_sorts[]="ascending";
+  $context_sorts[]="descending";
+  $context_sorts[]="by name";
 
-      #
-      # Show sort order options for meta context only:
-      #
-      if ($context == "meta" ) {
-          $context_sorts[]="by hosts up";
-          $context_sorts[]="by hosts down";
-      }
+  // Show sort order options for meta context only:
 
+  if ($context == "meta" ) {
+    $context_sorts[]="by hosts up";
+    $context_sorts[]="by hosts down";
+  }
 
-      $sort_menu = "<B>Sorted</B>&nbsp;&nbsp;";
-      foreach ($context_sorts as $v) {
-$url=rawurlencode($v);
-if ($v == $sort)
-$checked = "checked=\"checked\"";
-else
-$checked = "";
-$sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
-
-      }
-
-   }
+  $sort_menu = "<B>Sorted</B>&nbsp;&nbsp;";
+  foreach ($context_sorts as $v) {
+    $url=rawurlencode($v);
+    if ($v == $sort)
+      $checked = "checked=\"checked\"";
+    else
+      $checked = "";
+    $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
+  }
+ }
 $data->assign("sort_menu", $sort_menu );
    
 if ($context == "physical" or $context == "cluster" or $context == 'host' )
@@ -471,6 +466,9 @@ header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); # Date in the past
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); # always modified
 header ("Cache-Control: no-cache, must-revalidate"); # HTTP/1.1
 header ("Pragma: no-cache"); # HTTP/1.0
+
+if (file_exists("./templates/${conf['template_name']}/user_header.tpl"))
+  $data->assign('user_header', "1");
 
 $dwoo->output($tpl, $data);
 

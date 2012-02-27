@@ -30,8 +30,5 @@ override_dh_auto_install:
 	mkdir -p debian/ganglia-webfrontend/etc/apache2/conf.d/
 	cp -f debian/apache.conf \
 		 debian/ganglia-webfrontend/etc/ganglia-webfrontend
-	cp -f debian/conf.php \
-		 debian/ganglia-webfrontend/etc/ganglia-webfrontend
-	cp -f debian/conf_redirect.php \
+	cp -f debian/conf_debian.php \
 		 debian/ganglia-webfrontend/usr/share/ganglia-webfrontend/conf.php
-
