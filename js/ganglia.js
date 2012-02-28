@@ -5,55 +5,6 @@ $(function(){
     window.name = d.getTime();
   }
 
-  g_overlay_events = ($("#overlay_events").val() == "true");
-
-  var g_tabIndex = {'m' : 0, 's' : 1, 'v' : 2, 'agg' : 3, 'ch' : 4};
-  var i = 5;
-  if (g_overlay_events)
-    g_tabIndex["ev"] = i++;
-  g_tabIndex["rot"] = i++;
-  g_tabIndex["mob"] = i++;
-
-  g_tabName = ["m", "s", "v", "agg", "ch"];
-  if (g_overlay_events)
-    g_tabName.push("ev");
-  g_tabName.push("rot");
-  g_tabName.push("mob");
-
-  // Follow tab's URL instead of loading its content via ajax
-  var tabs = $("#tabs");
-  if (tabs[0]) {
-    tabs.tabs();
-    // Restore previously selected tab
-    var selected_tab = $("#selected_tab").val();
-    //alert("selected_tab = " + selected_tab);
-    if (typeof g_tabIndex[selected_tab] != 'undefined') {
-      try {
-        //alert("Selecting tab: " + selected_tab);
-        tabs.tabs("select", g_tabIndex[selected_tab]);
-        if (selected_tab == "rot")
-          autoRotationChooser();
-      } catch (err) {
-        try {
-          alert("Error(ganglia.js): Unable to select tab: " + 
-                selected_tab + ". " + err.getDescription());
-        } catch (err) {
-          // If we can't even show the error, fail silently.
-        }
-      }
-    }
-
-    tabs.bind("tabsselect", function(event, ui) {
-      $("#selected_tab").val(g_tabName[ui.index]);
-      if (g_tabName[ui.index] != "mob")
-        $.cookie("ganglia-selected-tab-" + window.name, ui.index);
-      if (ui.index == 0 ||
-          ui.index == 2 ||
-          ui.index == 4)
-        ganglia_form.submit();
-    });
-  }
-
   var range_menu = $("#range_menu");
   if (range_menu[0])
     range_menu.buttonset();
