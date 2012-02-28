@@ -182,9 +182,12 @@ function drawTrendGraph(url) {
   $("#popup-dialog").bind("dialogbeforeclose", 
                                   function(event, ui) {
                                     $("#enlargeTooltip").remove();});
+  $.get('trend_navigation.php',
+        url,
+        function(data) {$('#popup-dialog-navigation').html(data);})
+
   $("#popup-dialog-content").html('<img src="' + url + '" />');
 
-  
 }
 
 var SHOW_EVENTS_BASE_ID = "show_events_";
