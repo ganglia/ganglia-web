@@ -65,6 +65,55 @@
     }
 
     $(function() {
+      g_overlay_events = ($("#overlay_events").val() == "true");
+
+      g_tabIndex = new Object();
+      g_tabName = [];
+      var tabName = ["m", "s", "v", "agg", "ch", "ev", "rot", "mob"];
+      var j = 0;
+      for (var i in tabName) {
+        if (tabName[i] == "ev" && !g_overlay_events)
+          continue;
+        g_tabIndex[tabName[i]] = j++;
+        g_tabName.push(tabName[i]);
+      }
+
+      // Follow tab's URL instead of loading its content via ajax
+      var tabs = $("#tabs");
+      if (tabs[0]) {
+        tabs.tabs();
+        // Restore previously selected tab
+        var selected_tab = $("#selected_tab").val();
+        //alert("selected_tab = " + selected_tab);
+        if (typeof g_tabIndex[selected_tab] != 'undefined') {
+          try {
+            //alert("Selecting tab: " + selected_tab);
+            tabs.tabs("select", g_tabIndex[selected_tab]);
+            if (selected_tab == "rot")
+              autoRotationChooser();
+          } catch (err) {
+            try {
+              alert("Error(ganglia.js): Unable to select tab: " + 
+                    selected_tab + ". " + err.getDescription());
+            } catch (err) {
+              // If we can't even show the error, fail silently.
+            }
+          }
+        }
+
+        tabs.bind("tabsselect", function(event, ui) {
+          $("#selected_tab").val(g_tabName[ui.index]);
+          if (g_tabName[ui.index] != "mob")
+            $.cookie("ganglia-selected-tab-" + window.name, ui.index);
+          if (ui.index == g_tabIndex["m"] ||
+              ui.index == g_tabIndex["v"] ||
+              ui.index == g_tabIndex["ch"])
+            ganglia_form.submit();
+        });
+      }
+    });
+
+    $(function() {
       $("#metrics-picker").combobox();
 
       {$is_metrics_picker_disabled}
