@@ -3,6 +3,170 @@ include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
 
+///////////////////////////////////////////////////////////////////////////////
+// Populate $rrdtool_graph from $config (from JSON file).
+///////////////////////////////////////////////////////////////////////////////
+function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
+  
+  global $context, $hostname, $range, $rrd_dir, $size, $conf;
+  
+  if ($conf['strip_domainname'])     {
+    $hostname = strip_domainname($hostname);
+  }
+   
+  $title = sanitize( $graph_config[ 'title' ] );
+  $rrdtool_graph[ 'title' ] = $title; 
+  // If vertical label is empty or non-existent set it to space otherwise 
+  // rrdtool will fail
+  if ( ! isset($graph_config[ 'vertical_label' ]) || 
+       $graph_config[ 'vertical_label' ] == "" ) {
+     $rrdtool_graph[ 'vertical-label' ] = " ";   
+  } else {
+     $rrdtool_graph[ 'vertical-label' ] = 
+       sanitize( $graph_config[ 'vertical_label' ] );
+  }
+
+  $rrdtool_graph['lower-limit'] = '0';
+  
+  if( isset($graph_config['height_adjustment']) ) {
+    $rrdtool_graph['height'] += 
+      ($size == 'medium') ? $graph_config['height_adjustment'] : 0;
+  } else {
+    $rrdtool_graph['height'] += ($size == 'medium') ? 28 : 0;
+  } 
+  
+  // find longest label length, so we pad the others accordingly to get 
+  // consistent column alignment
+  $max_label_length = 0;
+  foreach( $graph_config[ 'series' ] as $item ) {
+    $max_label_length = max( strlen( $item[ 'label' ] ), $max_label_length );
+  }
+  
+  $series = '';
+  
+  $stack_counter = 0;
+
+  // Available line types
+  $line_widths = array("1","2","3");
+
+  // Loop through all the graph items
+  foreach( $graph_config[ 'series' ] as $index => $item ) {
+     // ignore item if context is not defined in json template
+     if ( isSet($item[ 'contexts' ]) and 
+          in_array($context, $item['contexts']) == false )
+         continue;
+
+     $rrd_dir = $conf['rrds'] . "/" . $item['clustername'] . "/" . $item['hostname'];
+
+     $metric = sanitize( $item[ 'metric' ] );
+     
+     $metric_file = $rrd_dir . "/" . $metric . ".rrd";
+    
+     // Make sure metric file exists. Otherwise we'll get a broken graph
+     if ( is_file($metric_file) ) {
+
+       # Need this when defining graphs that may use same metric names
+      $unique_id = "a" . $index;
+     
+       $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
+
+       // use custom DS defined in json template if it's 
+       // defined (default = 'sum')
+       $DS = "sum";
+       if ( isset($item[ 'ds' ]) )
+         $DS = sanitize( $item[ 'ds' ] );
+       $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
+
+       // By default graph is a line graph
+       isset( $item['type']) ? 
+         $item_type = $item['type'] : $item_type = "line";
+
+       // TODO sanitize color
+       switch ( $item_type ) {
+       
+         case "line":
+           // Make sure it's a recognized line type
+           isset($item['line_width']) && 
+           in_array( $item['line_width'], $line_widths) ? 
+             $line_width = $item['line_width'] : $line_width = "1";
+           $series .= "LINE" . 
+                      $line_width . 
+                      ":'$unique_id'#{$item['color']}:'{$label}' ";
+           break;
+       
+         case "stack":
+           // First element in a stack has to be AREA
+           if ( $stack_counter == 0 ) {
+             $series .= "AREA";
+             $stack_counter++;
+           } else {
+             $series .= "STACK";
+           }
+           $series .= ":'$unique_id'#${item['color']}:'${label}' ";
+           break;
+        } // end of switch ( $item_type )
+     
+        if ( $conf['graphreport_stats'] )
+          $series .= legendEntry($unique_id, $conf['graphreport_stat_items']);
+
+     } // end of if ( is_file($metric_file) ) {
+     
+  } // end of foreach( $graph_config[ 'series' ] as $index => $item )
+
+  // If we end up with the empty series it means that no RRD files matched. 
+  // This can happen if we are trying to create a report and metrics for 
+  // this host were not collected. If that happens we should create an 
+  // empty graph
+  if ( $series == "" ) 
+    $rrdtool_graph[ 'series' ] = 
+      'HRULE:1#FFCC33:"No matching metrics detected"';   
+  else
+    $rrdtool_graph[ 'series' ] = $series;
+  
+  
+  return $rrdtool_graph;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Graphite graphs
+///////////////////////////////////////////////////////////////////////////////
+function build_graphite_series( $config, $host_cluster = "" ) {
+  global $context;
+  $targets = array();
+  $colors = array();
+  // Keep track of stacked items
+  $stacked = 0;
+
+  foreach( $config[ 'series' ] as $item ) {
+    if ( isSet($item[ 'contexts' ]) and in_array($context, $item['contexts'])==false )
+      continue;
+    if ( $item['type'] == "stack" )
+      $stacked++;
+
+    if ( isset($item['hostname']) && isset($item['clustername']) ) {
+      $host_cluster = $item['clustername'] . "." . str_replace(".","_", $item['hostname']);
+    }
+
+    $targets[] = "target=". urlencode( "alias($host_cluster.${item['metric']}.sum,'${item['label']}')" );
+    $colors[] = $item['color'];
+
+  }
+  $output = implode( $targets, '&' );
+  $output .= "&colorList=" . implode( $colors, ',' );
+  $output .= "&vtitle=" . urlencode( isset($config[ 'vertical_label' ]) ? $config[ 'vertical_label' ] : "" );
+
+  // Do we have any stacked elements. We assume if there is only one element
+  // that is stacked that rest of it is line graphs
+  if ( $stacked > 0 ) {
+    if ( $stacked > 1 )
+      $output .= "&areaMode=stacked";
+    else
+      $output .= "&areaMode=first";
+  }
+  
+  return $output;
+}
+
 $gweb_root = dirname(__FILE__);
 
 # RFM - Added all the isset() tests to eliminate "undefined index"
