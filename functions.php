@@ -235,50 +235,61 @@ function find_limits($nodes, $metricname)
 
    $max=0;
    $min=0;
-   foreach ( $nodes as $host => $value )
-      {
-         $out = array();
+   if ($conf['graph_engine'] == "graphite") {
+     $target = $conf['graphite_prefix'] . $clustername . ".[a-zA-Z0-9]*." . $metricname . ".sum";
+     $raw_highestMax = file_get_contents($conf['graphite_url_base'] . "?target=highestMax(" . $target . ",1)&from=" . $start . "&until=" . $end . "&format=json");
+     $highestMax = json_decode($raw_highestMax, TRUE);
+     $highestMaxDatapoints = $highestMax[0]['datapoints'];
+     $maxdatapoints = array();
+     foreach ( $highestMaxDatapoints as $datapoint ) {
+       array_push($maxdatapoints, $datapoint[0]);
+     }
+     $max = max($maxdatapoints);
+   }
+   else {
+     foreach ( $nodes as $host => $value ) {
+       $out = array();
 
-         $rrd_dir = "${conf['rrds']}/$clustername/$host";
-         $rrd_file = "$rrd_dir/$metricname.rrd";
-         if (file_exists($rrd_file)) {
-            if ( extension_loaded( 'rrd' ) ) {
-              $values = rrd_fetch($rrd_file,
-                array(
-                  "--start", $start,
-                  "--end", $end,
-                  "AVERAGE"
-                )
-              );
+       $rrd_dir = "${conf['rrds']}/$clustername/$host";
+       $rrd_file = "$rrd_dir/$metricname.rrd";
+       if (file_exists($rrd_file)) {
+          if ( extension_loaded( 'rrd' ) ) {
+            $values = rrd_fetch($rrd_file,
+              array(
+                "--start", $start,
+                "--end", $end,
+                "AVERAGE"
+              )
+            );
 
-              $values = (array_filter(array_values($values['data']['sum']), 'is_finite'));
-              $thismax = max($values);
-              $thismin = min($values);
+            $values = (array_filter(array_values($values['data']['sum']), 'is_finite'));
+            $thismax = max($values);
+            $thismin = min($values);
+          } else {
+            $command = $conf['rrdtool'] . " graph /dev/null $rrd_options ".
+               "--start $start --end $end ".
+               "DEF:limits='$rrd_dir/$metricname.rrd':'sum':AVERAGE ".
+               "PRINT:limits:MAX:%.2lf ".
+               "PRINT:limits:MIN:%.2lf";
+            exec($command, $out);
+            if(isset($out[1])) {
+               $thismax = $out[1];
             } else {
-              $command = $conf['rrdtool'] . " graph /dev/null $rrd_options ".
-                 "--start $start --end $end ".
-                 "DEF:limits='$rrd_dir/$metricname.rrd':'sum':AVERAGE ".
-                 "PRINT:limits:MAX:%.2lf ".
-                 "PRINT:limits:MIN:%.2lf";
-              exec($command, $out);
-              if(isset($out[1])) {
-                 $thismax = $out[1];
-              } else {
-                 $thismax = NULL;
-              }
-              if (!is_numeric($thismax)) continue;
-              $thismin=$out[2];
-              if (!is_numeric($thismin)) continue;
+               $thismax = NULL;
             }
+            if (!is_numeric($thismax)) continue;
+            $thismin=$out[2];
+            if (!is_numeric($thismin)) continue;
+          }
 
-            if ($max < $thismax) $max = $thismax;
+          if ($max < $thismax) $max = $thismax;
 
-            if ($min > $thismin) $min = $thismin;
-            #echo "$host: $thismin - $thismax (now $value)<br>\n";
-         }
-      }
-      
-      return array($min, $max);
+          if ($min > $thismin) $min = $thismin;
+          #echo "$host: $thismin - $thismax (now $value)<br>\n";
+       }
+     }
+   }
+   return array($min, $max);
 }
 
 #------------------------------------------------------------------------------
