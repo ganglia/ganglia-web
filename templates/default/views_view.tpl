@@ -17,7 +17,7 @@
   }
 
   $(function() {
-    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     $("#create_view_button")
       .button()
       .click(function() {
@@ -27,8 +27,8 @@
   });
 </script>
 
-<div id="inspect-graph-dialog" title="Inspect Graph">
-  <div id="inspect-graph-dialog-content">
+<div id="popup-dialog" title="Inspect Graph">
+  <div id="popup-dialog-content">
   </div>
 </div>
 
