@@ -22,6 +22,12 @@ $errors = array();
 if ($conf['overlay_events'] && ($conf['overlay_events_provider'] == "json")) {
   $events_file = $conf['overlay_events_file'];
   if (!file_exists($events_file)) {
+    $dir = dirname($events_file);
+    if (!file_exists($dir)) {
+      if (!mkdir($dir, 0755, true))
+	$errors[] = "Unable to create directory for overlay events file: " .
+	  $dir;
+    }
     $f = fopen($events_file, "w");
     if ($f === FALSE)
       $errors[] = "Unable to create overlay events file: " . $events_file;
@@ -35,6 +41,12 @@ if ($conf['overlay_events'] && ($conf['overlay_events_provider'] == "json")) {
 if ($conf['overlay_events']) {
   $event_color_map_file = $conf['overlay_events_color_map_file']; 
   if (!file_exists($event_color_map_file)) {
+    $dir = dirname($event_color_map_file);
+    if (!file_exists($dir)) {
+      if (!mkdir($dir, 0755, true))
+	$errors[] = "Unable to create directory for event color map file: " .
+	  $dir;
+    }
     $f = fopen($event_color_map_file, "w");
     if ($f === FALSE)
       $errors[] = "Unable to create event color map file: " . 
