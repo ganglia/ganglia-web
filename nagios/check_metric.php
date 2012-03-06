@@ -72,10 +72,10 @@ $host_found = 0;
 
 # Find a FQDN of a supplied server name.
 for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
- if ( strpos(  $ganglia_hosts_array[$i], $host ) !== false  ) {
- $fqdn = $ganglia_hosts_array[$i];
- $host_found = 1;
- break;
+ if ( !strcasecmp( $ganglia_hosts_array[$i], $host )   ) {
+  $fqdn = $ganglia_hosts_array[$i];
+  $host_found = 1;
+  break;
  }
 }
 
