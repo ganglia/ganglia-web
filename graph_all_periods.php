@@ -22,7 +22,7 @@ if ( ! isset($_REQUEST['embed'] ) || ! isset($_REQUEST['mobile']) ) {
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet" />
 <script type="text/javascript">
   $(function() {
-    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
   });
 </script>
 <?php
@@ -119,8 +119,8 @@ if ( ! isset($_GET['embed'] ) ) {
 </head>
 
 <body onSubmit="return false;">
-<div id="inspect-graph-dialog" style="display: none" title="Inspect Graph">
-  <div id="inspect-graph-dialog-content">
+<div id="popup-dialog" style="display: none" title="Inspect Graph">
+  <div id="popup-dialog-content">
   </div>
 </div>
 <div id="metric-actions-dialog" style="display: none" title="Metric Actions">
