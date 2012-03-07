@@ -13,7 +13,7 @@ SCRIPT_HOME=${0%/*}
 # Go into an infinite loop
 while [ 1 ]; do
 
-  echo "Metric cache"`date`
+  echo "Metric cache - "`date`
   sudo -u www-data php $SCRIPT_HOME/warmup_metric_cache.php
   sleep $SLEEP_TIME
 
