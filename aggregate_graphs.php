@@ -38,7 +38,6 @@
   }
 
 $(function() {
-
   $( ".ag_buttons" ).button();
   $( "#graph_type_menu" ).buttonset();
   $( "#graph_legend_menu" ).buttonset();
@@ -116,15 +115,12 @@ $(function() {
       }
   });
 
-  $(document).ready(function() {
   if (restoreAggregateGraph())
     createAggregateGraph();
-  });
 });
 </script>
 <div id="aggregate_graph_header">
 <h2>Create aggregate graphs</h2>
-
 <form id="aggregate_graph_form">
 <table id="aggregate_graph_table_form">
 <tr>
@@ -168,5 +164,5 @@ $(function() {
 </div>
 <div style="margin-bottom:5px;" id="show_direct_link"></div>
 <div id="aggregate_graph_display">
-
 </div>
+
