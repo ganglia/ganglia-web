@@ -18,6 +18,7 @@
 <script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
+    var availablemetrics = [{$available_metrics}];
 
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
 
@@ -251,7 +252,7 @@
   <tr>
   <td colspan="2">
   <div id="sort_menu">
-   <b>Metric</b>&nbsp;&nbsp; <select name="m" id="metrics-picker">{$available_metrics}</select>&nbsp;&nbsp;
+   <b>Metric</b>&nbsp;&nbsp; <select name="m" id="metrics-picker">{$picker_metrics}</select>&nbsp;&nbsp;
      {$sort_menu}
   </div>
   </td>
