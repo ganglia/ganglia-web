@@ -242,19 +242,13 @@ $data->assign("node_menu", $node_menu);
 
 //////////////////// Build the metric menu ////////////////////////////////////
 
-if( $context == "cluster" )
-   {
-   if (!count($metrics)) {
-      echo "<h4>Cannot find any metrics for selected cluster \"$clustername\", exiting.</h4>\n";
-      echo "Check ganglia XML tree (telnet ${conf['ganglia_ip']} ${conf['ganglia_port']})\n";
-      exit;
-   }
-   $firsthost = key($metrics);
-   foreach ($metrics[$firsthost] as $m => $foo)
-         $context_metrics[] = $m;
-   foreach ($reports as $r => $foo)
-         $context_metrics[] = $r;
-   }
+if (count($metrics)) {
+  $firsthost = key($metrics);
+  foreach ($metrics[$firsthost] as $m => $foo)
+    $context_metrics[] = $m;
+  foreach ($reports as $r => $foo)
+    $context_metrics[] = $r;
+}
 
 #
 # If there are graphs present, show ranges.
@@ -283,28 +277,40 @@ $checked = "";
 $data->assign("range_menu", $range_menu);
 
 #
-# Only show metric list if we have some and are in cluster context.
+# Build comma separated list of metric strings
 #
-$metric_menu = array();
-if (is_array($context_metrics) and $context == "cluster")
-   {
+if (is_array($context_metrics)) {
+  sort($context_metrics);
 
-      sort($context_metrics);
-      foreach( $context_metrics as $key )
-         {
-            $url = rawurlencode($key);
-            $metric_menu[] = "<option value=\"$url\">$key</option>";
-         }
+  $available_metrics = array();
 
-      $data->assign("available_metrics", join("", $metric_menu) );
-      $data->assign("is_metrics_picker_disabled", "");
+  foreach ($context_metrics as $key) {
+    $available_metrics[] = "\"$key\"";
+  }
 
-   } else {
-      // We have to disable the sort_menu if we are not in the cluster context
-      $data->assign("is_metrics_picker_disabled", '$("#sort_menu").toggle(); ');
-      $data->assign("available_metrics", "" );
-   }
+  $data->assign("available_metrics", join(",", $available_metrics));
+} else {
+  $data->assign("available_metrics", "");
+}
 
+#
+# Only compute metric-picker options if we have some, and are in cluster context.
+#
+if (is_array($context_metrics) and $context == "cluster") {
+  $picker_metrics = array();
+
+  foreach ($context_metrics as $key) {
+    $url = rawurlencode($key);
+    $picker_metrics[] = "<option value=\"$url\">$key</option>";
+  }
+
+  $data->assign("picker_metrics", join("", $picker_metrics));
+  $data->assign("is_metrics_picker_disabled", "");  
+} else {
+  // We have to disable the sort_menu if we are not in the cluster context
+  $data->assign("is_metrics_picker_disabled", '$("#sort_menu").toggle(); ');
+  $data->assign("picker_metrics", "" );
+}
 
 #
 # Show sort order if there is more than one physical machine present.
