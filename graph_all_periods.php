@@ -20,20 +20,23 @@ if ( ! isset($_REQUEST['embed'] ) || ! isset($_REQUEST['mobile']) ) {
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet" />
-<script type="text/javascript">
-  $(function() {
-    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
-  });
-</script>
 <?php
 } // end of if ( ! isset($_GET['embed'] ) ) {
 ?>
 
 <script type="text/javascript">
+  function openDecompose($url) {
+    $.cookie("ganglia-selected-tab-" + window.name, 0);
+    location.href="./index.php" + $url + "&amp;tab=m";
+  }
+
   $(function() {
     initShowEvent();
 <?php if ( isset($_GET['embed'] ) ) { ?>
     initMetricActionsDialog();
+<?php } ?>
+<?php if ( ! isset($_REQUEST['mobile'])) { ?>
+    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
 <?php } ?>
   });
 </script>
@@ -119,10 +122,16 @@ if ( ! isset($_GET['embed'] ) ) {
 </head>
 
 <body onSubmit="return false;">
-<div id="inspect-graph-dialog" style="display: none" title="Inspect Graph">
-  <div id="inspect-graph-dialog-content">
+<?php
+if ( ! isset($_REQUEST['mobile']) ) {
+?>
+<div id="popup-dialog" style="display: none" title="Inspect Graph">
+  <div id="popup-dialog-content">
   </div>
 </div>
+<?php
+}
+?>
 <div id="metric-actions-dialog" style="display: none" title="Metric Actions">
 <div id="metric-actions-dialog-content">
 	Available Metric actions.
@@ -217,17 +226,6 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
 // will start looking goofy
 ?>
 <div style="clear: left"></div>
-<script type="text/javascript">
-  $(function() {
-    $( "#inspect-graph-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
-  });
-
-  function openDecompose($url) {
-    $.cookie("ganglia-selected-tab-" + window.name, 0);
-    location.href="./index.php" + $url + "&amp;tab=m";
-  }
-
-</script>
 </form>
 </body>
 </html>
