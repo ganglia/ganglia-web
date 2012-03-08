@@ -494,9 +494,8 @@ switch ( $conf['graph_engine'] ) {
     // We must have a 'series' value, or this is all for naught
     if (!array_key_exists('series', $rrdtool_graph) || 
         !strlen($rrdtool_graph['series']) ) {
-        error_log("\$series invalid for this graph request " .
-                  $_SERVER['PHP_SELF']);
-        exit();
+	$rrdtool_graph[ 'series' ] = 
+	  'HRULE:1#FFCC33:"No matching metrics detected"';
     }
   
     # Make small graphs (host list) cleaner by removing the too-big
