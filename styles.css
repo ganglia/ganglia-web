@@ -186,12 +186,16 @@ td strong
       color: rgb(100,100,100);
 }
 
+#trend_range_menu {
+   font-size: 10px
+}
+
 /* Views table and menu styling. */
 #views_table {
-      font-size: 12px
+   font-size: 12px
 }
 #table_top_chooser {
-      font-size: 12px
+   font-size: 12px
 }
 #views_menu { width: 200px; }
 #views_menu ul

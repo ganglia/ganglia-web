@@ -212,8 +212,10 @@ $user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL;
 $user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
 
 $user['trend_line'] = isset($_GET["trend"]) ? 1 : NULL; 
-# How many months ahead to look e.g. 6 months
+# How many months ahead to extend the trend e.g. 6 months
 $user['trend_range'] = isset($_GET["trendrange"]) && is_numeric($_GET["trendrange"]) ? $_GET["trendrange"] : 6;
+# 
+$user['trend_history'] = isset($_GET["trendhistory"]) && is_numeric($_GET["trendhistory"]) ? $_GET["trendhistory"] : 6;
 
 // Get hostname
 $raw_host = isset($_GET["h"]) ? sanitize($_GET["h"]) : "__SummaryInfo__";  
@@ -521,8 +523,12 @@ switch ( $conf['graph_engine'] ) {
 
     // Look ahead six months
     if ( $user['trend_line'] ) {
-      # Show last 6 months of data when drawing a trend
-      $rrdtool_graph['start'] = "-15552000s";
+      // We may only want to use last x months of data since for example
+      // if we are trending disk we may have added a disk recently which will
+      // skew a trend line. By default we'll use 6 months however we'll let
+      // user define this if they want to.
+      $rrdtool_graph['start'] = "-" . $user['trend_history'] * 2592000 . "s";
+      // Project the trend line this many months ahead
       $rrdtool_graph['end'] = "+" . $user["trend_range"] * 2592000 . "s";
     }
 
