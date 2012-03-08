@@ -9,7 +9,7 @@
 }
 </style>
 <?php
-if ( ! isset($_REQUEST['embed'] ) || ! isset($_REQUEST['mobile']) ) {
+if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 ?>
 <script TYPE="text/javascript" SRC="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
@@ -21,7 +21,7 @@ if ( ! isset($_REQUEST['embed'] ) || ! isset($_REQUEST['mobile']) ) {
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet" />
 <?php
-} // end of if ( ! isset($_GET['embed'] ) ) {
+}
 ?>
 
 <script type="text/javascript">
