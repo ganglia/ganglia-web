@@ -12,9 +12,9 @@ $conf['gweb_root'] = dirname(dirname(__FILE__));
 include_once $conf['gweb_root'] . "/eval_conf.php";
 
 $context = "cluster";
-include_once $conf['ganglia_dir'] . "/functions.php";
-include_once $conf['ganglia_dir'] . "/ganglia.php";
-include_once $conf['ganglia_dir'] . "/get_ganglia.php";
+include_once $conf['gweb_root'] . "/functions.php";
+include_once $conf['gweb_root'] . "/ganglia.php";
+include_once $conf['gweb_root'] . "/get_ganglia.php";
 # Put the serialized metrics into a file
 file_put_contents($conf['nagios_cache_file'], serialize($metrics));
 
