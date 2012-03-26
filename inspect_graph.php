@@ -58,8 +58,8 @@ $(function () {
 
     var month = date.getUTCMonth();
     if ( month < 10 )
-      month = "0" + month;
-    var day = date.getUTCDay();
+      month = "0" + (month + 1);
+    var day = date.getUTCDate();
     if ( day < 10 )
       day = "0" + day;
     var hr = date.getUTCHours();
