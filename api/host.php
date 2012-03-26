@@ -1,7 +1,9 @@
 <?php
 // vim: tabstop=2:softtabstop=2:shiftwidth=2:expandtab
 
-header("Content-Type: text/json");
+if ( !isset($_GET['debug']) ) {
+  header("Content-Type: text/json");
+}
 
 $conf['gweb_root'] = dirname(dirname(__FILE__));
 
@@ -24,13 +26,14 @@ $range = $_GET['r'];
 $debug = $_GET['debug'];
 
 function form_image_url ( $page, $args ) {
+  global $conf;
   $a = array();
   foreach ($args AS $k => $v) {
     if ($v != null) {
       $a[] = $k . "=" . urlencode($v);
     }
   }
-  return ( defined($conf['external_location']) ? $conf['external_location'] . '/' : "" ) . $page . "?" . join("&", $a);
+  return ( !empty($conf['external_location']) ? $conf['external_location'] . '/' : "" ) . $page . "?" . join("&", $a);
 }
 
 switch ( $_GET['action'] ) {
@@ -157,7 +160,7 @@ switch ( $_GET['action'] ) {
         $graph_arguments['ti'] = $metrics[$cluster_url]['TITLE'];
       }
       $graph['description'] = isset($metrics[$cluster_url]['DESC']) ? $metrics[$cluster_url]['DESC'] : '';
-      $graph['title'] = isset($metrics[$cluster_url]['TITLE']) ? $metrics[$cluster_url]['TITLE'] : '';
+      $graph['title'] = isset($metrics[$cluster_url]['TITLE']) ? $metrics[$cluster_url]['TITLE'] : $rrd;
 
       # Setup an array of groups that can be used for sorting in group view
       if ( isset($metrics[$name]['GROUP']) ) {
