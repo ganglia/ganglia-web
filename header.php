@@ -145,6 +145,7 @@ if ($context == "cluster") {
 } elseif ( $context == "views") {
    if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
        $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';
+       $alt_view .= '&nbsp;&nbsp;<button onclick="return false" id="delete_view_button">Delete View</button>';
    }
 }
 

@@ -572,10 +572,17 @@ function get_available_views() {
 	  }
 
 	  $view = json_decode(file_get_contents($view_config_file), TRUE);
-	  // Check whether view type has been specified ie. regex. If not it's standard view
-	  isset($view['view_type']) ? $view_type = $view['view_type'] : $view_type = "standard";
-	  $available_views[] = array ( "file_name" => $view_config_file, "view_name" => $view['view_name'],
-              "default_size" => $view['default_size'], "items" => $view['items'], "view_type" => $view_type);
+	  // Check whether view type has been specified ie. regex. 
+          // If not it's standard view
+	  $view_type = 
+            isset($view['view_type']) ? $view['view_type'] : "standard";
+          $default_size = isset($view['default_size']) ? 
+	    $view['default_size'] : $conf['default_view_graph_size'];
+	  $available_views[] = array ("file_name" => $view_config_file, 
+                                      "view_name" => $view['view_name'],
+                                      "default_size" => $default_size, 
+                                      "items" => $view['items'], 
+                                      "view_type" => $view_type);
 
 	  unset($view);
 
