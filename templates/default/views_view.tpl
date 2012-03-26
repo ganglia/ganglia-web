@@ -23,6 +23,22 @@
       .click(function() {
 	$( "#create-new-view-dialog" ).dialog( "open" );
     });
+    $("#delete_view_button")
+      .button()
+      .click(function() {
+        if ($("#vn").val() != "") {
+	  $.get('views_view.php?view_name=' + 
+                encodeURIComponent($("#vn").val()) +
+                '&delete_view&views_menu',
+                function(data) {
+                  $("#views_menu").html(data);
+                  $("#view_graphs").html("");  
+                  $.cookie('ganglia-selected-view-' + window.name, "");
+		  $("#vn").val("");
+                });
+        } else
+	  alert("Please select the view to delete");
+    });
     highlightSelectedView('{$view_name}');
   });
 </script>
