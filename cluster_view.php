@@ -603,9 +603,9 @@ if (isset($conf['show_stacked_graphs']) and
     $conf['show_stacked_graphs'] == 1  and 
     ! preg_match("/_report$/", $metricname)) {
   $cluster_url = rawurlencode($clustername);
-  $stacked_args = "m=$metricname&c=$cluster_url&r=$range&st=$cluster[LOCALTIME]";
+  $stacked_args = "m=$metricname&amp;c=$cluster_url&amp;r=$range&amp;st=$cluster[LOCALTIME]";
   if (isset($user['host_regex']))
-    $stacked_args .= "&host_regex=" . $user['host_regex'];
+    $stacked_args .= "&amp;host_regex=" . $user['host_regex'];
   $data->assign("stacked_graph_args", $stacked_args);
 }
 
