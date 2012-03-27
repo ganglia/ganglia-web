@@ -317,9 +317,10 @@ $rrdtool_graph = array(
 if ($size == "small") {
     $conf['strip_domainname'] = true;
     # Let load coloring work for little reports in the host list.
-    if (! isset($subtitle) and $load_color)
-        $rrdtool_graph['color'] = "BACK#'$load_color'";
 }
+
+if (! isset($subtitle) and $load_color)
+    $rrdtool_graph['color'] = "BACK#'$load_color'";
 
 if ($debug) {
   error_log("Graph [$graph] in context [$context]");
