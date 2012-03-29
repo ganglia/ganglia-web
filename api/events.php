@@ -55,7 +55,7 @@ switch ( $_REQUEST['action'] ) {
     $event_id = uniqid();
 
     $event = array( "event_id" => $event_id, "start_time" => $start_time, "summary" => $_REQUEST['summary'],
-      "grid" => $grid, "cluster" => $cluster, "host_regex" => $_REQUEST['host_regex'], "descripion" => $description,
+      "grid" => $grid, "cluster" => $cluster, "host_regex" => $_REQUEST['host_regex'], "description" => $description,
       );
 
     if ( isset($_REQUEST['end_time']) )
