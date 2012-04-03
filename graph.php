@@ -698,7 +698,7 @@ if ( $user['json_output'] ||
 
 
   // This command will export values for the specified format in XML
-  $command = $conf['rrdtool'] . " xport --start " . $rrdtool_graph['start'] . " --end " .  $rrdtool_graph['end'] . " " . $rrdtool_graph_args;
+  $command = $conf['rrdtool'] . " xport --start " . $rrdtool_graph['start'] . " --end " .  $rrdtool_graph['end'] . $rrd_options . " " . $rrdtool_graph_args;
 
   // Read in the XML
   $fp = popen($command,"r"); 
