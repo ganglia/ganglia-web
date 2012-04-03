@@ -1064,12 +1064,14 @@ function build_aggregate_graph_config ($graph_type,
       foreach ( $index_array['metrics'] as $key => $m_name ) {
         if ( preg_match("/$query/i", $key, $metric_subexpr ) ) {
           if (isset($metric_subexpr) && count($metric_subexpr) > 1) {
-            $legend = "";
-            for ($i = 1; $i < count($metric_subexpr); $i++)
-              $legend .= $metric_subexpr[$i];
-	    $metric_matches[$key] = $legend;
-          } else
+            $legend = array();
+            for ($i = 1; $i < count($metric_subexpr); $i++) {
+              $legend[] = $metric_subexpr[$i];
+            }
+	    $metric_matches[$key] = implode(' ', $legend);
+          } else {
             $metric_matches[$key] = $key;
+          }
         }
       }
     }
