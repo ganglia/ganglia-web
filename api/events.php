@@ -64,7 +64,7 @@ switch ( $_REQUEST['action'] ) {
 		    "cluster" => $cluster, 
 		    "host_regex" => $_REQUEST['host_regex'],
 		    "description" => $description
-      );
+		    );
 
     if ( isset($_REQUEST['end_time']) )
       $event['end_time'] = $_REQUEST['end_time'] == "now" ? time() : strtotime($_REQUEST['end_time']);
