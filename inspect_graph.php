@@ -60,6 +60,23 @@ $(function () {
                            '<label for="id' + key + '">'
                             + val.label + '</label>');
   });
+
+  function showAll(event) {
+    $("#choices input:checkbox").each(function() {$(this).attr("checked", "checked");});
+    plotAccordingToChoices();
+  };
+
+  function showNone(event) {
+    $("#choices input:checkbox").each(function() {$(this).removeAttr("checked");});
+    plotAccordingToChoices();
+  };
+
+  choiceContainer.append('<button id="show_all" style="margin-left:5px;">All</button>');
+  $("#show_all").button().click(showAll);
+
+  choiceContainer.append('<button id="show_none" style="margin-left:5px;">None</button>');
+  $("#show_none").button().click(showNone);
+
   choiceContainer.find("input").click(plotAccordingToChoices);
 
   function utcTimeStr(tstamp) {
