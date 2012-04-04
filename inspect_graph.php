@@ -16,7 +16,7 @@
 
 <div id="placeholder" style="width:800px;height:500px;"></div>
 
-<p id="choices">Show:</p>
+<div id="choices" style="margin-top:5px;">Show:</div>
 <?php
 
 $base_url = str_replace("inspect_graph.php", "", $_SERVER["SCRIPT_NAME"]);
@@ -32,6 +32,15 @@ foreach ( $obj as $index => $series ) {
 
 <script>
 $(function () {
+    $("#popup-dialog").bind("dialogresizestop.inspect", 
+			    function() {
+			      plotAccordingToChoices();
+			    });
+    $("#popup-dialog").bind("dialogclose.inspect", 
+			    function(event) {
+			      $(this).unbind(".inspect");
+			    });
+
   var datasets = 
     <?php print json_encode($arr); ?>
   ;
@@ -99,16 +108,19 @@ $(function () {
           data.push(datasets[key]);
     });
 
-    if (data.length > 0) {
-      $.plot($("#placeholder"), data, {
-        crosshair: { mode: "x" },
-        xaxis: { mode: "time"},
-        lines: { show: true },
-        points: { show: false },
-        grid: { hoverable: true, autoHighlight: true } 
-      });
+    $("#placeholder").height($("#popup-dialog").height() - $("#choices").height() - 5);
+    $("#placeholder").width($("#popup-dialog").width() - 20);
 
-    $("#placeholder").bind("plothover", function (event, pos, item) {
+    $.plot($("#placeholder"), data, {
+      crosshair: { mode: "x" },
+      xaxis: { mode: "time"},
+      lines: { show: true },
+      points: { show: false },
+      grid: { hoverable: true, autoHighlight: true } 
+    });
+
+    if (data.length > 0) {
+      $("#placeholder").bind("plothover", function (event, pos, item) {
         $("#x").text(utcTimeStr(pos.x));
         $("#y").text(pos.y.toFixed(2));
 
@@ -119,22 +131,24 @@ $(function () {
                 $("#tooltip").remove();
                 var y = item.datapoint[1].toFixed(2);
                 showTooltip(item.pageX, item.pageY,
-                            item.series.label + " at " + utcTimeStr(item.datapoint[0]) + " = " + y);
+                            item.series.label + " at " + 
+			    utcTimeStr(item.datapoint[0]) + 
+			    " = " + y);
             }
-        }
-        else {
+        } else {
             $("#tooltip").remove();
             previousPoint = null;            
         }
-    });
+      });
 
-   $("#placeholder").bind("plotclick", function (event, pos, item) {
+      $("#placeholder").bind("plotclick", function (event, pos, item) {
         if (item) {
-            $("#clickdata").text("You clicked point " + item.dataIndex + " in " + item.series.label + ".");
-            plot.highlight(item.series, item.datapoint);
+          $("#clickdata").text("You clicked point " + 
+			       item.dataIndex + " in " + 
+			       item.series.label + ".");
+	  plot.highlight(item.series, item.datapoint);
         }
-    });
-   
+      });
     } 
   }
 
