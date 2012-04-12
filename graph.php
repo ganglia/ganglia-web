@@ -443,12 +443,12 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
 
   // Set up 
   $graph_config["report_type"] = "standard";
-  $graph_config["vertical_label"] = str_replace('#', '\#', $vlabel);
+  $graph_config["vertical_label"] = $vlabel;
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
     $title = "";
-    $graph_config["title"] = str_replace('#', '\#', sanitize($_GET['title']));
+    $graph_config["title"] = sanitize($_GET['title']);
   } else {
     $title = "Aggregate";
   }
