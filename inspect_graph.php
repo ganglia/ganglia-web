@@ -12,6 +12,7 @@
 </style>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.crosshair.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.stack.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="placeholder" style="width:800px;height:500px;"></div>
@@ -44,11 +45,21 @@ $(function () {
   var datasets = 
     <?php print json_encode($arr); ?>
   ;
+
+  var stacked = false;
+
   // hard-code color indices to prevent them from shifting as
   // choices are turned on/off
   var i = 0;
   $.each(datasets, function(key, val) {
     val.color = i;
+    // Explicity delete the stack attribute if it exists because stacking
+    // is controlled locally. The incoming datasets will contain a 
+    // stack attribute if they were generated from a stacked graph.
+    if ("stack" in val) {
+      delete val.stack;
+      stacked = true;
+    }
     ++i;
   });
   
@@ -76,6 +87,18 @@ $(function () {
 
   choiceContainer.append('<button id="show_none" style="margin-left:5px;">None</button>');
   $("#show_none").button().click(showNone);
+
+  var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"';
+  if (!stacked)
+    html += 'checked="checked"';
+  html += '/><label for="line">Line</label><input type="radio" id="stack" name="gopt"';
+  if (stacked)
+    html += 'checked="checked"';
+  html += '/><label for="stack">Stack</label></span>';
+  choiceContainer.append(html);
+  $("#gopt").buttonset();
+  $("line").button().click(plotAccordingToChoices);
+  $("stack").button().click(plotAccordingToChoices);
 
   choiceContainer.find("input").click(plotAccordingToChoices);
 
@@ -116,6 +139,25 @@ $(function () {
 
   var previousPoint = null;
   
+  function suffixFormatter(val, axis) {
+    var tickd = axis.tickDecimals;
+    if (tickd <= 0) {
+      tickd = 1;
+    }
+        
+    if (val >= 1000000000) {
+      return (val / 1000000000).toFixed(tickd) + " G";
+    }
+    if (val >= 1000000) {
+      return (val / 1000000).toFixed(tickd) + " M";
+    }
+    if (val >= 1000) {
+      return (val / 1000).toFixed(tickd) + " k";
+    }
+        
+    return (val/1).toFixed(axis.tickDecimals);
+  }
+
   function plotAccordingToChoices() {
     var data = [];
 
@@ -128,13 +170,18 @@ $(function () {
     $("#placeholder").height($("#popup-dialog").height() - $("#choices").height() - 5);
     $("#placeholder").width($("#popup-dialog").width() - 20);
 
-    $.plot($("#placeholder"), data, {
-      crosshair: { mode: "x" },
-      xaxis: { mode: "time"},
-      lines: { show: true },
-      points: { show: false },
-      grid: { hoverable: true, autoHighlight: true } 
-    });
+    var opt =  {lines: { show: true },
+		points: { show: false },
+		crosshair: { mode: "x" },
+		xaxis: { mode: "time" },
+                yaxis: {tickFormatter: suffixFormatter},
+		grid: { hoverable: true, autoHighlight: true }};
+    if ($("#stack").attr('checked')) {
+      opt['series'] = {stack: 1};
+      opt['bars'] = {show: true};
+    }
+
+    $.plot($("#placeholder"), data, opt);
 
     if (data.length > 0) {
       $("#placeholder").bind("plothover", function (event, pos, item) {
