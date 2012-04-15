@@ -109,8 +109,8 @@
                     var float = $("<div id='" + opts.floatId + "'>")
                         .css({
                           position: "absolute", left: clickX,
-                          top: self.img.position().top + opts.paddingTop, zIndex: 1000,
-                          height: self.img.height() - (opts.paddingBottom + opts.paddingTop)
+                          top: self.img.offset().top, zIndex: 1000,
+                          height: self.img.height()
                         })
                         .width(10)
                         .mousemove(function(evt) { return true; })
