@@ -672,7 +672,7 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "n=" .$item['lower_limit'];
 
 	  if (isset($item['vertical_label']))
-	    $graph_args_array[] = "vl=" .$item['vertical_label'];
+	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
 
 	  if (isset($item['title']))
 	    $graph_args_array[] = "title=" . urlencode($item['title']);
@@ -685,7 +685,7 @@ function get_view_graph_elements($view) {
       $graph_args_array[] = "glegend=" . $item["glegend"];
 
 	  if ( isset($item['cluster']) ) {
-	    $graph_args_array[] = "c=" . $item['cluster'];
+	    $graph_args_array[] = "c=" . urlencode($item['cluster']);
 	  }
 
 	  if ( isset($item['exclude_host_from_legend_label']) ) {
@@ -727,11 +727,11 @@ function get_view_graph_elements($view) {
             $cluster = "";
 	  }
 
-	  $graph_args_array[] = "h=$hostname";
-	  $graph_args_array[] = "c=$cluster";
+	  $graph_args_array[] = "h=" . urlencode($hostname);
+	  $graph_args_array[] = "c=" . urlencode($cluster);
 
 	  if (isset($item['vertical_label']))
-	    $graph_args_array[] = "vl=" .$item['vertical_label'];
+	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
 
 	  if (isset($item['title']))
 	    $graph_args_array[] = "title=" . urlencode($item['title']);
@@ -770,8 +770,8 @@ function get_view_graph_elements($view) {
 	foreach ( $index_array['hosts'] as $key => $host_name ) {
 	  if ( preg_match("/$query/", $host_name ) ) {
 	    $cluster = $index_array['cluster'][$host_name];
-	    $graph_args_array[] = "h=$host_name";
-	    $graph_args_array[] = "c=$cluster";
+	    $graph_args_array[] = "h=" . urlencode($host_name);
+	    $graph_args_array[] = "c=" . urlencode($cluster);
 
 	    $view_elements[] = array ( "graph_args" => $metric_suffix . "&" . join("&", $graph_args_array), 
 	      "hostname" => $host_name,
