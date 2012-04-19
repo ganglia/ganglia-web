@@ -130,8 +130,8 @@ if (isset($_GET['add_to_view'])) {
 	  $item_array = array("aggregate_graph" => "true", 
                               "metric_regex" => $metric_regex_array, 
 	                      "host_regex" => $host_regex_array, 
-                              "graph_type" => $_GET['gtype'],
-	                      "vertical_label" => $_GET['vl'],
+                              "graph_type" => stripslashes($_GET['gtype']),
+	                      "vertical_label" => stripslashes($_GET['vl']),
                               "title" => $_GET['title'],
                         "glegend" => $_GET['glegend']);
 
@@ -158,7 +158,7 @@ if (isset($_GET['add_to_view'])) {
           $items = array("hostname" => $_GET['host_name'], 
                          "metric" => $_GET['metric_name']);
 	  if (isset($_GET['vertical_label']))
-            $items["vertical_label"] = $_GET['vertical_label'];
+            $items["vertical_label"] = stripslashes($_GET['vertical_label']);
 	  if (isset($_GET['title']))
             $items["title"] = $_GET['title'];
 	  if (isset($_GET['c']))
