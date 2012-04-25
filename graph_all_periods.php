@@ -20,6 +20,7 @@ if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/jquery.multiselect.css" type="text/css" />
 <?php
 }
 ?>
