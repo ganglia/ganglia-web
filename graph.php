@@ -687,11 +687,26 @@ if ( $user['json_output'] ||
         $metric_type = "stack";
       }
       $metric_name = $out[6];
-      $output_array[] = array( "ds_name" => $ds_name, 
-                               "cluster_name" => $cluster_name,
-                               "graph_type" => $metric_type,
-                               "host_name" => $host_name, 
-                               "metric_name" => $metric_name );
+      $ds_attr = array( "ds_name" => $ds_name,
+			"cluster_name" => $cluster_name,
+			"graph_type" => $metric_type,
+			"host_name" => $host_name, 
+			"metric_name" => $metric_name );
+
+      // Add color if it exists
+      $pos_hash = strpos($out[4], '#');
+      if ($pos_hash !== FALSE) {
+	$pos_colon = strpos($out[4], ':');
+        if ($pos_colon !== FALSE)
+	  $ds_attr['color'] = substr($out[4], 
+				     $pos_hash, 
+				     $pos_colon - $pos_hash); 
+	else
+	  $ds_attr['color'] = substr($out[4], $pos_hash); 
+      }
+
+      $output_array[] = $ds_attr;
+
       $rrdtool_graph_args .=  " " . "XPORT:'" . $ds_name . "':'" . $metric_name . "' ";
     }
   }
@@ -754,6 +769,10 @@ if ( $user['json_output'] ||
                                                  " " . 
                                                  $metric_array['metric_name'], 
                      'data' => $data_array);
+
+      if (array_key_exists('color', $metric_array))
+	$gdata['color'] = $metric_array['color'];
+
       if ($metric_array['graph_type'] == "stack")
         $gdata['stack'] = '1';
       $flot_array[] = $gdata;
