@@ -13,11 +13,14 @@
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.crosshair.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.stack.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="placeholder" style="width:800px;height:500px;"></div>
 
-<div id="choices" style="margin-top:5px;">Show:</div>
+<div id="legendcontainer" style="margin-top:5px;">
+   <div id="graphlegend"></div>
+</div>
 <?php
 
 $base_url = str_replace("inspect_graph.php", "", $_SERVER["SCRIPT_NAME"]);
@@ -47,12 +50,15 @@ $(function () {
   ;
 
   var stacked = false;
+  var legendContainer = $("#legendcontainer");
+  var series_select = '<select id="select_series" name="select_series" multiple="multiple">';
 
   // hard-code color indices to prevent them from shifting as
   // choices are turned on/off
   var i = 0;
   $.each(datasets, function(key, val) {
-    val.color = i;
+    if (typeof val.color == 'undefined')
+      val.color = i;
     // Explicity delete the stack attribute if it exists because stacking
     // is controlled locally. The incoming datasets will contain a 
     // stack attribute if they were generated from a stacked graph.
@@ -61,32 +67,29 @@ $(function () {
       stacked = true;
     }
     ++i;
+
+    series_select += '<option value="' + key + '" selected="selected">' + val.label + '</option>';
   });
   
-  // insert checkboxes 
-  var choiceContainer = $("#choices");
-  $.each(datasets, function(key, val) {
-    choiceContainer.append('<input type="checkbox" name="' + key +
-                           '" checked="checked" id="id' + key + '">' +
-                           '<label for="id' + key + '">'
-                            + val.label + '</label>');
-  });
-
-  function showAll(event) {
-    $("#choices input:checkbox").each(function() {$(this).attr("checked", "checked");});
-    plotAccordingToChoices();
-  };
-
-  function showNone(event) {
-    $("#choices input:checkbox").each(function() {$(this).removeAttr("checked");});
-    plotAccordingToChoices();
-  };
-
-  choiceContainer.append('<button id="show_all" style="margin-left:5px;">All</button>');
-  $("#show_all").button().click(showAll);
-
-  choiceContainer.append('<button id="show_none" style="margin-left:5px;">None</button>');
-  $("#show_none").button().click(showNone);
+  series_select += '</select>';
+  legendContainer.append(series_select);
+  var select_series = $("#select_series");
+  select_series.multiselect({
+    height: "auto",
+    position : {
+      my: "left bottom",
+      at: "left top"
+      },
+    checkAll: function(event, ui) {
+	plotAccordingToChoices();
+      },
+    uncheckAll: function(event, ui) {
+	plotAccordingToChoices();
+      },
+    click: function(event, ui) {
+	plotAccordingToChoices();
+      }
+    });
 
   var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"';
   if (!stacked)
@@ -95,12 +98,11 @@ $(function () {
   if (stacked)
     html += 'checked="checked"';
   html += '/><label for="stack">Stack</label></span>';
-  choiceContainer.append(html);
-  $("#gopt").buttonset();
-  $("line").button().click(plotAccordingToChoices);
-  $("stack").button().click(plotAccordingToChoices);
+  legendContainer.append(html);
 
-  choiceContainer.find("input").click(plotAccordingToChoices);
+  $("#gopt").buttonset();
+  $("#line").button().click(plotAccordingToChoices);
+  $("#stack").button().click(plotAccordingToChoices);
 
   function utcTimeStr(tstamp) {
     var date = new Date(tstamp);
@@ -159,32 +161,42 @@ $(function () {
   }
 
   function plotAccordingToChoices() {
+    var selected_series = $("#select_series").multiselect("getChecked").map(function(){return this.value}).get();
     var data = [];
+    for (var i = 0; i < selected_series.length; i++)
+      data.push(datasets[selected_series[i]]);
 
-    choiceContainer.find("input:checked").each(function () {
-      var key = $(this).attr("name");
-      if (key && datasets[key])
-          data.push(datasets[key]);
-    });
+    var placeHolder = $("#placeholder");
+    var placeHolderHeight = $("#popup-dialog").height() - 
+      $("#legendcontainer").height() - 5;
+    if ($("#graphlegend").height() == 0)
+      placeHolderHeight -= 20; // estimate the height of the legend
+    placeHolder.height(placeHolderHeight); 
+    placeHolder.width($("#popup-dialog").width() - 20);
 
-    $("#placeholder").height($("#popup-dialog").height() - $("#choices").height() - 5);
-    $("#placeholder").width($("#popup-dialog").width() - 20);
-
+    var graphLegend = $("#graphlegend");
     var opt =  {lines: { show: true },
 		points: { show: false },
 		crosshair: { mode: "x" },
 		xaxis: { mode: "time" },
                 yaxis: {tickFormatter: suffixFormatter},
+		legend: {
+                  container: graphLegend,
+                  noColumns: 16
+                },
 		grid: { hoverable: true, autoHighlight: true }};
     if ($("#stack").attr('checked')) {
       opt['series'] = {stack: 1};
       opt['bars'] = {show: true};
     }
 
-    $.plot($("#placeholder"), data, opt);
+    graphLegend.html("");
 
+    $.plot(placeHolder, data, opt);
+
+    placeHolder.unbind("plothover");
     if (data.length > 0) {
-      $("#placeholder").bind("plothover", function (event, pos, item) {
+      placeHolder.bind("plothover", function (event, pos, item) {
         $("#x").text(utcTimeStr(pos.x));
         $("#y").text(pos.y.toFixed(2));
 
@@ -202,15 +214,6 @@ $(function () {
         } else {
             $("#tooltip").remove();
             previousPoint = null;            
-        }
-      });
-
-      $("#placeholder").bind("plotclick", function (event, pos, item) {
-        if (item) {
-          $("#clickdata").text("You clicked point " + 
-			       item.dataIndex + " in " + 
-			       item.series.label + ".");
-	  plot.highlight(item.series, item.datapoint);
         }
       });
     } 
