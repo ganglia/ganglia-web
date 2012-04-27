@@ -169,7 +169,8 @@ $conf['strip_domainname'] = false;
 
 #
 # Optional summary graphs
-#
+# This function is deprecated. Please configure included reports
+# in the UI or default.json. Please do not use 
 #$conf['optional_graphs'] = array('packet');
 
 # Enable Zoom support on graphs
