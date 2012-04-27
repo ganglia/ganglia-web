@@ -19,7 +19,6 @@
 <script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
-    var availablemetrics = [{$available_metrics}];
 
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
 

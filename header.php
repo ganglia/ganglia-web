@@ -278,27 +278,31 @@ $checked = "";
 $data->assign("range_menu", $range_menu);
 
 #
-# Build comma separated list of metric strings
-#
-if (is_array($context_metrics)) {
-  sort($context_metrics);
-
-  $available_metrics = array();
-
-  foreach ($context_metrics as $key) {
-    $available_metrics[] = "\"$key\"";
-  }
-
-  $data->assign("available_metrics", join(",", $available_metrics));
-} else {
-  $data->assign("available_metrics", "");
-}
-
-#
 # Only compute metric-picker options if we have some, and are in cluster context.
 #
 if (is_array($context_metrics) and $context == "cluster") {
   $picker_metrics = array();
+
+  # Find all the optional reports
+  if ($handle = opendir($conf['gweb_root'] . '/graph.d')) {
+
+    // If we are using RRDtool reports can be json or PHP suffixes
+    if ( $conf['graph_engine'] == "rrdtool" )
+      $report_suffix = "php|json";
+    else
+      $report_suffix = "json";
+
+    while (false !== ($file = readdir($handle))) {
+      if ( preg_match("/(.*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
+        if ( ! in_array($out[1] . "_report", $context_metrics) )
+          $context_metrics[] = $out[1] . "_report";
+      }
+    }
+
+    closedir($handle);
+  }
+
+  sort($context_metrics);
 
   foreach ($context_metrics as $key) {
     $url = rawurlencode($key);
