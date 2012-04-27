@@ -170,7 +170,7 @@ function get_host_metric_graphs($showhosts,
   // metric. The $start,$end variables comes from get_context.php, 
   // included in index.php.
   // Do this only if person has not selected a maximum set of graphs to display
-  if ($max_graphs == 0)
+  if ($max_graphs == 0 && $showhosts == 2 )
     list($min, $max) = find_limits($sorted_hosts, $metricname);
 
   // Second pass to output the graphs or metrics.
@@ -240,7 +240,9 @@ function get_host_metric_graphs($showhosts,
     if ($ce)
       $graphargs .= "&amp;ce=" . rawurlencode($ce);
     
-    if ($showhosts == 1 && $max_graphs == 0 )
+    // If we want scaling to be the same in clusterview we need to set $max and $min
+    // values
+    if ($showhosts == 2 && $max_graphs == 0 )
       $graphargs .= "&amp;x=$max&amp;n=$min";
     
     if (isset($vlabel))
@@ -287,7 +289,8 @@ function get_host_metric_graphs($showhosts,
   
   $data->assign("sorted_list", $sorted_list);
   
-  // If there is an overflow list
+  // If there is an overflow list. These are hosts for which we don't show graphs
+  // just names
   if (sizeof($overflow_list) > 0) {
     $data->assign("overflow_list_header", '<p><table width=80%><tr><td align=center class=metric>
     <a href="#" id="overflow_list_button"onclick="$(\'#overflow_list\').toggle();" class="button ui-state-default ui-corner-all" title="Toggle overflow list">Show more hosts (' 
