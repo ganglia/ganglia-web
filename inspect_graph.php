@@ -182,7 +182,7 @@ $(function () {
                 yaxis: {tickFormatter: suffixFormatter},
 		legend: {
                   container: graphLegend,
-                  noColumns: 16
+                  noColumns: 7
                 },
 		grid: { hoverable: true, autoHighlight: true }};
     if ($("#stack").attr('checked')) {
