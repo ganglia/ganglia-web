@@ -182,9 +182,10 @@ $metric_name = isset($_GET["m"]) ? sanitize ( $_GET["m"] ) : NULL;
 # doesn't treat it as a metric
 if ( preg_match("/_report$/", $metric_name) && !isset($_GET["g"]) ) {
   $graph = $metric_name;
+} else {
+  # If graph arg is not specified default to metric
+  $graph = isset($_GET["g"])  ?  sanitize ( $_GET["g"] )   : "metric";
 }
-# If graph arg is not specified default to metric
-$graph = isset($_GET["g"])  ?  sanitize ( $_GET["g"] )   : "metric";
 
 $graph_arguments = NULL;
 $pos = strpos($graph, ",");
