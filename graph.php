@@ -177,6 +177,12 @@ $gweb_root = dirname(__FILE__);
 $size = isset($_GET["z"]) && 
         in_array($_GET[ 'z' ], $conf['graph_sizes_keys']) ? $_GET["z"] : NULL;
 
+$metric_name = isset($_GET["m"]) ? sanitize ( $_GET["m"] ) : NULL;
+# In clusterview we may supply report as metric name so let's make sure it
+# doesn't treat it as a metric
+if ( preg_match("/_report$/", $metric_name) && !isset($_GET["g"]) ) {
+  $graph = $metric_name;
+}
 # If graph arg is not specified default to metric
 $graph = isset($_GET["g"])  ?  sanitize ( $_GET["g"] )   : "metric";
 
@@ -192,12 +198,6 @@ $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
 $self = isset($_GET["me"]) ? sanitize( $_GET["me"]) : NULL;
 $vlabel = isset($_GET["vl"]) ? sanitize($_GET["vl"])  : NULL;
 $value = isset($_GET["v"]) ? sanitize ($_GET["v"]) : NULL;
-$metric_name = isset($_GET["m"]) ? sanitize ( $_GET["m"] ) : NULL;
-# In clusterview we may supply report as metric name so let's make sure it
-# doesn't treat it as a metric
-if ( preg_match("/_report$/", $metric_name) ) {
-  $graph = $metric_name;
-}
 $max = isset($_GET["x"]) && is_numeric($_GET["x"]) ? $_GET["x"] : NULL;
 $min = isset($_GET["n"]) && is_numeric($_GET["n"]) ? $_GET["n"] : NULL;
 $sourcetime = isset($_GET["st"]) ? clean_number(sanitize($_GET["st"])) : NULL;
