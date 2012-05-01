@@ -48,7 +48,7 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
       print "<input type=\"hidden\" name=\"metric_name\" value=\"{$_GET['metric_name']}\" />";
       print "<input type=\"hidden\" name=\"type\" value=\"{$_GET['type']}\">";
       if (isset($_GET['vl']) && ($_GET['vl'] !== ''))
-	  print "<input type=\"hidden\" name=\"vertical_label\" value=\"" . htmlentities(stripslashes($_GET['vl'])) . \" />";
+	  print "<input type=\"hidden\" name=\"vertical_label\" value=\"" . htmlentities(stripslashes($_GET['vl'])) . "\" />";
       if (isset($_GET['ti']) && ($_GET['ti'] !== ''))
 	  print "<input type=\"hidden\" name=\"title\" value=\"" . htmlentities(stripslashes($_GET['ti'])) . "\" />";
     }
