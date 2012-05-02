@@ -1,4 +1,6 @@
 <?php
+// vim: tabstop=2:softtabstop=2:shiftwidth=2:expandtab
+
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -117,13 +119,13 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   // This can happen if we are trying to create a report and metrics for 
   // this host were not collected. If that happens we should create an 
   // empty graph
-  if ( $series == "" ) 
+  if ( $series == "" ) {
     $rrdtool_graph[ 'series' ] = 
       'HRULE:1#FFCC33:"No matching metrics detected"';   
-  else
+  } else {
     $rrdtool_graph[ 'series' ] = $series;
-  
-  
+  }
+
   return $rrdtool_graph;
 }
 
@@ -510,7 +512,7 @@ switch ( $conf['graph_engine'] ) {
     # Make small graphs (host list) cleaner by removing the too-big
     # legend: it is displayed above on larger cluster summary graphs.
     if (($size == "small" and ! isset($subtitle)) || ($graph_config["glegend"] == "hide"))
-        $rrdtool_graph['extras'] = "-g";
+        $rrdtool_graph['extras'] = isset($rrdtool_graph['extras']) ? $rrdtool_graph['extras'] . " -g" : " -g" ;
 
     # add slope-mode if rrdtool_slope_mode is set
     if (isset($conf['rrdtool_slope_mode']) && 
