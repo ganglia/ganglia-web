@@ -108,7 +108,7 @@ function getData(cb, n) {
     error: function(xhr, textStatus, errorThrown) { console.log(errorThrown); },
     url: urls[n]
   }).done(function(d) {
-    if (d.length > 0) {
+    if (d != null && d.length > 0) {
       myDatum[0] = {
         x: d[0].datapoints[0][1],
         y: d[0].datapoints[0][0] || graphs[n].lastKnownValue || 0
