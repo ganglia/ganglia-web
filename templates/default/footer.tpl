@@ -43,6 +43,16 @@ Loading view, please wait...<img src="img/spinner.gif" />
   </div>
 </div>
 
+<div id="tabs-livedashboard">
+Live dashboard is a single page with continually refreshed metrics
+<p>
+Please select the view you want to view</p>
+  <div id="tabs-livedashboard-chooser">
+Loading view, please wait...<img src="img/spinner.gif" />
+  </div>
+</div>
+
+
 <hr />
 <div align="center">
 <font size="-1" class="footer">

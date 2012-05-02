@@ -227,6 +227,7 @@
   <li><a href="events.php">Events</a></li>
 {/if}
   <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
+  <li><a href="#tabs-livedashboard" onclick="liveDashboardChooser();">Live Dashboard</a></li>  
   <li><a href="#tabs-mobile" onclick="window.location.href='mobile.php';">Mobile</a></li>
 </ul>
 
