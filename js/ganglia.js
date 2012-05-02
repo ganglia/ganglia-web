@@ -148,6 +148,14 @@ function autoRotationChooser() {
         "", 
         function(data) {$("#tabs-autorotation-chooser").html(data);});
 }
+
+function liveDashboardChooser() {
+  $("#tabs-livedashboard-chooser").html('<img src="img/spinner.gif">');
+  $.get('tasseo.php', 
+        "", 
+        function(data) {$("#tabs-livedashboard-chooser").html(data);});
+}
+
 function updateViewTimeRange() {
   alert("Not implemented yet");
 }

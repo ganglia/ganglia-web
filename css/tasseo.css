@@ -1,0 +1,133 @@
+
+body.night {
+  background-color: #000;
+}
+
+div#title {
+  margin: 20px 10% 0px;
+}
+
+#title h1 {
+  font-size: 48px;
+  font-family: Helvetica;
+  width: 50%;
+  margin: 0;
+}
+
+#title h1.night {
+  color: #fff;
+  opacity: 0.9;
+}
+
+#title .toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#title .toggle ul {
+  list-style-type: none;
+  width: 100px;
+}
+
+#title .toggle ul li a {
+  text-decoration: none;
+}
+
+#title .toggle ul li a img {
+  opacity: 0.8;
+  float: left;
+  padding: 0 5px;
+}
+
+#title p {
+  margin-left: 10px;
+  font-size: 20px;
+  font-family: Helvetica;
+  color: #999;
+}
+
+div#main {
+  margin: 30px 10% 0px;
+  text-align: center;
+}
+
+div#nav {
+  margin: 30px 10% 0px;
+}
+
+#nav ul {
+  margin-left: 10px;
+  list-style-type: none;
+  padding: 0;
+}
+
+#nav li {
+  padding-bottom: 3px;
+}
+
+#nav li a {
+  font-size: 20px;
+  font-family: Helvetica;
+  text-decoration: none;
+  color: #999;
+}
+
+#nav li a:hover {
+  color: red;
+}
+
+#graph {
+  position: relative;
+  float: left;
+  padding: 0 10px 10px 0;
+}
+
+#overlay-name {
+  position: absolute;
+  font-size: 12px;
+  font-family: Helvetica;
+  text-align: left;
+  width: 150px;
+  left: 20px;
+  bottom: 20px;
+  z-index: 200;
+}
+
+#overlay-number {
+  position: absolute;
+  font-size: 48px;
+  font-family: Helvetica;
+  font-weight: bold;
+  right: 20px;
+  bottom: 20px;
+  z-index: 200;
+}
+
+#overlay-name.night, #overlay-number.night {
+  color: #fff;
+  opacity: 0.9;
+}
+
+#overlay-number.nonum {
+  opacity: 0.0;
+}
+
+#overlay-number span.error {
+  color: red;
+}
+
+span.unit {
+  font-size: 24px;
+}
+
+div.x_label {
+  font-size: 13px;
+  font-family: Helvetica;
+}
+
+div.item {
+  font-size: 12px;
+  font-family: Helvetica;
+}
+
