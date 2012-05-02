@@ -1,6 +1,6 @@
 // add our containers
 for (var i=0; i<metrics.length; i++) {
-  $('#main').append('<div id="graph" class="graph' + i + '"><div id="overlay-name" class="overlay-name' + i + '"><img src="img/spinner.gif"></div><div id="overlay-number" class="overlay-number' + i + '"></div></div>');
+  $('#main').append('<div id="graph" class="graph' + i + '"><div id="overlay-name" class="overlay-name' + i + '"></div><div id="overlay-number" class="overlay-number' + i + '"></div></div>');
 }
 
 var graphs = [];   // rickshaw objects
@@ -18,7 +18,7 @@ for (var j=0; j<metrics.length; j++) {
   graphs[j] = new Rickshaw.Graph({
     element: document.querySelector('.graph' + j),
     width: 350,
-    height: 80,
+    height: 90,
     interpolation: 'step-after',
     series: [{
       name: aliases[j],
@@ -28,6 +28,9 @@ for (var j=0; j<metrics.length; j++) {
   });
   graphs[j].render();
 }
+
+// set our last known value at invocation
+Rickshaw.Graph.prototype.lastKnownValue = 0;
 
 // refresh the graph
 function refreshData() {
@@ -39,16 +42,19 @@ function refreshData() {
       }
 
       // check our thresholds and update color
-      if (metrics[n].critical > metrics[n].warning) {
-        if (datum[n][datum.length].y > metrics[n].critical) {
+      var lastValue = datum[n][datum[n].length - 1].y;
+      var warning = metrics[n].warning;
+      var critical = metrics[n].critical;
+      if (critical > warning) {
+        if (lastValue > critical) {
           graphs[n].series[0].color = '#d59295';
-        } else if (datum[n][datum.length].y > metrics[n].warning) {
+        } else if (lastValue > warning) {
           graphs[n].series[0].color = '#f5cb56';
         }
       } else {
-        if (datum[n][datum.length].y < metrics[n].critical) {
+        if (lastValue < critical) {
           graphs[n].series[0].color = '#d59295';
-        } else if (datum[n][datum.length].y < metrics[n].warning) {
+        } else if (lastValue < warning) {
           graphs[n].series[0].color = '#f5cb56';
         }
       }
@@ -58,8 +64,8 @@ function refreshData() {
   for (var m=0; m<graphs.length; m++) {
     // update our graph
     graphs[m].update();
-    if (datum[m][datum.length] !== undefined) {
-      var lastValue = datum[m][datum.length].y;
+    if (datum[m][datum[m].length - 1] !== undefined) {
+      var lastValue = datum[m][datum[m].length - 1].y;
       var lastValueDisplay;
       if ((typeof lastValue == 'number') && lastValue < 2.0) {
         lastValueDisplay = Math.round(lastValue*1000)/1000;
@@ -78,7 +84,21 @@ function refreshData() {
   }
 }
 
-var refreshInterval = (typeof refresh == 'undefined') ? 15000 : refresh;
+// set our theme
+var myTheme = (typeof theme == 'undefined') ? 'default' : theme;
+
+// initial load screen
+refreshData();
+for (var g=0; g<graphs.length; g++) {
+  if (myTheme === "dark") {
+    $('.overlay-number' + g).html('<img src="img/spin-night.gif" />');
+  } else {
+    $('.overlay-number' + g).html('<img src="img/spin.gif" />');
+  }
+}
+
+// define our refresh and start interval
+var refreshInterval = (typeof refresh == 'undefined') ? 2000 : refresh;
 setInterval(refreshData, refreshInterval);
 
 // pull data from graphite
@@ -91,14 +111,15 @@ function getData(cb, n) {
     if (d.length > 0) {
       myDatum[0] = {
         x: d[0].datapoints[0][1],
-        y: d[0].datapoints[0][0] || 0
+        y: d[0].datapoints[0][0] || graphs[n].lastKnownValue || 0
       };
       for (var m=1; m<d[0].datapoints.length; m++) {
-        if (d[0].datapoints[m]) {
-          myDatum[m] = {
-            x: d[0].datapoints[m][1],
-            y: d[0].datapoints[m][0] || d[0].datapoints[m - 1][0]
-          };
+        myDatum[m] = {
+          x: d[0].datapoints[m][1],
+          y: d[0].datapoints[m][0] || graphs[n].lastKnownValue
+        };
+        if (typeof d[0].datapoints[m][0] === "number") {
+          graphs[n].lastKnownValue = d[0].datapoints[m][0];
         }
       }
       cb(n, myDatum);
@@ -106,19 +127,25 @@ function getData(cb, n) {
   });
 }
 
-// toggle night mode
+// night mode toggle
+function toggleNightMode(opacity) {
+  $('body').toggleClass('night');
+  $('div#title h1').toggleClass('night');
+  $('div#graph svg').css('opacity', opacity);
+  $('div#overlay-name').toggleClass('night');
+  $('div#overlay-number').toggleClass('night');
+}
+
+// activate night mode from config
+if (myTheme === "dark") {
+  toggleNightMode(0.8);
+}
+
+// active night mode by click
 $('li.toggle-night a').toggle(function() {
-  $('body').toggleClass('night');
-  $('div#title h1').toggleClass('night');
-  $('div#graph svg').css('opacity', '0.6');
-  $('div#overlay-name').toggleClass('night');
-  $('div#overlay-number').toggleClass('night');
+  toggleNightMode(0.8);
 }, function() {
-  $('body').toggleClass('night');
-  $('div#title h1').toggleClass('night');
-  $('div#graph svg').css('opacity', '1.0');
-  $('div#overlay-name').toggleClass('night');
-  $('div#overlay-number').toggleClass('night');
+  toggleNightMode(1.0);
 });
 
 // toggle number display
