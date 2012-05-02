@@ -1,6 +1,6 @@
 // add our containers
 for (var i=0; i<metrics.length; i++) {
-  $('#main').append('<div id="graph" class="graph' + i + '"><div id="overlay-name" class="overlay-name' + i + '"></div><div id="overlay-number" class="overlay-number' + i + '"></div></div>');
+  $('#main').append('<div id="graph" class="graph' + i + '"><div id="overlay-name" class="overlay-name' + i + '"><img src="img/spinner.gif"></div><div id="overlay-number" class="overlay-number' + i + '"></div></div>');
 }
 
 var graphs = [];   // rickshaw objects
