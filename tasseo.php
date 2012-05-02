@@ -53,9 +53,16 @@ if ( ! isset($_GET['view_name']) ) {
 </head>
 <body>
 <div id="main">
+   <h2>Live Dashboard for <?php print $_REQUEST['view_name']; ?></h2>
 </div>
 <script>
-   var ganglia_url = "http://<?php $path_parts = pathinfo($_SERVER['SCRIPT_NAME']); print $_SERVER['HTTP_HOST'] .  $path_parts['dirname']; ?>";
+   var ganglia_url = "<?php
+   if ( isset($_SERVER['HTTPS'] ) )
+      $proto = "https://";
+   else
+      $proto = "http://";
+   $path_parts = pathinfo($_SERVER['SCRIPT_NAME']);
+   print $proto . $_SERVER['HTTP_HOST'] .  $path_parts['dirname']; ?>";
 </script>
 <script>
 var metrics =
