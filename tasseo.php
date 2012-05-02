@@ -46,14 +46,31 @@ if ( ! isset($_GET['view_name']) ) {
   ?>
 <html>
 <head>
+<title>Live Dashboard for $_REQUEST['view_name']</title>
 <link rel="stylesheet" type="text/css" href="css/tasseo.css" />
 <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/d3.v2.min.js"></script>
 <script type="text/javascript" src="js/rickshaw.min.js"></script>
 </head>
 <body>
+   <div id='title'>
+      <h1><?php print $_REQUEST['view_name']; ?></h1>
+      <div class='toggle'>
+        <ul>
+          <li class='toggle-nonum'>
+            <a href='#'>
+              <img src='img/toggle-number.png' />
+            </a>
+          </li>
+          <li class='toggle-night'>
+            <a href='#'>
+              <img src='img/toggle-night.png' />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
 <div id="main">
-   <h2>Live Dashboard for <?php print $_REQUEST['view_name']; ?></h2>
 </div>
 <script>
    var ganglia_url = "<?php

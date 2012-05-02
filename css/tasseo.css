@@ -8,7 +8,7 @@ div#title {
 }
 
 #title h1 {
-  font-size: 48px;
+  font-size: 40px;
   font-family: Helvetica;
   width: 50%;
   margin: 0;
@@ -48,7 +48,6 @@ div#title {
 }
 
 div#main {
-  margin: 30px 10% 0px;
   text-align: center;
 }
 
