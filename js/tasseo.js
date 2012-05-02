@@ -98,7 +98,7 @@ for (var g=0; g<graphs.length; g++) {
 }
 
 // define our refresh and start interval
-var refreshInterval = (typeof refresh == 'undefined') ? 2000 : refresh;
+var refreshInterval = (typeof refresh == 'undefined') ? 15000 : refresh;
 setInterval(refreshData, refreshInterval);
 
 // pull data from graphite
