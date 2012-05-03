@@ -203,6 +203,9 @@ $vlabel = isset($_GET["vl"]) ? sanitize($_GET["vl"])  : NULL;
 $value = isset($_GET["v"]) ? sanitize ($_GET["v"]) : NULL;
 $max = isset($_GET["x"]) && is_numeric($_GET["x"]) ? $_GET["x"] : NULL;
 $min = isset($_GET["n"]) && is_numeric($_GET["n"]) ? $_GET["n"] : NULL;
+$critical = isset($_GET["crit"]) && is_numeric($_GET["crit"]) ? $_GET["crit"] : NULL;
+$warning = isset($_GET["warn"]) && is_numeric($_GET["warn"]) ? $_GET["warn"] : NULL;
+
 $sourcetime = isset($_GET["st"]) ? clean_number(sanitize($_GET["st"])) : NULL;
 $load_color = isset($_GET["l"]) && 
               is_valid_hex_color(rawurldecode($_GET['l'])) ?
@@ -1105,9 +1108,15 @@ if ( $user['trend_line'] ) {
     $command .= " VDEF:D2=sum,LSLSLOPE VDEF:H2=sum,LSLINT CDEF:avg2=sum,POP,D2,COUNT,*,H2,+";
     $command .= " 'LINE3:avg2#53E2FF:Trend:dashes'";
 
-  
 }
 
+if ( $warning ) {
+  $command .= " 'HRULE:" . $warning . "#FFF600:Warning:dashes'";  
+}
+
+if ( $critical ) {
+  $command .= " 'HRULE:" . $critical . "#FF0000:Critical:dashes'";
+}
 
 if ($debug) {
   error_log("Final rrdtool command:  $command");

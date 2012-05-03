@@ -736,16 +736,21 @@ function get_view_graph_elements($view) {
 	  if (isset($item['title']))
 	    $graph_args_array[] = "title=" . urlencode($item['title']);
 
+          if (isset($item['warning'])) {
+            $view_e['warning'] = $item['warning'];
+            $graph_args_array[] = "warn=" . $item['warning'];
+          }
+          if (isset($item['critical'])) {
+            $view_e['critical'] = $item['critical'];
+            $graph_args_array[] = "crit=" . $item['critical'];
+          }
+
+
           $view_e["graph_args"] = join("&", $graph_args_array);
           $view_e['hostname'] = $hostname;
           $view_e['cluster'] = $cluster;
           $view_e['name'] = $name;
-          
-          if (isset($item['warning']))
-            $view_e['warning'] = $item['warning'];            
-          if (isset($item['critical']))
-            $view_e['critical'] = $item['critical'];
-          
+                  
 	  $view_elements[] = $view_e;
 
           unset($view_e);
