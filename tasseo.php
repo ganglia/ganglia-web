@@ -46,7 +46,7 @@ if ( ! isset($_GET['view_name']) ) {
   ?>
 <html>
 <head>
-<title>Live Dashboard for $_REQUEST['view_name']</title>
+<title>Live Dashboard for <?php print $_REQUEST['view_name']; ?></title>
 <link rel="stylesheet" type="text/css" href="css/tasseo.css" />
 <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/d3.v2.min.js"></script>
