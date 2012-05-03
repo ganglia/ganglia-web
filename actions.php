@@ -28,7 +28,7 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
   </table>
   <p>
   <form id="add_metric_to_view_form">
-    Add to view
+    Add graph to view: <br />
     <?php 
     // Get all the aggregate form variables and put them in the hidden fields
     if ( isset($_GET['aggregate']) ) {
@@ -51,11 +51,13 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
 	  print "<input type=\"hidden\" name=\"vertical_label\" value=\"" . htmlentities(stripslashes($_GET['vl'])) . "\" />";
       if (isset($_GET['ti']) && ($_GET['ti'] !== ''))
 	  print "<input type=\"hidden\" name=\"title\" value=\"" . htmlentities(stripslashes($_GET['ti'])) . "\" />";
+      
+      print "<b>Optional:</b> Warning <input size=6 name=\"warning\"> Critical <input size=6 name=\"critical\"> threshold";
     }
     ?>
 
     <select onChange="addItemToView()" name="view_name">
-    <option value="none">Please choose one</option>
+    <option value="none">Please choose a view to add to</option>
     <?php
     foreach ( $available_views as $view_id => $view ) {
       print "<option value=\"" . $view['view_name'] . "\">" . $view['view_name'] . "</option>";

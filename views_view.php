@@ -160,9 +160,14 @@ if (isset($_GET['add_to_view'])) {
 	  if (isset($_GET['vertical_label']))
             $items["vertical_label"] = stripslashes($_GET['vertical_label']);
 	  if (isset($_GET['title']))
-            $items["title"] = $_GET['title'];
+            $items["title"] = stripslashes($_GET['title']);
 	  if (isset($_GET['c']))
             $items["cluster"] = $_GET['c'];
+          if (isset($_GET['warning']) && is_numeric($_GET['warning']))
+            $items["warning"] = $_GET['warning'];
+          if (isset($_GET['critical']) && is_numeric($_GET['critical']))
+            $items["critical"] = $_GET['critical'];
+          
 	  $view['items'][] = $items;
 	} else
 	  $view['items'][] = array("hostname" => $_GET['host_name'], 

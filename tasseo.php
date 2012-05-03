@@ -86,9 +86,16 @@ var metrics =
 <?php
 foreach ( $view_elements as $index => $element ) {
    if ( ! preg_match("/Aggregate/", $element['name']) ) {
-      $tasseo_element[] = array( "hostname" => $element['hostname'],
-         "clustername" => $element['cluster'],
-         "metricname" => $element['name']);
+      $tasseo_e['hostname'] = $element['hostname'];
+      $tasseo_e['clustername'] = $element['cluster'];
+      $tasseo_e['metricname'] = $element['name'];
+      if ( isset($element['warning']))
+         $tasseo_e['warning'] = $element['warning'];
+      if ( isset($element['critical']))
+         $tasseo_e['critical'] = $element['critical'];
+      
+      $tasseo_element[] = $tasseo_e;
+      unset($tasseo_e);
    }
 }
 print json_encode($tasseo_element)
