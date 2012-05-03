@@ -52,10 +52,12 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
       if (isset($_GET['ti']) && ($_GET['ti'] !== ''))
 	  print "<input type=\"hidden\" name=\"title\" value=\"" . htmlentities(stripslashes($_GET['ti'])) . "\" />";
       
-      print "<b>Optional:</b> Warning <input size=6 name=\"warning\"> Critical <input size=6 name=\"critical\"> threshold";
+      print "<table><tr><th rowspan=2>Optional thresholds to display</th><td>Warning</td><td><input size=6 name=\"warning\"></td>
+	</tr><td>Critical</td><td><input size=6 name=\"critical\"></td></tr></table>";
     }
     ?>
-
+    <br />
+    <center>
     <select onChange="addItemToView()" name="view_name">
     <option value="none">Please choose a view to add to</option>
     <?php
@@ -65,21 +67,8 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
 
   ?>
     </select>
+    </center>
   </form>
-  <form>
-    <p>
-    Add alert: <p>
-    Alert when value is 
-    <select name="alert_operator">
-      <option value="more">greater</option>
-      <option value="less">smaller</option>
-      <option value="equal">equal</option>
-      <option value="notequal">not equal</option>
-    </select> than
-    <input size="7" name="critical_value" type="text" />
-    <button onClick="alert('not implemented yet'); return false">Add</button>
-  </form>
-
 <?php
 
 } // end of if ( isset($_GET['show_views']) {
