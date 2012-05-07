@@ -38,6 +38,25 @@
   }
 
 $(function() {
+   
+  var availablemetrics = [
+<?php
+
+  require_once('./eval_conf.php');
+  require_once('./functions.php');
+
+  $available_metrics = array();
+  retrieve_metrics_cache();
+
+  ksort($index_array['metrics']);
+  foreach ($index_array['metrics'] as $key => $value) {
+    $available_metrics[] = "\"$key\"";
+  }
+
+  print join(",", $available_metrics);
+  unset($available_metrics);
+?>];
+   
   $( ".ag_buttons" ).button();
   $( "#graph_type_menu" ).buttonset();
   $( "#graph_legend_menu" ).buttonset();
