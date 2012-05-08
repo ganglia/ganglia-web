@@ -54,9 +54,26 @@ if ( ! isset($_GET['view_name']) ) {
 </head>
 <body>
    <div id='title'>
-      <h1><?php print $_REQUEST['view_name']; ?></h1>
-      <div class='toggle'>
-        <ul>
+      <span><?php print $_REQUEST['view_name']; ?></span>
+      <div id='toolbar'>
+        <ul class='timepanel'>
+          <li class='timepanel live selected'>
+            <a class='play' href='#'>live</a>
+          </li>
+          <li class='timepanel'>
+            <a class='range' href='#' title='60'>1h</a>
+          </li>
+          <li class='timepanel'>
+            <a class='range' href='#' title='180'>3h</a>
+          </li>
+          <li class='timepanel'>
+            <a class='range' href='#' title='1440'>1d</a>
+          </li>
+          <li class='timepanel'>
+            <a class='range' href='#' title='10080'>1w</a>
+          </li>
+        </ul>
+        <ul class='toggle'>
           <li class='toggle-nonum'>
             <a href='#'>
               <img src='img/toggle-number.png' />
