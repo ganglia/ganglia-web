@@ -1,5 +1,5 @@
 Summary: Ganglia Web Frontend
-Name: gweb
+Name: ganglia-web
 Version: @GWEB_VERSION@
 URL: http://ganglia.info
 Release: 1
