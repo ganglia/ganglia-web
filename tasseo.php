@@ -102,7 +102,8 @@ if ( ! isset($_GET['view_name']) ) {
 var metrics =
 <?php
 foreach ( $view_elements as $index => $element ) {
-   if ( ! preg_match("/Aggregate/", $element['name']) ) {
+   # Avoid optional reports and Aggregate graphs until we implement them
+   if ( ! preg_match("/_report&/", $element['graph_args']) && ! isset($element['aggregate_graph']) ) {
       $tasseo_e['hostname'] = $element['hostname'];
       $tasseo_e['clustername'] = $element['cluster'];
       $tasseo_e['metricname'] = $element['name'];
