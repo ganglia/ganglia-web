@@ -58,11 +58,11 @@ if ( ! is_array( $metrics ) ) {
   include_once $conf['ganglia_dir'] . "/get_ganglia.php";
   # Massage the metrics to minimize the cache file by caching only attributes
   # we care about
-  foreach ( $metrics as $host => $host_metrics ) {
+  foreach ( $metrics as $mhost => $host_metrics ) {
     foreach ( $host_metrics as $name => $attributes ) {
-    	$new_metrics[$host][$name]['VAL'] = $metrics[$host][$name]['VAL'];
-	if ( isset($metrics[$host][$name]['UNITS']) ) 
-    	$new_metrics[$host][$name]['UNITS'] = $metrics[$host][$name]['UNITS'];
+    	$new_metrics[$mhost][$name]['VAL'] = $metrics[$mhost][$name]['VAL'];
+	if ( isset($metrics[$mhost][$name]['UNITS']) ) 
+    	$new_metrics[$mhost][$name]['UNITS'] = $metrics[$mhost][$name]['UNITS'];
     }
   }
   file_put_contents($conf['nagios_cache_file'], serialize($new_metrics));
