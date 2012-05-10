@@ -74,18 +74,18 @@ $c = 1;
 foreach($hosts as $host) {
     $cx = $c/(1+count($hosts));
     $color = get_col($cx);
-    $c++;
     if ($conf['strip_domainname'])
          $host = strip_domainname($host);
     $command .= " STACK:'a$c'#$color:'$host'";
+    $c++;
 }
 
 $command .= " LINE1:'a1'#333";
 
 $c = 1;
 foreach($hosts as $host) {
-    $c++;
     $command .= " STACK:'a$c'#000000";
+    $c++;
 }
 
 $command = sanitize($command);
