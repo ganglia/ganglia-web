@@ -1,5 +1,5 @@
 # Location where gweb should be installed to
-DESTDIR = /var/www/html/gweb
+DESTDIR = /var/www/html/ganglia
 
 APACHE_USER = apache
 
