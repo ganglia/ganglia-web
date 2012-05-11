@@ -217,7 +217,14 @@ $showEvents = isset($_GET["event"]) ? sanitize ($_GET["event"]) : "show";
 $command    = '';
 $graphite_url = '';
 
-$user['json_output'] = isset($_GET["json"]) ? 1 : NULL; 
+$user['json_output'] = isset($_GET["json"]) ? 1 : NULL;
+# Request for live dashboard
+if ( isset($_REQUEST['live']) ) {
+  $user['live_dashboard'] = 1;
+  $user['json_output'] = 1;
+} else {
+  $user['live_output'] = NULL;
+}
 $user['csv_output'] = isset($_GET["csv"]) ? 1 : NULL; 
 $user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL; 
 $user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
@@ -763,6 +770,22 @@ if ( $user['json_output'] ||
   // If JSON output request simple encode the array as JSON
   if ( $user['json_output'] ) {
 
+    // First let's check if JSON output is requested for Live Dashboard and
+    // we are outputting aggregate graph. If so we need to add up all the values
+    if ( $user['live_dashboard'] && sizeof($output_array) > 1 ) {
+      $summed_output = array();
+      foreach ( $output_array[0]['datapoints'] as $index => $datapoint ) {
+        // Data point is an array with value and UNIX time stamp. Initialize
+        // summed output as 0
+        $summed_output[$index] = array( 0, $datapoint[1] );
+        for ( $i = 0 ; $i < sizeof($output_array) ; $i++ ) {
+          $summed_output[$index][0] += $output_array[$i]['datapoints'][$index][0];
+        }
+      }
+      
+      unset($output_array);
+      $output_array[0]['datapoints'] = $summed_output;
+    }
     header("Content-type: application/json");
     header("Content-Disposition: inline; filename=\"ganglia-metrics.json\"");
     print json_encode($output_array);

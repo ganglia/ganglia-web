@@ -13,15 +13,14 @@ var period = (typeof period == 'undefined') ? 30 : period;
 
 // construct a url
 function constructUrl(index, period) {
-  urls[index] = ganglia_url + '/graph.php?cs=-' + encodeURI(period)  + '%20min&c=' + encodeURI(metrics[index].clustername) + '&h=' + encodeURI(metrics[index].hostname)
-    + '&m=' + encodeURI(metrics[index].metricname) + '&json=1';
+  urls[index] = ganglia_url + '/graph.php?cs=-' + encodeURI(period)  + '%20min&' + encodeURI(metrics[index].graph_args) + '&live=1';
 }
 
 // build our graph objects
 function constructGraphs() {
   for (var j=0; j<metrics.length; j++) {
     constructUrl(j, period);
-    aliases[j] = metrics[j].hostname + " " + metrics[j].metricname
+    aliases[j] = metrics[j].name
     datum[j] = [{ x:0, y:0 }];
     graphs[j] = new Rickshaw.Graph({
       element: document.querySelector('.graph' + j),
