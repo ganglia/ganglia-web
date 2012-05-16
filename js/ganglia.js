@@ -208,6 +208,8 @@ function initShowEvent() {
     $(this).attr("checked", 'checked');
     $(this).button('refresh');
   });
+    
+  $("#timeshift_overlay").button();
 
   if ($("#show_all_events").length > 0) {
     $("#show_all_events").button();

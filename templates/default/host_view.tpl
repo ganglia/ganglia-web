@@ -215,8 +215,6 @@ $(function() {
       document.ganglia_form.submit();
       return false;
     });
-    
-    $("#timeshift_overlay").button();
 
 });
 </script>

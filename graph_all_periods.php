@@ -161,7 +161,8 @@ if ( ! isset($_REQUEST['embed'] )  ) {
 if ( ! isset($_REQUEST['mobile'] )  ) {
 
 ?>
-<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events All Graphs</label><br />
+<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events All Graphs</label>
+<input title="Timeshift Overlay" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label class="show_timelineshift_text" for="timeshift_overlay">Timeshift Overlay</label><br />
 <?php
 } // end of if ( ! isset($_REQUEST['mobile'] )  ) {
 
