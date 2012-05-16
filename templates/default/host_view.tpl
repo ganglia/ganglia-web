@@ -215,6 +215,9 @@ $(function() {
       document.ganglia_form.submit();
       return false;
     });
+    
+    $("#timeshift_overlay").button();
+
 });
 </script>
 
@@ -302,6 +305,7 @@ $(function() {
 <div style="padding-bottom:5px;">
 <button id="expand_all_metric_groups" class="button ui-state-default ui-corner-all">Expand All Metric Groups</button>
 <button id="collapse_all_metric_groups" class="button ui-state-default ui-corner-all">Collapse All Metric Groups</button>
+<input title="Time Shift Overlay" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label for="timeshift_overlay">Timeshift Overlay</label>
 </div>
 <table>
 <tr>

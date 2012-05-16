@@ -1139,22 +1139,20 @@ if ( $user['trend_line'] ) {
 ////////////////////////////////////////////////////////////////////////////////
 // Add a trend line
 ////////////////////////////////////////////////////////////////////////////////
-if ( $user['time_shift'] ) {
+if ( $user['time_shift'] && $graph == "metric" ) {
 
     preg_match_all("/(DEF|CDEF):(.*)(:AVERAGE )/", 
                  " " . $rrdtool_graph['series'], 
                  $matches);
 
+    // Only do this for metric graphs
     $start = intval(abs(str_replace("s", "", $rrdtool_graph['start'])));
     $offset = 2 * $start;
 
     $def = str_replace("DEF:'sum'", "DEF:'sum2'", trim($matches[0][0])) . ":start=end-" . $offset;
     
-    
-    
     $command .= " " . $def . " SHIFT:sum2:" . $start;
-    $command .= " 'LINE3:sum2#FFE466:Previous:dashes'";
-  
+    $command .= " 'LINE3:sum2#FFE466:Previous " . $range . ":dashes'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

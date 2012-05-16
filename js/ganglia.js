@@ -216,6 +216,19 @@ function initShowEvent() {
   }
 }
 
+function showTimeshiftOverlay(show) {
+  $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+      if (show)
+        $(this).attr("checked", 'checked');
+      else
+        $(this).removeAttr("checked");
+      $(this).button('refresh');
+      var graphId = GRAPH_BASE_ID + 
+	$(this).attr('id').slice(SHOW_EVENTS_BASE_ID_LEN);
+      showTimeShift(graphId, show);
+    });
+}
+
 function showAllEvents(show) {
   $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
       if (show)
@@ -237,6 +250,19 @@ function showEvents(graphId, show) {
       return;
     var paramStr = "&event=";
     paramStr += show ? "show" : "hide"
+    var d = new Date();
+    paramStr += "&_=" + d.getTime();
+    src = jQuery.param.querystring(src, paramStr);
+    graph.attr("src", src);
+  }
+
+function showTimeShift(graphId, show) {
+    var graph = $("#" + graphId);
+    var src = graph.attr("src");
+    if ((src.indexOf("graph.php") != 0) &&
+        (src.indexOf("./graph.php") != 0))
+      return;
+    var paramStr = "&ts=1";
     var d = new Date();
     paramStr += "&_=" + d.getTime();
     src = jQuery.param.querystring(src, paramStr);
