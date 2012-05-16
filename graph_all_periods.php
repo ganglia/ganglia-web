@@ -162,7 +162,7 @@ if ( ! isset($_REQUEST['mobile'] )  ) {
 
 ?>
 <input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events All Graphs</label>
-<input title="Timeshift Overlay" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label class="show_timelineshift_text" for="timeshift_overlay">Timeshift Overlay</label><br />
+<input title="Timeshift Overlay" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label class="show_timeshift_text" for="timeshift_overlay">Timeshift Overlay</label><br />
 <?php
 } // end of if ( ! isset($_REQUEST['mobile'] )  ) {
 
@@ -204,6 +204,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
     $graphId = $GRAPH_BASE_ID . $key;
 
     print ' <input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $key . '">Hide/Show Events</label>';
+    print '<input title="Timeshift Overlay" type="checkbox" id="ts_' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showTimeShift(\'' . $graphId . '\', this.checked)"/><label class="show_timeshift_text" for="ts_' . $SHOW_EVENTS_BASE_ID . $key . '">Timeshift</label>';
 
   } 
 

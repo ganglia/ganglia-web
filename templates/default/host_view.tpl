@@ -303,7 +303,7 @@ $(function() {
 <div style="padding-bottom:5px;">
 <button id="expand_all_metric_groups" class="button ui-state-default ui-corner-all">Expand All Metric Groups</button>
 <button id="collapse_all_metric_groups" class="button ui-state-default ui-corner-all">Collapse All Metric Groups</button>
-<input title="Time Shift Overlay" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label for="timeshift_overlay">Timeshift Overlay</label>
+<input title="Time Shift Overlay - overlays previous period on all graphs" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label for="timeshift_overlay">Timeshift Overlay</label>
 </div>
 <table>
 <tr>
@@ -332,7 +332,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 {$i = 0}
 {foreach $g_metrics["metrics"] g_metric}
 <td>
-<font style="font-size: 9px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font><br>
+<font style="font-size: 8px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font>
 {if $may_edit_views}
 {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
 <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;">+</button>
@@ -350,6 +350,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 {$graphId = cat($GRAPH_BASE_ID $mgId $i)}
 {$showEventsId = cat($SHOW_EVENTS_BASE_ID $mgId $i)}
 <input title="Hide/Show Events" type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
+<input title="Timeshift Overlay" type="checkbox" id="ts_{$showEventsId}" onclick="showTimeShift('{$graphId}', this.checked)"/><label class="show_timeshift_text" for="ts_{$showEventsId}">Timeshift</label>
 <br>
 <a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
 <img id="{$graphId}" class="noborder {$additional_host_img_css_classes}" style="margin:5px;" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />

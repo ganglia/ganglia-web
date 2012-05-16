@@ -208,6 +208,12 @@ function initShowEvent() {
     $(this).attr("checked", 'checked');
     $(this).button('refresh');
   });
+
+  $("[id^=ts_" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+    $(this).button();
+    $(this).attr("checked", 'unchecked');
+    $(this).button('refresh');
+  });
     
   $("#timeshift_overlay").button();
 
