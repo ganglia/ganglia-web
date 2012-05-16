@@ -213,6 +213,7 @@ $load_color = isset($_GET["l"]) &&
 $summary = isset($_GET["su"]) ? 1 : 0;
 $debug = isset($_GET['debug']) ? clean_number(sanitize($_GET["debug"])) : 0;
 $showEvents = isset($_GET["event"]) ? sanitize ($_GET["event"]) : "show";
+$user['time_shift'] = isset($_GET['ts']) ? 1 : NULL;
 
 $command    = '';
 $graphite_url = '';
@@ -1125,7 +1126,9 @@ if ( $showEvents == "show" &&
   } //End check for array
 }
 
+////////////////////////////////////////////////////////////////////////////////
 // Add a trend line
+////////////////////////////////////////////////////////////////////////////////
 if ( $user['trend_line'] ) {
   
     $command .= " VDEF:D2=sum,LSLSLOPE VDEF:H2=sum,LSLINT CDEF:avg2=sum,POP,D2,COUNT,*,H2,+";
@@ -1133,6 +1136,30 @@ if ( $user['trend_line'] ) {
 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Add a trend line
+////////////////////////////////////////////////////////////////////////////////
+if ( $user['time_shift'] ) {
+
+    preg_match_all("/(DEF|CDEF):(.*)(:AVERAGE )/", 
+                 " " . $rrdtool_graph['series'], 
+                 $matches);
+
+    $start = intval(abs(str_replace("s", "", $rrdtool_graph['start'])));
+    $offset = 2 * $start;
+
+    $def = str_replace("DEF:'sum'", "DEF:'sum2'", trim($matches[0][0])) . ":start=end-" . $offset;
+    
+    
+    
+    $command .= " " . $def . " SHIFT:sum2:" . $start;
+    $command .= " 'LINE3:sum2#FFE466:Previous:dashes'";
+  
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Add warning and critical lines
+////////////////////////////////////////////////////////////////////////////////
 if ( $warning ) {
   $command .= " 'HRULE:" . $warning . "#FFF600:Warning:dashes'";  
 }
