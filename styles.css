@@ -426,3 +426,19 @@ label[class~="show_event_text"] span.ui-button-text {
   padding: 1px 2px 1px 2px;
   display:inline;
 }
+
+
+label[class~="show_timeshift_text"] span.ui-button-text {
+  border-top: 1px solid;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  font: 8px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+  padding: 1px 2px 1px 2px;
+  display:inline;
+}
