@@ -32,6 +32,12 @@ $host_file = $conf['conf_dir'] . "/host_" . $hostname . ".json";
 $override_reports = array("included_reports" => array(), "excluded_reports" => array());
 if ( is_file($host_file) ) {
   $override_reports = array_merge($override_reports, json_decode(file_get_contents($host_file), TRUE));
+} else {
+  // If there is no host file, look for a default cluster file
+  $cluster_file = $conf['conf_dir'] . "/cluster_" . $clustername . ".json";
+  if ( is_file($cluster_file) ) {
+    $override_reports = array_merge($override_reports, json_decode(file_get_contents($cluster_file), TRUE));
+  }
 }
 
 // Merge arrays
