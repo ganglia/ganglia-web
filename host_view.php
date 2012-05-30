@@ -28,6 +28,17 @@ if ( is_file($conf['conf_dir'] . "/default.json") ) {
   $default_reports = array_merge($default_reports,json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), TRUE));
 }
 
+$cluster_file = $conf['conf_dir'] .
+   "/cluster_" .
+   str_replace(" ", "_", $clustername) .
+   ".json";
+
+$cluster_override_reports = array("included_reports" => array(), "excluded_reports" => array());
+if (is_file($cluster_file)) {
+   $cluster_override_reports = array_merge($override_reports,
+                                   json_decode(file_get_contents($cluster_file), TRUE));
+} 
+
 $host_file = $conf['conf_dir'] . "/host_" . $hostname . ".json";
 $override_reports = array("included_reports" => array(), "excluded_reports" => array());
 if ( is_file($host_file) ) {
@@ -35,8 +46,8 @@ if ( is_file($host_file) ) {
 }
 
 // Merge arrays
-$reports["included_reports"] = array_merge( $default_reports["included_reports"] , $override_reports["included_reports"]);
-$reports["excluded_reports"] = array_merge($default_reports["excluded_reports"] , $override_reports["excluded_reports"]);
+$reports["included_reports"] = array_merge( $default_reports["included_reports"] , $cluster_override_reports["included_reports"], $override_reports["included_reports"]);
+$reports["excluded_reports"] = array_merge($default_reports["excluded_reports"] , $cluster_override_reports["excluded_reports"],  $override_reports["excluded_reports"]);
 
 // Remove duplicates
 $reports["included_reports"] = array_unique($reports["included_reports"]);
