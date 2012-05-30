@@ -32,7 +32,7 @@ if (isset($_GET['x']) || isset($_GET['n'])) {
         $command .= " --lower-limit '0'";
 }
 
-$c = 0;
+$c = 1;
 $total_cmd = " CDEF:'total'=0";
 
 # We'll get the list of hosts from here
@@ -57,9 +57,9 @@ foreach($index_array['cluster'] as $host => $cluster ) {
 foreach ( $hosts as $index => $host ) {
         $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
         if (file_exists($filename)) {
-            $c++;
             $command .= " DEF:'a$c'='$filename':'sum':AVERAGE";
             $total_cmd .= ",a$c,+";
+            $c++;
         }
 }
     
@@ -74,18 +74,18 @@ $c = 1;
 foreach($hosts as $host) {
     $cx = $c/(1+count($hosts));
     $color = get_col($cx);
-    $c++;
     if ($conf['strip_domainname'])
          $host = strip_domainname($host);
     $command .= " STACK:'a$c'#$color:'$host'";
+    $c++;
 }
 
 $command .= " LINE1:'a1'#333";
 
 $c = 1;
 foreach($hosts as $host) {
-    $c++;
     $command .= " STACK:'a$c'#000000";
+    $c++;
 }
 
 $command = sanitize($command);
