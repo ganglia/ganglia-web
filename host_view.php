@@ -35,7 +35,7 @@ $cluster_file = $conf['conf_dir'] .
 
 $cluster_override_reports = array("included_reports" => array(), "excluded_reports" => array());
 if (is_file($cluster_file)) {
-   $cluster_override_reports = array_merge($override_reports,
+   $cluster_override_reports = array_merge($cluster_override_reports,
                                    json_decode(file_get_contents($cluster_file), TRUE));
 } 
 
