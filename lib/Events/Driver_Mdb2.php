@@ -16,7 +16,7 @@ function ganglia_events_add( $event ) {
   global $conf;
   $db =& MDB2::factory( $conf['overlay_events_dsn'] );
   if (DB::isError($db)) { api_return_error($db->getMessage()); }
-  $sql = "INSERT INTO overlay_events ( \`description\`, \`summary\`, \`grid\`, \`cluster\`, \`host_regex\`, \`start_time\`, \`end_time\` ) VALUES ( " .
+  $sql = "INSERT INTO overlay_events ( description, summary, grid, cluster, host_regex, start_time, end_time ) VALUES ( " .
     ( isset($event['description']) ? $db->quote( $event['description'], 'text' ) : "NULL" ) . "," .
     ( isset($event['summary']) ? $db->quote( $event['summary'], 'text' ) : "NULL" ) . "," .
     ( isset($event['grid']) ? $db->quote( $event['grid'], 'text' ) : "NULL" ) . "," .
@@ -29,10 +29,11 @@ function ganglia_events_add( $event ) {
   if (PEAR::isError($result)) {
     api_return_error( $result->getMessage());
   }
-  $event_id = $mdb2->lastInsertID( 'overlay_events', 'event_id' );
+  $event_id = $db->lastInsertID( 'overlay_events', 'event_id' );
   if (PEAR::isError($event_id)) {
     api_return_error( $event_id->getMessage());
   }
+  $event_id = strval($event_id);
   $message = array( "status" => "ok", "event_id" => $event_id );
   return $message;
 } // end method ganglia_events_add
@@ -109,18 +110,18 @@ function ganglia_event_modify( $event ) {
     } else {
       $start_time = strtotime($event['start_time']);
     }
-    $clauses[] = "\`start_time\` = " . $db->quote( $start_time, 'integer' );
+    $clauses[] = "start_time = " . $db->quote( $start_time, 'integer' );
   } // end isset start_time
 
   foreach(array('cluster', 'description', 'summary', 'grid', 'host_regex') AS $k) {
     if (isset( $event[$k] )) {
-      $clauses[] = "\`${k}\` = " . $db->quote( $event[$k], 'text' );
+      $clauses[] = "${k} = " . $db->quote( $event[$k], 'text' );
     }
   } // end foreach
 
   if ( isset($event['end_time']) ) {
     $end_time = $event['end_time'] == "now" ? time() : strtotime($event['end_time']);
-    $clauses[] = "\`end_time\` = " . $db->quote( $end_time, 'integer' );
+    $clauses[] = "end_time = " . $db->quote( $end_time, 'integer' );
   } // end isset end_time
 
   $sql = "UPDATE overlay_events SET " . implode( ",", $clauses ) . " WHERE event_id = " . $db->quote( $event['event_id'], 'integer' );
