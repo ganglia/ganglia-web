@@ -89,11 +89,18 @@ function start_time_cmp($ev1, $ev2) {
   return ($start1 < $start2) ? 1 : -1;
 }
 
-include_once("./eval_conf.php");
 
-$events_json = file_get_contents($conf['overlay_events_file']);
+$conf['gweb_root'] = dirname(__FILE__);
 
-$events_array = json_decode($events_json, TRUE);
+include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
+include_once $conf['gweb_root'] . "/lib/common_api.php";
+
+// $events_json = file_get_contents($conf['overlay_events_file']);
+
+// $events_array = json_decode($events_json, TRUE);
+
+$events_array = ganglia_events_get();
 
 if (sizeof($events_array) > 0) {
   usort($events_array, 'start_time_cmp');
