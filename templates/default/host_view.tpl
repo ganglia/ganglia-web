@@ -332,7 +332,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 {$i = 0}
 {foreach $g_metrics["metrics"] g_metric}
 <td>
-<font style="font-size: 8px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font>
+<font style="font-size: 8px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font><br>
 {if $may_edit_views}
 {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
 <button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;">+</button>
