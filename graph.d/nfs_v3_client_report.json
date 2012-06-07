@@ -1,0 +1,21 @@
+{
+   "report_name" : "nfs_v3_client_report",
+   "report_type" : "standard",
+   "title" : "NFS V3 Client",
+   "vertical_label" : "ops/sec",
+   "series" : [
+      { "metric": "nfs_v3_read", "color": "ff8a60", "label": "Read", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_write", "color": "dd0000", "label": "Write", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_remove", "color": "CC6600", "label": "Remove", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_access", "color": "3333bb", "label": "Access", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_getattr", "color": "ffea00", "label": "GetAttr", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_setattr", "color": "ccffff", "label": "SetAttr", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_readdir", "color": "CC33FF", "label": "ReadDir", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_readdirplus", "color": "cccc99", "label": "ReadDirPlus", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_lookup", "color": "ccff33", "label": "Lookup", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_readlink", "color": "ff99ff", "label": "ReadLink", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_fsinfo", "color": "33CCFF", "label": "Fsinfo", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_create", "color": "00FFCC", "label": "Create", "line_width": "2", "type": "stack" },
+      { "metric": "nfs_v3_mkdir", "color": "2A9E22", "label": "Mkdir", "line_width": "2", "type": "stack" }
+   ]
+}
