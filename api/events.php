@@ -66,8 +66,15 @@ switch ( $_REQUEST['action'] ) {
 		    "description" => $description
 		    );
 
-    if ( isset($_REQUEST['end_time']) )
-      $event['end_time'] = $_REQUEST['end_time'] == "now" ? time() : strtotime($_REQUEST['end_time']);
+    if ( isset($_REQUEST['end_time']) ) {
+        if ( $_REQUEST['end_time'] == "now" )
+            $end_time = time();
+        else if ( is_numeric($_REQUEST['end_time']) )
+            $end_time = $_REQUEST['end_time'];
+        else
+            $end_time = strtotime($_REQUEST['end_time']);
+        $event['end_time'] = $end_time;
+    }
 
     $message = ganglia_events_add( $event );
     break;
