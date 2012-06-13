@@ -304,6 +304,13 @@ $(function() {
 <button id="expand_all_metric_groups" class="button ui-state-default ui-corner-all">Expand All Metric Groups</button>
 <button id="collapse_all_metric_groups" class="button ui-state-default ui-corner-all">Collapse All Metric Groups</button>
 <input title="Time Shift Overlay - overlays previous period on all graphs" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label for="timeshift_overlay">Timeshift Overlay</label>
+<select id="jump_to_metric_group" class="ui-corner-all" onchange="location.hash=this.options[this.selectedIndex].value;">
+<option disabled="disabled" selected="selected">Jump To Metric Group...</option>
+{foreach $g_metrics_group_data group g_metrics}
+{$amgId = "a_mg_"; $amgId .= regex_replace($group, '/[^a-zA-Z0-9_]/', '_')}
+<option value="{$amgId}">{$group}</a>
+{/foreach}
+</select>
 </div>
 <table>
 <tr>
@@ -314,7 +321,7 @@ $(function() {
 <table border="0" width="100%">
 <tr>
   <td class="metric">
-  <button id="{$mgId}" class="button ui-state-default ui-corner-all metric-group" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</button>
+  <a name="a_{$mgId}"><button id="{$mgId}" class="button ui-state-default ui-corner-all metric-group" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</button></a>
 <script type="text/javascript">$(function() {
 g_mgMap["{$mgId}"] = "{$group}";
 })</script>
