@@ -73,6 +73,10 @@ function graph_cpu_report( &$rrdtool_graph )
         $series .= "DEF:'cpu_wio'='${rrd_dir}/cpu_wio.rrd':'sum':AVERAGE ";
     }
 
+    if (file_exists("$rrd_dir/cpu_steal.rrd")) {
+        $series .= "DEF:'cpu_steal'='${rrd_dir}/cpu_steal.rrd':'sum':AVERAGE ";
+    }
+
     if ($context != "host" ) {
         $series .= "CDEF:'ccpu_user'=cpu_user,num_nodes,/ "
                 . $cpu_nice_cdef
@@ -81,6 +85,10 @@ function graph_cpu_report( &$rrdtool_graph )
 
         if (file_exists("$rrd_dir/cpu_wio.rrd")) {
             $series .= "CDEF:'ccpu_wio'=cpu_wio,num_nodes,/ ";
+        }
+
+        if (file_exists("$rrd_dir/cpu_steal.rrd")) {
+            $series .= "CDEF:'ccpu_steal'=cpu_steal,num_nodes,/ ";
         }
 
         $plot_prefix ='ccpu';
@@ -145,6 +153,22 @@ function graph_cpu_report( &$rrdtool_graph )
                         . "GPRINT:'wio_min':'${space1}Min\:%5.1lf%%${eol1}' "
                         . "GPRINT:'wio_avg':'${space2}Avg\:%5.1lf%%' "
                         . "GPRINT:'wio_max':'${space1}Max\:%5.1lf%%\\l' ";
+        }
+    }
+
+    if (file_exists("$rrd_dir/cpu_steal.rrd")) {
+        $series .= "STACK:'${plot_prefix}_steal'#${conf['cpu_steal_color']}:'Steal${rmspace}' ";
+
+        if ( $conf['graphreport_stats'] ) {
+                $series .= "CDEF:steal_pos=${plot_prefix}_steal,0,INF,LIMIT "
+                        . "VDEF:steal_last=steal_pos,LAST "
+                        . "VDEF:steal_min=steal_pos,MINIMUM "
+                        . "VDEF:steal_avg=steal_pos,AVERAGE "
+                        . "VDEF:steal_max=steal_pos,MAXIMUM "
+                        . "GPRINT:'steal_last':'  ${space1}Now\:%5.1lf%%' "
+                        . "GPRINT:'steal_min':'${space1}Min\:%5.1lf%%${eol1}' "
+                        . "GPRINT:'steal_avg':'${space2}Avg\:%5.1lf%%' "
+                        . "GPRINT:'steal_max':'${space1}Max\:%5.1lf%%\\l' ";
         }
     }
 

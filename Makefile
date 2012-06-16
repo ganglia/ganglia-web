@@ -17,7 +17,8 @@ GWEB_DWOO = $(GANGLIA_STATEDIR)/dwoo
 
 GWEB_VERSION = $(GWEB_MAJOR_VERSION).$(GWEB_MINOR_VERSION).$(GWEB_MICRO_VERSION)
 
-DIST_DIR = gweb-$(GWEB_VERSION)
+DIST_NAME = ganglia-web
+DIST_DIR = $(DIST_NAME)-$(GWEB_VERSION)
 DIST_TARBALL = $(DIST_DIR).tar.gz
 
 TARGETS = conf_default.php ganglia-web.spec version.php
@@ -39,7 +40,7 @@ version.php:	version.php.in
 	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
 
 dist-dir:	default
-	rsync --exclude "rpmbuild" --exclude "*.gz" --exclude "Makefile" --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" --exclude "#*#" --exclude "ganglia-web.spec" -a . $(DIST_DIR)
+	rsync --exclude "rpmbuild" --exclude "*.gz" --exclude "Makefile" --exclude "*debian*" --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" --exclude "#*#" --exclude "ganglia-web.spec" -a . $(DIST_DIR)
 
 install:	dist-dir
 	mkdir -p $(GWEB_DWOO)/compiled && \
