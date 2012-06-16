@@ -174,21 +174,20 @@ $(function () {
     placeHolder.height(placeHolderHeight); 
     placeHolder.width($("#popup-dialog").width() - 20);
 
+    var stack = $("#stack").attr('checked');
     var graphLegend = $("#graphlegend");
-    var opt =  {lines: { show: true },
+    var opt =  {lines: { show: true, fill: stack },
 		points: { show: false },
 		crosshair: { mode: "x" },
 		xaxis: { mode: "time" },
                 yaxis: {tickFormatter: suffixFormatter},
 		legend: {
                   container: graphLegend,
-                  noColumns: 7
+                  noColumns: selected_series.length
                 },
 		grid: { hoverable: true, autoHighlight: true }};
-    if ($("#stack").attr('checked')) {
+    if (stack)
       opt['series'] = {stack: 1};
-      opt['bars'] = {show: true};
-    }
 
     graphLegend.html("");
 
