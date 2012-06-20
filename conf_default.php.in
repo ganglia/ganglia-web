@@ -305,6 +305,10 @@ $conf['case_sensitive_hostnames'] = true;
 # groups are initially displayed or collapsed
 $conf['metric_groups_initially_collapsed'] = false;
 
+# The following property controls whether opening a metric group is
+# remembered in your sesssion
+$conf['remember_open_metric_groups'] = true;
+
 # Overlay events on graphs. Those are defined by specifying all the events
 # in events.json
 $conf['overlay_events'] = true;

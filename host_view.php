@@ -13,6 +13,7 @@ $data->assign("hostname", $hostname);
 $data->assign("graph_engine", $conf['graph_engine']);
 
 $metric_groups_initially_collapsed = isset($conf['metric_groups_initially_collapsed']) ? $conf['metric_groups_initially_collapsed'] : TRUE;
+$remember_open_metric_groups = isset($conf['remember_open_metric_groups']) ? $conf['remember_open_metric_groups'] : TRUE;
 
 $graph_args = "h=$hostname&amp;$get_metric_string&amp;st=$cluster[LOCALTIME]";
 
@@ -196,7 +197,7 @@ $open_groups = NULL;
 if (isset($_GET['metric_group']) && ($_GET['metric_group'] != "")) {
   $open_groups = explode ("_|_", $_GET['metric_group']);
 } else {
-  if (isset($_SESSION['metric_group']) && ($_SESSION['metric_group'] != ""))
+  if ($remember_open_metric_groups && isset($_SESSION['metric_group']) && ($_SESSION['metric_group'] != ""))
     $open_groups = explode ("_|_", $_SESSION['metric_group']);
 }
 
