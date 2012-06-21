@@ -136,7 +136,7 @@ if ( $host_found == 1 ) {
         print "OK|System check - OK: (" . count($results_ok) .  ") --" . join(",", $results_ok);
         exit(0);
   } else {
-        print("UNKNOWN|System check -No metrics returned values");
+        print("UNKNOWN|System check - No metrics returned values");
         exit(3);
   }
      

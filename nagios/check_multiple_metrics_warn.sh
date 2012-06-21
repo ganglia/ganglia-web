@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-GANGLIA_URL="https://monitor1-wlg.ird.govt.nz/ganglia-all/nagios/check_multiple_metrics.php"
+GANGLIA_URL="http://localhost/ganglia2/nagios/check_multiple_metrics_warn.php"
 
 # Build the rest of the arguments into the arg string for the URL.
 CHECK_ARGS=''
@@ -27,7 +27,8 @@ then
     CHECK_ARGS=${CHECK_ARGS}"&"${ARG}
   done
 else
-   echo "Sample invocation $0 host=localhost.localdomain checks=load_one,more,1:load_five,more,2"
+   echo "Please provide arguments for host and checks, with check argument being a metric name, warning operator, warning value, critical operator, critical value"
+   echo "Sample invocation $0 host=localhost.localdomain checks='load_one,more,1,more,2:load_five,more,2,more,4'"
    exit 1 
 fi
 
