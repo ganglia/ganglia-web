@@ -357,7 +357,8 @@ g_mgMap["{$mgId}"] = "{$group}";
 {$graphId = cat($GRAPH_BASE_ID $mgId $i)}
 {$showEventsId = cat($SHOW_EVENTS_BASE_ID $mgId $i)}
 <input title="Hide/Show Events" type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
-<input title="Timeshift Overlay" type="checkbox" id="ts_{$showEventsId}" onclick="showTimeShift('{$graphId}', this.checked)"/><label class="show_timeshift_text" for="ts_{$showEventsId}">Timeshift</label>
+{$timeShiftId = cat($TIME_SHIFT_BASE_ID $mgId $i)}
+<input title="Timeshift Overlay" type="checkbox" id="{$timeShiftId}" onclick="showTimeShift('{$graphId}', this.checked)"/><label class="show_timeshift_text" for="{$timeShiftId}">Timeshift</label>
 <br>
 <a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
 <img id="{$graphId}" class="noborder {$additional_host_img_css_classes}" style="margin:5px;" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />

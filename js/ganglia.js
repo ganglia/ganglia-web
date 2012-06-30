@@ -209,14 +209,6 @@ function initShowEvent() {
     $(this).button('refresh');
   });
 
-  $("[id^=ts_" + SHOW_EVENTS_BASE_ID + "]").each(function() {
-    $(this).button();
-    $(this).attr("checked", 'unchecked');
-    $(this).button('refresh');
-  });
-    
-  $("#timeshift_overlay").button();
-
   if ($("#show_all_events").length > 0) {
     $("#show_all_events").button();
     $("#show_all_events").attr("checked", 'checked');
@@ -224,15 +216,32 @@ function initShowEvent() {
   }
 }
 
+var TIME_SHIFT_BASE_ID = "time_shift_";
+var TIME_SHIFT_BASE_ID_LEN = TIME_SHIFT_BASE_ID.length;
+
+function initTimeShift() {
+  $("[id^=" + TIME_SHIFT_BASE_ID + "]").each(function() {
+    $(this).button();
+    $(this).removeAttr("checked");
+    $(this).button('refresh');
+  });
+    
+  if ($("#timeshift_overlay").length > 0) {
+    $("#timeshift_overlay").button();
+    $("#timeshift_overlay").removeAttr("checked");
+    $("#timeshift_overlay").button('refresh');
+  }
+}
+
 function showTimeshiftOverlay(show) {
-  $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+  $("[id^=" + TIME_SHIFT_BASE_ID + "]").each(function() {
       if (show)
         $(this).attr("checked", 'checked');
       else
         $(this).removeAttr("checked");
       $(this).button('refresh');
       var graphId = GRAPH_BASE_ID + 
-	$(this).attr('id').slice(SHOW_EVENTS_BASE_ID_LEN);
+	$(this).attr('id').slice(TIME_SHIFT_BASE_ID_LEN);
       showTimeShift(graphId, show);
     });
 }
@@ -270,7 +279,7 @@ function showTimeShift(graphId, show) {
     if ((src.indexOf("graph.php") != 0) &&
         (src.indexOf("./graph.php") != 0))
       return;
-    var paramStr = "&ts=1";
+    var paramStr = show ? "&ts=1" : "&ts=0";
     var d = new Date();
     paramStr += "&_=" + d.getTime();
     src = jQuery.param.querystring(src, paramStr);
