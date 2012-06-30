@@ -87,8 +87,13 @@ $(function() {
   });
 
   $("#aggregate_graph_table_form input[name=gtype]").change(function() {
-    $.cookie("ganglia-aggregate-graph-gtype" + window.name,
-	   $("#aggregate_graph_table_form input[name=gtype]:checked").val());
+    var gtype = $("#aggregate_graph_table_form input[name=gtype]:checked").val();
+    $.cookie("ganglia-aggregate-graph-gtype" + window.name, gtype);
+  });
+
+  $("#aggregate_graph_table_form input[name=glegend]").change(function() {
+    var glegend = $("#aggregate_graph_table_form input[name=glegend]:checked").val();
+    $.cookie("ganglia-aggregate-graph-glegend" + window.name, glegend);
   });
 
   function restoreAggregateGraph() {
@@ -97,8 +102,20 @@ $(function() {
       $("#hreg").val(hreg);
   
     var gtype = $.cookie("ganglia-aggregate-graph-gtype" + window.name);
-    if (gtype != null)
-      $("#aggregate_graph_table_form input[name=gtype]").val([gtype]);
+    if (gtype != null) {
+      if (gtype == "line")
+	$("#gtline").click();
+      else
+	$("#gtstack").click();
+    }
+
+    var glegend = $.cookie("ganglia-aggregate-graph-glegend" + window.name);
+    if (glegend != null) {
+      if (glegend == "show")
+	$("#glshow").click();
+      else
+	$("#glhide").click();
+    }
   
     var metric = $.cookie("ganglia-aggregate-graph-metric" + window.name);
     if (metric != null)
