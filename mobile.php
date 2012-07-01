@@ -18,7 +18,7 @@ retrieve_metrics_cache();
 <link rel="stylesheet" href="css/jquery.mobile-1.0.min.css" />
 <script src="js/jquery-1.7.1.min.js"></script>
 <script src="js/jquery.mobile-1.0.min.js"></script>
-<script type="text/javascript" src="js/jquery.liveSearch.js"></script>
+<script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <style>
 .ui-mobile .ganglia-mobile {  background: #e5e5e5 top center repeat-x; }
