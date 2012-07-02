@@ -272,6 +272,7 @@ $data->assign("g_open_metric_groups", $g_new_open_groups);
 
 $data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);
 $data->assign('SHOW_EVENTS_BASE_ID', $SHOW_EVENTS_BASE_ID);
+$data->assign('TIME_SHIFT_BASE_ID', $TIME_SHIFT_BASE_ID);
 
 $dwoo->output($tpl, $data);
 ?>
