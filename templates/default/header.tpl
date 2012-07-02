@@ -194,6 +194,7 @@
     }
 
     initShowEvent();
+    initTimeShift();
   });
 
 
