@@ -100,7 +100,7 @@ if ( $host_found == 1 ) {
   } 
   
 } else {
-   echo("UNKNOWN|" . $metric_name . " - Hostname info not available. Likely invalid hostname");
+   echo("UNKNOWN|" . $host. " - Hostname info not available. Likely invalid hostname");
    exit(3);
 }
 

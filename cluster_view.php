@@ -539,8 +539,8 @@ if (! $refresh) {
   $data->assign("sort", $sort);
   $data->assign("range", $range);
   
-  $showhosts_levels = array(1 => array('checked'=>'', 'name'=>'Auto'),
-			    2 => array('checked'=>'', 'name'=>'Same'),
+  $showhosts_levels = array(2 => array('checked'=>'', 'name'=>'Auto'),
+			    1 => array('checked'=>'', 'name'=>'Same'),
 			    0 => array('checked'=>'', 'name'=>'None'),
 			    );
   $showhosts_levels[$showhosts]['checked'] = 'checked';

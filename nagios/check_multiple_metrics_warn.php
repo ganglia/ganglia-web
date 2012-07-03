@@ -61,11 +61,11 @@ if ( ! is_array( $metrics ) ) {
   include_once $conf['gweb_root'] . "/get_ganglia.php";
   # Massage the metrics to minimize the cache file by caching only attributes
   # we care about
-  foreach ( $metrics as $mhost => $host_metrics ) {
+  foreach ( $metrics as $host => $host_metrics ) {
     foreach ( $host_metrics as $name => $attributes ) {
-    	$new_metrics[$mhost][$name]['VAL'] = $metrics[$mhost][$name]['VAL'];
-	if ( isset($metrics[$mhost][$name]['UNITS']) ) 
-    	$new_metrics[$mhost][$name]['UNITS'] = $metrics[$mhost][$name]['UNITS'];
+    	$new_metrics[$host][$name]['VAL'] = $metrics[$host][$name]['VAL'];
+	if ( isset($metrics[$host][$name]['UNITS']) ) 
+    	$new_metrics[$host][$name]['UNITS'] = $metrics[$host][$name]['UNITS'];
     }
   }
   file_put_contents($conf['nagios_cache_file'], serialize($new_metrics));
@@ -92,7 +92,8 @@ for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
 if ( $host_found == 1 ) {
    
   $results_ok = array();
-  $results_notok = array();
+  $results_warn = array();
+  $results_crit = array();
    
   # Loop through all the checks
   foreach ( $checks as $index => $check ) {
@@ -100,38 +101,47 @@ if ( $host_found == 1 ) {
    # Separate check into it's pieces
    $pieces = explode(",", $check);
    $metric_name = $pieces[0];
-   $operator = $pieces[1];
-   $critical_value = $pieces[2];
+   $warn_operator = $pieces[1];
+   $warn_value = $pieces[2];
+   $critical_operator = $pieces[3];
+   $critical_value = $pieces[4];
    unset($pieces);
    
    # Check for the existence of a metric
    if ( isset($metrics[$fqdn][$metric_name]['VAL']) ) {
      $metric_value = $metrics[$fqdn][$metric_name]['VAL'];
    } else {
-     $results_notok[] =  "UNKNOWN " . $metric_name . " not found";
      continue;
    }
    
    $ganglia_units = $metrics[$fqdn][$metric_name]['UNITS'];
    
-   if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
-      $results_ok[] =  "OK " . $metric_name . " = " . $metric_value . " " . $ganglia_units;
+   if ( ( $critical_operator == "less" && $metric_value < $critical_value) || ( $critical_operator == "more" && $metric_value > $critical_value ) || ( $critical_operator == "equal" && trim($metric_value) == trim($critical_value) ) || ( $critical_operator == "notequal" && trim($metric_value) != trim($critical_value) ) ) {
+      $results_crit[] = "CRITICAL " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
+   } else if ( ( $warn_operator == "less" && $metric_value < $warn_value) || ( $warn_operator == "more" && $metric_value > $warn_value ) || ( $warn_operator == "equal" && trim($metric_value) == trim($warn_value) ) || ( $warn_operator == "notequal" && trim($metric_value) != trim($warn_value) ) ){
+      $results_warn[] = "WARNING " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
    } else {
-      $results_notok[] =  "CRITICAL " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
+      $results_ok[] =  "OK " . $metric_name . " = " . $metric_value . " " . $ganglia_units;
    }
   
   } // end of foreach ( $checks as $index => $check
   
-  if ( sizeof( $results_notok ) == 0 ) {
-     print "OK| Num OK: " . count($results_ok);
-     exit(0);
+  if ( sizeof( $results_crit ) != 0 ) {
+        print "CRITICAL|System check - CRIT: (" . count($results_crit) . ") WARN: (" . count($results_warn) .  ") OK: (" . count($results_ok) .  ") --" . join(",", $results_crit) .  " --" . join(",", $results_warn) .  "--" . join(",", $results_ok);
+        exit(2);
+  } else if ( sizeof( $results_warn ) != 0 ) {
+     print "WARNING|System check - WARN: (" . count($results_warn) . ") OK: (" . count($results_ok) .  ") --" . join(",", $results_warn) .  "--" . join(",", $results_ok);
+     exit(1);
+  } else if ( sizeof( $results_ok ) != 0 ) {
+        print "OK|System check - OK: (" . count($results_ok) .  ") --" . join(",", $results_ok);
+        exit(0);
   } else {
-     print "CRITICAL| Num CRIT/UNK: " . count($results_notok) . " Num OK: " . count($results_ok) .  " -- " . join(", ", $results_notok);
-     exit(2);
+        print("UNKNOWN|System check - No metrics returned values");
+        exit(3);
   }
-    
+     
 } else {
-   echo("UNKNOWN|" . $host . " - Hostname info not available. Likely invalid hostname");
+   echo("UNKNOWN|System check - " . $host. " - Hostname info not available. Likely invalid hostname");
    exit(3);
 }
 

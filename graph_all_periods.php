@@ -13,7 +13,7 @@ if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 ?>
 <script TYPE="text/javascript" SRC="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.14.custom.min.js"></script>
-<script type="text/javascript" src="js/jquery.liveSearch.js"></script>
+<script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
@@ -33,6 +33,7 @@ if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 
   $(function() {
     initShowEvent();
+    initTimeShift();
 <?php if ( isset($_GET['embed'] ) ) { ?>
     initMetricActionsDialog();
 <?php } ?>
@@ -204,7 +205,7 @@ foreach ( $conf['time_ranges'] as $key => $value ) {
     $graphId = $GRAPH_BASE_ID . $key;
 
     print ' <input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $key . '">Hide/Show Events</label>';
-    print '<input title="Timeshift Overlay" type="checkbox" id="ts_' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showTimeShift(\'' . $graphId . '\', this.checked)"/><label class="show_timeshift_text" for="ts_' . $SHOW_EVENTS_BASE_ID . $key . '">Timeshift</label>';
+    print ' <input title="Timeshift Overlay" type="checkbox" id="' . $TIME_SHIFT_BASE_ID . $key . '" onclick="showTimeShift(\'' . $graphId . '\', this.checked)"/><label class="show_timeshift_text" for="' . $TIME_SHIFT_BASE_ID . $key . '">Timeshift</label>';
 
   } 
 

@@ -12,8 +12,9 @@
 </style>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.crosshair.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.stack.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.stack.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.multiselect.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="placeholder" style="width:800px;height:500px;"></div>
@@ -98,11 +99,17 @@ $(function () {
   if (stacked)
     html += 'checked="checked"';
   html += '/><label for="stack">Stack</label></span>';
+
+  html += '<input id="clearSelection" type="button" value="Reset zoom" />'
+
   legendContainer.append(html);
+
+
 
   $("#gopt").buttonset();
   $("#line").button().click(plotAccordingToChoices);
   $("#stack").button().click(plotAccordingToChoices);
+  $("#clearSelection").button();
 
   function utcTimeStr(tstamp) {
     var date = new Date(tstamp);
@@ -185,6 +192,7 @@ $(function () {
                   container: graphLegend,
                   noColumns: selected_series.length
                 },
+                selection: { mode: "x" },               
 		grid: { hoverable: true, autoHighlight: true }};
     if (stack)
       opt['series'] = {stack: 1};
@@ -216,6 +224,30 @@ $(function () {
         }
       });
     } 
+
+    $("#placeholder").bind("plotselected", function (event, ranges) {
+        // clamp the zooming to prevent eternal zoom
+        if (ranges.xaxis.to - ranges.xaxis.from < 0.00001)
+            ranges.xaxis.to = ranges.xaxis.from + 0.00001;
+        if (ranges.yaxis.to - ranges.yaxis.from < 0.00001)
+            ranges.yaxis.to = ranges.yaxis.from + 0.00001;
+        
+        // do the zooming
+        plot = $.plot($("#placeholder"), data,
+                      $.extend(true, {}, opt, {
+                          xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
+                          yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
+                      }));
+        
+        // don't fire event on the overview to prevent eternal loop
+        
+       $("#clearSelection").click(function () {
+              $.plot($("#placeholder"), data, opt);
+       }); 
+    });
+
+
+
   }
 
   plotAccordingToChoices();
