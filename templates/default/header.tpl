@@ -17,6 +17,7 @@
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/combobox.js"></script>
+<script type="text/javascript" src="js/jquery.scrollTo-1.4.2-min.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     
@@ -119,7 +120,6 @@
 
       {$is_metrics_picker_disabled}
 
-      $(".submit_button").button();
       $(".header_btn").button();
     });
 
@@ -240,7 +240,7 @@
      <big><b id="page_title">{$page_title} for {$date}</b></big>
      </td>
      <td bgcolor="#DDDDDD" align="right">
-     <input class="submit_button" type="submit" value="Get Fresh Data" />
+     <input class="header_btn" type="submit" value="Get Fresh Data" />
      </td>
   </tr>
   <tr>
