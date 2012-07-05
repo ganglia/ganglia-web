@@ -264,6 +264,10 @@ $fudge_0 = $conf['graph_sizes'][$size]['fudge_0'];
 $fudge_1 = $conf['graph_sizes'][$size]['fudge_1'];
 $fudge_2 = $conf['graph_sizes'][$size]['fudge_2'];
 
+# Aliases for $user['cs'] and $user['ce'] (which are set in get_context.php).
+$cs = $user['cs'];
+$ce = $user['ce'];
+
 ///////////////////////////////////////////////////////////////////////////
 // Set some variables depending on the context. Context is set in
 // get_context.php
