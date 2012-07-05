@@ -245,7 +245,7 @@ $(function() {
 </div>
 
 <div id="edit_optional_graphs">
-  <div style="text-align: center;">
+  <div style="text-align:center">
     <button id="save_optional_graphs_button">Save</button>
   </div>
   <div id="edit_optional_graphs_content" style="padding: .4em 1em .4em 10px;">Empty</div>
@@ -262,12 +262,12 @@ $(function() {
 <div id="sort_column_dropdowns" style="padding-top:5px;">
 <table border="0" width="100%">
 <tr>
-  <td class="title">
+  <td style="text-align:center;background-color:rgb(238,238,238);">
   {$host} <strong>graphs</strong> ({$host_metrics_count})
   last <strong>{$range}</strong>
   sorted <strong>{$sort}</strong>
 {if isset($columns_dropdown)}
-  <font size="-1">
+  <font>
     Columns&nbsp;&nbsp;{$metric_cols_menu}
     Size&nbsp;&nbsp;{$size_menu}
   </font>
