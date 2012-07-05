@@ -301,7 +301,7 @@ $(function() {
 <table border="0" width="100%">
 <tr>
   <td class="metric">
-  <button id="{$mgId}" class="metric-group" style="font-size:0.825em;" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</button>
+  <button id="{$mgId}" class="metric-group" title="Toggle {$group} metrics group on/off">{$group} metrics ({$g_metrics.group_metric_count})</button>
 <script type="text/javascript">$(function() {
 g_mgMap["{$mgId}"] = "{$group}";
 })</script>

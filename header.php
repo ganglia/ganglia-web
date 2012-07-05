@@ -262,7 +262,7 @@ if (!$physical) {
    if ($cs or $ce)
       $context_ranges[]="custom";
 
-   $range_menu = "<B>Last</B>&nbsp;&nbsp;";
+   $range_menu = "Last&nbsp;&nbsp;";
    foreach ($context_ranges as $v) {
       $url=rawurlencode($v);
       if ($v == $range)

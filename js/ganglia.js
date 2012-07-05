@@ -59,9 +59,6 @@ $(function(){
         $.get('views_view.php?views_menu=1',
               function(data) {
 	        $("#views_menu").html(data);
-                var vn = selectedView();
-                if (vn != null)
-                  highlightSelectedView(vn);
               });
       }
     });
@@ -77,23 +74,10 @@ function viewId(view_name) {
   return "v_" + view_name.replace(/[^a-zA-Z0-9_]/g, "_");
 }
 
-function highlightSelectedView(view_name) {
-  if (view_name != null && view_name != '') {
-    $("#navlist a").css('background-color', '#FFFFFF');	
-    $("#" + viewId(view_name)).css('background-color', 'rgb(238,238,238)');
-  }
-}
-
 function selectView(view_name) {
-  highlightSelectedView(view_name);
   $.cookie('ganglia-selected-view-' + window.name, view_name);
   $("#vn").val(view_name);
   ganglia_form.submit();
-}
-
-function selectedView() {
-  var vn = $.cookie('ganglia-selected-view-' + window.name);
-  return (vn == null || vn == '') ? null : vn;
 }
 
 function createView() {

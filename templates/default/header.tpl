@@ -18,6 +18,7 @@
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript" src="js/jquery.scrollTo-1.4.2-min.js"></script>
+<script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     
