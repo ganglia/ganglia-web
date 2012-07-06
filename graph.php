@@ -106,6 +106,12 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
            }
            $series .= ":'$unique_id'#${item['color']}:'${label}' ";
            break;
+
+         case "area":
+               $series .= "AREA";
+               $series .= ":'$unique_id'#${item['color']}:'${label}' ";
+         break;
+
         } // end of switch ( $item_type )
      
         if ( $conf['graphreport_stats'] )
