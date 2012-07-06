@@ -21,7 +21,7 @@
 ./usr/share/ganglia-webfrontend/js/ganglia.js
 ./usr/share/ganglia-webfrontend/js/jquery-ui-timepicker-addon.js
 ./usr/share/ganglia-webfrontend/js/jquery.flot.min.js
-./usr/share/ganglia-webfrontend/js/jquery.liveSearch.js
+./usr/share/ganglia-webfrontend/js/jquery.livesearch.min.js
 ./usr/share/ganglia-webfrontend/js/protovis-r3.2.js
 ./usr/share/ganglia-webfrontend/js/jquery.flot.crosshair.min.js
 ./usr/share/ganglia-webfrontend/js/create-flot-graphs.js

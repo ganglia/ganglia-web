@@ -219,7 +219,7 @@ $load_color = isset($_GET["l"]) &&
 $summary = isset($_GET["su"]) ? 1 : 0;
 $debug = isset($_GET['debug']) ? clean_number(sanitize($_GET["debug"])) : 0;
 $showEvents = isset($_GET["event"]) ? sanitize ($_GET["event"]) : "show";
-$user['time_shift'] = isset($_GET['ts']) ? 1 : NULL;
+$user['time_shift'] = isset($_GET["ts"]) ? clean_number(sanitize($_GET["ts"])) : 0;
 
 $command    = '';
 $graphite_url = '';
@@ -1147,7 +1147,7 @@ if ( $user['trend_line'] ) {
 ////////////////////////////////////////////////////////////////////////////////
 if ( $user['time_shift'] && $graph == "metric" ) {
 
-    preg_match_all("/(DEF|CDEF):(.*)(:AVERAGE )/", 
+    preg_match_all("/(DEF|CDEF):((([^ \"'])+)|(\"[^\"]*\")|('[^']*'))+/", 
                  " " . $rrdtool_graph['series'], 
                  $matches);
 
