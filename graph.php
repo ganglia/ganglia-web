@@ -734,11 +734,17 @@ if ( $user['json_output'] ||
     }
   }
 
-
   // This command will export values for the specified format in XML
   $command = $conf['rrdtool'] . " xport --start '" . $rrdtool_graph['start'] . "' --end '" .  $rrdtool_graph['end'] . "' " 
-    // Allow a custom step, if it was specified by the user.
-    . ( $user['step'] ? " --step '" . $user['step'] . "' " : "" )
+    // Allow a custom step, if it was specified by the user. Also, we need to
+    // specify a --maxrows in case the number of rows with $user['step'] end up 
+    // being higher than rrdxport's default (in which case the step is changed 
+    // to fit inside the default --maxrows), but we also need to guard against 
+    // "underflow" because rrdxport craps out when --maxrows is less than 10.
+    . ( $user['step'] ? 
+          " --step '" . $user['step'] . "' --maxrows '" 
+          . max( 10, round(($rrdtool_graph['end'] - $rrdtool_graph['start'])/$user['step']) ) . "' " : 
+          "" )
     . $rrd_options . " " . $rrdtool_graph_args;
 
   // Read in the XML
