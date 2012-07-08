@@ -125,13 +125,11 @@ $(function() {
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
 
-<table border="0" cellspacing=4 width="100%">
-<tr>
-  <td colspan="2" style="text-align:center;background:rgb(238,238,238);">
+<div style="background:rgb(238,238,238);text-align:center;">
   <font size="+1" id="cluster_title">Overview of {$cluster} @ {$localtime}</font>
-  </td>
-</tr>
+</div>
 
+<table border="0" cellspacing=4 width="100%">
 <tr>
 <td align="left" valign="top">
 <div id="cluster_overview">
