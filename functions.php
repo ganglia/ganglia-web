@@ -718,7 +718,7 @@ function get_view_graph_elements($view) {
 	  if (isset($item['hostname'])) {
             $hostname = $item['hostname'];
             $cluster = array_key_exists($hostname, $index_array['cluster']) ?
-	      $index_array['cluster'][$hostname] : NULL;
+	      $index_array['cluster'][$hostname][0] : NULL;
           } else if (isset($item['cluster'])) {
 	    $hostname = "";
             $cluster = $item['cluster'];
@@ -781,7 +781,8 @@ function get_view_graph_elements($view) {
 	$query = $item['hostname'];
 	foreach ( $index_array['hosts'] as $key => $host_name ) {
 	  if ( preg_match("/$query/", $host_name ) ) {
-	    $cluster = $index_array['cluster'][$host_name];
+	    $clusters = $index_array['cluster'][$host_name];
+	    foreach ($clusters AS $cluster) {
 	    $graph_args_array[] = "h=" . urlencode($host_name);
 	    $graph_args_array[] = "c=" . urlencode($cluster);
 
@@ -791,6 +792,7 @@ function get_view_graph_elements($view) {
 	      "name" => $name);
 
 	    unset($graph_args_array);
+            }
 
 	  }
 	}
@@ -1065,7 +1067,9 @@ function build_aggregate_graph_config ($graph_type,
     foreach ( $index_array['hosts'] as $key => $host_name ) {
       if ( preg_match("/$query/i", $host_name ) ) {
         // We can have same hostname in multiple clusters
-        $matches[] = $host_name . "|" . $index_array['cluster'][$host_name]; 
+        foreach ($index_array['cluster'][$host_name] AS $cluster) {
+            $matches[] = $host_name . "|" . $cluster;
+        }
       }
     }
   } 

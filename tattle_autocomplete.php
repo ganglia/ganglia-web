@@ -14,9 +14,10 @@ if ( isset($_GET['term']) && $_GET['term'] != "" ) {
   foreach ( $index_array['metrics'] as $metric_name => $hosts ) {
     if ( preg_match("/$query/i", $metric_name ) ) {
       foreach ( $hosts as $key => $host_name ) {
-	$cluster_name = $index_array['cluster'][$host_name];
-
-	$results[] = array( "value" => $cluster_name . "_|_" . $host_name . "_|_" . $metric_name);
+        $clusters = $index_array['cluster'][$host_name];
+        foreach ($clusters AS $cluster_name) {
+          $results[] = array( "value" => $cluster_name . "_|_" . $host_name . "_|_" . $metric_name);
+        }
       }
     }
   }
