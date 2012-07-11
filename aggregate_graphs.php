@@ -1,13 +1,3 @@
-<style>
-#aggregate_graph_table_form {
-   font-size: 12px;
-}
-#show_direct_link {
-  background-color: #eeeeee;
-  text-align: center;
-  padding: 5px;
-}
-</style>
 <script>
   function refreshAggregateGraph() {
     $("#aggregate_graph_display img").each(function (index) {
@@ -198,7 +188,7 @@ $(function() {
 </table>
 </form>
 </div>
-<div style="margin-bottom:5px;" id="show_direct_link"></div>
+<div style="margin-bottom:5px;background-color:#eeeeee;text-align:center;padding:5px;" id="show_direct_link"></div>
 <div id="aggregate_graph_display">
 </div>
 

@@ -118,29 +118,18 @@ $(function() {
   </div>
 </div>
 
-<style type="text/css">
-#edit_optional_graphs_button {
-    font-size:12px;
-}
-#edit_optional_graphs_content {
-    padding: .4em 1em .4em 10px;
-}
-</style>
-
 <div id="edit_optional_graphs">
-  <div style="text-align: center;">
+  <div style="text-align:center">
     <button  id='save_optional_graphs_button'>Save</button>
   </div>
   <div id="edit_optional_graphs_content">Empty</div>
 </div>
 
-<table border="0" cellspacing=4 width="100%">
-<tr>
-  <td class="title" colspan="2">
+<div style="background:rgb(238,238,238);text-align:center;">
   <font size="+1" id="cluster_title">Overview of {$cluster} @ {$localtime}</font>
-  </td>
-</tr>
+</div>
 
+<table border="0" cellspacing=4 width="100%">
 <tr>
 <td align="left" valign="top">
 <div id="cluster_overview">
@@ -208,7 +197,7 @@ vis.render();
 <center>
 <table width="100%" border=0>
 <tr>
-  <td class=title colspan="1">
+  <td colspan="1">
   <font size="+1">Stacked Graph - {$metric}</font> 
   </td>
 </tr>
@@ -230,7 +219,7 @@ $("#metrics-picker").val("{$metric_name}");
 <div id="cluster_view_chooser">
 <table border="0" width="100%">
   <tr>
-  <td class="title" style="font-size: 12px">
+  <td style="text-align:center;background:rgb(238,238,238);">
   Show Hosts Scaled:
   {foreach $showhosts_levels id showhosts implode=""}
   <input type="radio" name="sh" value="{$id}" id="shch{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}><label for="shch{$id}">{$showhosts.name}</label>
@@ -241,7 +230,7 @@ $("#metrics-picker").val("{$metric_name}");
   sorted <strong>{$sort}</strong></span>
 {if isset($columns_size_dropdown)}
   |
-   <font size="-1">
+   <font>
    <span class="nobr">Size&nbsp;&nbsp;{$size_menu}</span>
    <span class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</span>
    </font>

@@ -41,7 +41,6 @@
         } else
 	  alert("Please select the view to delete");
     });
-    highlightSelectedView('{$view_name}');
   });
 </script>
 
@@ -53,11 +52,9 @@
 <table id="views_table">
 <tr><td valign="top">
 <div id="views_menu">
-  <p>Existing views:</p>
-  <ul id="navlist">
     {$existing_views}
-  </ul>
 </div>
+<script type="text/javascript">$(function() { $("#views_menu").buttonsetv(); });</script>
 </td>
 <td valign="top">
 <div>
@@ -83,7 +80,7 @@
         <button title="Decompose aggregate graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&amp;dg=1&amp;tab=v';return false;">Decompose</button>
         {/if}
         <button title="Inspect Graph" onClick="inspectGraph('{$view_item.url_args}'); return false;" class="shiny-blue">Inspect</button>
-        <input title="Hide/Show Events" type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
+        <input type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label title="Hide/Show Events" class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
         <br />
 {if $graph_engine == "flot"}
 <div id="placeholder_{$view_item.url_args}" class="flotgraph2 img_view"></div>

@@ -262,7 +262,7 @@ if (!$physical) {
    if ($cs or $ce)
       $context_ranges[]="custom";
 
-   $range_menu = "<B>Last</B>&nbsp;&nbsp;";
+   $range_menu = "Last&nbsp;&nbsp;";
    foreach ($context_ranges as $v) {
       $url=rawurlencode($v);
       if ($v == $range)
@@ -333,7 +333,7 @@ if ($context == "meta" or $context == "cluster") {
     $context_sorts[]="by hosts down";
   }
 
-  $sort_menu = "<B>Sorted</B>&nbsp;&nbsp;";
+  $sort_menu = "Sorted&nbsp;&nbsp;";
   foreach ($context_sorts as $v) {
     $url=rawurlencode($v);
     if ($v == $sort)
@@ -394,7 +394,7 @@ $custom_time = "";
 if ( in_array($context , array ("meta", "cluster", "host", "views", "decompose_graph", "compare_hosts") ) ) {
    $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
       . " -2 days, start + 1 hour, etc.";
-   $custom_time = "&nbsp;&nbsp;or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
+   $custom_time = "or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
    if ($cs)
       $custom_time .= " value=\"$cs\"";
    $custom_time .= "> to <input type=\"TEXT\" title=\"$examples\" name=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
@@ -444,7 +444,7 @@ $max_graphs_values .= "<option>" . $value . "</option>";
   }
 
   $data->assign("additional_filter_options", 'Show only nodes matching <input name=host_regex ' .$set_host_regex_value . '>'
-   . '<input class=submit_button type="SUBMIT" VALUE="Filter">'
+   . '<input class="header_btn" type="SUBMIT" VALUE="Filter">'
    . '&nbsp;<span class="nobr">Max graphs to show <select onChange="ganglia_submit();" name="max_graphs">' . $max_graphs_values . '</select></span>'
     );
 } else
