@@ -18,9 +18,9 @@ if (array_key_exists('hreg', $_GET)) {
       foreach ( $index_array['hosts'] as $key => $host_name ) {
         if ( preg_match("/$query/i", $host_name ) ) {
           // We can have same hostname in multiple clusters
-          $matches[] = 
-            array ("hostname" => $host_name, 
-                   "clustername" => $index_array['cluster'][$host_name]);
+          foreach ($index_array['cluster'][$host_name] AS $clustername) {
+            $matches[] = array ("hostname" => $host_name, "clustername" => $clustername);
+          }
         }
       }
     }
