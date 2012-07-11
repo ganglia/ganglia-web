@@ -31,8 +31,10 @@ dt code, dd code { font-size:1.3em; line-height:150%; }
 <body> 
 <?php
   //  Build cluster array. So we know if there is more than 1
-  foreach ( $index_array['cluster'] as $hostname => $clustername ) {
-    $cluster_array[$clustername][] = $hostname;
+  foreach ( $index_array['cluster'] AS $hostname => $clusters ) {
+    foreach ($clusters AS $clustername) {
+      $cluster_array[$clustername][] = $hostname;
+    }
   }
   
   $cluster_names = array_keys($cluster_array);
