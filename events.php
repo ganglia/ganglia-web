@@ -67,7 +67,7 @@ Following is a list of known overlay events<p>
 <?php 
 } 
 ?>
-<table id="overlay_event_table" width=90%>
+<table id="overlay_event_table" width="90%">
 <tr>
 <th>Start Time</th>
 <th>End Time</th>

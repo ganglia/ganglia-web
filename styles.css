@@ -1,6 +1,6 @@
 /* The Ganglia Web-frontend Cascading Style Sheet. */
 
-body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
+body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 5px;}
 
 A:link
 {
@@ -190,39 +190,10 @@ td strong
    font-size: 10px
 }
 
-/* Views table and menu styling. */
-#views_table {
-   font-size: 12px
+table {
+  font-size: 1em ! important
 }
-#table_top_chooser {
-   font-size: 12px
-}
-#views_menu { width: 200px; }
-#views_menu ul
-{
-margin-left: 0;
-padding-left: 0;
-list-style-type: none;
-font-family: Arial, Helvetica, sans-serif;
-}
-#views_menu a
-{
-display: block;
-padding: 3px;
-width: 160px;
-background-color: white;
-border-bottom: 1px solid #eee;
-}
-#views_menu a:link, #navlist a:visited
-{
-color: blue;
-text-decoration: none;
-}
-#views_menu a:hover
-{
-background-color: #dddddd;
-color: blue;
-}
+
 .nobr
 {
 white-space:nowrap;
@@ -413,32 +384,9 @@ button.shiny-blue {
 .ui-timepicker-div td { font-size: 90%; }
 
 label[class~="show_event_text"] span.ui-button-text {
-  border-top: 1px solid;
-  border-right: 1px solid;
-  border-bottom: 1px solid;
-  border-left: 1px solid;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  font: 8px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-  padding: 1px 2px 1px 2px;
-  display:inline;
+  font-size:.73em !important
 }
 
-
 label[class~="show_timeshift_text"] span.ui-button-text {
-  border-top: 1px solid;
-  border-right: 1px solid;
-  border-bottom: 1px solid;
-  border-left: 1px solid;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  font: 8px "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-  padding: 1px 2px 1px 2px;
-  display:inline;
+  font-size:.73em !important
 }

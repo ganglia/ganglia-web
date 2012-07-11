@@ -201,21 +201,17 @@ $available_views = get_available_views();
 $existing_views = '';
 foreach ($available_views as $view) {
  $v = $view['view_name'];
- $existing_views .= '<li><a class="nobr" href="#" id="' . 
-                    viewId($v) . 
-                    '" onClick="selectView(\'' . $v . '\'); return false;">' .
-                    $v .
-                    '</a></li>';
+ $vid = viewId($v);
+ $checked = ($_GET['vn'] == $v);
+ $existing_views .= '<input type="radio" id="' . $vid . '" onClick="selectView(\'' . $v . '\'); return false;"' . ($checked ? " checked" : "") . '><label style="text-align:left;" class="nobr" for="' . $vid . '">' . $v . '</label>'; 
 }
 
 if (isset($_GET['views_menu'])) {
 ?>
 <div id="views_menu">
-  <p>Existing views:</p>
-  <ul id="navlist">
   <?php echo $existing_views ?>
-  </ul>
 </div>
+<script type="text/javascript">$(function(){$("#views_menu").buttonsetv();});</script>
 <?php
   exit(0);
 }
