@@ -188,6 +188,10 @@ function get_host_metric_graphs($showhosts,
     $additional_host_img_html_args = "class=host_${size}_zoomable";
 
   foreach ($sorted_hosts as $host => $value) {
+    if (isset($hosts_down[$host]) and $hosts_down[$host] && isset($conf['cluster_hide_down_hosts']) && $conf['cluster_hide_down_hosts']) {
+      // If we're hiding DOWN hosts, we skip to next iteration of the loop.
+      continue;
+    }
     $host_url = rawurlencode($host);
     
     $host_link="\"?c=$cluster_url&amp;h=$host_url&amp;$get_metric_string\"";
