@@ -195,13 +195,13 @@ if ( preg_match("/_report$/", $metric_name) && !isset($_GET["g"]) ) {
   $graph = isset($_GET["g"])  ?  sanitize ( $_GET["g"] )   : "metric";
 }
 
-$graph_arguments = NULL;
-$pos = strpos($graph, ",");
-if ($pos !== FALSE) {
-  $graph_report = substr($graph, 0, $pos);
-  $graph_arguments = substr($graph, $pos + 1);
-  $graph = $graph_report;
-}
+#$graph_arguments = NULL;
+#$pos = strpos($graph, ",");
+#if ($pos !== FALSE) {
+#  $graph_report = substr($graph, 0, $pos);
+#  $graph_arguments = substr($graph, $pos + 1);
+#  $graph = $graph_report;
+#}
 
 $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
 $self = isset($_GET["me"]) ? sanitize( $_GET["me"]) : NULL;
@@ -326,9 +326,9 @@ if( ! checkAccess( $resource, GangliaAcl::VIEW, $conf ) ) {
   die();
 }
 
-if ($cs and strtotime($cs))
+if ($cs and (is_numeric($cs) or strtotime($cs)))
     $start = $cs;
-if ($ce and strtotime($ce))
+if ($ce and (is_numeric($ce) or strtotime($ce)))
     $end = $ce;
 
 # Set some standard defaults that don't need to change much
@@ -500,10 +500,10 @@ switch ( $conf['graph_engine'] ) {
       if( is_file( $php_report_file ) and dirname(realpath($php_report_file)) ==  $conf['graphdir'] ) {
         include_once $php_report_file;
         $graph_function = "graph_${graph}";
-        if (isset($graph_arguments))
-          eval('$graph_function($rrdtool_graph,' . $graph_arguments . ');');
-        else
-          $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
+        #if (isset($graph_arguments))
+        #  eval('$graph_function($rrdtool_graph,' . $graph_arguments . ');');
+        #else
+        $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
       } else if ( is_file( $json_report_file ) and dirname(realpath($json_report_file)) ==  $conf['graphdir'] ) {
         $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
 
