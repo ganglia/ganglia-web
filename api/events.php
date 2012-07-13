@@ -22,7 +22,7 @@ if ( ! $conf['overlay_events'] ) {
 }
 
 if ( $conf['auth_system'] == 'readonly' ) {
-  api_return_error( "Events API is disabled. Please set \$conf['auth_system'] to something other than readonly." );
+  api_return_error( "Events are readonly. Please set \$conf['auth_system'] to something other than readonly." );
 }
 
 # If events_auth_token is specified in conf.php use that.
