@@ -21,6 +21,10 @@ if ( ! $conf['overlay_events'] ) {
   api_return_error( "Events API is DISABLED. Please set \$conf['overlay_events'] = true to enable." );
 }
 
+if ( $conf['auth_system'] == 'readonly' ) {
+  api_return_error( "Events API is disabled. Please set \$conf['auth_system'] to something other than readonly." );
+}
+
 # If events_auth_token is specified in conf.php use that.
 if ( isset($conf['events_auth_token']) ) {
    if ( ! ( isset($_REQUEST['token']) && $conf['events_auth_token'] == $_REQUEST['token'] ) ) {
@@ -48,13 +52,13 @@ switch ( $_REQUEST['action'] ) {
     else 
       $start_time = strtotime($_REQUEST['start_time']);
 
-    $grid = isset($_REQUEST['grid']) ? $_REQUEST['grid'] : "*";
-    $cluster = isset($_REQUEST['cluster']) ? $_REQUEST['cluster'] : "*";
-    $description = isset($_REQUEST['description']) ? $_REQUEST['description'] : "";
+    $grid = isset($_REQUEST['grid']) ? sanitize($_REQUEST['grid']) : "*";
+    $cluster = isset($_REQUEST['cluster']) ? sanitize($_REQUEST['cluster']) : "*";
+    $description = isset($_REQUEST['description']) ? sanitize($_REQUEST['description']) : "";
     // Generate a unique event ID. This is so we can reference it later
     $event_id = uniqid();
 
-    $event = array( "event_id" => $event_id, "start_time" => $start_time, "summary" => $_REQUEST['summary'],
+    $event = array( "event_id" => $event_id, "start_time" => $start_time, "summary" => sanitize($_REQUEST['summary']),
       "grid" => $grid, "cluster" => $cluster, "host_regex" => $_REQUEST['host_regex'],
       );
 
