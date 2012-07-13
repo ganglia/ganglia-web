@@ -169,6 +169,11 @@ $conf['default_metric'] = "load_one";
 $conf['strip_domainname'] = false;
 
 #
+# hide down hosts from cluster view
+#
+$conf['cluster_hide_down_hosts'] = false;
+
+#
 # Optional summary graphs
 # This function is deprecated. Please configure included reports
 # in the UI or default.json. Please do not use 
