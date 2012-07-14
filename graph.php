@@ -223,6 +223,7 @@ $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
 $self = isset($_GET["me"]) ? sanitize( $_GET["me"]) : NULL;
 $vlabel = isset($_GET["vl"]) ? sanitize($_GET["vl"])  : NULL;
 $value = isset($_GET["v"]) ? sanitize ($_GET["v"]) : NULL;
+# Max, min, critical and warning values
 $max = isset($_GET["x"]) && is_numeric($_GET["x"]) ? $_GET["x"] : NULL;
 $min = isset($_GET["n"]) && is_numeric($_GET["n"]) ? $_GET["n"] : NULL;
 $critical = isset($_GET["crit"]) && is_numeric($_GET["crit"]) ? $_GET["crit"] : NULL;
@@ -270,12 +271,12 @@ $host = str_replace(".","_", $raw_host);
 # Add custom sizes there.
 $size = in_array($size, $conf['graph_sizes_keys']) ? $size : 'default';
 
-if (isset($_GET['height'])) 
+if (isset($_GET['height']) && is_numeric($_GET['height'])) 
   $height = $_GET['height'];
 else 
   $height  = $conf['graph_sizes'][$size]['height'];
 
-if (isset($_GET['width'])) 
+if (isset($_GET['width']) && is_numeric($_GET['width'])) 
   $width =  $_GET['width'];
 else
   $width = $conf['graph_sizes'][$size]['width'];
@@ -341,9 +342,9 @@ if( ! checkAccess( $resource, GangliaAcl::VIEW, $conf ) ) {
   die();
 }
 
-if ($cs)
+if ($cs and (is_numeric($cs) or strtotime($cs)))
     $start = $cs;
-if ($ce)
+if ($ce and (is_numeric($ce) or strtotime($ce)))
     $end = $ce;
 
 # Set some standard defaults that don't need to change much
@@ -509,7 +510,11 @@ switch ( $conf['graph_engine'] ) {
 	  $metrictitle = sanitize($_GET['title']);
 	$php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
       $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
-      if (is_file($php_report_file)) {
+      
+      # Check for path traversal issues by making sure real path is actually in graphdir
+      
+      if( is_file( $php_report_file ) and 
+	  dirname(realpath($php_report_file)) ==  $conf['graphdir'] ) {
         include_once $php_report_file;
         $graph_function = "graph_${graph}";
 	if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
@@ -520,9 +525,8 @@ switch ( $conf['graph_engine'] ) {
 	  unset($rrdtool_graph['arguments']);
 	} else
 	  $graph_function($rrdtool_graph);
-      } else if ( is_file( $json_report_file ) ) {
-        $graph_config = json_decode( file_get_contents( $json_report_file ),
-				     TRUE );
+      } else if ( is_file( $json_report_file ) and dirname(realpath($json_report_file)) ==  $conf['graphdir'] ) {
+        $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
 
         # We need to add hostname and clustername if it's not specified
         foreach ( $graph_config['series'] as $index => $item ) {
@@ -1164,7 +1168,7 @@ if ( $user['trend_line'] ) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Add a trend line
+// Timeshift is only available to metric graphs
 ////////////////////////////////////////////////////////////////////////////////
 if ( $user['time_shift'] && $graph == "metric" ) {
 

@@ -1,6 +1,6 @@
 /* The Ganglia Web-frontend Cascading Style Sheet. */
 
-body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 5px;}
+body{ font: 75% "Trebuchet MS", sans-serif; margin: 5px;}
 
 A:link
 {
@@ -384,9 +384,9 @@ button.shiny-blue {
 .ui-timepicker-div td { font-size: 90%; }
 
 label[class~="show_event_text"] span.ui-button-text {
-  font-size:.73em !important
+  font-size: 60% !important
 }
 
 label[class~="show_timeshift_text"] span.ui-button-text {
-  font-size:.73em !important
+  font-size: 60% !important
 }
