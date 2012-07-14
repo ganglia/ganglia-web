@@ -40,17 +40,19 @@ retrieve_metrics_cache();
 
 unset($hosts);
 
-foreach($index_array['cluster'] as $host => $cluster ) {
+foreach($index_array['cluster'] as $host => $cluster_array ) {
     
-    // Check cluster name
-    if ( $cluster == $clustername ) {
-        // If host regex is specified make sure it matches
-        if ( isset($_REQUEST["host_regex"] ) ) {
-                if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) )
-                        $hosts[] = $host;        
-        } else {
-                $hosts[] = $host;
-        }
+    foreach ( $cluster_array as $index => $cluster ) {
+        // Check cluster name
+        if ( $cluster == $clustername ) {
+            // If host regex is specified make sure it matches
+            if ( isset($_REQUEST["host_regex"] ) ) {
+                    if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) )
+                            $hosts[] = $host;        
+            } else {
+                    $hosts[] = $host;
+            }
+        }    
     }
 }
 
