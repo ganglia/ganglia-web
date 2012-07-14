@@ -361,4 +361,7 @@ $conf['show_stacked_graphs'] = 1;
 # If set to true the grid view will always be displayed even when only a
 # single cluster has been defined.
 $conf['always_display_grid_view'] = true;
+
+# Control whether arguments can be passed into php reports
+$conf['enable_pass_in_arguments_to_optional_graphs'] = false;
 ?>

@@ -195,12 +195,28 @@ if ( preg_match("/_report$/", $metric_name) && !isset($_GET["g"]) ) {
   $graph = isset($_GET["g"])  ?  sanitize ( $_GET["g"] )   : "metric";
 }
 
-$graph_arguments = NULL;
-$pos = strpos($graph, ",");
-if ($pos !== FALSE) {
-  $graph_report = substr($graph, 0, $pos);
-  $graph_arguments = substr($graph, $pos + 1);
-  $graph = $graph_report;
+$graph_arguments = array();
+if ($conf['enable_pass_in_arguments_to_optional_graphs']) {
+  $pos = strpos($graph, ",");
+  if ($pos !== FALSE) {
+    $graph_report = substr($graph, 0, $pos);
+    $args = explode(',', substr($graph, $pos + 1));
+    foreach ($args as $arg) {
+      $arg = trim($arg);
+      if ($arg[0] == "'")
+	$graph_arguments[] = trim($arg, "'");
+      else if ($arg[0] == '"')
+	$graph_arguments[] = trim($arg, '"');
+      else if (is_numeric($arg)) {
+	if (ctype_digit($arg))
+	  $graph_arguments[] = intval($arg);
+	else
+	  $graph_arguments[] = floatval($arg);
+      } else
+	error_log("Unrecognized graph argument type: $arg");
+    }
+    $graph = $graph_report;
+  }
 }
 
 $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
@@ -491,17 +507,22 @@ switch ( $conf['graph_engine'] ) {
              isset($_GET['title']) && 
              $_GET['title'] !== '')
 	  $metrictitle = sanitize($_GET['title']);
-      $php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
+	$php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
       $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
-      if( is_file( $php_report_file ) ) {
+      if (is_file($php_report_file)) {
         include_once $php_report_file;
         $graph_function = "graph_${graph}";
-        if (isset($graph_arguments))
-          eval('$graph_function($rrdtool_graph,' . $graph_arguments . ');');
-        else
-          $graph_function( $rrdtool_graph );  // Pass by reference call, $rrdtool_graph modified inplace
+	if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
+	    count($graph_arguments)) {
+	  $rrdtool_graph['arguments'] = $graph_arguments;
+	  // Pass by reference call, $rrdtool_graph modified inplace
+	  $graph_function($rrdtool_graph);
+	  unset($rrdtool_graph['arguments']);
+	} else
+	  $graph_function($rrdtool_graph);
       } else if ( is_file( $json_report_file ) ) {
-        $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
+        $graph_config = json_decode( file_get_contents( $json_report_file ),
+				     TRUE );
 
         # We need to add hostname and clustername if it's not specified
         foreach ( $graph_config['series'] as $index => $item ) {
@@ -516,7 +537,7 @@ switch ( $conf['graph_engine'] ) {
         build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
       }
     } else { 
-        build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
+      build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
     }
   
     // We must have a 'series' value, or this is all for naught
