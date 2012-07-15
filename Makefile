@@ -43,11 +43,12 @@ dist-dir:	default
 	rsync --exclude "rpmbuild" --exclude "*.gz" --exclude "Makefile" --exclude "*debian*" --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" --exclude "#*#" --exclude "ganglia-web.spec" -a . $(DIST_DIR)
 
 install:	dist-dir
-	mkdir -p $(GWEB_DWOO)/compiled && \
-	mkdir -p $(GWEB_DWOO)/cache && \
-	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
-	rsync --exclude "conf" -a $(DIST_DIR)/* $(GDESTDIR) && \
-	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf	
+	mkdir -p $(DESTDIR)/$(GWEB_DWOO)/compiled && \
+	mkdir -p $(DESTDIR)/$(GWEB_DWOO)/cache && \
+	mkdir -p $(DESTDIR)/$(GANGLIA_STATEDIR) && \
+	rsync -a $(DIST_DIR)/conf/ $(DESTDIR)/$(GANGLIA_STATEDIR)/conf && \
+	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR)/$(GDESTDIR) && \
+	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_DWOO) $(DESTDIR)/$(GANGLIA_STATEDIR)/conf	
 
 dist-gzip:	dist-dir
 	if [ -f $(DIST_TARBALL) ]; then \
