@@ -17,7 +17,7 @@
   }
 
   $(function() {
-    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $( "#popup-dialog" ).dialog({ autoOpen: false, width:850 });
     $("#create_view_button")
       .button()
       .click(function() {
