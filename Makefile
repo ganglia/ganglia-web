@@ -1,5 +1,5 @@
 # Location where gweb should be installed to
-DESTDIR = /var/www/html/ganglia
+GDESTDIR = /var/www/html/ganglia
 
 APACHE_USER = apache
 
@@ -46,7 +46,7 @@ install:	dist-dir
 	mkdir -p $(GWEB_DWOO)/compiled && \
 	mkdir -p $(GWEB_DWOO)/cache && \
 	rsync -a $(DIST_DIR)/conf/ $(GANGLIA_STATEDIR)/conf && \
-	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR) && \
+	rsync --exclude "conf" -a $(DIST_DIR)/* $(GDESTDIR) && \
 	chown -R $(APACHE_USER):$(APACHE_USER) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf	
 
 dist-gzip:	dist-dir
@@ -66,5 +66,5 @@ rpm: dist-gzip ganglia-web.spec
 	rpmbuild --define '_topdir $(PWD)/rpmbuild' -bb ganglia-web.spec
 
 uninstall:
-	rm -rf $(DESTDIR) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
+	rm -rf $(GDESTDIR) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
 
