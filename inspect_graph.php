@@ -19,97 +19,131 @@
 
 <div id="placeholder" style="width:800px;height:500px;"></div>
 
-<div id="legendcontainer" style="margin-top:5px;">
-   <div id="graphlegend"></div>
+<div id="graphcontrols">
+  <div id="legendcontainer" style="margin-top:5px;"></div>
+  <div id="graphlegend"></div>
 </div>
 <?php
 
-$base_url = str_replace("inspect_graph.php", "", $_SERVER["SCRIPT_NAME"]);
-
-$obj = json_decode(file_get_contents("http://" . $_SERVER['HTTP_HOST'] . $base_url . "graph.php?" . $_SERVER['QUERY_STRING']), TRUE);
-$arr = array();
-foreach ( $obj as $index => $series ) {
-  $label = str_replace(" ", "_", $series['label']);
-  $arr[$label] = $series;
-}
+$dataurl = "graph.php?" . $_SERVER['QUERY_STRING'];
 
 ?>
 
 <script>
 $(function () {
-    $("#popup-dialog").bind("dialogresizestop.inspect", 
-			    function() {
-			      plotAccordingToChoices();
-			    });
-    $("#popup-dialog").bind("dialogclose.inspect", 
-			    function(event) {
-			      $(this).unbind(".inspect");
-			    });
+  $("#popup-dialog").bind("dialogresizestop.inspect", 
+			  function() {
+			    plotAccordingToChoices();
+			  });
+  $("#popup-dialog").bind("dialogclose.inspect", 
+			  function(event) {
+			    $(this).unbind(".inspect");
+			  });
+    
+  var datasets = []; // global array of dataset objects {label, data, color}
+  var plotRanges = null;
 
-  var datasets = 
-    <?php print json_encode($arr); ?>
-  ;
+  var placeHolder = $("#placeholder");
+  placeHolder.bind("plothover", hoverHandler);
+  placeHolder.bind("plotselected", selectRangeHandler);
+    
+  var dataurl = '<?php print $dataurl; ?>';
 
-  var stacked = false;
   var legendContainer = $("#legendcontainer");
-  var series_select = '<select id="select_series" name="select_series" multiple="multiple">';
-
-  // hard-code color indices to prevent them from shifting as
-  // choices are turned on/off
-  var i = 0;
-  $.each(datasets, function(key, val) {
-    if (typeof val.color == 'undefined')
-      val.color = i;
-    // Explicity delete the stack attribute if it exists because stacking
-    // is controlled locally. The incoming datasets will contain a 
-    // stack attribute if they were generated from a stacked graph.
-    if ("stack" in val) {
-      delete val.stack;
-      stacked = true;
-    }
-    ++i;
-
-    series_select += '<option value="' + key + '" selected="selected">' + val.label + '</option>';
-  });
-  
-  series_select += '</select>';
+  var series_select = '<select id="select_series" name="select_series" multiple="multiple"></select>';
+  // Add multi-select menu to legend container
   legendContainer.append(series_select);
+    
   var select_series = $("#select_series");
   select_series.multiselect({
     height: "auto",
     position : {
       my: "left bottom",
       at: "left top"
-      },
+    },
     checkAll: function(event, ui) {
-	plotAccordingToChoices();
-      },
+      plotAccordingToChoices();
+    },
     uncheckAll: function(event, ui) {
-	plotAccordingToChoices();
-      },
+      plotAccordingToChoices();
+    },
     click: function(event, ui) {
-	plotAccordingToChoices();
-      }
-    });
+      plotAccordingToChoices();
+    }
+  });
 
-  var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"';
-  if (!stacked)
-    html += 'checked="checked"';
-  html += '/><label for="line">Line</label><input type="radio" id="stack" name="gopt"';
-  if (stacked)
-    html += 'checked="checked"';
-  html += '/><label for="stack">Stack</label></span>';
+  var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"/><label for="line">Line</label><input type="radio" id="stack" name="gopt"/><label for="stack">Stack</label></span>';
+  html += '<input id="resetzoom" type="button" value="Reset zoom" />';
 
-  html += '<input id="clearSelection" type="button" value="Reset zoom" />'
-
+  // Add option buttons to legend container 
   legendContainer.append(html);
-
-
-
+  
   $("#gopt").buttonset();
   $("#line").button().click(plotAccordingToChoices);
   $("#stack").button().click(plotAccordingToChoices);
-  $("#clearSelection").button();
+  $("#resetzoom").button();
+  $("#resetzoom").click(function () {
+    plotRanges = null;
+    plotAccordingToChoices();  
+  });
+
+  var plotOpt =  {
+    lines: { show: true, fill: false },
+    points: { show: false },
+    crosshair: { mode: "x" },
+    xaxis: { mode: "time" },
+    yaxis: {tickFormatter: suffixFormatter},
+    selection: { mode: "x" },
+    legend: {
+      container: $("#graphlegend"),
+      noColumns: 8
+    },
+    grid: { hoverable: true, autoHighlight: true }
+  };
+
+  // then fetch the data with jQuery
+  function onDataReceived(series) {
+    datasets = series;
+
+    var stacked = false;
+    var series_select = $("#select_series");
+
+    // hard-code color indices to prevent them from shifting as
+    // choices are turned on/off
+    var i = 0;
+    $.each(datasets, function(key, val) {
+      if (typeof val.color == 'undefined')
+	val.color = i;
+      // Explicity delete the stack attribute if it exists because stacking
+      // is controlled locally. The incoming datasets will contain a 
+      // stack attribute if they were generated from a stacked graph.
+      if ("stack" in val) {
+	delete val.stack;
+	stacked = true;
+      }
+      ++i;
+	  
+      // Initialize series select menu options
+      var option = $('<option/>', {value: key, text: val.label});
+      option.attr('selected', 'selected');
+      option.appendTo(series_select);
+    });
+      
+    series_select.multiselect('refresh');
+      
+    var gopt = stacked ? $("#stack") : $("#line");
+    gopt.attr("checked", "checked");
+    gopt.button("refresh");
+    
+    plotAccordingToChoices();
+  }
+  
+  $.ajax({
+    url: dataurl,
+    method: 'GET',
+    dataType: 'json',
+    success: onDataReceived
+  });
 
   function utcTimeStr(tstamp) {
     var date = new Date(tstamp);
@@ -147,6 +181,20 @@ $(function () {
   }
 
   var previousPoint = null;
+
+  function formattedSiVal(val, places) {
+    if (val >= 1000000000) {
+      return (val / 1000000000).toFixed(places) + " G";
+    }
+    if (val >= 1000000) {
+      return (val / 1000000).toFixed(places) + " M";
+    }
+    if (val >= 1000) {
+      return (val / 1000).toFixed(places) + " k";
+    }
+        
+    return (val/1).toFixed(places);
+  }
   
   function suffixFormatter(val, axis) {
     var tickd = axis.tickDecimals;
@@ -154,17 +202,34 @@ $(function () {
       tickd = 1;
     }
         
-    if (val >= 1000000000) {
-      return (val / 1000000000).toFixed(tickd) + " G";
+    return formattedSiVal(val, tickd);
+  }
+
+  function selectRangeHandler(event, ranges) {
+    plotRanges = ranges;
+    plotAccordingToChoices();
+  }
+
+  function hoverHandler(event, pos, item) {
+    $("#x").text(utcTimeStr(pos.x));
+    $("#y").text(pos.y.toFixed(2));
+
+    if (item) {
+      if (previousPoint != item.dataIndex) {
+	previousPoint = item.dataIndex;
+                
+	$("#tooltip").remove();
+	var y = formattedSiVal(item.datapoint[1], 2);
+	showTooltip(item.pageX, 
+		    item.pageY,
+		    item.series.label + " at " + 
+		    utcTimeStr(item.datapoint[0]) + 
+		    " = " + y);
+      }
+    } else {
+      $("#tooltip").remove();
+      previousPoint = null;            
     }
-    if (val >= 1000000) {
-      return (val / 1000000).toFixed(tickd) + " M";
-    }
-    if (val >= 1000) {
-      return (val / 1000).toFixed(tickd) + " k";
-    }
-        
-    return (val/1).toFixed(axis.tickDecimals);
   }
 
   function plotAccordingToChoices() {
@@ -174,82 +239,43 @@ $(function () {
       data.push(datasets[selected_series[i]]);
 
     var placeHolder = $("#placeholder");
-    var placeHolderHeight = $("#popup-dialog").height() - 
-      $("#legendcontainer").height() - 5;
+    var placeHolderHeight = 
+      $("#popup-dialog").height() - $("#graphcontrols").height();
     if ($("#graphlegend").height() == 0)
-      placeHolderHeight -= 20; // estimate the height of the legend
+      placeHolderHeight -= 25; // estimate the height of the legend
     placeHolder.height(placeHolderHeight); 
-    placeHolder.width($("#popup-dialog").width() - 20);
+    placeHolder.width($("#popup-dialog").width() - 40);
 
-    var stack = $("#stack").attr('checked');
-    var graphLegend = $("#graphlegend");
-    var opt =  {lines: { show: true, fill: stack },
-		points: { show: false },
-		crosshair: { mode: "x" },
-		xaxis: { mode: "time" },
-                yaxis: {tickFormatter: suffixFormatter},
-		legend: {
-                  container: graphLegend,
-                  noColumns: selected_series.length
-                },
-                selection: { mode: "x" },               
-		grid: { hoverable: true, autoHighlight: true }};
+    var stack = $("#stack").attr('checked') == 'checked';
+
+    plotOpt.lines.fill = stack;
+    plotOpt.legend.noColumns = series_select.length;
     if (stack)
-      opt['series'] = {stack: 1};
+      plotOpt.series = {stack: 1};
+    else
+      delete plotOpt.series;
 
-    graphLegend.html("");
+    // Apply zoom if set
+    if (plotRanges != null) {
+      if (plotRanges.xaxis.to - plotRanges.xaxis.from < 0.00001)
+        plotRanges.xaxis.to = plotRanges.xaxis.from + 0.00001;
+      if (plotRanges.yaxis.to - plotRanges.yaxis.from < 0.00001)
+        plotRanges.yaxis.to = plotRanges.yaxis.from + 0.00001;
 
-    $.plot(placeHolder, data, opt);
+      plotOpt.xaxis.min = plotRanges.xaxis.from;
+      plotOpt.xaxis.max = plotRanges.xaxis.to;
+      plotOpt.yaxis.min = plotRanges.yaxis.from;
+      plotOpt.yaxis.max = plotRanges.yaxis.to;
+    } else {
+      delete plotOpt.xaxis.min;
+      delete plotOpt.xaxis.max;
+      delete plotOpt.yaxis.min;
+      delete plotOpt.yaxis.max;
+    }
 
-    placeHolder.unbind("plothover");
-    if (data.length > 0) {
-      placeHolder.bind("plothover", function (event, pos, item) {
-        $("#x").text(utcTimeStr(pos.x));
-        $("#y").text(pos.y.toFixed(2));
+    $("#graphlegend").html("");
 
-        if (item) {
-            if (previousPoint != item.dataIndex) {
-                previousPoint = item.dataIndex;
-                
-                $("#tooltip").remove();
-                var y = item.datapoint[1].toFixed(2);
-                showTooltip(item.pageX, item.pageY,
-                            item.series.label + " at " + 
-			    utcTimeStr(item.datapoint[0]) + 
-			    " = " + y);
-            }
-        } else {
-            $("#tooltip").remove();
-            previousPoint = null;            
-        }
-      });
-    } 
-
-    $("#placeholder").bind("plotselected", function (event, ranges) {
-        // clamp the zooming to prevent eternal zoom
-        if (ranges.xaxis.to - ranges.xaxis.from < 0.00001)
-            ranges.xaxis.to = ranges.xaxis.from + 0.00001;
-        if (ranges.yaxis.to - ranges.yaxis.from < 0.00001)
-            ranges.yaxis.to = ranges.yaxis.from + 0.00001;
-        
-        // do the zooming
-        plot = $.plot($("#placeholder"), data,
-                      $.extend(true, {}, opt, {
-                          xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
-                          yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
-                      }));
-        
-        // don't fire event on the overview to prevent eternal loop
-        
-       $("#clearSelection").click(function () {
-              $.plot($("#placeholder"), data, opt);
-       }); 
-    });
-
-
-
+    $.plot(placeHolder, data, plotOpt);
   }
-
-  plotAccordingToChoices();
 });
 </script>
