@@ -93,7 +93,7 @@ $(function () {
     crosshair: { mode: "x" },
     xaxis: { mode: "time" },
     yaxis: {tickFormatter: suffixFormatter},
-    selection: { mode: "x" },
+    selection: { mode: "xy" },
     legend: {
       container: $("#graphlegend"),
       noColumns: 8
