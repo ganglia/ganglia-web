@@ -28,6 +28,7 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
        sanitize( $graph_config[ 'vertical_label' ] );
   }
 
+  $rrdtool_graph['extras'] = $graph_config[ 'extras' ];
   $rrdtool_graph['lower-limit'] = '0';
   
   if( isset($graph_config['height_adjustment']) ) {
