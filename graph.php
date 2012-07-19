@@ -46,11 +46,15 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   }
   
   $series = '';
+  $cdef = '';
+  $graphdef = '';
   
   $stack_counter = 0;
 
   // Available line types
   $line_widths = array("1","2","3");
+
+  $total_ids = array();
 
   // Loop through all the graph items
   foreach( $graph_config[ 'series' ] as $index => $item ) {
@@ -68,8 +72,10 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
      // Make sure metric file exists. Otherwise we'll get a broken graph
      if ( is_file($metric_file) ) {
 
-       # Need this when defining graphs that may use same metric names
-      $unique_id = "a" . $index;
+       // Need this when defining graphs that may use same metric names
+       $unique_id = "a" . $index;
+
+       $total_ids[] = $unique_id;
      
        $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
 
@@ -79,6 +85,9 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
        if ( isset($item[ 'ds' ]) )
          $DS = sanitize( $item[ 'ds' ] );
        $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
+       if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
+         $cdef .= " CDEF:'p${unique_id}'=${unique_id},total,/,100,* ";
+       }
 
        // By default graph is a line graph
        isset( $item['type']) ? 
@@ -92,35 +101,64 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
            isset($item['line_width']) && 
            in_array( $item['line_width'], $line_widths) ? 
              $line_width = $item['line_width'] : $line_width = "1";
-           $series .= "LINE" . 
+           $graphdef .= "LINE" . 
                       $line_width . 
                       ":'$unique_id'#{$item['color']}:'{$label}' ";
            break;
        
          case "stack":
+         case "percent":
            // First element in a stack has to be AREA
            if ( $stack_counter == 0 ) {
-             $series .= "AREA";
+             $graphdef .= "AREA";
              $stack_counter++;
            } else {
-             $series .= "STACK";
+             $graphdef .= "STACK";
            }
-           $series .= ":'$unique_id'#${item['color']}:'${label}' ";
+           if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
+             $graphdef .= ":'p${unique_id}'#${item['color']}:'${label}' ";
+           } else {
+             $graphdef .= ":'$unique_id'#${item['color']}:'${label}' ";
+           }
            break;
 
          case "area":
-               $series .= "AREA";
-               $series .= ":'$unique_id'#${item['color']}:'${label}' ";
+               $graphdef .= "AREA";
+               $graphdef .= ":'$unique_id'#${item['color']}:'${label}' ";
          break;
 
         } // end of switch ( $item_type )
      
-        if ( $conf['graphreport_stats'] )
-          $series .= legendEntry($unique_id, $conf['graphreport_stat_items']);
+        if ( $conf['graphreport_stats'] ) {
+          if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
+            $graphdef .= legendEntry('p' . $unique_id, $conf['graphreport_stat_items']);
+          } else {
+            $graphdef .= legendEntry($unique_id, $conf['graphreport_stat_items']);
+          }
+        }
 
      } // end of if ( is_file($metric_file) ) {
      
   } // end of foreach( $graph_config[ 'series' ] as $index => $item )
+
+  // Percentage calculation for cdefs, if required
+  if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
+    $total = " CDEF:'total'=";
+    if (count($total_ids) == 0) {
+      // Handle nothing gracefully, do nothing
+    } else if (count($total_ids) == 1) {
+      // Concat just that id, leave it at that (100%)
+      $total .= $total_ids[0];
+      $cdef = $total . ' ' . $cdef;
+    } else {
+      $total .= $total_ids[0];
+      for ($i=1; $i<count($total_ids); $i++) {
+        $total .= ',' . $total_ids[$i] . ',+';
+      }
+      // Prepend total calculation
+      $cdef = $total . ', ' . $cdef;
+    }
+  }
 
   // If we end up with the empty series it means that no RRD files matched. 
   // This can happen if we are trying to create a report and metrics for 
@@ -130,7 +168,7 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
     $rrdtool_graph[ 'series' ] = 
       'HRULE:1#FFCC33:"No matching metrics detected"';   
   } else {
-    $rrdtool_graph[ 'series' ] = $series;
+    $rrdtool_graph[ 'series' ] = $series . ' ' . $cdef . ' ' . $graphdef;
   }
 
   return $rrdtool_graph;
@@ -419,7 +457,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   $start = time() + $start;
 
   // If graph type is not specified default to line graph
-  if ( isset($_GET["gtype"]) && in_array($_GET["gtype"], array("stack","line") )  ) 
+  if ( isset($_GET["gtype"]) && in_array($_GET["gtype"], array("stack","line","percent") )  ) 
       $graph_type = $_GET["gtype"];
   else
       $graph_type = "line";
@@ -465,6 +503,8 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
 
       if ($graph_type == "line" || $graph_type == "area") {
         $series['line_width'] = $line_width;
+      } else if ($graph_type == "percent") {
+        $graph_config['percent'] = "1";
       } else {
         $series['stack'] = "1";
       }
@@ -589,7 +629,12 @@ switch ( $conf['graph_engine'] ) {
     }
     if ( $min )
       $rrdtool_graph['lower-limit'] = $min;
-    if ( $max || $min )
+
+    if ( isset($graph_config['percent']) && $graph_config['percent'] == '1' ) {
+      $rrdtool_graph['upper-limit'] = 100;
+      $rrdtool_graph['lower-limit'] = 0;
+    }
+    if ( $max || $min || ( isset($graph_config['percent']) && $graph_config['percent'] == '1' ) )
         $rrdtool_graph['extras'] = isset($rrdtool_graph['extras']) ? $rrdtool_graph['extras'] . " --rigid" : " --rigid" ;
   
     // The order of the other arguments isn't important, except for the
