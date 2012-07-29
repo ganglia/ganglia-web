@@ -238,20 +238,21 @@ if ($conf['enable_pass_in_arguments_to_optional_graphs']) {
   $pos = strpos($graph, ",");
   if ($pos !== FALSE) {
     $graph_report = substr($graph, 0, $pos);
-    $args = explode(',', substr($graph, $pos + 1));
+    $args = str_getcsv(substr($graph, $pos + 1), ",", "'");
+    /*
+      ob_start();
+      var_dump($args);
+      $result = ob_get_clean();
+      error_log("args = $result");
+    */
     foreach ($args as $arg) {
-      $arg = trim($arg);
-      if ($arg[0] == "'")
-	$graph_arguments[] = trim($arg, "'");
-      else if ($arg[0] == '"')
-	$graph_arguments[] = trim($arg, '"');
-      else if (is_numeric($arg)) {
+      if (is_numeric($arg)) {
 	if (ctype_digit($arg))
 	  $graph_arguments[] = intval($arg);
 	else
 	  $graph_arguments[] = floatval($arg);
       } else
-	error_log("Unrecognized graph argument type: $arg");
+	$graph_arguments[] = $arg;
     }
     $graph = $graph_report;
   }
