@@ -92,10 +92,7 @@ if ( ! isset($_GET['view_name']) ) {
 </div>
 <script>
    var ganglia_url = "<?php
-   if ( isset($_SERVER['HTTPS'] ) )
-      $proto = "https://";
-   else
-      $proto = "http://";
+   $proto = "//";
    $path_parts = pathinfo($_SERVER['SCRIPT_NAME']);
    print $proto . $_SERVER['HTTP_HOST'] .  $path_parts['dirname']; ?>";
 </script>
