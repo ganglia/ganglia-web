@@ -261,6 +261,7 @@ if ($conf['enable_pass_in_arguments_to_optional_graphs']) {
 $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
 $self = isset($_GET["me"]) ? sanitize( $_GET["me"]) : NULL;
 $vlabel = isset($_GET["vl"]) ? sanitize($_GET["vl"])  : NULL;
+$logscale = isset($_GET["ls"]) ? sanitize($_GET["ls"])  : NULL;
 $value = isset($_GET["v"]) ? sanitize ($_GET["v"]) : NULL;
 # Max, min, critical and warning values
 $max = isset($_GET["x"]) && is_numeric($_GET["x"]) ? $_GET["x"] : NULL;
@@ -527,6 +528,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   // Set up 
   $graph_config["report_type"] = "standard";
   $graph_config["vertical_label"] = $vlabel;
+  $graph_config["log_scale"] = $logscale;
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
@@ -636,6 +638,13 @@ switch ( $conf['graph_engine'] ) {
     }
     if ( $max || $min || ( isset($graph_config['percent']) && $graph_config['percent'] == '1' ) )
         $rrdtool_graph['extras'] = isset($rrdtool_graph['extras']) ? $rrdtool_graph['extras'] . " --rigid" : " --rigid" ;
+    if ( isset($graph_config['log_scale']) && $graph_config['log_scale'] == '1' ) {
+      $rrdtool_graph['extras'] = isset($rrdtool_graph['extras']) ? $rrdtool_graph['extras'] . " --logarithm --units=si" : " --logarithm --units=si" ;
+      if (!isset($rrdtool_graph['lower-limit']) || $rrdtool_graph['lower-limit'] < 1) {
+        // With log scale, the lower limit *has* to be 1 or greater.
+        $rrdtool_graph['lower_limit'] = 1;
+      }
+    }
   
     // The order of the other arguments isn't important, except for the
     // 'extras' and 'series' values.  These two require special handling.
