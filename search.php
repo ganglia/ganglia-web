@@ -39,12 +39,14 @@ if ( isset($_GET['q']) && $_GET['q'] != "" ) {
   foreach ( $index_array['metrics'] as $metric_name => $hosts ) {
     if ( preg_match("/$query/i", $metric_name ) ) {
       foreach ( $hosts as $key => $host_name ) {
-	$cluster_name = $index_array['cluster'][$host_name];
-
-        if ( $mobile )
-	  $results .= 'Metric: <a onclick="jQuery(\'#jquery-live-search\').slideUp(0)" href="mobile_helper.php?show_host_metrics=1&h=' . $host_name . '&c=' . $cluster_name . '&r=' . $conf['default_time_range'] . '&cs=&ce=">' . $host_name . " (" . $metric_name .  ")</a><br>";
-	else
-	  $results .= "Metric: <a target=\"_blank\" href=\"?c=" . $cluster_name . "&h=" . $host_name . "&m=cpu_report&r=hour&s=descending&hc=4&mc=2#metric_" . $metric_name  . "\">" . $host_name . " @ " . $cluster_name .  " (" . $metric_name .  ")</a><br>";
+        $clusters = $index_array['cluster'][$host_name];
+        foreach ($clusters AS $cluster_name) {
+          if ( $mobile ) {
+            $results .= 'Metric: <a onclick="jQuery(\'#jquery-live-search\').slideUp(0)" href="mobile_helper.php?show_host_metrics=1&h=' . $host_name . '&c=' . $cluster_name . '&r=' . $conf['default_time_range'] . '&cs=&ce=">' . $host_name . " (" . $metric_name .  ")</a><br>";
+          } else {
+            $results .= "Metric: <a target=\"_blank\" href=\"?c=" . $cluster_name . "&h=" . $host_name . "&m=cpu_report&r=hour&s=descending&hc=4&mc=2#metric_" . $metric_name  . "\">" . $host_name . " @ " . $cluster_name .  " (" . $metric_name .  ")</a><br>";
+          }
+        }
       }
     }
   }
