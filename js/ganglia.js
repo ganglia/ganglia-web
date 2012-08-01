@@ -21,6 +21,11 @@ $(function(){
 
   var search_field_q = $("#search-field-q");
   if (search_field_q[0]) {
+    search_field_q.keypress(function(e) {
+      if (13 == (e.keyCode ? e.keyCode : e.which)) {
+        return false;
+      }
+    });
     search_field_q.keyup(function() {
       $.cookie("ganglia-search-field-q" + window.name, $(this).val());
     });
