@@ -35,7 +35,7 @@ function refreshClusterView() {
     if ((src.indexOf("graph.php") == 0) ||
         (src.indexOf("./graph.php") == 0)) {
       var d = new Date();
-      $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
+      $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()).replace(/%5B%5D/g,""));
     }    
   });
 }
