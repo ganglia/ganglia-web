@@ -141,7 +141,7 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   } // end of foreach( $graph_config[ 'series' ] as $index => $item )
 
   // Percentage calculation for cdefs, if required
-  if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
+  //if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
     $total = " CDEF:'total'=";
     if (count($total_ids) == 0) {
       // Handle nothing gracefully, do nothing
@@ -152,11 +152,15 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
     } else {
       $total .= $total_ids[0];
       for ($i=1; $i<count($total_ids); $i++) {
-        $total .= ',' . $total_ids[$i] . ',+';
+        $total .= ',' . $total_ids[$i] . ',ADDNAN';
       }
       // Prepend total calculation
       $cdef = $total . ', ' . $cdef;
     }
+  //} // if graph_config['percent']
+
+  if ( isset($graph_config['show_total']) && $graph_config['show_total'] == 1 ) {
+    $cdef .= " LINE1:'total'#000000:'Total' " . legendEntry('total', $conf['graphreport_stat_items']);
   }
 
   // If we end up with the empty series it means that no RRD files matched. 
@@ -262,6 +266,7 @@ $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
 $self = isset($_GET["me"]) ? sanitize( $_GET["me"]) : NULL;
 $vlabel = isset($_GET["vl"]) ? sanitize($_GET["vl"])  : NULL;
 $graph_scale = isset($_GET["gs"]) ? sanitize($_GET["gs"])  : NULL;
+$show_total  = isset($_GET["show_total"]) ? sanitize($_GET["show_total"])  : NULL;
 $value = isset($_GET["v"]) ? sanitize ($_GET["v"]) : NULL;
 # Max, min, critical and warning values
 $max = isset($_GET["x"]) && is_numeric($_GET["x"]) ? $_GET["x"] : NULL;
@@ -529,6 +534,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   $graph_config["report_type"] = "standard";
   $graph_config["vertical_label"] = $vlabel;
   $graph_config["graph_scale"] = $graph_scale;
+  $graph_config["show_total"] = $show_total;
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
