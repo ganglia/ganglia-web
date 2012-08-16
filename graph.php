@@ -84,6 +84,9 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
        if ( isset($item[ 'ds' ]) )
          $DS = sanitize( $item[ 'ds' ] );
        $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
+       if (isset($graph_config['scale'])) {
+         $cdef .= " CDEF:'s${unique_id}'=${unique_id},${graph_config['scale']},* ";
+       }
        if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
          $cdef .= " CDEF:'p${unique_id}'=${unique_id},total,/,100,* ";
        }
@@ -116,6 +119,8 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
            }
            if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
              $graphdef .= ":'p${unique_id}'#${item['color']}:'${label}' ";
+           } else if (isset($graph_config['scale'])) {
+             $graphdef .= ":'s${unique_id}'#${item['color']}:'${label}' ";
            } else {
              $graphdef .= ":'$unique_id'#${item['color']}:'${label}' ";
            }
@@ -131,6 +136,8 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
         if ( $conf['graphreport_stats'] ) {
           if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
             $graphdef .= legendEntry('p' . $unique_id, $conf['graphreport_stat_items']);
+          } else if (isset($graph_config['scale'])) {
+            $graphdef .= legendEntry('s' . $unique_id, $conf['graphreport_stat_items']);
           } else {
             $graphdef .= legendEntry($unique_id, $conf['graphreport_stat_items']);
           }
@@ -266,6 +273,7 @@ $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
 $self = isset($_GET["me"]) ? sanitize( $_GET["me"]) : NULL;
 $vlabel = isset($_GET["vl"]) ? sanitize($_GET["vl"])  : NULL;
 $graph_scale = isset($_GET["gs"]) ? sanitize($_GET["gs"])  : NULL;
+$scale = isset($_GET["scale"]) ? sanitize($_GET["scale"])  : NULL;
 $show_total  = isset($_GET["show_total"]) ? sanitize($_GET["show_total"])  : NULL;
 $value = isset($_GET["v"]) ? sanitize ($_GET["v"]) : NULL;
 # Max, min, critical and warning values
@@ -534,6 +542,7 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   $graph_config["report_type"] = "standard";
   $graph_config["vertical_label"] = $vlabel;
   $graph_config["graph_scale"] = $graph_scale;
+  $graph_config["scale"] = $scale;
   $graph_config["show_total"] = $show_total;
 
   // Reset graph title 
