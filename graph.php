@@ -155,12 +155,18 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
     } else if (count($total_ids) == 1) {
       // Concat just that id, leave it at that (100%)
       $total .= $total_ids[0];
+       if (isset($graph_config['scale'])) {
+         $total .= ",${graph_config['scale']},*";
+       }
       $cdef = $total . ' ' . $cdef;
     } else {
       $total .= $total_ids[0];
       for ($i=1; $i<count($total_ids); $i++) {
         $total .= ',' . $total_ids[$i] . ',ADDNAN';
       }
+       if (isset($graph_config['scale'])) {
+         $total .= ",${graph_config['scale']},*";
+       }
       // Prepend total calculation
       $cdef = $total . ', ' . $cdef;
     }
