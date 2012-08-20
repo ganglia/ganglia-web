@@ -24,20 +24,30 @@
   <div id="graphlegend"></div>
 </div>
 <?php
+include_once "./eval_conf.php";
 
 $dataurl = "graph.php?" . $_SERVER['QUERY_STRING'];
-
+$refresh_interval = $conf['default_refresh'];
 ?>
 
 <script>
 $(function () {
+  var refresh_timer = null;
+  var first_time = true;
+  var popupDialogHeight = $("#popup-dialog").height();
+
   $("#popup-dialog").bind("dialogresizestop.inspect", 
 			  function() {
+			    popupDialogHeight = $("#popup-dialog").height();
 			    plotAccordingToChoices();
 			  });
   $("#popup-dialog").bind("dialogclose.inspect", 
 			  function(event) {
 			    $(this).unbind(".inspect");
+                            if (refresh_timer) {
+			      clearTimeout(refresh_timer);
+			      refresh_timer = null;
+			    }
 			  });
     
   var datasets = []; // global array of dataset objects {label, data, color}
@@ -48,6 +58,7 @@ $(function () {
   placeHolder.bind("plotselected", selectRangeHandler);
     
   var dataurl = '<?php print $dataurl; ?>';
+  var refresh_interval = '<?php print $refresh_interval; ?>';
 
   var legendContainer = $("#legendcontainer");
   var series_select = '<select id="select_series" name="select_series" multiple="multiple"></select>';
@@ -107,11 +118,16 @@ $(function () {
 
     var stacked = false;
     var series_select = $("#select_series");
+    var current_series_labels = 
+      $("#select_series>option").map(function(){return $(this).text();});
 
     // hard-code color indices to prevent them from shifting as
     // choices are turned on/off
     var i = 0;
     $.each(datasets, function(key, val) {
+      if ($.inArray(val.label, current_series_labels) != -1)
+	return;
+
       if (typeof val.color == 'undefined')
 	val.color = i;
       // Explicity delete the stack attribute if it exists because stacking
@@ -122,20 +138,25 @@ $(function () {
 	stacked = true;
       }
       ++i;
-	  
-      // Initialize series select menu options
+
       var option = $('<option/>', {value: key, text: val.label});
       option.attr('selected', 'selected');
       option.appendTo(series_select);
     });
       
     series_select.multiselect('refresh');
-      
-    var gopt = stacked ? $("#stack") : $("#line");
-    gopt.attr("checked", "checked");
-    gopt.button("refresh");
+
+    if (first_time) {
+      var gopt = stacked ? $("#stack") : $("#line");
+      gopt.attr("checked", "checked");
+      gopt.button("refresh");
+      first_time = false;
+    }
     
     plotAccordingToChoices();
+
+    if ((plotRanges == null) && (dataurl.indexOf("&r=custom") == -1))
+      refresh_timer = setTimeout(refresh, refresh_interval * 1000);
   }
   
   $.ajax({
@@ -232,6 +253,14 @@ $(function () {
     }
   }
 
+  function refresh() {
+    $.ajax({
+      url: dataurl,
+      method: 'GET',
+      dataType: 'json',
+      success: onDataReceived});
+  }
+
   function plotAccordingToChoices() {
     var selected_series = $("#select_series").multiselect("getChecked").map(function(){return this.value}).get();
     var data = [];
@@ -239,17 +268,23 @@ $(function () {
       data.push(datasets[selected_series[i]]);
 
     var placeHolder = $("#placeholder");
-    var placeHolderHeight = 
-      $("#popup-dialog").height() - $("#graphcontrols").height();
+    var placeHolderHeight = popupDialogHeight - $("#graphcontrols").height();
     if ($("#graphlegend").height() == 0)
       placeHolderHeight -= 25; // estimate the height of the legend
+    /*
+    alert("popupDialogHeight = " + popupDialogHeight + ", " +
+	  "popup-dialog.height = " + $("#popup-dialog").height() + ", " +
+	  "graphcontrols.height = " + $("#graphcontrols").height() + ", " +
+          "graphlegend.height = " + $("#graphlegend").height() + ", " +
+          "placeHolderHeight = " + placeHolderHeight);
+    */
     placeHolder.height(placeHolderHeight); 
     placeHolder.width($("#popup-dialog").width() - 40);
 
     var stack = $("#stack").attr('checked') == 'checked';
 
     plotOpt.lines.fill = stack;
-    plotOpt.legend.noColumns = series_select.length;
+    plotOpt.legend.noColumns = selected_series.length;
     if (stack)
       plotOpt.series = {stack: 1};
     else
