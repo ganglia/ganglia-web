@@ -415,8 +415,8 @@ function get_cluster_optional_reports($conf,
 
  foreach ($reports["included_reports"] as $index => $report_name ) {
    if (! in_array( $report_name, $reports["excluded_reports"])) {
-     $optional_reports .= "<A HREF=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url\">
-    <IMG BORDER=0 style=\"padding:2px;\" $additional_cluster_img_html_args title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\"></A>
+     $optional_reports .= "<A HREF=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large\">
+    <IMG BORDER=0 style=\"padding:2px;\" $additional_cluster_img_html_args title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium\"></A>
 ";
    }
  }
