@@ -84,6 +84,9 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
        if ( isset($item[ 'ds' ]) )
          $DS = sanitize( $item[ 'ds' ] );
        $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
+       if (isset($graph_config['scale'])) {
+         $cdef .= " CDEF:'s${unique_id}'=${unique_id},${graph_config['scale']},* ";
+       }
        if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
          $cdef .= " CDEF:'p${unique_id}'=${unique_id},total,/,100,* ";
        }
@@ -116,6 +119,8 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
            }
            if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
              $graphdef .= ":'p${unique_id}'#${item['color']}:'${label}' ";
+           } else if (isset($graph_config['scale'])) {
+             $graphdef .= ":'s${unique_id}'#${item['color']}:'${label}' ";
            } else {
              $graphdef .= ":'$unique_id'#${item['color']}:'${label}' ";
            }
@@ -131,6 +136,8 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
         if ( $conf['graphreport_stats'] ) {
           if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
             $graphdef .= legendEntry('p' . $unique_id, $conf['graphreport_stat_items']);
+          } else if (isset($graph_config['scale'])) {
+            $graphdef .= legendEntry('s' . $unique_id, $conf['graphreport_stat_items']);
           } else {
             $graphdef .= legendEntry($unique_id, $conf['graphreport_stat_items']);
           }
@@ -141,22 +148,32 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
   } // end of foreach( $graph_config[ 'series' ] as $index => $item )
 
   // Percentage calculation for cdefs, if required
-  if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
+  //if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
     $total = " CDEF:'total'=";
     if (count($total_ids) == 0) {
       // Handle nothing gracefully, do nothing
     } else if (count($total_ids) == 1) {
       // Concat just that id, leave it at that (100%)
       $total .= $total_ids[0];
+       if (isset($graph_config['scale'])) {
+         $total .= ",${graph_config['scale']},*";
+       }
       $cdef = $total . ' ' . $cdef;
     } else {
       $total .= $total_ids[0];
       for ($i=1; $i<count($total_ids); $i++) {
-        $total .= ',' . $total_ids[$i] . ',+';
+        $total .= ',' . $total_ids[$i] . ',ADDNAN';
       }
+       if (isset($graph_config['scale'])) {
+         $total .= ",${graph_config['scale']},*";
+       }
       // Prepend total calculation
       $cdef = $total . ', ' . $cdef;
     }
+  //} // if graph_config['percent']
+
+  if ( isset($graph_config['show_total']) && $graph_config['show_total'] == 1 ) {
+    $cdef .= " LINE1:'total'#000000:'Total' " . legendEntry('total', $conf['graphreport_stat_items']);
   }
 
   // If we end up with the empty series it means that no RRD files matched. 
@@ -262,6 +279,8 @@ $grid = isset($_GET["G"]) ? sanitize( $_GET["G"]) : NULL;
 $self = isset($_GET["me"]) ? sanitize( $_GET["me"]) : NULL;
 $vlabel = isset($_GET["vl"]) ? sanitize($_GET["vl"])  : NULL;
 $graph_scale = isset($_GET["gs"]) ? sanitize($_GET["gs"])  : NULL;
+$scale = isset($_GET["scale"]) ? sanitize($_GET["scale"])  : NULL;
+$show_total  = isset($_GET["show_total"]) ? sanitize($_GET["show_total"])  : NULL;
 $value = isset($_GET["v"]) ? sanitize ($_GET["v"]) : NULL;
 # Max, min, critical and warning values
 $max = isset($_GET["x"]) && is_numeric($_GET["x"]) ? $_GET["x"] : NULL;
@@ -529,6 +548,8 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   $graph_config["report_type"] = "standard";
   $graph_config["vertical_label"] = $vlabel;
   $graph_config["graph_scale"] = $graph_scale;
+  $graph_config["scale"] = $scale;
+  $graph_config["show_total"] = $show_total;
 
   // Reset graph title 
   if ( isset($_GET['title']) && $_GET['title'] != "") {
