@@ -98,7 +98,13 @@ foreach ( $cluster_names as $index => $clustername ) {
 	// List all hosts in the cluster
 	asort($cluster_array[$clustername]);
 	foreach ( $cluster_array[$clustername] as $index => $hostname ) {
-	  print '<li><a href="mobile_helper.php?show_host_metrics=1&h=' . $hostname . '&c=' . $clustername . '&r=' . $conf['default_time_range'] . '&cs=&ce=">' . strip_domainname($hostname) . '</a></li>';  
+	  print '<li><a href="mobile_helper.php?show_host_metrics=1&h=' . $hostname . '&c=' . $clustername . '&r=' . $conf['default_time_range'] . '&cs=&ce=">';
+    if ($conf['strip_domainname']) {
+      print strip_domainname($hostname);
+    } else {
+      print $hostname;
+    } 
+    print '</a></li>';  
 	}
 	?>
       </ul>
