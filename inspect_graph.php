@@ -10,11 +10,13 @@
   width:  800px;
 }
 </style>
+
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.crosshair.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.stack.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.multiselect.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.events.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="placeholder" style="width:800px;height:500px;"></div>
@@ -97,7 +99,6 @@ $(function () {
     plotRanges = null;
     plotAccordingToChoices();  
   });
-
   var plotOpt =  {
     lines: { show: true, fill: false },
     points: { show: false },
@@ -121,10 +122,15 @@ $(function () {
     var current_series_labels = 
       $("#select_series>option").map(function(){return $(this).text();});
 
-    // hard-code color indices to prevent them from shifting as
-    // choices are turned on/off
+    var start_time = Number.MAX_VALUE;
+    var end_time = 0;
+
     var i = 0;
     $.each(datasets, function(key, val) {
+      start_time = Math.min(val.data[0][0], start_time);
+      end_time = Math.max(val.data[val.data.length - 1][0], 
+			  end_time);
+
       if ($.inArray(val.label, current_series_labels) != -1)
 	return;
 
@@ -152,7 +158,41 @@ $(function () {
       gopt.button("refresh");
       first_time = false;
     }
-    
+
+    $.ajax({
+      url: "get_overlay_events.php?start=" + (start_time/1000) + "&end=" + (end_time/1000),
+      method: 'GET',
+      dataType: 'json',
+      success: onEventsReceived
+    });
+  }
+
+  function onEventsReceived(overlay_events) {
+    var events = [];
+    $.each(overlay_events, function(key, val) {
+	var event = {};
+	event['min'] = val['start_time'] * 1000;
+	event['max'] = val['end_time'] * 1000;
+	event['eventType'] = 'info';
+	event['title'] = val['summary'];
+	event['description'] = val['description'];
+	events[events.length] = event;
+      });
+
+    var event_types = {};
+    event_types["info"] = {eventType: "info", 
+                           level: 1,
+                           icon: {image: "img/red-pointer.png", 
+                                  width: 10, 
+                                  height: 10}};
+                
+    plotOpt.events = {
+      levels: 1,
+      data: events,
+      types: event_types,
+      xaxis: 1
+    };
+
     plotAccordingToChoices();
 
     if ((plotRanges == null) && (dataurl.indexOf("&r=custom") == -1))
@@ -227,6 +267,8 @@ $(function () {
   }
 
   function selectRangeHandler(event, ranges) {
+    if ($("#event_tooltip")[0])
+      return;
     plotRanges = ranges;
     plotAccordingToChoices();
   }
