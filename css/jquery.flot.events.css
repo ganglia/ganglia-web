@@ -1,0 +1,20 @@
+#event_tooltip {
+    position: absolute;
+    display: none;
+    border: 1px solid #fdd;
+    padding: 2px;
+    background-color: #fee;
+    opacity: 0.80;
+    font-size: smaller;
+    cursor:move;
+    z-index:2000;
+}
+
+#event_tooltip #title {
+    font-weight: bold;
+}
+
+#event_tooltip #type {
+    font-style: italic;
+}
+
