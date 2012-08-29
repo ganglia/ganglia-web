@@ -71,7 +71,7 @@ foreach ( $hosts as $index => $host ) {
         $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
         if (file_exists($filename)) {
             $command .= " DEF:'a$c'='$filename':'sum':AVERAGE";
-            $total_cmd .= ",a$c,ADDNAN";
+            $total_cmd .= ",a$c,+";
             $c++;
         } else {
             // Remove host from the list if the metric doesn't exist to
