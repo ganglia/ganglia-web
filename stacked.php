@@ -20,16 +20,24 @@ $command .= " --start -${start}s";
 $command .= " --end N";
 $command .= " --width 700";
 $command .= " --height 300";
-$command .= " --title '$clustername aggregated $metricname last $range'";
+if (isset($_GET['title'])) {
+  $command .= " --title " . escapeshellarg($_GET['title']);
+} else {
+  $command .= " --title " . escapeshellarg("$clustername aggregated $metricname last $range");
+}
 
-if (isset($_GET['x'])){ $command .= " --upper-limit '$_GET[x]'"; }
-if (isset($_GET['n'])){ $command .= " --lower-limit '$_GET[n]'"; }
+if (isset($_GET['x'])) { $command .= " --upper-limit " . escapeshellarg($_GET[x]); }
+if (isset($_GET['n'])) { $command .= " --lower-limit " . escapeshellarg($_GET[n]); }
 
 if (isset($_GET['x']) || isset($_GET['n'])) {
         $command .= " --rigid";
 } else {
         $command .= " --upper-limit '0'";
         $command .= " --lower-limit '0'";
+}
+
+if (isset($_GET['vl'])) {
+        $command .= " --vertical-label " . escapeshellarg($_GET['vl']);
 }
 
 $c = 1;
@@ -60,7 +68,7 @@ foreach ( $hosts as $index => $host ) {
         $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
         if (file_exists($filename)) {
             $command .= " DEF:'a$c'='$filename':'sum':AVERAGE";
-            $total_cmd .= ",a$c,+";
+            $total_cmd .= ",a$c,ADDNAN";
             $c++;
         } else {
             // Remove host from the list if the metric doesn't exist to
