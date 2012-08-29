@@ -62,6 +62,10 @@ foreach ( $hosts as $index => $host ) {
             $command .= " DEF:'a$c'='$filename':'sum':AVERAGE";
             $total_cmd .= ",a$c,+";
             $c++;
+        } else {
+            // Remove host from the list if the metric doesn't exist to
+            // avoid unsightly broken stacked graphs.
+            unset($hosts[$index]);
         }
 }
     
