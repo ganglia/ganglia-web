@@ -5,10 +5,9 @@
 //
 // Currently only query supported is
 //
-//
 // hostname=YOURHOSTNAME&search_type=exact
 //
-// will give you back the name of the cluster where host is in
+// will give you back the an array of cluster names where host is in
 /////////////////////////////////////////////////////////////////////////////
 
 $conf['gweb_root'] = dirname(dirname(__FILE__));
