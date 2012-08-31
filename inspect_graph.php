@@ -54,6 +54,7 @@ $(function () {
     
   var datasets = []; // global array of dataset objects {label, data, color}
   var plotRanges = null;
+  var next_unallocated_color_index = 0;
 
   var placeHolder = $("#placeholder");
   placeHolder.bind("plothover", hoverHandler);
@@ -110,7 +111,8 @@ $(function () {
       container: $("#graphlegend"),
       noColumns: 8
     },
-    grid: { hoverable: true, autoHighlight: true }
+    grid: { hoverable: true, autoHighlight: true },
+    series: {stack: null}
   };
 
   // then fetch the data with jQuery
@@ -125,17 +127,11 @@ $(function () {
     var start_time = Number.MAX_VALUE;
     var end_time = 0;
 
-    var i = 0;
     $.each(datasets, function(key, val) {
       start_time = Math.min(val.data[0][0], start_time);
       end_time = Math.max(val.data[val.data.length - 1][0], 
 			  end_time);
 
-      if ($.inArray(val.label, current_series_labels) != -1)
-	return;
-
-      if (typeof val.color == 'undefined')
-	val.color = i;
       // Explicity delete the stack attribute if it exists because stacking
       // is controlled locally. The incoming datasets will contain a 
       // stack attribute if they were generated from a stacked graph.
@@ -143,7 +139,13 @@ $(function () {
 	delete val.stack;
 	stacked = true;
       }
-      ++i;
+
+      if ($.inArray(val.label, current_series_labels) != -1)
+	return;
+
+      if (typeof val.color == 'undefined')
+	val.color = next_unallocated_color_index;
+      ++next_unallocated_color_index;
 
       var option = $('<option/>', {value: key, text: val.label});
       option.attr('selected', 'selected');
@@ -327,10 +329,7 @@ $(function () {
 
     plotOpt.lines.fill = stack;
     plotOpt.legend.noColumns = selected_series.length;
-    if (stack)
-      plotOpt.series = {stack: 1};
-    else
-      delete plotOpt.series;
+    plotOpt.series.stack = stack ? 1 : null;
 
     // Apply zoom if set
     if (plotRanges != null) {
