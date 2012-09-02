@@ -54,7 +54,7 @@ $(function () {
     
   var datasets = []; // global array of dataset objects {label, data, color}
   var plotRanges = null;
-  var next_unallocated_color_index = 0;
+  var graph_title = null;
 
   var placeHolder = $("#placeholder");
   placeHolder.bind("plothover", hoverHandler);
@@ -127,29 +127,33 @@ $(function () {
     var start_time = Number.MAX_VALUE;
     var end_time = 0;
 
-    $.each(datasets, function(key, val) {
-      start_time = Math.min(val.data[0][0], start_time);
-      end_time = Math.max(val.data[val.data.length - 1][0], 
+    var i = 0;
+    $.each(datasets, function(key, dataset) {
+      start_time = Math.min(dataset.data[0][0], start_time);
+      end_time = Math.max(dataset.data[dataset.data.length - 1][0], 
 			  end_time);
 
       // Explicity delete the stack attribute if it exists because stacking
       // is controlled locally. The incoming datasets will contain a 
       // stack attribute if they were generated from a stacked graph.
-      if ("stack" in val) {
-	delete val.stack;
+      if ("stack" in dataset) {
+	delete dataset.stack;
 	stacked = true;
       }
 
-      if ($.inArray(val.label, current_series_labels) != -1)
-	return;
+      if ((graph_title == null) && ("graph_title" in dataset))
+        $("#popup-dialog").dialog('option', 'title', dataset.graph_title);
 
-      if (typeof val.color == 'undefined')
-	val.color = next_unallocated_color_index;
-      ++next_unallocated_color_index;
+      if (typeof dataset.color == 'undefined')
+	dataset.color = i;
 
-      var option = $('<option/>', {value: key, text: val.label});
-      option.attr('selected', 'selected');
-      option.appendTo(series_select);
+      i++;
+
+      if ($.inArray(dataset.label, current_series_labels) == -1) {
+	var option = $('<option/>', {value: key, text: dataset.label});
+	option.attr('selected', 'selected');
+	option.appendTo(series_select);
+      }
     });
       
     series_select.multiselect('refresh');
