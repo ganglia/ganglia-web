@@ -54,6 +54,7 @@ $(function () {
     
   var datasets = []; // global array of dataset objects {label, data, color}
   var plotRanges = null;
+  var graph_title = null;
 
   var placeHolder = $("#placeholder");
   placeHolder.bind("plothover", hoverHandler);
@@ -110,7 +111,8 @@ $(function () {
       container: $("#graphlegend"),
       noColumns: 8
     },
-    grid: { hoverable: true, autoHighlight: true }
+    grid: { hoverable: true, autoHighlight: true },
+    series: {stack: null}
   };
 
   // then fetch the data with jQuery
@@ -126,28 +128,32 @@ $(function () {
     var end_time = 0;
 
     var i = 0;
-    $.each(datasets, function(key, val) {
-      start_time = Math.min(val.data[0][0], start_time);
-      end_time = Math.max(val.data[val.data.length - 1][0], 
+    $.each(datasets, function(key, dataset) {
+      start_time = Math.min(dataset.data[0][0], start_time);
+      end_time = Math.max(dataset.data[dataset.data.length - 1][0], 
 			  end_time);
 
-      if ($.inArray(val.label, current_series_labels) != -1)
-	return;
-
-      if (typeof val.color == 'undefined')
-	val.color = i;
       // Explicity delete the stack attribute if it exists because stacking
       // is controlled locally. The incoming datasets will contain a 
       // stack attribute if they were generated from a stacked graph.
-      if ("stack" in val) {
-	delete val.stack;
+      if ("stack" in dataset) {
+	delete dataset.stack;
 	stacked = true;
       }
-      ++i;
 
-      var option = $('<option/>', {value: key, text: val.label});
-      option.attr('selected', 'selected');
-      option.appendTo(series_select);
+      if ((graph_title == null) && ("graph_title" in dataset))
+        $("#popup-dialog").dialog('option', 'title', dataset.graph_title);
+
+      if (typeof dataset.color == 'undefined')
+	dataset.color = i;
+
+      i++;
+
+      if ($.inArray(dataset.label, current_series_labels) == -1) {
+	var option = $('<option/>', {value: key, text: dataset.label});
+	option.attr('selected', 'selected');
+	option.appendTo(series_select);
+      }
     });
       
     series_select.multiselect('refresh');
@@ -327,10 +333,7 @@ $(function () {
 
     plotOpt.lines.fill = stack;
     plotOpt.legend.noColumns = selected_series.length;
-    if (stack)
-      plotOpt.series = {stack: 1};
-    else
-      delete plotOpt.series;
+    plotOpt.series.stack = stack ? 1 : null;
 
     // Apply zoom if set
     if (plotRanges != null) {

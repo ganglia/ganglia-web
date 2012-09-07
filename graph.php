@@ -933,6 +933,9 @@ if ( $user['json_output'] ||
 
       if ($metric_array['graph_type'] == "stack")
         $gdata['stack'] = '1';
+
+      $gdata['graph_title'] = $rrdtool_graph['title'];
+
       $flot_array[] = $gdata;
 
       unset($data_array);
