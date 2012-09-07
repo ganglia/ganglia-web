@@ -244,9 +244,10 @@ $data->assign("node_menu", $node_menu);
 //////////////////// Build the metric menu ////////////////////////////////////
 
 if (count($metrics)) {
-  $firsthost = key($metrics);
-  foreach ($metrics[$firsthost] as $m => $foo)
-    $context_metrics[] = $m;
+  foreach ($metrics as $firsthost => $bar) {
+      foreach ($metrics[$firsthost] as $m => $foo)
+        $context_metrics[$m] = $m;
+  }
   foreach ($reports as $r => $foo)
     $context_metrics[] = $r;
 }
