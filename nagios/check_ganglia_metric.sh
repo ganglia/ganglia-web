@@ -28,10 +28,20 @@ then
   done
 else
    echo "Sample invocation $0 host=localhost.localdomain metric_name=load_one operator=more critical_value=1"
-   exit 1 
+   exit 3
 fi
 
-RESULT=`curl -s ${GANGLIA_URL}?${CHECK_ARGS}`
+COMMAND="curl -s ${GANGLIA_URL}?${CHECK_ARGS}"
+RESULT=`$COMMAND`
+RETURN_VALUE=$?
+# if curl fails we should fail
+if [ $RETURN_VALUE -ne 0 ]; then
+   echo "error fetching metric with command: ${COMMAND}"
+   echo "result: $RESULT"
+   echo "curl return_value: $RETURN_VALUE"
+   exit 3
+fi
+
 EXIT_CODE=`echo $RESULT | cut -f1 -d'|'`
 
 IFS='|'
@@ -51,3 +61,7 @@ for x in $EXIT_CODE; do
     exit 3;;
   esac
 done
+
+# If we got no results that is an error in and of itself
+echo "UNKNOWN: no result from ganglia"
+exit 3

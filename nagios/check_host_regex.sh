@@ -27,7 +27,9 @@ then
     CHECK_ARGS=${CHECK_ARGS}"&"${ARG}
   done
 else
-   echo "Sample invocation $0 hreg=web|apache checks=load_one,more,1:load_five,more,2"
+   echo "Sample invocation $0 hreg=web|apache checks=load_one,more,1:load_five,more,2 ignore_unknowns=0"
+   echo "   Set ignore_unknowns=1 if you want to ignore hosts that don't posses a particular metric."
+   echo "   This is useful if you want to use a catchall regex e.g. .* however some hosts lack a metric"
    exit 1 
 fi
 

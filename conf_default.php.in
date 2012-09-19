@@ -194,7 +194,9 @@ $conf['time_ranges'] = array(
    'day'=>86400,
    'week'=>604800,
    'month'=>2419200,
-   'year'=>31449600
+   'year'=>31449600,
+   # Needs to be an entry here to support 'r=job' in the query args to graph.php
+   'job'=>0
 );
 
 # this key must exist in $conf['time_ranges']

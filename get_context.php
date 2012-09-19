@@ -62,6 +62,9 @@ $user['cs'] = isset($_GET["cs"]) ?
     escapeshellcmd($_GET["cs"]) : NULL;
 $user['ce'] = isset($_GET["ce"]) ?
     escapeshellcmd($_GET["ce"]) : NULL;
+# Custom step, primarily for use in exporting the raw data from graph.php
+$user['step'] = isset($_GET["step"]) ?
+    clean_number( $_GET["step"] ) : NULL;
 # The direction we are travelling in the grid tree
 $user['gridwalk'] = isset($_GET["gw"]) ?
     escapeshellcmd( clean_string( $_GET["gw"] ) ) : NULL;

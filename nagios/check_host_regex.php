@@ -9,12 +9,15 @@
 #
 # You need to supply following GET values
 #
-#  host = "Hostname"
+#  hreg = "Host Regular Expression"
 #  checks = is a list of checks separated  with a colon. Check is defined by
 #  comma delimiting following
-#  metric_name e.g. load_one, bytes_out
-#  operator for critical condition e.g. less, more, equal, notequal
-#  critical_value e.g. value for critical
+#      metric_name e.g. load_one, bytes_out
+#      operator for critical condition e.g. less, more, equal, notequal
+#      critical_value e.g. value for critical
+#  ignore_unknowns = ignore unknown values, by default this is set to 0 (false). This  
+#      option is useful if you are checking a large number of hosts and some may not
+#      have a particular metric.
 #
 #  Example would be
 #
@@ -31,6 +34,7 @@ $debug = 0;
 if ( isset($_GET['hreg']) && isset($_GET['checks']) ) {
    $host_reg = $_GET['hreg'];
    # Checks are : delimited
+   $ignore_unknowns = isset($_GET['ignore_unknowns']) && $_GET['ignore_unknowns'] == 1 ? 1 : 0;
    $checks = explode(":", $_GET['checks']);
 } else {
    die("You need to supply hreg (host regex) and list of checks of format metrics,operator,critical value. Multiple checks can be supplied separated using a colon");
@@ -98,10 +102,12 @@ foreach ( $ganglia_hosts_array as $index => $hostname ) {
 	 unset($pieces);
 	 
 	 # Check for the existence of a metric
-	 if ( isset($metrics[$hostname][$metric_name]['VAL']) ) {
+	 if ( isset($metrics[$hostname][$metric_name]['VAL'])  ) {
 	   $metric_value = $metrics[$hostname][$metric_name]['VAL'];
 	 } else {
-	   $results_notok[] =  "UNKNOWN " . $hostname . " " . $metric_name . " not found";
+	   if ( !$ignore_unknowns ) {
+	    $results_notok[] =  "UNKNOWN " . $hostname . " " . $metric_name . " not found";
+	   }
 	   continue;
 	 }
 	 
