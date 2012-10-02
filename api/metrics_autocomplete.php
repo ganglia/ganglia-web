@@ -6,8 +6,6 @@ include_once $conf['gweb_root'] . "/eval_conf.php";
 include_once $conf['gweb_root'] . "/lib/common_api.php";
 include_once $conf['gweb_root'] . "/functions.php";
 
-ganglia_cache_metrics();
-
 global $metrics;
 
 if($conf['nagios_cache_enabled'] && file_exists($conf['nagios_cache_file'])){
@@ -15,12 +13,16 @@ if($conf['nagios_cache_enabled'] && file_exists($conf['nagios_cache_file'])){
     	// snag it and return it if it is still fresh
 	$time_diff = time() - filemtime($conf['nagios_cache_file']);
 	$expires_in = $conf['nagios_cache_time'] - $time_diff;
-     	if( $time_diff < $conf['nagios_cache_time']){
-		if ( $debug == 1 ) {
-		  error_log("DEBUG: Fetching data from cache. Expires in " . $expires_in . " seconds.\n");
-		}
-     		$metrics = unserialize(file_get_contents($conf['nagios_cache_file']));
-     	}
+  if( $time_diff < $conf['nagios_cache_time']){
+    if ( $debug == 1 ) {
+      error_log("DEBUG: Fetching data from cache. Expires in " . $expires_in . " seconds.\n");
+    }
+    $metrics = unserialize(file_get_contents($conf['nagios_cache_file']));
+  } else {
+    ganglia_cache_metrics();
+  }
+} else {
+  ganglia_cache_metrics();
 }
 
 if ( ! is_array( $metrics ) ) {
@@ -74,14 +76,17 @@ if ( isset($_GET['term']) ) {
         closedir($handle);
       }
       sort($context_metrics);
+      $c = 0;
       foreach ($context_metrics as $key) {
         $url = rawurlencode($key);
         if (stripos($key, $term) !== false) {
+          if ($c > 30) { break; }
           $picker_metrics[] = array(
             'value' => $url,
             'label' => $key,
             'id' => $key
           );
+          $c++;
         }
       }
     }
