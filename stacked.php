@@ -47,6 +47,7 @@ $total_cmd = " CDEF:'total'=0";
 retrieve_metrics_cache();
 
 unset($hosts);
+$max_len = 0;
 
 foreach($index_array['cluster'] as $host => $cluster_array ) {
     
@@ -59,10 +60,13 @@ foreach($index_array['cluster'] as $host => $cluster_array ) {
                             $hosts[] = $host;        
             } else {
                     $hosts[] = $host;
+                    $max_len = max(strlen($host), $max_len);
             }
         }    
     }
 }
+
+sort($hosts);
 
 foreach ( $hosts as $index => $host ) {
         $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
@@ -90,7 +94,7 @@ foreach($hosts as $host) {
     $color = get_col($cx);
     if ($conf['strip_domainname'])
          $host = strip_domainname($host);
-    $command .= " STACK:'a$c'#$color:'$host'";
+    $command .= " STACK:'a$c'#$color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
     $c++;
 }
 
