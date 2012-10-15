@@ -46,6 +46,9 @@ $total_cmd = " CDEF:'total'=0";
 retrieve_metrics_cache();
 
 unset($hosts);
+#####################################################################
+# Keep track of maximum host length so we can neatly stack metrics
+$max_len = 0;
 
 foreach($index_array['cluster'] as $host => $cluster_array ) {
     
@@ -54,11 +57,19 @@ foreach($index_array['cluster'] as $host => $cluster_array ) {
         if ( $cluster == $clustername ) {
             // If host regex is specified make sure it matches
             if ( isset($_REQUEST["host_regex"] ) ) {
-                    if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) )
-                            $hosts[] = $host;        
+              if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) ) {
+                $hosts[] = $host;
+              }
             } else {
-                    $hosts[] = $host;
+                $hosts[] = $host;
             }
+            
+            #
+            if ($conf['strip_domainname'])
+              $host_len = strlen(strip_domainname($host));
+            else  
+              $host_len = strlen($host);
+            $max_len = max($host_len, $max_len);
         }    
     }
 }
@@ -88,9 +99,9 @@ foreach($hosts as $index =>  $host) {
     if ($conf['strip_domainname'])
          $host = strip_domainname($host);
     if ( $index != 0 )
-       $command .= " STACK:'a$index'#$color:'$host'";
+       $command .= " STACK:'a$index'#$color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
     else 
-       $command .= " AREA:'a$index'#$first_color:'$host'";
+       $command .= " AREA:'a$index'#$first_color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
 
     $c++;
 }
