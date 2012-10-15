@@ -40,7 +40,6 @@ if (isset($_GET['vl'])) {
         $command .= " --vertical-label " . escapeshellarg($_GET['vl']);
 }
 
-$c = 1;
 $total_cmd = " CDEF:'total'=0";
 
 # We'll get the list of hosts from here
@@ -64,11 +63,13 @@ foreach($index_array['cluster'] as $host => $cluster_array ) {
     }
 }
 
+sort($hosts);
+
 foreach ( $hosts as $index => $host ) {
         $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
         if (file_exists($filename)) {
-            $command .= " DEF:'a$c'='$filename':'sum':AVERAGE";
-            $total_cmd .= ",a$c,ADDNAN";
+            $command .= " DEF:'a$index'='$filename':'sum':AVERAGE";
+            $total_cmd .= ",a$index,ADDNAN";
             $c++;
         } else {
             // Remove host from the list if the metric doesn't exist to
@@ -77,28 +78,29 @@ foreach ( $hosts as $index => $host ) {
         }
 }
     
-$mean_cmd = " CDEF:'mean'=total,$c,/";
+$mean_cmd = " CDEF:'mean'=total,$index,/";
 
-$first = array_shift($hosts);
-$color = get_col(0);
-$command .= " AREA:'a1'#$color:'$first'";
+$first_color = get_col(0);
 
-$c = 1;
-
-foreach($hosts as $host) {
-    $cx = $c/(1+count($hosts));
+foreach($hosts as $index =>  $host) {
+    $cx = $index/(1+count($hosts));
     $color = get_col($cx);
     if ($conf['strip_domainname'])
          $host = strip_domainname($host);
-    $command .= " STACK:'a$c'#$color:'$host'";
+    if ( $index != 0 )
+       $command .= " STACK:'a$index'#$color:'$host'";
+    else 
+       $command .= " AREA:'a$index'#$first_color:'$host'";
+
     $c++;
 }
 
-$command .= " LINE1:'a1'#333";
+#$command .= " LINE1:'a0'#333";
 
 $c = 1;
-foreach($hosts as $host) {
-    $command .= " STACK:'a$c'#000000";
+foreach($hosts as $index => $host) {
+    #if ( $index != 0 )
+#       $command .= " STACK:'a$index'#000000";
     $c++;
 }
 
