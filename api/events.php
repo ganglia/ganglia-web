@@ -97,6 +97,11 @@ switch ( $_REQUEST['action'] ) {
 
     break;
 
+  case "list":
+
+    $message = ganglia_events_get();
+    break;
+
   default:
 
     api_return_error( "No valid action specified" );
