@@ -40,13 +40,15 @@ if (isset($_GET['vl'])) {
         $command .= " --vertical-label " . escapeshellarg($_GET['vl']);
 }
 
-$c = 1;
 $total_cmd = " CDEF:'total'=0";
 
 # We'll get the list of hosts from here
 retrieve_metrics_cache();
 
 unset($hosts);
+#####################################################################
+# Keep track of maximum host length so we can neatly stack metrics
+$max_len = 0;
 
 foreach($index_array['cluster'] as $host => $cluster_array ) {
     
@@ -55,11 +57,19 @@ foreach($index_array['cluster'] as $host => $cluster_array ) {
         if ( $cluster == $clustername ) {
             // If host regex is specified make sure it matches
             if ( isset($_REQUEST["host_regex"] ) ) {
-                    if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) )
-                            $hosts[] = $host;        
+              if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) ) {
+                $hosts[] = $host;
+              }
             } else {
-                    $hosts[] = $host;
+                $hosts[] = $host;
             }
+            
+            #
+            if ($conf['strip_domainname'])
+              $host_len = strlen(strip_domainname($host));
+            else  
+              $host_len = strlen($host);
+            $max_len = max($host_len, $max_len);
         }    
     }
 }
@@ -70,8 +80,8 @@ sort($hosts);
 foreach ( $hosts as $index => $host ) {
         $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
         if (file_exists($filename)) {
-            $command .= " DEF:'a$c'='$filename':'sum':AVERAGE";
-            $total_cmd .= ",a$c,+";
+            $command .= " DEF:'a$index'='$filename':'sum':AVERAGE";
+            $total_cmd .= ",a$index,ADDNAN";
             $c++;
         } else {
             // Remove host from the list if the metric doesn't exist to
@@ -80,28 +90,29 @@ foreach ( $hosts as $index => $host ) {
         }
 }
     
-$mean_cmd = " CDEF:'mean'=total,$c,/";
+$mean_cmd = " CDEF:'mean'=total,$index,/";
 
-$first = array_shift($hosts);
-$color = get_col(0);
-$command .= " AREA:'a1'#$color:'$first'";
+$first_color = get_col(0);
 
-$c = 1;
-
-foreach($hosts as $host) {
-    $cx = $c/(1+count($hosts));
+foreach($hosts as $index =>  $host) {
+    $cx = $index/(1+count($hosts));
     $color = get_col($cx);
     if ($conf['strip_domainname'])
          $host = strip_domainname($host);
-    $command .= " STACK:'a$c'#$color:'$host'";
+    if ( $index != 0 )
+       $command .= " STACK:'a$index'#$color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
+    else 
+       $command .= " AREA:'a$index'#$first_color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
+
     $c++;
 }
 
-$command .= " LINE1:'a1'#333";
+#$command .= " LINE1:'a0'#333";
 
 $c = 1;
-foreach($hosts as $host) {
-    $command .= " STACK:'a$c'#000000";
+foreach($hosts as $index => $host) {
+    #if ( $index != 0 )
+#       $command .= " STACK:'a$index'#000000";
     $c++;
 }
 
