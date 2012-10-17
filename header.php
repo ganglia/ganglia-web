@@ -13,10 +13,7 @@ if (isset($_GET['date_only'])) {
 !isset($metricname) and $metricname = "";
 !isset($context_metrics) and $context_metrics = "";
 
-if ( $context == "control" && $controlroom < 0 )
-      $header = "header-nobanner";
-else
-      $header = "header";
+$header = ( $context == "control" && $controlroom < 0 ) ? "header-nobanner" : "header";
 
 #
 # sacerdoti: beginning of Grid tree state handling
@@ -191,10 +188,10 @@ if (($context != 'views') && ($context != 'compare_hosts')) {
       if ($k == $self) continue;
       if (isset($v['GRID']) and $v['GRID']) {
         $url = $v['AUTHORITY'];
-        $node_menu .="<OPTION VALUE=\"$url\">$k $meta_designator\n";
+        $node_menu .="<option value=\"$url\">$k $meta_designator\n";
       } else {
         $url = rawurlencode($k);
-        $node_menu .="<OPTION VALUE=\"$url\">$k\n";
+        $node_menu .="<option value=\"$url\">$k\n";
       }
     }
     $node_menu .= "</select>\n";
@@ -214,22 +211,22 @@ if (($context != 'views') && ($context != 'compare_hosts')) {
         uksort($hosts_up, "strnatcmp");
         foreach ($hosts_up as $k=> $v) {
           $url = rawurlencode($k);
-          $node_menu .= "<option value=\"$url\">$k\n";
+          $node_menu .= "<option value=\"$url\">$k</option>\n";
         }
       }
       if (is_array($hosts_down)) {
         uksort($hosts_down, "strnatcmp");
         foreach ($hosts_down as $k=> $v) {
           $url = rawurlencode($k);
-          $node_menu .= "<option value=\"$url\">$k\n";
+          $node_menu .= "<option value=\"$url\">$k</option>\n";
         }
       }
       $node_menu .= "</select>\n";
     } else {
-      $node_menu .= "<B>No Hosts</B>\n";
+      $node_menu .= "<b>No Hosts</b>\n";
     }
   } else {
-    $node_menu .= "<B>$hostname</B>\n";
+    $node_menu .= "<b>$hostname</b>\n";
     $node_menu .= hiddenvar("h", $hostname);
   }
 
@@ -265,11 +262,8 @@ if (!$physical) {
 
    $range_menu = "Last&nbsp;&nbsp;";
    foreach ($context_ranges as $v) {
-      $url=rawurlencode($v);
-      if ($v == $range)
-$checked = "checked=\"checked\"";
-      else
-$checked = "";
+     $url=rawurlencode($v);
+     $checked = ($v == $range) ? "checked=\"checked\" " : "";
       $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
 
    }
@@ -349,31 +343,31 @@ $data->assign("sort_menu", $sort_menu );
 if ($context == "physical" or $context == "cluster" or $context == 'host' )
    {
       # Present a width list
-      $cols_menu = "<SELECT NAME=\"hc\" OnChange=\"ganglia_form.submit();\">\n";
+      $cols_menu = "<select name=\"hc\" OnChange=\"ganglia_form.submit();\">\n";
 
       foreach(range(0,25) as $cols)
          {
-            $cols_menu .= "<OPTION VALUE=$cols ";
+            $cols_menu .= "<option value=$cols ";
             if ($cols == $conf['hostcols'])
-               $cols_menu .= "SELECTED";
+               $cols_menu .= "selected";
             $cols_menu .= ">$cols\n";
          }
-      $cols_menu .= "</SELECT>\n";
+      $cols_menu .= "</select>\n";
 
-      $size_menu = '<SELECT NAME="z" OnChange="ganglia_form.submit();">';
+      $size_menu = '<select name="z" OnChange="ganglia_form.submit();">';
       
       $size_arr = $conf['graph_sizes_keys'];
       foreach ($size_arr as $size) {
           if ($size == "default")
               continue;
-          $size_menu .= "<OPTION VALUE=\"$size\"";
+          $size_menu .= "<option value=\"$size\"";
           if ( ( isset($clustergraphsize) && ($size === $clustergraphsize))
                || (!isset($clustergraphsize) && ($size === 'small' )) || ( !isset($_GET['z']) && $context == 'host' && $size == "medium" ) ) {
-              $size_menu .= " SELECTED";
+              $size_menu .= " selected";
           }
-          $size_menu .= ">$size</OPTION>\n";
+          $size_menu .= ">$size</option>\n";
       }
-      $size_menu .= "</SELECT>\n";
+      $size_menu .= "</select>\n";
   
       # Assign template variable in cluster view.
    }
