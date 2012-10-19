@@ -359,7 +359,7 @@ switch ($context)
   case "meta":
     $rrd_dir = $conf['rrds'] . "/__SummaryInfo__";
     $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/__SummaryInfo__";
-    $title = "$self Grid";
+    $title = "$self ${conf['meta_designator']}";
     break;
   case "grid":
     $rrd_dir = $conf['rrds'] . "/$grid/__SummaryInfo__";
@@ -367,7 +367,7 @@ switch ($context)
     if (preg_match('/grid/i', $gridname))
         $title  = $gridname;
     else
-        $title  = "$gridname Grid";
+        $title  = "$gridname ${conf['meta_designator']}";
     break;
   case "cluster":
     $rrd_dir = $conf['rrds'] . "/$clustername/__SummaryInfo__";
