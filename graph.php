@@ -579,34 +579,44 @@ switch ( $conf['graph_engine'] ) {
 	$php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
       $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
       
-      # Check for path traversal issues by making sure real path is actually in graphdir
       
-      if( is_file( $php_report_file ) and 
-	  dirname(realpath($php_report_file)) ==  $conf['graphdir'] ) {
-        include_once $php_report_file;
-        $graph_function = "graph_${graph}";
-	if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
-	    count($graph_arguments)) {
-	  $rrdtool_graph['arguments'] = $graph_arguments;
-	  // Pass by reference call, $rrdtool_graph modified inplace
-	  $graph_function($rrdtool_graph);
-	  unset($rrdtool_graph['arguments']);
-	} else
-	  $graph_function($rrdtool_graph);
-      } else if ( is_file( $json_report_file ) and dirname(realpath($json_report_file)) ==  $conf['graphdir'] ) {
-        $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
-
-        # We need to add hostname and clustername if it's not specified
-        foreach ( $graph_config['series'] as $index => $item ) {
-          if ( ! isset($graph_config['series'][$index]['hostname'])) {
-            $graph_config['series'][$index]['hostname'] = $raw_host;
-            if (isset($grid))
-               $graph_config['series'][$index]['clustername'] = $grid;
-            else
-               $graph_config['series'][$index]['clustername'] = $clustername;
+      if( is_file( $php_report_file ) ) {
+         
+          # Check for path traversal issues by making sure real path is actually in graphdir
+          if ( dirname(realpath($php_report_file)) !=  $conf['graphdir'] ) {
+            $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"Check \$conf[graphdir] should not be relative path"';
+          } else {
+            include_once $php_report_file;
+            $graph_function = "graph_${graph}";
+            if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
+                count($graph_arguments)) {
+              $rrdtool_graph['arguments'] = $graph_arguments;
+              // Pass by reference call, $rrdtool_graph modified inplace
+              $graph_function($rrdtool_graph);
+              unset($rrdtool_graph['arguments']);
+            } else {
+              $graph_function($rrdtool_graph);
+            }
           }
+      } else if ( is_file( $json_report_file ) ) {
+        
+        if ( dirname(realpath($json_report_file)) !=  $conf['graphdir'] ) {
+          $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"Check \$conf[graphdir] should not be relative path"';
+        } else {
+          $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
+  
+          # We need to add hostname and clustername if it's not specified
+          foreach ( $graph_config['series'] as $index => $item ) {
+            if ( ! isset($graph_config['series'][$index]['hostname'])) {
+              $graph_config['series'][$index]['hostname'] = $raw_host;
+              if (isset($grid))
+                 $graph_config['series'][$index]['clustername'] = $grid;
+              else
+                 $graph_config['series'][$index]['clustername'] = $clustername;
+            }
+          }
+          build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
         }
-        build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
       }
     } else { 
       build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
@@ -616,7 +626,7 @@ switch ( $conf['graph_engine'] ) {
     if (!array_key_exists('series', $rrdtool_graph) || 
         !strlen($rrdtool_graph['series']) ) {
 	$rrdtool_graph[ 'series' ] = 
-	  'HRULE:1#FFCC33:"No matching metrics detected"';
+	  'HRULE:1#FFCC33:"Empty RRDtool command. Likely bad graph config"';
     }
   
     # Make small graphs (host list) cleaner by removing the too-big
