@@ -99,6 +99,12 @@ $conf['metriccols'] = 2;
 #
 $conf['show_meta_snapshot'] = "yes";
 
+#
+# What you want to call the meta level:
+# Suggested values "Grid" or "Campus"
+#
+$conf['meta_designator'] = "Grid";
+
 # 
 # The default refresh frequency on pages.
 #

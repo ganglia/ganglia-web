@@ -155,7 +155,7 @@ $data->assign("alt_view", $alt_view);
 $node_menu = "";
 if (($context != 'views') && ($context != 'compare_hosts')) {
   if ($parentgrid) {
-    $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">". "$parentgrid $meta_designator</A></B> ";
+    $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">". "$parentgrid ${conf['meta_designator']}</A></B> ";
     $node_menu .= "<B>&gt;</B>\n";
   }
 
@@ -163,7 +163,7 @@ if (($context != 'views') && ($context != 'compare_hosts')) {
   if ((($self != "unspecified") && !$parentgrid) ||
       $conf['always_display_grid_view']) {
     $mygrid = ($self == "unspecified") ? "" : $self;
-    $node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid $meta_designator</A></B> ";
+    $node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid ${conf['meta_designator']}</A></B> ";
     $node_menu .= "<B>&gt;</B>\n";
   }
 
@@ -191,7 +191,7 @@ if (($context != 'views') && ($context != 'compare_hosts')) {
       if ($k == $self) continue;
       if (isset($v['GRID']) and $v['GRID']) {
         $url = $v['AUTHORITY'];
-        $node_menu .="<OPTION VALUE=\"$url\">$k $meta_designator\n";
+        $node_menu .="<OPTION VALUE=\"$url\">$k ${conf['meta_designator']}\n";
       } else {
         $url = rawurlencode($k);
         $node_menu .="<OPTION VALUE=\"$url\">$k\n";
