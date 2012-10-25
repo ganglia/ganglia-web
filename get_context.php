@@ -2,7 +2,6 @@
 
 include_once "./functions.php";
 
-$meta_designator = "Grid";
 $cluster_designator = "Cluster Overview";
 
 ///////////////////////////////////////////////////////////////////////////////
