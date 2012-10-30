@@ -75,7 +75,8 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
        $unique_id = "a" . $index;
 
        $total_ids[] = $unique_id;
-     
+        
+       # Pad the label with spaces 
        $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
 
        // use custom DS defined in json template if it's 
@@ -296,6 +297,10 @@ $summary = isset($_GET["su"]) ? 1 : 0;
 $debug = isset($_GET['debug']) ? clean_number(sanitize($_GET["debug"])) : 0;
 $showEvents = isset($_GET["event"]) ? sanitize ($_GET["event"]) : "show";
 $user['time_shift'] = isset($_GET["ts"]) ? clean_number(sanitize($_GET["ts"])) : 0;
+
+#
+$user['view_name'] = isset($_GET["vn"]) ? sanitize ($_GET["vn"]) : NULL;
+$user['item_id'] = isset($_GET["item_id"]) ? sanitize ($_GET["item_id"]) : NULL;
 
 $command    = '';
 $graphite_url = '';
@@ -563,6 +568,30 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
     $title = "Aggregate";
   }
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Composite graphs/reports specified in a view
+///////////////////////////////////////////////////////////////////////////
+if ( $user['view_name'] and $user['item_id'] ) {
+  
+  $available_views = get_available_views();
+  foreach ( $available_views as $id => $view ) {
+    # Find view settings
+    if ( $user['view_name'] == $view['view_name'] )
+      break;
+  }
+
+  unset($available_views);  
+
+  foreach ( $view['items'] as $index => $graph_config ) {
+    if (  $user['item_id'] == $graph_config['item_id'] )
+      break;
+  }
+
+  unset($view);
+  build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Check what graph engine we are using
@@ -1268,7 +1297,7 @@ if ( $showEvents == "show" &&
 if ( $user['trend_line'] ) {
   
     $command .= " VDEF:D2=sum,LSLSLOPE VDEF:H2=sum,LSLINT CDEF:avg2=sum,POP,D2,COUNT,*,H2,+";
-    $command .= " 'LINE3:avg2#53E2FF:Trend:dashes'";
+    $command .= " 'LINE3:avg2" . $conf['trend_line_color'] . ":Trend:dashes'";
 
 }
 
@@ -1276,6 +1305,7 @@ if ( $user['trend_line'] ) {
 // Timeshift is only available to metric graphs
 ////////////////////////////////////////////////////////////////////////////////
 if ( $user['time_shift'] && $graph == "metric" ) {
+
 
     preg_match_all("/(DEF|CDEF):((([^ \"'])+)|(\"[^\"]*\")|('[^']*'))+/", 
                  " " . $rrdtool_graph['series'], 
@@ -1288,7 +1318,7 @@ if ( $user['time_shift'] && $graph == "metric" ) {
     $def = str_replace("DEF:'sum'", "DEF:'sum2'", trim($matches[0][0])) . ":start=end-" . $offset;
     
     $command .= " " . $def . " SHIFT:sum2:" . $start;
-    $command .= " 'LINE2:sum2#FFE466:Previous " . $range . ":dashes'";
+    $command .= " 'LINE2:sum2" . $conf['timeshift_line_color'] . ":Previous " . $range . ":dashes'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

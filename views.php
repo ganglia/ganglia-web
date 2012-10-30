@@ -15,9 +15,9 @@ $base = isset($_GET['base']) ? $_GET['base'] . "/" : "";
 
 <html>
 <head>
-<script type="text/javascript" src="<?php print $base; ?>js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="<?php print $base; ?>js/jquery-ui-1.8.14.custom.min.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.8.14.custom.min.css" rel="stylesheet"/>
+<script type="text/javascript" src="<?php print $base; ?>js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="<?php print $base; ?>js/jquery-ui-1.9.1.custom.min.js"></script>
+<link type="text/css" href="css/smoothness/jquery-ui-1.9.1.custom.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="./styles.css" type="text/css">
 </head>
 <body>

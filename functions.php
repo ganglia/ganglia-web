@@ -681,8 +681,8 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	  }
 
-    if ( isset($item['glegend']) )
-      $graph_args_array[] = "glegend=" . $item["glegend"];
+          if ( isset($item['glegend']) )
+            $graph_args_array[] = "glegend=" . $item["glegend"];
 
 	  if ( isset($item['cluster']) ) {
 	    $graph_args_array[] = "c=" . urlencode($item['cluster']);
@@ -699,8 +699,17 @@ function get_view_graph_elements($view) {
 	  );
 
 	  unset($graph_args_array);
-	// It's standard metric graph
-	} else {
+          
+        // Check whether it's a composite graph/report. It needs to have an item id
+	} else if ( $item['item_id'] ) {
+          
+	  $graph_args_array[] = "vn=" . $view['view_name'];
+          $graph_args_array[] = "item_id=" . $item['item_id'];
+	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array)
+	  );
+          
+	// It's standard metric graph          
+        } else {
 	  // Is it a metric or a graph(report)
 	  if ( isset($item['metric']) ) {
 	    $graph_args_array[] = "m=" . $item['metric'];
