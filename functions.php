@@ -707,6 +707,7 @@ function get_view_graph_elements($view) {
           $graph_args_array[] = "item_id=" . $item['item_id'];
 	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array)
 	  );
+          unset($graph_args_array);
           
 	// It's standard metric graph          
         } else {

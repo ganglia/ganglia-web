@@ -129,7 +129,7 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
 
          // Percentile lines
          case "percentile":
-            $percentile = floatval($item['percentile']);
+            $percentile = isset($item['percentile']) ? floatval($item['percentile']): 95;
             $graphdef .= "VDEF:t${unique_id}=${unique_id},${percentile},PERCENT ";
             isset($item['line_width']) && in_array( $item['line_width'], $line_widths) ? 
               $line_width = $item['line_width'] : $line_width = "1";
