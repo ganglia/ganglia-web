@@ -589,6 +589,9 @@ if ( $user['view_name'] and $user['item_id'] ) {
   }
 
   unset($view);
+
+  $title = "";
+  
   build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
 }
 
