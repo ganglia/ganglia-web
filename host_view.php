@@ -70,6 +70,10 @@ $data->assign("additional_cluster_img_html_args", $additional_cluster_img_html_a
 
 foreach ( $reports["included_reports"] as $index => $report_name ) {
   if ( ! in_array( $report_name, $reports["excluded_reports"] ) ) {
+    # Only show metrics that actually exist for this host
+    if (isset($conf['report_to_metric'][$report_name]) && 
+	!isset($metrics[$conf['report_to_metric'][$report_name]]))
+      continue;
     $graph_anchor = "<a href=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large&amp;c=$cluster_url\">";
 
     $addMetricBtn = "<button class=\"cupid-green\" title=\"Metric Actions - Add to View, etc\" onclick=\"metricActions('{$hostname}','{$report_name}','graph','');  return false;\">+</button>";

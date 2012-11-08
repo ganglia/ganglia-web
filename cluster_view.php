@@ -364,7 +364,8 @@ function get_cluster_optional_reports($conf,
                                       $clustername, 
                                       $get_metric_string,
                                       $localtime,
-                                      $data) {
+                                      $data,
+                                      $metrics) {
   $cluster_url = rawurlencode($clustername);
   $graph_args = "c=$cluster_url&amp;$get_metric_string&amp;st=$localtime";
 
@@ -415,6 +416,11 @@ function get_cluster_optional_reports($conf,
 
  foreach ($reports["included_reports"] as $index => $report_name ) {
    if (! in_array( $report_name, $reports["excluded_reports"])) {
+     # Only show metrics that actually exist for this cluster (we'll use
+     # the first host in the cluster as our sample)
+     if (isset($conf['report_to_metric'][$report_name]) &&
+         !isset($metrics[key($metrics)][$conf['report_to_metric'][$report_name]]))
+       continue;
      $optional_reports .= "<A HREF=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large\">
     <IMG BORDER=0 style=\"padding:2px;\" $additional_cluster_img_html_args title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium\"></A>
 ";
@@ -508,7 +514,8 @@ if (! $refresh) {
 			       $clustername, 
 			       $get_metric_string,
 			       $cluster[LOCALTIME],
-			       $data);
+			       $data,
+			       $metrics);
   
   ///////////////////////////////////////////////////////////////////////////////
   // Begin Host Display Controller

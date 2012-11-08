@@ -192,6 +192,17 @@ $conf['cluster_hide_down_hosts'] = false;
 # in the UI or default.json. Please do not use 
 #$conf['optional_graphs'] = array('packet');
 
+#
+# If you have different hosts reporting different metrics you may wish
+# to show reports for those metrics only on the hosts that have them.
+# This array maps metric names to report names- if the metric in question
+# isn't present, the report won't be shown.
+#
+#$conf['report_to_metric'] = array(
+#       "packet_report" => "pkts_in"
+#);
+#
+
 # Enable Zoom support on graphs
 $conf['zoom_support'] = true;
 
