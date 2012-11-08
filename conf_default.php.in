@@ -362,6 +362,10 @@ $conf['overlay_events_color_map_file'] = $conf['conf_dir'] . "/event_color.json"
 $conf['overlay_events_tick_alpha']  = '30';
 $conf['overlay_events_shade_alpha'] = '20';
 
+# Show a 'Nagios Status' button in node and host context
+$conf['nagios_status_button'] = false;
+$conf['nagios_status_url'] = 'http://localhost/nagios/cgi-bin/status.cgi';
+
 # Colors to use e.g. in graph_colors
 $conf['graph_colors'] = array("0000A3", "FF3300", "FFCC33", "00CC66", "B88A00", "33FFCC", "809900", "FF3366", "FF33CC", "CC33FF", "CCFF33", "FFFF66", "33CCFF");
 
