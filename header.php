@@ -148,6 +148,9 @@ if ($context == "cluster") {
        $alt_view .= '&nbsp;&nbsp;<button onclick="return false" id="delete_view_button">Delete View</button>';
    }
 }
+if (($context == "host" || $context == "node") && $conf['nagios_status_button'] == true) {
+   $alt_view .= "&nbsp;&nbsp;<button class=\"header_btn\" onclick=\"window.location='${conf['nagios_status_url']}?host=$hostname';return false;\">Nagios Status</button>";
+}
 
 $data->assign("alt_view", $alt_view);
 
