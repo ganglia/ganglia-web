@@ -242,6 +242,15 @@ function build_graphite_series( $config, $host_cluster = "" ) {
   return $output;
 }
 
+function build_value_for_json( $value ) {
+  if ( is_numeric( $value ) )
+    $val = floatval($value);
+  else
+    $val = $value;
+
+  return $val;
+}
+
 $gweb_root = dirname(__FILE__);
 
 # RFM - Added all the isset() tests to eliminate "undefined index"
@@ -935,11 +944,11 @@ if ( $user['json_output'] ||
     if ( is_array($values["v"]) ) {
       foreach ( $values["v"] as $key => $value ) {
         $output_array[$key]["datapoints"][] = 
-	  array(floatval($value), intval($values['t']));
+	  array(build_value_for_json($value), intval($values['t']));
       }
     } else {
       $output_array[0]["datapoints"][] = 
-	array(floatval($values["v"]), intval($values['t']));
+	array(build_value_for_json($values["v"]), intval($values['t']));
     }
 
   }
