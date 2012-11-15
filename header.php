@@ -7,6 +7,108 @@ if (isset($_GET['date_only'])) {
   exit(0);
 }
 
+function make_size_menu($clustergraphsize, $context) {
+  global $conf;
+
+  $size_menu = '<SELECT NAME="z" OnChange="ganglia_form.submit();">';
+      
+  $size_arr = $conf['graph_sizes_keys'];
+  foreach ($size_arr as $size) {
+    if ($size == "default")
+      continue;
+    $size_menu .= "<OPTION VALUE=\"$size\"";
+    if ((isset($clustergraphsize) && ($size === $clustergraphsize)) || 
+	(!isset($clustergraphsize) && ($size === 'small')) || 
+	(!isset($_GET['z']) && ($context == 'host') && ($size == "medium"))) {
+      $size_menu .= " SELECTED";
+    }
+    $size_menu .= ">$size</OPTION>\n";
+  }
+  $size_menu .= "</SELECT>\n";
+  return $size_menu;
+}
+
+function make_cols_menu() {
+  global $conf;
+
+  $cols_menu = "<SELECT NAME=\"hc\" OnChange=\"ganglia_form.submit();\">\n";
+
+  foreach(range(0,25) as $cols) {
+    $cols_menu .= "<OPTION VALUE=$cols ";
+    if ($cols == $conf['hostcols'])
+      $cols_menu .= "SELECTED";
+    $cols_menu .= ">$cols\n";
+  }
+  $cols_menu .= "</SELECT>\n";
+  return $cols_menu;
+}
+
+function make_metric_cols_menu() {
+  global $conf;
+
+  $metric_cols_menu = "<select name=\"mc\" OnChange=\"ganglia_form.submit();\">\n";
+
+  foreach(range(1,25) as $metric_cols) {
+    $metric_cols_menu .= "<option value=$metric_cols ";
+    if ($metric_cols == $conf['metriccols'])
+      $metric_cols_menu .= "selected";
+    $metric_cols_menu .= ">$metric_cols\n";
+  }
+  $metric_cols_menu .= "</select>\n";
+  return $metric_cols_menu;
+}
+
+function make_sort_menu($context, $sort) {
+  $sort_menu = "";
+  if ($context == "meta" or $context == "cluster") {
+    $context_sorts[] = "ascending";
+    $context_sorts[] = "descending";
+    $context_sorts[] = "by name";
+
+    // Show sort order options for meta context only:
+
+    if ($context == "meta" ) {
+      $context_sorts[] = "by hosts up";
+      $context_sorts[] = "by hosts down";
+    }
+
+    $sort_menu = "Sorted&nbsp;&nbsp;";
+    foreach ($context_sorts as $v) {
+      $url = rawurlencode($v);
+      if ($v == $sort)
+	$checked = "checked=\"checked\"";
+      else
+	$checked = "";
+      $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
+    }
+  }
+  return $sort_menu;
+}
+
+function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
+  global $conf;
+
+  $range_menu = "";
+  if (!$physical) {
+    $context_ranges = array_keys($conf['time_ranges']);
+    if ($jobrange)
+      $context_ranges[] = "job";
+    if ($cs or $ce)
+      $context_ranges[] = "custom";
+
+    $range_menu = "Last&nbsp;&nbsp;";
+    foreach ($context_ranges as $v) {
+      $url = rawurlencode($v);
+      if ($v == $range)
+	$checked = "checked=\"checked\"";
+      else
+	$checked = "";
+      $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
+    }
+  }
+  return $range_menu;
+}
+
 # RFM - These definitions are here to eliminate "undefined variable"
 # error messages in ssl_error_log.
 !isset($initgrid) and $initgrid = 0;
@@ -91,7 +193,8 @@ else
 #
 # Used when making graphs via graph.php. Included in most URLs
 #
-$sort_url=rawurlencode($sort);
+$sort_url = rawurlencode($sort);
+
 $get_metric_string = "m=$metricname&amp;r=$range&amp;s=$sort_url&amp;hc=${conf['hostcols']}&amp;mc=${conf['metriccols']}";
 if ($jobrange and $jobstart)
     $get_metric_string .= "&amp;jr=$jobrange&amp;js=$jobstart";
@@ -127,8 +230,8 @@ $data->assign("start_timestamp", $start_timestamp);
 $data->assign("end_timestamp", $end_timestamp);
 
 # Set the Alternate view link.
-$cluster_url=rawurlencode($clustername);
-$node_url=rawurlencode($hostname);
+$cluster_url = rawurlencode($clustername);
+$node_url = rawurlencode($hostname);
 
 # Make some information available to templates.
 $data->assign("cluster_url", $cluster_url);
@@ -255,27 +358,7 @@ if (count($metrics)) {
 #
 # If there are graphs present, show ranges.
 #
-$range_menu = "";
-if (!$physical) {
-   $context_ranges = array_keys( $conf['time_ranges'] );
-   if ($jobrange)
-      $context_ranges[]="job";
-   if ($cs or $ce)
-      $context_ranges[]="custom";
-
-   $range_menu = "Last&nbsp;&nbsp;";
-   foreach ($context_ranges as $v) {
-      $url=rawurlencode($v);
-      if ($v == $range)
-$checked = "checked=\"checked\"";
-      else
-$checked = "";
-      $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
-
-   }
-
-}
-
+$range_menu = make_range_menu($physical, $jobrange, $cs, $ce, $range);
 $data->assign("range_menu", $range_menu);
 
 #
@@ -321,73 +404,16 @@ if (is_array($context_metrics) and $context == "cluster") {
 #
 # Show sort order if there is more than one physical machine present.
 #
-$sort_menu = "";
-if ($context == "meta" or $context == "cluster") {
-  $context_sorts[]="ascending";
-  $context_sorts[]="descending";
-  $context_sorts[]="by name";
-
-  // Show sort order options for meta context only:
-
-  if ($context == "meta" ) {
-    $context_sorts[]="by hosts up";
-    $context_sorts[]="by hosts down";
-  }
-
-  $sort_menu = "Sorted&nbsp;&nbsp;";
-  foreach ($context_sorts as $v) {
-    $url=rawurlencode($v);
-    if ($v == $sort)
-      $checked = "checked=\"checked\"";
-    else
-      $checked = "";
-    $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
-  }
- }
+$sort_menu = make_sort_menu($context, $sort);
 $data->assign("sort_menu", $sort_menu );
    
-if ($context == "physical" or $context == "cluster" or $context == 'host' )
-   {
-      # Present a width list
-      $cols_menu = "<SELECT NAME=\"hc\" OnChange=\"ganglia_form.submit();\">\n";
+if ($context == "physical" or $context == "cluster" or $context == 'host') {
+  $cols_menu = make_cols_menu();
+  $size_menu = make_size_menu($clustergraphsize, $context);
+}
 
-      foreach(range(0,25) as $cols)
-         {
-            $cols_menu .= "<OPTION VALUE=$cols ";
-            if ($cols == $conf['hostcols'])
-               $cols_menu .= "SELECTED";
-            $cols_menu .= ">$cols\n";
-         }
-      $cols_menu .= "</SELECT>\n";
-
-      $size_menu = '<SELECT NAME="z" OnChange="ganglia_form.submit();">';
-      
-      $size_arr = $conf['graph_sizes_keys'];
-      foreach ($size_arr as $size) {
-          if ($size == "default")
-              continue;
-          $size_menu .= "<OPTION VALUE=\"$size\"";
-          if ( ( isset($clustergraphsize) && ($size === $clustergraphsize))
-               || (!isset($clustergraphsize) && ($size === 'small' )) || ( !isset($_GET['z']) && $context == 'host' && $size == "medium" ) ) {
-              $size_menu .= " SELECTED";
-          }
-          $size_menu .= ">$size</OPTION>\n";
-      }
-      $size_menu .= "</SELECT>\n";
-  
-      # Assign template variable in cluster view.
-   }
 if ($context == "host") {
-   # Present a width list
-   $metric_cols_menu = "<select name=\"mc\" OnChange=\"ganglia_form.submit();\">\n";
-
-   foreach(range(1,25) as $metric_cols) {
-      $metric_cols_menu .= "<option value=$metric_cols ";
-      if ($metric_cols == $conf['metriccols'])
-         $metric_cols_menu .= "selected";
-      $metric_cols_menu .= ">$metric_cols\n";
-   }
-   $metric_cols_menu .= "</select>\n";
+  $metric_cols_menu = make_metric_cols_menu();
 }
 
 $custom_time = "";

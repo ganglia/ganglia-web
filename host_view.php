@@ -134,57 +134,6 @@ function getOptionalReports($hostname,
   return $optional_reports;
 }
 
-function buildMetricMaps($metrics,
-			 $always_timestamp,
-			 $always_constant,
-			 $baseGraphArgs,
-			 & $metricMap,
-			 & $metricGroupMap) {
-  foreach ($metrics as $name => $metric) {
-    if ($metric['TYPE'] == "string" or 
-	$metric['TYPE'] == "timestamp" or
-	(isset($always_timestamp[$name]) and $always_timestamp[$name])) {
-    } elseif ($metric['SLOPE'] == "zero" or
-	      (isset($always_constant[$name]) and $always_constant[$name])) {
-    } else {
-      $graphArgs = $baseGraphArgs . "&amp;v=$metric[VAL]&amp;m=$name";
-      # Adding units to graph 2003 by Jason Smith <smithj4@bnl.gov>.
-      if ($metric['UNITS']) {
-	$encodeUnits = rawurlencode($metric['UNITS']);
-	$graphArgs .= "&amp;vl=$encodeUnits";
-      }
-      if (isset($metric['TITLE'])) {
-	$title = $metric['TITLE'];
-	$encodeTitle = rawurlencode($title);
-	$graphArgs .= "&amp;ti=$encodeTitle";
-      }
-      // dump_var($graphArgs, "graphArgs");
-
-      $metricMap[$name]['graph'] = $graphArgs;
-      $metricMap[$name]['description'] = 
-	isset($metric['DESC']) ? $metric['DESC'] : '';
-      $metricMap[$name]['title'] = 
-	isset($metric['TITLE']) ? $metric['TITLE'] : '';
-
-      # Setup an array of groups that can be used for sorting in group view
-      if ( isset($metrics[$name]['GROUP']) ) {
-	$groups = $metrics[$name]['GROUP'];
-      } else {
-	$groups = array("");
-      }
-
-      foreach ($groups as $group) {
-	if (isset($metricGroupMap[$group])) {
-	  $metricGroupMap[$group] = 
-	    array_merge($metricGroupMap[$group], (array)$name);
-	} else {
-	  $metricGroupMap[$group] = array($name);
-	}
-      }
-    } // if
-  } // foreach
-}
-
 function getMetricGroups($metrics,
 			 $always_timestamp,
 			 $always_constant,
@@ -215,14 +164,11 @@ function getMetricGroups($metrics,
   $host_metrics = 0;
   $metrics_group_data = array();
 
-  $metricMap = NULL;
-  $metricGroupMap = NULL;
-  buildMetricMaps($metrics,
-		  $always_timestamp,
-		  $always_constant,
-		  $baseGraphArgs,
-		  & $metricMap,
-		  & $metricGroupMap);
+  list($metricMap, $metricGroupMap) = 
+    buildMetricMaps($metrics,
+		    $always_timestamp,
+		    $always_constant,
+		    $baseGraphArgs);
 
   // dump_var($metricMap, "metricMap");
   // dump_var($metricGroupMap, "metricGroupMap");
@@ -263,18 +209,15 @@ function getMetricGroups($metrics,
       
       $i = 0;
       foreach ($metric_array as $name) {
-	$metric_data = &$metrics_group_data[$group]["metrics"][$name];
-	$metric = &$metricMap[$name];
-
-	$metric_data["graphargs"] = $metric['graph'];
-	$metric_data["alt"] = "$hostname $name";
-	$metric_data["host_name"] = $hostname;
-	$metric_data["metric_name"] = $name;
-	$metric_data["title"] = $metric['title'];
-	$metric_data["desc"] = $metric['description'];
-	$metric_data["new_row"] = "";
+	$metrics_group_data[$group]["metrics"][$name]["graphargs"] = $metricMap[$name]['graph'];
+	$metrics_group_data[$group]["metrics"][$name]["alt"] = "$hostname $name";
+	$metrics_group_data[$group]["metrics"][$name]["host_name"] = $hostname;
+	$metrics_group_data[$group]["metrics"][$name]["metric_name"] = $name;
+	$metrics_group_data[$group]["metrics"][$name]["title"] = $metricMap[$name]['title'];
+	$metrics_group_data[$group]["metrics"][$name]["desc"] = $metricMap[$name]['description'];
+	$metrics_group_data[$group]["metrics"][$name]["new_row"] = "";
 	if (!(++$i % $conf['metriccols']) && ($i != $num_metrics))
-	  $metric_data["new_row"] = "</TR><TR>";
+	  $metrics_group_data[$group]["metrics"][$name]["new_row"] = "</TR><TR>";
       }
     }
   }
