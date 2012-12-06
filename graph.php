@@ -726,7 +726,11 @@ switch ( $conf['graph_engine'] ) {
         }
       }
     }
-  
+    if ( $conf['rrdtool_base_1024'] and in_array($vlabel, array('bytes', 'Bytes', 'bytes/s', 'Bytes/s', 'kB', 'MB', 'GB', 'bits', 'Bits', 'bits/s', 'Bits/s')) ) {
+      // Set graph base value to 1024 
+     $rrdtool_graph['extras'] = isset($rrdtool_graph['extras']) ? $rrdtool_graph['extras'] . " --base=1024" : " --base=1024" ;
+    }
+
     // The order of the other arguments isn't important, except for the
     // 'extras' and 'series' values.  These two require special handling.
     // Otherwise, we just loop over them later, and tack $extras and
