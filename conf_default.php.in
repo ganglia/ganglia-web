@@ -33,7 +33,7 @@ $conf['template_name'] = "default";
 #
 
 # Where gmetad stores the rrd archives.
-$conf['gmetad_root'] = "@varstatedir@/ganglia";
+$conf['gmetad_root'] = "@vargmetadir@";
 $conf['rrds'] = "${conf['gmetad_root']}/rrds";
 
 # Where Dwoo (PHP templating engine) store compiled templates
