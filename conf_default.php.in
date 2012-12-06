@@ -10,6 +10,7 @@
 # Gmetad-webfrontend version. Used to check for updates.
 #
 $conf['gweb_root'] = dirname(__FILE__);
+$conf['gweb_confdir'] = "@vargwebstatedir@";
 
 include_once $conf['gweb_root'] . "/version.php";
 
@@ -33,20 +34,20 @@ $conf['template_name'] = "default";
 #
 
 # Where gmetad stores the rrd archives.
-$conf['gmetad_root'] = "@varstatedir@/ganglia";
+$conf['gmetad_root'] = "@vargmetadir@";
 $conf['rrds'] = "${conf['gmetad_root']}/rrds";
 
 # Where Dwoo (PHP templating engine) store compiled templates
-$conf['dwoo_compiled_dir'] = "${conf['gmetad_root']}/dwoo/compiled";
-$conf['dwoo_cache_dir'] = "${conf['gmetad_root']}/dwoo/cache";
+$conf['dwoo_compiled_dir'] = "${conf['gweb_confdir']}/dwoo/compiled";
+$conf['dwoo_cache_dir'] = "${conf['gweb_confdir']}/dwoo/cache";
 
 # Where to store web-based configuration
-$conf['views_dir'] = $conf['gmetad_root'] . '/conf';
-$conf['conf_dir'] = $conf['gmetad_root'] . '/conf';
+$conf['views_dir'] = $conf['gweb_confdir'] . '/conf';
+$conf['conf_dir'] = $conf['gweb_confdir'] . '/conf';
 
 # Where to find filter configuration files, if not set filtering
 # will be disabled
-#$conf['filter_dir'] = "${conf['gmetad_root']}/filters";
+#$conf['filter_dir'] = "${conf['gweb_confdir']}/filters";
 
 # Leave this alone if rrdtool is installed in $conf['gmetad_root'],
 # otherwise, change it if it is installed elsewhere (like /usr/bin)
