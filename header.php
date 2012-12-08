@@ -109,16 +109,137 @@ function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
   return $range_menu;
 }
 
+function make_alt_view($context, $clustername, $hostname, $get_metric_string) {
+  global $conf;
+
+  $cluster_url = rawurlencode($clustername);
+  $node_url = rawurlencode($hostname);
+
+  $alt_view = "";
+
+  if ($context == "cluster") {
+    $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url';return false;\">Physical View</button>";
+  } elseif ($context == "physical") {
+    $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url';return false;\">Full View</button>";
+  } elseif ($context=="node") {
+    $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string';return false;\">Host View</button>";
+  } elseif ($context=="host") {
+    $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url&amp;h=$node_url';return false;\">Node View</button>";
+  } elseif ($context == "views") {
+    if (checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf)) {
+      $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';
+      $alt_view .= '&nbsp;&nbsp;<button onclick="return false" id="delete_view_button">Delete View</button>';
+    }
+  }
+  return $alt_view;
+}
+
+function make_node_menu($self,
+			$context,
+			$grid,
+			$parentgrid,
+			$parentlink,
+			$gridstack_url,
+			$clustername,
+			$hostname,
+			$get_metric_string,
+			$showhosts,
+			$hosts_up,
+			$hosts_down) {
+  global $conf;
+
+  $node_menu = "";
+
+  if ($parentgrid) {
+    $node_menu .= "<b><a href=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">" . "$parentgrid ${conf['meta_designator']}</a></b> ";
+    $node_menu .= "<b>&gt;</b>\n";
+  }
+
+  # Show grid.
+  if ((($self != "unspecified") && !$parentgrid) ||
+      $conf['always_display_grid_view']) {
+    $mygrid = ($self == "unspecified") ? "" : $self;
+    $node_menu .= "<b><a href=\"./?$get_metric_string\">$mygrid ${conf['meta_designator']}</a></b> ";
+    $node_menu .= "<b>&gt;</b>\n";
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Cluster name has been specified. It comes right after
+  // Grid >
+  /////////////////////////////////////////////////////////////////////////////
+  if ($clustername) {
+    $url = rawurlencode($clustername);
+    $node_menu .= "<b><a href=\"./?c=$url&amp;$get_metric_string\">$clustername</a></b> ";
+    $node_menu .= "<b>&gt;</b>\n";
+    $node_menu .= hiddenvar("c", $clustername);
+  } else if ($context == "decompose_graph") {
+    $node_menu .= '<input type="hidden" name="dg" value="1">';
+    $node_menu .= "Decompose Graph";
+  } else {
+    # No cluster has been specified, so drop in a list
+    $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
+    $node_menu .= "<option value=\"\">--Choose a Source\n";
+    ksort($grid);
+    foreach ($grid as $k => $v) {
+      if ($k == $self) continue;
+      if (isset($v['GRID']) and $v['GRID']) {
+        $url = $v['AUTHORITY'];
+        $node_menu .="<option value=\"$url\">$k ${conf['meta_designator']}\n";
+      } else {
+        $url = rawurlencode($k);
+        $node_menu .="<option value=\"$url\">$k\n";
+      }
+    }
+    $node_menu .= "</select>\n";
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // We are in the cluster view pop up a list box of nodes
+  /////////////////////////////////////////////////////////////////////////////
+  if ($clustername && !$hostname) {
+    # Drop in a host list if we have hosts
+    if (!$showhosts) {
+      $node_menu .= "[Summary Only]";
+    } elseif (is_array($hosts_up) || is_array($hosts_down)) {
+      $node_menu .= "<select name=\"h\" OnChange=\"ganglia_form.submit();\">";
+      $node_menu .= "<option value=\"\">--Choose a Node</option>";
+
+      if (is_array($hosts_up)) {
+        uksort($hosts_up, "strnatcmp");
+        foreach ($hosts_up as $k=> $v) {
+          $url = rawurlencode($k);
+          $node_menu .= "<option value=\"$url\">$k\n";
+        }
+      }
+
+      if (is_array($hosts_down)) {
+        uksort($hosts_down, "strnatcmp");
+        foreach ($hosts_down as $k=> $v) {
+          $url = rawurlencode($k);
+          $node_menu .= "<option value=\"$url\">$k\n";
+        }
+      }
+      $node_menu .= "</select>\n";
+    } else {
+      $node_menu .= "<b>No Hosts</b>\n";
+    }
+  } else {
+    $node_menu .= "<b>$hostname</b>\n";
+    $node_menu .= hiddenvar("h", $hostname);
+  }
+  return $node_menu;
+}
+
 # RFM - These definitions are here to eliminate "undefined variable"
 # error messages in ssl_error_log.
 !isset($initgrid) and $initgrid = 0;
 !isset($metricname) and $metricname = "";
 !isset($context_metrics) and $context_metrics = "";
 
-if ( $context == "control" && $controlroom < 0 )
-      $header = "header-nobanner";
+if ($context == "control" && $controlroom < 0)
+  $header = "header-nobanner";
 else
-      $header = "header";
+  $header = "header";
 
 #
 # sacerdoti: beginning of Grid tree state handling
@@ -186,9 +307,9 @@ $data->assign( "date", date("r"));
 
 # The page to go to when "Get Fresh Data" is pressed.
 if (isset($page))
-      $data->assign("page",$page);
+  $data->assign("page", $page);
 else
-      $data->assign("page","./");
+  $data->assign("page","./");
 
 #
 # Used when making graphs via graph.php. Included in most URLs
@@ -229,120 +350,38 @@ if ($cs) {
 $data->assign("start_timestamp", $start_timestamp);
 $data->assign("end_timestamp", $end_timestamp);
 
-# Set the Alternate view link.
-$cluster_url = rawurlencode($clustername);
-$node_url = rawurlencode($hostname);
-
 # Make some information available to templates.
 $data->assign("cluster_url", $cluster_url);
-$alt_view = "";
 
-if ($context == "cluster") {
-   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url';return false;\">Physical View</button>";
-} elseif ($context == "physical") {
-   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url';return false;\">Full View</button>";
-} elseif ($context=="node") {
-   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?c=$cluster_url&amp;h=$node_url&amp;$get_metric_string';return false;\">Host View</button>";
-} elseif ($context=="host") {
-   $alt_view = "<button class=\"header_btn\" onclick=\"window.location='./?p=2&amp;c=$cluster_url&amp;h=$node_url';return false;\">Node View</button>";
-} elseif ( $context == "views") {
-   if(  checkAccess( GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf ) ) {
-       $alt_view = '<button onclick="return false" id="create_view_button">Create View</button>';
-       $alt_view .= '&nbsp;&nbsp;<button onclick="return false" id="delete_view_button">Delete View</button>';
-   }
-}
-
+$alt_view = make_alt_view($context, 
+			  $clustername, 
+			  $hostname, 
+			  $get_metric_string);
 $data->assign("alt_view", $alt_view);
 
 # Build the node_menu
 $node_menu = "";
 if (($context != 'views') && ($context != 'compare_hosts')) {
-  if ($parentgrid) {
-    $node_menu .= "<B><A HREF=\"$parentlink?gw=back&amp;gs=$gridstack_url&amp;$get_metric_string\">". "$parentgrid ${conf['meta_designator']}</A></B> ";
-    $node_menu .= "<B>&gt;</B>\n";
-  }
-
-  # Show grid.
-  if ((($self != "unspecified") && !$parentgrid) ||
-      $conf['always_display_grid_view']) {
-    $mygrid = ($self == "unspecified") ? "" : $self;
-    $node_menu .= "<B><A HREF=\"./?$get_metric_string\">$mygrid ${conf['meta_designator']}</A></B> ";
-    $node_menu .= "<B>&gt;</B>\n";
-  }
-
+  $node_menu = make_node_menu($self,
+			      $context,
+			      $grid,
+			      $parentgrid,
+			      $parentlink,
+			      $gridstack_url,
+			      $clustername,
+			      $hostname,
+			      $get_metric_string,
+			      $showhosts,
+			      $hosts_up,
+			      $hosts_down);
+  # Save other CGI variables
   if ($physical)
     $node_menu .= hiddenvar("p", $physical);
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Cluster name has been specified. It comes right after
-  // Grid >
-  /////////////////////////////////////////////////////////////////////////////
-  if ( $clustername ) {
-    $url = rawurlencode($clustername);
-    $node_menu .= "<b><a href=\"./?c=$url&amp;$get_metric_string\">$clustername</a></b> ";
-    $node_menu .= "<b>&gt;</b>\n";
-    $node_menu .= hiddenvar("c", $clustername);
-  } else if ($context == "decompose_graph") {
-    $node_menu .= '<input type="hidden" name="dg" value="1">';
-    $node_menu .= "Decompose Graph";
-  }  else {
-    # No cluster has been specified, so drop in a list
-    $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
-    $node_menu .= "<option value=\"\">--Choose a Source\n";
-    ksort($grid);
-    foreach ($grid as $k => $v) {
-      if ($k == $self) continue;
-      if (isset($v['GRID']) and $v['GRID']) {
-        $url = $v['AUTHORITY'];
-        $node_menu .="<OPTION VALUE=\"$url\">$k ${conf['meta_designator']}\n";
-      } else {
-        $url = rawurlencode($k);
-        $node_menu .="<OPTION VALUE=\"$url\">$k\n";
-      }
-    }
-    $node_menu .= "</select>\n";
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // We are in the cluster view pop up a list box of nodes
-  /////////////////////////////////////////////////////////////////////////////
-  if ($clustername && !$hostname) {
-    # Drop in a host list if we have hosts
-    if (!$showhosts) {
-      $node_menu .= "[Summary Only]";
-    } elseif (is_array($hosts_up) || is_array($hosts_down)) {
-      $node_menu .= "<select name=\"h\" OnChange=\"ganglia_form.submit();\">";
-      $node_menu .= "<option value=\"\">--Choose a Node</option>";
-      if (is_array($hosts_up)) {
-        uksort($hosts_up, "strnatcmp");
-        foreach ($hosts_up as $k=> $v) {
-          $url = rawurlencode($k);
-          $node_menu .= "<option value=\"$url\">$k\n";
-        }
-      }
-      if (is_array($hosts_down)) {
-        uksort($hosts_down, "strnatcmp");
-        foreach ($hosts_down as $k=> $v) {
-          $url = rawurlencode($k);
-          $node_menu .= "<option value=\"$url\">$k\n";
-        }
-      }
-      $node_menu .= "</select>\n";
-    } else {
-      $node_menu .= "<B>No Hosts</B>\n";
-    }
-  } else {
-    $node_menu .= "<B>$hostname</B>\n";
-    $node_menu .= hiddenvar("h", $hostname);
-  }
-
-  # Save other CGI variables
   $node_menu .= hiddenvar("cr", $controlroom);
   $node_menu .= hiddenvar("js", $jobstart);
   $node_menu .= hiddenvar("jr", $jobrange);
 }
 $data->assign("node_menu", $node_menu);
-
 
 //////////////////// Build the metric menu ////////////////////////////////////
 
