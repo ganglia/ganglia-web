@@ -917,6 +917,7 @@ if ( $user['json_output'] ||
     $buffer = fgets($fp, 4096);
     $string .= $buffer;
   }
+
   // Parse it
   $xml = simplexml_load_string($string);
 
@@ -934,12 +935,14 @@ if ( $user['json_output'] ||
     // we need to iterate over those
     if ( is_array($values["v"]) ) {
       foreach ( $values["v"] as $key => $value ) {
-        $output_array[$key]["datapoints"][] = 
-	  array(floatval($value), intval($values['t']));
+	if ($value != "NaN")
+	  $output_array[$key]["datapoints"][] = 
+	    array(floatval($value), intval($values['t']));
       }
     } else {
-      $output_array[0]["datapoints"][] = 
-	array(floatval($values["v"]), intval($values['t']));
+      if ($values["v"] != "NaN")
+	$output_array[0]["datapoints"][] = 
+	  array(floatval($values["v"]), intval($values['t']));
     }
 
   }
