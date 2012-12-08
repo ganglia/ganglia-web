@@ -37,6 +37,7 @@ $(function () {
   var refresh_timer = null;
   var first_time = true;
   var popupDialogHeight = $("#popup-dialog").height();
+  var VALUE_SEPARATOR = " :: ";
 
   $("#popup-dialog").bind("dialogresizestop.inspect", 
 			  function() {
@@ -121,8 +122,17 @@ $(function () {
 
     var stacked = false;
     var series_select = $("#select_series");
-    var current_series_labels = 
-      $("#select_series>option").map(function(){return $(this).text();});
+    var series_labels = 
+      $("#select_series>option").map(function(){
+	  var text = $(this).text();
+	  var label = text;
+	  if (text.indexOf(VALUE_SEPARATOR) != -1)
+	    label = text.split(VALUE_SEPARATOR)[0];
+	  return label;
+	});
+    var series_options = $("#select_series>option").map(function(){
+	return $(this);
+      });
 
     var start_time = Number.MAX_VALUE;
     var end_time = 0;
@@ -149,10 +159,23 @@ $(function () {
 
       i++;
 
-      if ($.inArray(dataset.label, current_series_labels) == -1) {
-	var option = $('<option/>', {value: key, text: dataset.label});
+      var current_value = 
+	formattedSiVal(dataset.data[dataset.data.length - 1][1], 2);
+      var seriesIndex = $.inArray(dataset.label, series_labels);
+      if (seriesIndex == -1) {
+	var option = $('<option/>', 
+	  {value: key, 
+	   text: dataset.label +
+	      VALUE_SEPARATOR +
+	      current_value});
 	option.attr('selected', 'selected');
 	option.appendTo(series_select);
+      } else {
+	var option = series_options[seriesIndex];
+	var label = series_labels[seriesIndex] + 
+	  VALUE_SEPARATOR + 
+	  current_value;
+	option.text(label);
       }
     });
       
@@ -312,8 +335,9 @@ $(function () {
   function plotAccordingToChoices() {
     var selected_series = $("#select_series").multiselect("getChecked").map(function(){return this.value}).get();
     var data = [];
-    for (var i = 0; i < selected_series.length; i++)
+    for (var i = 0; i < selected_series.length; i++) {
       data.push(datasets[selected_series[i]]);
+    }
 
     var placeHolder = $("#placeholder");
     var placeHolderHeight = popupDialogHeight - $("#graphcontrols").height();
