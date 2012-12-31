@@ -6,7 +6,7 @@ include_once("./functions.php");
 //////////////////////////////////////////////////////////////////////////////////////////
 // Print out 
 //////////////////////////////////////////////////////////////////////////////////////////
-if ( ! isset($_GET['view_name']) ) {
+if ( ! isset($_REQUEST['view_name']) ) {
 
   $available_views = get_available_views();
 
@@ -27,23 +27,28 @@ if ( ! isset($_GET['view_name']) ) {
 
   $available_views = get_available_views();
 
+  $view_found = 0;
+  
+  $user['view_name'] = $_REQUEST['view_name'];
+  
   // I am not quite sure at this point whether I should cache view info so
   // for now I will have to do this
   foreach ( $available_views as $id => $view ) {
     # Find view settings
-    if ( $_GET['view_name'] == $view['view_name'] )
+    if ( $user['view_name'] == $view['view_name'] ) {
+      $view_found = 1;
       break;
+    }
   }
-
   unset($available_views);
 
-  if ( sizeof($view['items']) == 0 ) {
-      die ("<font color=red size=4>There are no graphs in view '" . $_GET['view_name'] . "'. Please go back and add some.</font>");
+  if ( $view_found == 0 || sizeof($view['items']) == 0 ) {
+      die ("<font color=red size=4>There are no graphs in view you supplied or view does not exist.</font>");
   }
 
   # If timeout is specified use it. Otherwise default to 30 seconds.
-  if ( isset($_GET['timeout']))
-    $timeout = $_GET['timeout'];
+  if ( isset($_REQUEST['timeout']) and is_numeric($_REQUEST['timeout']) )
+    $timeout = $_REQUEST['timeout'];
   else
     $timeout = 30;
 
@@ -62,7 +67,7 @@ if ( ! isset($_GET['view_name']) ) {
   $gangliapath = "graph.php?hc=4&st=";
 
   # Get the requested graphid and store it in a somewhat more beautiful variable name
-  isset($_GET['id']) ? $id = $_GET['id'] : $id = 0;
+  isset($_GET['id']) and is_numeric($_GET['id']) ? $id = $_GET['id'] : $id = 0;
 
   // Let's get all View graph elements
   $view_elements = get_view_graph_elements($view);
@@ -84,7 +89,7 @@ if ( ! isset($_GET['view_name']) ) {
   <html>
   <head>
   <title>Ganglia - Graph View</title>
-  <meta http-equiv="refresh" content="<?php print "$timeout;url=" . $_SERVER["SCRIPT_NAME"] . "?view_name=" . $_GET['view_name'] ."&id=" . $nextid; ?>&timeout=<?php print $timeout ?>">
+  <meta http-equiv="refresh" content="<?php print "$timeout;url=" . $_SERVER["SCRIPT_NAME"] . "?view_name=" . $user['view_name'] ."&id=" . $nextid; ?>&timeout=<?php print $timeout ?>">
   <style>
   body { 
 	  margin: 0px;
