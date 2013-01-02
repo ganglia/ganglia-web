@@ -115,7 +115,6 @@ foreach($hosts as $index => $host) {
     $c++;
 }
 
-$command = sanitize($command);
 $command .= $total_cmd . $mean_cmd;
 $command .= " COMMENT:'\\j'";
 $command .= " GPRINT:'total':AVERAGE:'Avg Total\: %5.2lf'";
