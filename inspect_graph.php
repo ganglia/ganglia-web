@@ -1,16 +1,3 @@
-<style>
-.img_view {
-  float: left;
-  margin: 0 0 10px 10px;
-}
-</style>
-<style>
-.flotgraph-enlarge {
-  height: 500px;
-  width:  800px;
-}
-</style>
-
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.crosshair.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.stack.min.js"></script>
@@ -19,12 +6,12 @@
 <script language="javascript" type="text/javascript" src="js/jquery.flot.events.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
-<div id="placeholder" style="width:800px;height:500px;"></div>
-
-<div id="graphcontrols">
-  <div id="legendcontainer" style="margin-top:5px;"></div>
-  <div id="graphlegend"></div>
+<div id="inspect_graph_container">
+  <div id="placeholder" style="overflow:hidden"></div>
+  <div id="spacer" style="height:5px;"></div>
+  <div id="graphcontrols"></div>
 </div>
+
 <?php
 include_once "./eval_conf.php";
 
@@ -36,12 +23,19 @@ $refresh_interval = $conf['default_refresh'];
 $(function () {
   var refresh_timer = null;
   var first_time = true;
-  var popupDialogHeight = $("#popup-dialog").height();
   var VALUE_SEPARATOR = " :: ";
+
+  function resize() {
+    var popupDialog = $("#popup-dialog");
+    $("#placeholder").height(popupDialog.height() -
+			     $("#graphcontrols").height() - 
+			     $("#spacer").height());
+    $("#inspect_graph_container").width(popupDialog.width() - 20);
+  }
 
   $("#popup-dialog").bind("dialogresizestop.inspect", 
 			  function() {
-			    popupDialogHeight = $("#popup-dialog").height();
+			    resize();
 			    plotAccordingToChoices();
 			  });
   $("#popup-dialog").bind("dialogclose.inspect", 
@@ -64,17 +58,17 @@ $(function () {
   var dataurl = '<?php print $dataurl; ?>';
   var refresh_interval = '<?php print $refresh_interval; ?>';
 
-  var legendContainer = $("#legendcontainer");
+  var graphControls = $("#graphcontrols");
   var series_select = '<select id="select_series" name="select_series" multiple="multiple"></select>';
-  // Add multi-select menu to legend container
-  legendContainer.append(series_select);
+  // Add multi-select menu to controls
+  graphControls.append(series_select);
     
   var select_series = $("#select_series");
   select_series.multiselect({
     height: "auto",
     position : {
-      my: "left bottom",
-      at: "left top"
+      my: "left top",
+      at: "left bottom"
     },
     checkAll: function(event, ui) {
       plotAccordingToChoices();
@@ -87,11 +81,11 @@ $(function () {
     }
   });
 
-  var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"/><label for="line">Line</label><input type="radio" id="stack" name="gopt"/><label for="stack">Stack</label></span>';
-  html += '<input id="resetzoom" type="button" value="Reset zoom" />';
+  var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"/><label style="font-size:0.825em;" for="line">Line</label><input type="radio" id="stack" name="gopt"/><label style="font-size:0.825em" for="stack">Stack</label></span>';
+  html += '<input id="resetzoom" type="button" style="font-size:0.825em;" value="Reset zoom"/>';
 
-  // Add option buttons to legend container 
-  legendContainer.append(html);
+  // Add option buttons to controls 
+  graphControls.append(html);
   
   $("#gopt").buttonset();
   $("#line").button().click(plotAccordingToChoices);
@@ -108,10 +102,7 @@ $(function () {
     xaxis: { mode: "time" },
     yaxis: {tickFormatter: suffixFormatter},
     selection: { mode: "xy" },
-    legend: {
-      container: $("#graphlegend"),
-      noColumns: 8
-    },
+    legend: {show : false},
     grid: { hoverable: true, autoHighlight: true },
     series: {stack: null}
   };
@@ -170,6 +161,8 @@ $(function () {
 	      current_value});
 	option.attr('selected', 'selected');
 	option.appendTo(series_select);
+	var colorBox = '<div style="border:1px solid #ccc;padding:1px;display:inline-block;"><div style="width:4px;height:0;border:5px solid ' + dataset.color + ';overflow:hidden"></div></div>';
+	option.data("pre_checkbox_html", colorBox);
       } else {
 	var option = series_options[seriesIndex];
 	var label = series_labels[seriesIndex] + 
@@ -185,6 +178,13 @@ $(function () {
       var gopt = stacked ? $("#stack") : $("#line");
       gopt.attr("checked", "checked");
       gopt.button("refresh");
+
+      if (($("#popup-dialog").dialog("option", "height") == "auto") ||
+	  ($("#popup-dialog").dialog("option", "width") == "auto")) {
+	$("#popup-dialog").dialog("option", "height", 500);
+	$("#popup-dialog").dialog("option", "width", 800);
+      }
+      resize();
       first_time = false;
     }
 
@@ -339,20 +339,6 @@ $(function () {
       data.push(datasets[selected_series[i]]);
     }
 
-    var placeHolder = $("#placeholder");
-    var placeHolderHeight = popupDialogHeight - $("#graphcontrols").height();
-    if ($("#graphlegend").height() == 0)
-      placeHolderHeight -= 25; // estimate the height of the legend
-    /*
-    alert("popupDialogHeight = " + popupDialogHeight + ", " +
-	  "popup-dialog.height = " + $("#popup-dialog").height() + ", " +
-	  "graphcontrols.height = " + $("#graphcontrols").height() + ", " +
-          "graphlegend.height = " + $("#graphlegend").height() + ", " +
-          "placeHolderHeight = " + placeHolderHeight);
-    */
-    placeHolder.height(placeHolderHeight); 
-    placeHolder.width($("#popup-dialog").width() - 40);
-
     var stack = $("#stack").attr('checked') == 'checked';
 
     plotOpt.lines.fill = stack;
@@ -377,9 +363,7 @@ $(function () {
       delete plotOpt.yaxis.max;
     }
 
-    $("#graphlegend").html("");
-
-    $.plot(placeHolder, data, plotOpt);
+    $.plot($("#placeholder"), data, plotOpt);
   }
 });
 </script>
