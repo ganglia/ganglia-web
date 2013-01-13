@@ -162,6 +162,10 @@ $.widget("ech.multiselect", {
 
 			// create the label
 			html += '<label for="' + inputID + '" title="' + description + '" class="' + labelClasses.join(' ') + '">';
+
+	if ($this.data("pre_checkbox_html") != undefined)
+	    html += $this.data("pre_checkbox_html");
+
 			html += '<input id="' + inputID + '" name="multiselect_' + id + '" type="' + (o.multiple ? "checkbox" : "radio") + '" value="' + value + '" title="' + title + '"';
 
 			// pre-selected?
