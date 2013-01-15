@@ -9,6 +9,9 @@ $conf['gweb_root'] = dirname(__FILE__);
 include_once $conf['gweb_root'] . "/eval_conf.php";
 include_once $conf['gweb_root'] . "/functions.php";
 
+clean($_REQUEST);
+clean($_GET);
+
 $clustername = $_REQUEST['c'];
 $metricname = $_REQUEST['m'];
 $range = $_REQUEST['r'];
@@ -169,6 +172,15 @@ function get_col($value){
     list($r,$g,$b) = HSV_TO_RGB($value, 1, 0.9);
 
     return sprintf('%02X%02X%02X',$r,$g,$b);
+}
+
+function clean($elem){
+    if(!is_array($elem))
+        $elem = sanitize($elem);
+    else
+        foreach ($elem as $key => $value)
+            $elem[$key] = clean($value);
+    return $elem;
 }
 
 ?>
