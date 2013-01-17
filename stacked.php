@@ -92,7 +92,10 @@ foreach ( $hosts as $index => $host ) {
 $mean_cmd = " CDEF:'mean'=total,$index,/";
 
 $first_color = get_col(0);
-$min_index = min(array_keys($hosts))
+
+
+
+$min_index = min(array_keys($hosts));
 
 foreach($hosts as $index =>  $host) {
     $cx = $index/(1+count($hosts));
@@ -104,15 +107,6 @@ foreach($hosts as $index =>  $host) {
     else
        $command .= " AREA:'a$index'#$first_color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
 
-    $c++;
-}
-
-#$command .= " LINE1:'a0'#333";
-
-$c = 1;
-foreach($hosts as $index => $host) {
-    #if ( $index != 0 )
-#       $command .= " STACK:'a$index'#000000";
     $c++;
 }
 
