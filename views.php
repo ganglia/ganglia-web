@@ -10,7 +10,7 @@ if( ! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf) ) {
 // Load the metric caching code we use if we need to display graphs
 retrieve_metrics_cache();
 
-$base = isset($_GET['base']) ? $_GET['base'] . "/" : "";
+$base = isset($_GET['base']) ? rawurlencode($_GET['base']) . "/" : "";
 ?>
 
 <html>
@@ -33,14 +33,14 @@ $base = isset($_GET['base']) ? $_GET['base'] . "/" : "";
       $view_elements = get_view_graph_elements($view);
       $range_args = "";
       if (isset($_GET['r']) && $_GET['r'] != "") 
-	$range_args .= "&amp;r=" . $_GET['r'];
+	$range_args .= "&amp;r=" . rawurlencode($_GET['r']);
       if (isset($_GET['cs']) && isset($_GET['ce'])) 
-	$range_args .= "&amp;cs=" . $_GET['cs'] . "&amp;ce=" . $_GET['ce'];
+	$range_args .= "&amp;cs=" . rawurlencode($_GET['cs']) . "&amp;ce=" . rawurlencode($_GET['ce']);
 
       if (count($view_elements) != 0) {
 	foreach ($view_elements as $id => $element) {
 	  $legend = isset($element['hostname']) ? $element['hostname'] : "Aggregate graph";
-          $base = isset($_GET['base']) ? $_GET['base'] : '.';
+          $base = isset($_GET['base']) ? rawurlencode($_GET['base']) : '.';
 	  print "<a href=\"" . $base . "/graph_all_periods.php?" . htmlentities($element['graph_args']) ."&amp;z=large\"><img title=\"" . $legend . " - " . $element['name'] . "\" border=0 src=\"" . $base . "/graph.php?" . htmlentities($element['graph_args']) . "&amp;z=small" . $range_args .  "\" style=\"padding:2px;\"></a>";
 	}
       } else {

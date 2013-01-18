@@ -14,13 +14,13 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
   <?php
   if ( isset($_GET['aggregate']) ) {
   ?>
-     <tr><th>Host regular expression</th><td><?php print join (",", $_GET['hreg']); ?></td></tr>
-     <tr><th>Metric regular expression</th><td><?php print join (",", $_GET['mreg']); ?></td></tr>
+     <tr><th>Host regular expression</th><td><?php print htmlspecialchars( join (",", $_GET['hreg']) ); ?></td></tr>
+     <tr><th>Metric regular expression</th><td><?php print htmlspecialchars( join (",", $_GET['mreg']) ); ?></td></tr>
   <?php
     } else {
   ?>
-     <tr><th>Hostname</th><td><?php print $_GET['host_name']; ?></td></tr>
-     <tr><th>Metric/Report</th><td><?php print $_GET['metric_name']; ?></td></tr>
+     <tr><th>Hostname</th><td><?php print htmlspecialchars($_GET['host_name']); ?></td></tr>
+     <tr><th>Metric/Report</th><td><?php print htmlspecialchars($_GET['metric_name']); ?></td></tr>
   <?php
   }
   ?>
@@ -35,17 +35,17 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
 	foreach ( $_GET as $key => $value ) {
 	  if ( is_array($value) ) {
 	    foreach ( $value as $index => $value2 ) {
-	      print '<input type="hidden" name="' . $key .'[]" value="' . $value2 . '" />';
+	      print '<input type="hidden" name="' . htmlspecialchars($key) .'[]" value="' . htmlspecialchars($value2) . '" />';
 	    }
 	  } else {
-	    print '<input type="hidden" name="' . $key .'" value="' . $value . '" />';
+	    print '<input type="hidden" name="' . htmlspecialchars($key) .'" value="' . htmlspecialchars($value) . '" />';
 	  }
 	}
     } else {
       // If hostname is not set we assume we are dealing with aggregate graphs
-      print "<input type=\"hidden\" name=\"host_name\" value=\"{$_GET['host_name']}\" />";
+      print "<input type=\"hidden\" name=\"host_name\" value=\"".htmlspecialchars($_GET['host_name'])."\" />";
       $metric_name=$_GET['metric_name'];
-      print "<input type=\"hidden\" name=\"metric_name\" value=\"{$_GET['metric_name']}\" />";
+      print "<input type=\"hidden\" name=\"metric_name\" value=\"".htmlspecialchars($_GET['metric_name'])."\" />";
       print "<input type=\"hidden\" name=\"type\" value=\"{$_GET['type']}\">";
       if (isset($_GET['vl']) && ($_GET['vl'] !== ''))
 	  print "<input type=\"hidden\" name=\"vertical_label\" value=\"" . htmlentities(stripslashes($_GET['vl'])) . "\" />";
