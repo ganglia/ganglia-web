@@ -127,7 +127,7 @@ if ( ! isset($_REQUEST['view_name']) ) {
     <div style="margin-top: 10px; font-size: 48px; text-align: center;"><?php echo date(DATE_RFC850); ?></div>
     <p>
     <center><form>
-    <input type="hidden" name="view_name" value="<?php print $_GET['view_name'] ?>">
+    <input type="hidden" name="view_name" value="<?php print htmlspecialchars($_GET['view_name']) ?>">
     <input type="hidden" name="id" value="<?php print $nextid ?>">
     Rotate graphs every <select onChange="form.submit();" name="timeout">
     <?php

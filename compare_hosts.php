@@ -56,12 +56,12 @@ foreach ( $host_metrics as $name => $value )
 $hreg = "";
 if (array_key_exists('hreg', $_GET)) {
   foreach ( $_GET['hreg'] as $index => $arg ) {
-    $hreg .= "&hreg[]=" . $arg;
+    $hreg .= "&hreg[]=" . rawurlencode($arg);
   }
 }
 
 if ( isset($_GET['hreg']) ) {
-  $data->assign("hreg_arg", $_GET['hreg'][0]);
+  $data->assign("hreg_arg", htmlspecialchars($_GET['hreg'][0]) );
 } else {
   $data->assign("hreg_arg", "");
 }

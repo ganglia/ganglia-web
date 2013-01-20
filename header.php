@@ -529,7 +529,7 @@ if($conf['auth_system'] == 'enabled') {
 if ( $conf['overlay_events'] == true )
   $data->assign('overlay_events', true);
 
-$data->assign('selected_tab', $user['selected_tab']);
+$data->assign('selected_tab', htmlspecialchars($user['selected_tab']) );
 $data->assign('view_name', $user['viewname']);
 
 $additional_buttons = "";

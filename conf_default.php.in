@@ -391,4 +391,8 @@ $conf['trend_line_color'] = "#53E2FF";
 
 # Control whether arguments can be passed into php reports
 $conf['enable_pass_in_arguments_to_optional_graphs'] = false;
+
+# Control wether present graphs with 'bytes', 'Bytes', 'bytes/s', 'Bytes/s', 'kB', 'MB', 'GB', 'bits', 'Bits', 'bits/s', 'Bits/s'
+# as vertical label have their base value set to 1024
+$conf['rrdtool_base_1024'] = false;
 ?>

@@ -32,12 +32,15 @@ if (isset($_GET['create_view'])) {
       $empty_view = array ("view_name" => $_GET['view_name'],
                            "items" => array());
       $view_suffix = str_replace(" ", "_", $_GET['view_name']);
-      $view_filename = $conf['views_dir'] . "/view_" . $view_suffix . ".json";
+      $view_filename = $conf['views_dir'] . "/view_" . preg_replace('/[^a-zA-Z0-9_-]/', '', $view_suffix) . ".json";
+      if ( pathinfo( $view_filename, PATHINFO_DIRNAME ) != $conf['views_dir'] ) {
+        die('Invalid path detected');
+      }
       $json = json_encode($empty_view);
       if (file_put_contents($view_filename, 
                             json_prettyprint($json)) === FALSE) {
         $output = "<strong>Alert:</strong>" .
-                  " Can't write to file $view_filename." .
+                  " Can't write to file " . htmlspecialchars($view_filename) .
                   " Perhaps permissions are wrong.";
       } else {
         $output = "View has been created successfully.";
@@ -79,7 +82,10 @@ if (isset($_GET['delete_view'])) {
       " does not exist.";
     } else {
       $view_suffix = str_replace(" ", "_", $_GET['view_name']);
-      $view_filename = $conf['views_dir'] . "/view_" . $view_suffix . ".json";
+      $view_filename = $conf['views_dir'] . "/view_" . preg_replace('/[^a-zA-Z0-9_-]/', '', $view_suffix) . ".json";
+      if ( pathinfo( $view_filename, PATHINFO_DIRNAME ) != $conf['views_dir'] ) {
+        die('Invalid path detected');
+      }
       if (unlink($view_filename) === FALSE) {
         $output = "<strong>Alert:</strong>" .
                   " Can't remove file $view_filename." .
