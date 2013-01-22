@@ -92,7 +92,7 @@ foreach ( $hosts as $index => $host ) {
 $mean_cmd = " CDEF:'mean'=total,$index,/";
 
 $first_color = get_col(0);
-$min_index = min(array_keys($hosts))
+$min_index = min(array_keys($hosts));
 
 foreach($hosts as $index =>  $host) {
     $cx = $index/(1+count($hosts));
