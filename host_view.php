@@ -282,6 +282,8 @@ if ($cs)
 if ($ce)
   $baseGraphArgs .= "&amp;ce=" . rawurlencode($ce);
 
+$data->assign("baseGraphArgs", htmlspecialchars_decode($baseGraphArgs));
+
 getMetricGroups($metrics,
 		$always_timestamp,
 		$always_constant,

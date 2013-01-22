@@ -24,6 +24,7 @@ $(function () {
   var refresh_timer = null;
   var first_time = true;
   var VALUE_SEPARATOR = " :: ";
+  var plot = null;
 
   function resize() {
     var popupDialog = $("#popup-dialog");
@@ -36,6 +37,7 @@ $(function () {
   $("#popup-dialog").bind("dialogresizestop.inspect", 
 			  function() {
 			    resize();
+			    plot.resize();
 			    plotAccordingToChoices();
 			  });
   $("#popup-dialog").bind("dialogclose.inspect", 
@@ -363,7 +365,14 @@ $(function () {
       delete plotOpt.yaxis.max;
     }
 
-    $.plot($("#placeholder"), data, plotOpt);
+    if (plot == null) {
+      plot = $.plot($("#placeholder"), data, plotOpt);
+    } else {
+      plot.clearEvents();
+      plot.setData(data);
+      plot.setupGrid();
+      plot.draw();
+    }
   }
 });
 </script>
