@@ -118,11 +118,12 @@ function toggleMetricGroup(mgId, mgDiv) {
     mgDiv.hide();
   } else {
     addMetricGroup(mgName);
-    var url = 'metric_group_view.php?h={$hostname}&c={$cluster}&z=small&metric_group=' + mgName;
+    var url = 'metric_group_view.php?{$baseGraphArgs}&metric_group=' + mgName;
     url += "&event=";
     url += ($("#show_all_events").attr("checked") == "checked") ? "show" : "hide";
     url += "&ts=";
     url += ($("#timeshift_overlay").attr("checked") == "checked") ? "1" : "0";
+
     $.get(url, 
           function(data) {
             mgDiv.html(data);

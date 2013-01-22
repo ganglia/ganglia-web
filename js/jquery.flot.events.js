@@ -77,6 +77,10 @@
             _drawEvents();
         };
         
+        plot.clearEvents = function(){
+	    _clearEvents();
+        }
+
         plot.hooks.processOptions.push(function(plot, options){
             // enable the plugin
             if (options.events.data != null) {
