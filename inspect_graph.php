@@ -90,8 +90,12 @@ $(function () {
   graphControls.append(html);
   
   $("#gopt").buttonset();
-  $("#line").button().click(plotAccordingToChoices);
-  $("#stack").button().click(plotAccordingToChoices);
+  $("#line").button().click(function() {
+    plotAccordingToChoices();
+  });
+  $("#stack").button().click(function() {
+    plotAccordingToChoices();
+  });
   $("#resetzoom").button();
   $("#resetzoom").click(function () {
     plotRanges = null;
@@ -344,7 +348,6 @@ $(function () {
     var stack = $("#stack").attr('checked') == 'checked';
 
     plotOpt.lines.fill = stack;
-    plotOpt.legend.noColumns = selected_series.length;
     plotOpt.series.stack = stack ? 1 : null;
 
     // Apply zoom if set
@@ -365,14 +368,7 @@ $(function () {
       delete plotOpt.yaxis.max;
     }
 
-    if (plot == null) {
-      plot = $.plot($("#placeholder"), data, plotOpt);
-    } else {
-      plot.clearEvents();
-      plot.setData(data);
-      plot.setupGrid();
-      plot.draw();
-    }
+    plot = $.plot($("#placeholder"), data, plotOpt);
   }
 });
 </script>
