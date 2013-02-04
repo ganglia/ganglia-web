@@ -192,7 +192,9 @@ function get_host_metric_graphs($showhosts,
       // If we're hiding DOWN hosts, we skip to next iteration of the loop.
       continue;
     }
-    $host_url = rawurlencode($host);
+    // Edited by Brooks to fix downcase issue
+    //$host_url = rawurlencode($host);
+    $host_url = strtolower(rawurlencode($host));
     
     $host_link="\"?c=$cluster_url&amp;h=$host_url&amp;$get_metric_string\"";
     $textval = "";
