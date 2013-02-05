@@ -125,6 +125,10 @@ function get_host_metric_graphs($showhosts,
           ! preg_match("/" .$user['host_regex'] . "/", $host))
         continue;
       
+      // Fix for alphabetical sort order
+      $host = strtolower($host);
+      // End fix
+      
       $load = get_load($host, $metrics);
       $host_load[$host] = $load;
 
