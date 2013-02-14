@@ -15,7 +15,7 @@ $base = isset($_GET['base']) ? rawurlencode($_GET['base']) . "/" : "";
 
 <html>
 <head>
-<script type="text/javascript" src="<?php print $base; ?>js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="<?php print $base; ?>js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="<?php print $base; ?>js/jquery-ui-1.9.1.custom.min.js"></script>
 <link type="text/css" href="css/smoothness/jquery-ui-1.9.1.custom.min.css" rel="stylesheet"/>
 <link rel="stylesheet" href="./styles.css" type="text/css">

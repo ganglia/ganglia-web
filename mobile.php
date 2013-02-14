@@ -16,7 +16,7 @@ retrieve_metrics_cache();
 <title>Ganglia Mobile</title> 
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
 <link rel="stylesheet" href="css/jquery.mobile-1.0.min.css" />
-<script src="js/jquery-1.8.2.min.js"></script>
+<script src="js/jquery-1.7.1.js"></script>
 <script src="js/jquery.mobile-1.0.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />

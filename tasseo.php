@@ -54,7 +54,7 @@ if ( ! isset($_REQUEST['view_name']) ) {
 <title>Live Dashboard for <?php print $user['view_name']; ?></title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="css/tasseo.css" />
-<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="js/d3.v2.min.js"></script>
 <script type="text/javascript" src="js/rickshaw.min.js"></script>
 </head>

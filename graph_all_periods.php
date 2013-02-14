@@ -11,7 +11,7 @@
 <?php
 if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 ?>
-<script TYPE="text/javascript" SRC="js/jquery-1.8.2.min.js"></script>
+<script TYPE="text/javascript" SRC="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.9.1.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
