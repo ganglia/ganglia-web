@@ -150,6 +150,9 @@ $(function () {
 
     var i = 0;
     $.each(datasets, function(key, dataset) {
+      if (dataset.data == null)
+	return;
+
       start_time = Math.min(dataset.data[0][0], start_time);
       end_time = Math.max(dataset.data[dataset.data.length - 1][0], 
 			  end_time);
