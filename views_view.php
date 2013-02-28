@@ -206,10 +206,10 @@ if (isset($_GET['add_to_view'])) {
 $available_views = get_available_views();
 $existing_views = '';
 foreach ($available_views as $view) {
- $v = $view['view_name'];
- $vid = viewId($v);
- $checked = ($_GET['vn'] == $v);
- $existing_views .= '<input type="radio" id="' . $vid . '" onClick="selectView(\'' . $v . '\'); return false;"' . ($checked ? " checked" : "") . '><label style="text-align:left;" class="nobr" for="' . $vid . '">' . $v . '</label>'; 
+  $v = $view['view_name'];
+  $vid = viewId($v);
+  $checked = ($_GET['vn'] == $v);
+  $existing_views .= '<input type="radio" id="' . $vid . '" onClick="selectView(\'' . $v . '\'); return false;"' . ($checked ? " checked" : "") . '><label style="text-align:left;" class="nobr" for="' . $vid . '">' . $v . '</label>'; 
 }
 
 if (isset($_GET['views_menu'])) {
@@ -245,7 +245,7 @@ $size = $size == 'medium' ? 'default' : $size;
 
 $additional_host_img_css_classes = "";
 if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
-    $additional_host_img_css_classes = "host_${size}_zoomable";
+  $additional_host_img_css_classes = "host_${size}_zoomable";
 
 $data->assign("additional_host_img_css_classes", 
               $additional_host_img_css_classes);
@@ -255,28 +255,28 @@ $data->assign("view_name", $user["viewname"]);
 
 $view_items = NULL;
 foreach ($available_views as $view_id => $view) {
- if ($view['view_name'] == $user["viewname"]) {
-   $view_elements = get_view_graph_elements($view);
-   $view_items = array();
-   if ( count($view_elements) != 0) {
-     $graphargs = "";
-     if ($cs)
-       $graphargs .= "&amp;cs=" . rawurlencode($cs);
-     if ($ce)
-       $graphargs .= "&amp;ce=" . rawurlencode($ce);
+  if ($view['view_name'] == $user["viewname"]) {
+    $view_elements = get_view_graph_elements($view);
+    $view_items = array();
+    if ( count($view_elements) != 0) {
+      $graphargs = "";
+      if ($cs)
+        $graphargs .= "&amp;cs=" . rawurlencode($cs);
+      if ($ce)
+        $graphargs .= "&amp;ce=" . rawurlencode($ce);
         
-     foreach ($view_elements as $id => $element) {
-       $view_items[] = array ("legend" => isset($element['hostname']) ? $element['hostname'] : "Aggregate graph",
+      foreach ($view_elements as $id => $element) {
+        $view_items[] = array ("legend" => isset($element['hostname']) ? $element['hostname'] : "Aggregate graph",
                                "url_args" => htmlentities($element['graph_args']) . "&amp;r=" . $range . $graphargs,
 
                                "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0
-        );
+                               );
       }
     }
     
     $data->assign("number_of_view_items", sizeof($view_items));
     break;    
- }  // end of if ( $view['view_name'] == $view_name
+  }  // end of if ( $view['view_name'] == $view_name
 } // end of foreach ( $views as $view_id 
 
 if (isset($view_items))
