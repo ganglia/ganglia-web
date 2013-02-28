@@ -3,6 +3,10 @@ $tpl = new Dwoo_Template_File( template("footer.tpl") );
 $data = new Dwoo_Data(); 
 $data->assign("webfrontend_version",$version["webfrontend"]);
 
+if (isset($_GET["hide-hf"])) {
+  $data->assign("hide_footer", true);
+}
+
 if ($version["rrdtool"]) {
    $data->assign("rrdtool_version",$version["rrdtool"]);
 }

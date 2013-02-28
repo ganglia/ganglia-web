@@ -294,6 +294,10 @@ if(count($gridstack) > 1) {
 $tpl = new Dwoo_Template_File( template("$header.tpl") );
 $data = new Dwoo_Data();
 
+if (isset($_GET["hide-hf"])) {
+  $data->assign("hide_header", true);
+}
+
 // Server offset used in generating pretty dates and times when zooming
 $data->assign("server_utc_offset", date('Z'));
 //
