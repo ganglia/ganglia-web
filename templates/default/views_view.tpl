@@ -51,7 +51,7 @@
 
 <table id="views_table">
 <tr><td valign="top">
-<div id="views_menu">
+<div id="views_menu" {if $ad_hoc_view} style="visibility: hidden; display: none;" {/if}>
     {$existing_views}
 </div>
 <script type="text/javascript">$(function() { $("#views_menu").buttonsetv(); });</script>
