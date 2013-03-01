@@ -1352,4 +1352,12 @@ function buildMetricMaps($metrics,
   } // foreach
   return array($metricMap, $metricGroupMap);
 }
+
+// keep url decoding until it looks good
+function heuristic_urldecode($blob) {
+  while (substr($blob,0,1) == "%") {
+    $blob = rawurldecode($blob);
+  }
+  return $blob;
+}
 ?>

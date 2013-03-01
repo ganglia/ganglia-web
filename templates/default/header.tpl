@@ -259,6 +259,11 @@
 
 <input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
 <input type="hidden" id="vn" name="vn" value="{$view_name}">
+{if $hide_header}
+<input type="hidden" id="hide-hf" name="hide-hf" value="true">
+{else}
+<input type="hidden" id="hide-hf" name="hide-hf" value="false">
+{/if}
 {if $overlay_events}
 <input type="hidden" id="overlay_events" value="true">
 {else}

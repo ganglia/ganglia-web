@@ -205,7 +205,7 @@ if (isset($_GET['add_to_view'])) {
 
 if (isset($_GET['ad-hoc-view'])) {
   $is_ad_hoc = true;
-  $ad_hoc_view_json = json_decode($_GET['ad-hoc-view'], true);
+  $ad_hoc_view_json = json_decode(heuristic_urldecode($_GET['ad-hoc-view']), true);
 }
 
 $available_views = get_available_views();
@@ -232,6 +232,7 @@ $data = new Dwoo_Data();
 $data->assign("range",$range);
 if ($is_ad_hoc) {
   $data->assign("ad_hoc_view", true);
+  $data->assign("ad_hoc_view_json", rawurlencode($_GET['ad-hoc-view']));
 }
 
 // Pop up a warning message if there are no available views

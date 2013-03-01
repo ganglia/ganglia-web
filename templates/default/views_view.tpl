@@ -100,4 +100,6 @@
 </td>
 </tr>
 </table>
-
+{if $ad_hoc_view}
+<input type="hidden" id="ad-hoc-view" name="ad-hoc-view" value="{$ad_hoc_view_json}">
+{/if}
