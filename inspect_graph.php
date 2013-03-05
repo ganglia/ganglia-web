@@ -391,9 +391,9 @@ $(function () {
       data.push(datasets[selected_series[i]]);
     }
 
-    var stack = selectStack.attr('checked') == 'checked';
+    var stack = selectStack.prop('checked');
 
-    plotOpt.lines.fill = stack;
+      plotOpt.lines.fill = stack;
     plotOpt.series.stack = stack ? 1 : null;
 
     if (plot == null) {
