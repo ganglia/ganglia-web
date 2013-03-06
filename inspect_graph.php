@@ -32,6 +32,24 @@ $(function () {
   var selectStack = null;
   var tooltip = null;
 
+  function lastUpdateIndex(datasets) {
+    var index = 0;
+    $.each(datasets, function(key, dataset) {
+      if (dataset.data == null)
+	return;
+
+      for (var i = dataset.data.length - 1; 
+	   i >= 0 && i > index; 
+	   i--) {
+	if (dataset.data[i][1] != "NaN") {
+	  index = i;
+	  break;
+	} 
+      }
+    });
+    return index;
+  }
+
   function resize() {
     var popupDialog = $("#popup-dialog");
     placeHolder.height(popupDialog.height() -
@@ -148,6 +166,11 @@ $(function () {
     var start_time = Number.MAX_VALUE;
     var end_time = 0;
 
+    // Determine point index corresponding to last update
+    // Typically the dataset will have trailing NaNs that 
+    // should be ignored
+    var lastUpdate = lastUpdateIndex(datasets);
+
     var i = 0;
     $.each(datasets, function(key, dataset) {
       if (dataset.data == null)
@@ -173,8 +196,11 @@ $(function () {
 
       i++;
 
-      var current_value = 
-	formattedSiVal(dataset.data[dataset.data.length - 1][1], 2);
+      var current_value = dataset.data[lastUpdate][1];
+      if (current_value != "NaN")
+	current_value = formattedSiVal(current_value, 2);
+      else
+        current_value = "";
       var seriesIndex = $.inArray(dataset.label, series_labels);
       if (seriesIndex == -1) {
 	var option = $('<option/>', 
