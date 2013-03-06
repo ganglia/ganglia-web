@@ -6,6 +6,20 @@ include_once("./global.php");
 if (! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf))
   die("You do not have access to view views.");
 
+$user['view_name'] = $_REQUEST['view_name'];
+
+if( !is_proper_view_name ( $user['view_name'])){
+?>
+<div class="ui-widget">
+  <div class="ui-state-default ui-corner-all" styledefault="padding: 0 .7em;"> 
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+    View names valid characters are 0-9, a-z, A-Z, -, _ and space. View has not been created.</p>
+  </div>
+</div>
+<?php
+  exit(0);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Create new view
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,19 +33,20 @@ if (isset($_GET['create_view'])) {
     $available_views = get_available_views();
 
     foreach ($available_views as $view_id => $view) {
-      if ($view['view_name'] == $_GET['view_name']) {
+      if ($view['view_name'] == $user['view_name']) {
         $view_exists = 1;
+        break;
       }
     }
 
     if ($view_exists == 1) {
       $output = "<strong>Alert:</strong> View with the name " .
-                $_GET['view_name'] . 
+                $user['view_name'] . 
                 " already exists.";
     } else {
-      $empty_view = array ("view_name" => $_GET['view_name'],
+      $empty_view = array ("view_name" => $user['view_name'],
                            "items" => array());
-      $view_suffix = str_replace(" ", "_", $_GET['view_name']);
+      $view_suffix = str_replace(" ", "_", $user['view_name']);
       $view_filename = $conf['views_dir'] . "/view_" . preg_replace('/[^a-zA-Z0-9_-]/', '', $view_suffix) . ".json";
       if ( pathinfo( $view_filename, PATHINFO_DIRNAME ) != $conf['views_dir'] ) {
         die('Invalid path detected');
@@ -71,17 +86,18 @@ if (isset($_GET['delete_view'])) {
     $available_views = get_available_views();
 
     foreach ($available_views as $view_id => $view) {
-      if ($view['view_name'] == $_GET['view_name']) {
+      if ($view['view_name'] == $user['view_name']) {
         $view_exists = 1;
+        break;
       }
     }
 
     if ($view_exists != 1) {
       $output = "<strong>Alert:</strong> View with the name " .
-      $_GET['view_name'] . 
+      $user['view_name'] . 
       " does not exist.";
     } else {
-      $view_suffix = str_replace(" ", "_", $_GET['view_name']);
+      $view_suffix = str_replace(" ", "_", $user['view_name']);
       $view_filename = $conf['views_dir'] . "/view_" . preg_replace('/[^a-zA-Z0-9_-]/', '', $view_suffix) . ".json";
       if ( pathinfo( $view_filename, PATHINFO_DIRNAME ) != $conf['views_dir'] ) {
         die('Invalid path detected');
@@ -109,7 +125,7 @@ if (isset($_GET['add_to_view'])) {
     $available_views = get_available_views();
 
     foreach ($available_views as $view_id => $view) {
-      if ($view['view_name'] == $_GET['view_name']) {
+      if ($view['view_name'] == $user['view_name']) {
         $view_exists = 1;
         break;
       }
@@ -117,7 +133,7 @@ if (isset($_GET['add_to_view'])) {
 
     if ($view_exists == 0) {
       $output = "<strong>Alert:</strong> View " .
-      $_GET['view_name'] . 
+      $user['view_name'] . 
       " does not exist. This should not happen.";
     } else {
       // Read in contents of an existing view

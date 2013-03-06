@@ -366,6 +366,18 @@ function is_valid_hex_color( $string )
 }
 
 #------------------------------------------------------------------------------
+# Allowed view name characters are alphanumeric plus space, dash and underscore
+function is_proper_view_name( $string )
+{
+  if(preg_match("/[^a-zA-z0-9_\-\ ]/", $string)){
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
+#------------------------------------------------------------------------------
 # Return a shortened version of a FQDN
 # if "hostname" is numeric only, assume it is an IP instead
 # 

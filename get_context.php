@@ -15,8 +15,10 @@ $user['clustername'] = isset($_GET["c"]) ?
 $user['gridname'] = isset($_GET["G"]) ?
     escapeshellcmd( clean_string( rawurldecode($_GET["G"]) ) ) : NULL;
 
-$user['viewname'] = isset($_GET["vn"]) ?
-    escapeshellcmd( clean_string( rawurldecode($_GET["vn"]) ) ) : '';
+$user['viewname'] = '';
+if ( isset($_GET["vn"]) &&  is_proper_view_name ($_GET["vn"]) ) {
+    $user['viewname'] = $_GET["vn"];
+}
 
 if($conf['case_sensitive_hostnames'] == 1) {
     $user['hostname'] = isset($_GET["h"]) ?
