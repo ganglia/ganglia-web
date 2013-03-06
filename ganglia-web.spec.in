@@ -38,22 +38,22 @@ written in the PHP5 language and uses the Dwoo templating engine.
 %__mkdir -p $RPM_BUILD_ROOT/%{web_prefixdir}
 %__cp -rf * $RPM_BUILD_ROOT/%{web_prefixdir}
 %__rm -rf $RPM_BUILD_ROOT/%{web_prefixdir}/conf
-%__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/filters
-%__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/conf
-%__cp -rf conf/* $RPM_BUILD_ROOT@varstatedir@/ganglia/conf
-%__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/dwoo
-%__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/dwoo/compiled
-%__install -d -m 0755 $RPM_BUILD_ROOT@varstatedir@/ganglia/dwoo/cache
+%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/filters
+%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/conf
+%__cp -rf conf/* $RPM_BUILD_ROOT@vargwebdir@/conf
+%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo
+%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo/compiled
+%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo/cache
 
 %files
 %defattr(-,root,root)
-%attr(0755,nobody,nobody)@varstatedir@/ganglia/filters
-%attr(0755,@varapacheuser@,@varapacheuser@)@varstatedir@/ganglia/conf
-%attr(0755,@varapacheuser@,@varapacheuser@)@varstatedir@/ganglia/dwoo
-%attr(0755,@varapacheuser@,@varapacheuser@)@varstatedir@/ganglia/dwoo/compiled
-%attr(0755,@varapacheuser@,@varapacheuser@)@varstatedir@/ganglia/dwoo/cache
+%attr(0755,nobody,nobody)@vargwebdir@/filters
+%attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/conf
+%attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/dwoo
+%attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/dwoo/compiled
+%attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/dwoo/cache
 %{web_prefixdir}/*
-/var/lib/ganglia/conf/*
+@vargwebdir@/conf/*
 %config(noreplace) %{web_prefixdir}/conf_default.php
 
 %clean

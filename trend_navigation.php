@@ -10,11 +10,11 @@ $drop_args = array("trendrange", "trendhistory");
 
 foreach ( $_REQUEST as $key => $value ) {
   if ( ! in_array($key, $drop_args) )
-    $graph_args[] = $key . "=" . str_replace("_/graph_php?", "", $value);
+    $graph_args[] = rawurlencode($key) . "=" . rawurlencode( str_replace("_/graph_php?", "", $value) );
 }
 
 $query_string = preg_replace("/(&trendrange=)(\d+)/", "", $_SERVER['QUERY_STRING'] );
-$query_string = preg_replace("/(&trendhistory=)(\d+)/", "", $query_string);
+$query_string = preg_replace("/(&trendhistory=)(\d+)/", "", htmlspecialchars($query_string, ENT_QUOTES) );
 
 
 ?>

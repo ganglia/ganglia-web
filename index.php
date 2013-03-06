@@ -34,11 +34,11 @@ catch (Exception $e)
 $GHOME = ".";
 
 if ($context == "meta" or $context == "control") {
-      $title = "$self $meta_designator Report";
+      $title = "$self ${conf['meta_designator']} Report";
       include_once "./header.php";
       include_once "./meta_view.php";
 } else if ($context == "tree") {
-      $title = "$self $meta_designator Tree";
+      $title = "$self ${conf['meta_designator']} Tree";
       include_once "./header.php";
       include_once "./grid_tree.php";
 } else if ($context == "cluster" or $context == "cluster-summary") {

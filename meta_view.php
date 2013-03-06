@@ -85,14 +85,14 @@ foreach ( $sorted_sources as $source => $val )
                   # Negative control room values means dont display grid summary.
                   if ($controlroom < 0) continue;
                   $num_sources = count($sorted_sources) - 1;
-                  $name = "$self $meta_designator ($num_sources sources)";
+                  $name = "$self ${conf['meta_designator']} ($num_sources sources)";
                   $graph_url = "me=$sourceurl&amp;$get_metric_string";
                   $url = "./?$get_metric_string";
                }
             else
                {
                   # Set grid context.
-                  $name = "$source $meta_designator";
+                  $name = "$source ${conf['meta_designator']}";
                   $graph_url = "G=$sourceurl&amp;$get_metric_string&amp;st=$localtime";
                   $authority = $grid[$source]['AUTHORITY'];
                   $url = "$authority?gw=fwd&amp;gs=$gridstack_url&amp;$get_metric_string";
@@ -179,7 +179,7 @@ $snap_rows = array();
 # Show load images.
 if ($conf['show_meta_snapshot']=="yes") {
    $data->assign("show_snapshot", 1);
-   $data->assign("self", "$self $meta_designator");
+   $data->assign("self", "$self ${conf['meta_designator']}");
 
    foreach ($sorted_sources as $c=>$value) {
       if ($c==$self) continue;

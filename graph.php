@@ -75,7 +75,8 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
        $unique_id = "a" . $index;
 
        $total_ids[] = $unique_id;
-     
+        
+       # Pad the label with spaces 
        $label = str_pad( sanitize( $item[ 'label' ] ), $max_label_length );
 
        // use custom DS defined in json template if it's 
@@ -125,6 +126,17 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
              $graphdef .= ":'$unique_id'#${item['color']}:'${label}' ";
            }
            break;
+
+         // Percentile lines
+         case "percentile":
+            $percentile = isset($item['percentile']) ? floatval($item['percentile']): 95;
+            $graphdef .= "VDEF:t${unique_id}=${unique_id},${percentile},PERCENT ";
+            isset($item['line_width']) && in_array( $item['line_width'], $line_widths) ? 
+              $line_width = $item['line_width'] : $line_width = "1";
+            $graphdef .= "LINE" . $line_width . ":'t$unique_id'#{$item['color']}:'{$label}':dashes ";
+
+           break;
+
 
          case "area":
                $graphdef .= "AREA";
@@ -230,6 +242,15 @@ function build_graphite_series( $config, $host_cluster = "" ) {
   return $output;
 }
 
+function build_value_for_json( $value ) {
+  if ( is_numeric( $value ) )
+    $val = floatval($value);
+  else
+    $val = $value;
+
+  return $val;
+}
+
 $gweb_root = dirname(__FILE__);
 
 # RFM - Added all the isset() tests to eliminate "undefined index"
@@ -297,6 +318,10 @@ $debug = isset($_GET['debug']) ? clean_number(sanitize($_GET["debug"])) : 0;
 $showEvents = isset($_GET["event"]) ? sanitize ($_GET["event"]) : "show";
 $user['time_shift'] = isset($_GET["ts"]) ? clean_number(sanitize($_GET["ts"])) : 0;
 
+#
+$user['view_name'] = isset($_GET["vn"]) ? sanitize ($_GET["vn"]) : NULL;
+$user['item_id'] = isset($_GET["item_id"]) ? sanitize ($_GET["item_id"]) : NULL;
+
 $command    = '';
 $graphite_url = '';
 
@@ -359,7 +384,7 @@ switch ($context)
   case "meta":
     $rrd_dir = $conf['rrds'] . "/__SummaryInfo__";
     $rrd_graphite_link = $conf['graphite_rrd_dir'] . "/__SummaryInfo__";
-    $title = "$self Grid";
+    $title = "$self ${conf['meta_designator']}";
     break;
   case "grid":
     $rrd_dir = $conf['rrds'] . "/$grid/__SummaryInfo__";
@@ -367,7 +392,7 @@ switch ($context)
     if (preg_match('/grid/i', $gridname))
         $title  = $gridname;
     else
-        $title  = "$gridname Grid";
+        $title  = "$gridname ${conf['meta_designator']}";
     break;
   case "cluster":
     $rrd_dir = $conf['rrds'] . "/$clustername/__SummaryInfo__";
@@ -564,6 +589,33 @@ if ( isset( $_GET["aggregate"] ) && $_GET['aggregate'] == 1 ) {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////
+// Composite graphs/reports specified in a view
+///////////////////////////////////////////////////////////////////////////
+if ( $user['view_name'] and $user['item_id'] ) {
+  
+  $available_views = get_available_views();
+  foreach ( $available_views as $id => $view ) {
+    # Find view settings
+    if ( $user['view_name'] == $view['view_name'] )
+      break;
+  }
+
+  unset($available_views);  
+
+  foreach ( $view['items'] as $index => $graph_config ) {
+    if (  $user['item_id'] == $graph_config['item_id'] )
+      break;
+  }
+
+  unset($view);
+
+  $title = "";
+  
+  build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
+}
+
+
 //////////////////////////////////////////////////////////////////////////////
 // Check what graph engine we are using
 //////////////////////////////////////////////////////////////////////////////
@@ -579,34 +631,44 @@ switch ( $conf['graph_engine'] ) {
 	$php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
       $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
       
-      # Check for path traversal issues by making sure real path is actually in graphdir
       
-      if( is_file( $php_report_file ) and 
-	  dirname(realpath($php_report_file)) ==  $conf['graphdir'] ) {
-        include_once $php_report_file;
-        $graph_function = "graph_${graph}";
-	if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
-	    count($graph_arguments)) {
-	  $rrdtool_graph['arguments'] = $graph_arguments;
-	  // Pass by reference call, $rrdtool_graph modified inplace
-	  $graph_function($rrdtool_graph);
-	  unset($rrdtool_graph['arguments']);
-	} else
-	  $graph_function($rrdtool_graph);
-      } else if ( is_file( $json_report_file ) and dirname(realpath($json_report_file)) ==  $conf['graphdir'] ) {
-        $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
-
-        # We need to add hostname and clustername if it's not specified
-        foreach ( $graph_config['series'] as $index => $item ) {
-          if ( ! isset($graph_config['series'][$index]['hostname'])) {
-            $graph_config['series'][$index]['hostname'] = $raw_host;
-            if (isset($grid))
-               $graph_config['series'][$index]['clustername'] = $grid;
-            else
-               $graph_config['series'][$index]['clustername'] = $clustername;
+      if( is_file( $php_report_file ) ) {
+         
+          # Check for path traversal issues by making sure real path is actually in graphdir
+          if ( dirname(realpath($php_report_file)) !=  $conf['graphdir'] ) {
+            $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"Check \$conf[graphdir] should not be relative path"';
+          } else {
+            include_once $php_report_file;
+            $graph_function = "graph_${graph}";
+            if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
+                count($graph_arguments)) {
+              $rrdtool_graph['arguments'] = $graph_arguments;
+              // Pass by reference call, $rrdtool_graph modified inplace
+              $graph_function($rrdtool_graph);
+              unset($rrdtool_graph['arguments']);
+            } else {
+              $graph_function($rrdtool_graph);
+            }
           }
+      } else if ( is_file( $json_report_file ) ) {
+        
+        if ( dirname(realpath($json_report_file)) !=  $conf['graphdir'] ) {
+          $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"Check \$conf[graphdir] should not be relative path"';
+        } else {
+          $graph_config = json_decode( file_get_contents( $json_report_file ), TRUE );
+  
+          # We need to add hostname and clustername if it's not specified
+          foreach ( $graph_config['series'] as $index => $item ) {
+            if ( ! isset($graph_config['series'][$index]['hostname'])) {
+              $graph_config['series'][$index]['hostname'] = $raw_host;
+              if (isset($grid))
+                 $graph_config['series'][$index]['clustername'] = $grid;
+              else
+                 $graph_config['series'][$index]['clustername'] = $clustername;
+            }
+          }
+          build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
         }
-        build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
       }
     } else { 
       build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
@@ -616,7 +678,7 @@ switch ( $conf['graph_engine'] ) {
     if (!array_key_exists('series', $rrdtool_graph) || 
         !strlen($rrdtool_graph['series']) ) {
 	$rrdtool_graph[ 'series' ] = 
-	  'HRULE:1#FFCC33:"No matching metrics detected"';
+	  'HRULE:1#FFCC33:"Empty RRDtool command. Likely bad graph config"';
     }
   
     # Make small graphs (host list) cleaner by removing the too-big
@@ -673,7 +735,11 @@ switch ( $conf['graph_engine'] ) {
         }
       }
     }
-  
+    if ( $conf['rrdtool_base_1024'] and in_array($vlabel, array('bytes', 'Bytes', 'bytes/s', 'Bytes/s', 'kB', 'MB', 'GB', 'bits', 'Bits', 'bits/s', 'Bits/s')) ) {
+      // Set graph base value to 1024 
+     $rrdtool_graph['extras'] = isset($rrdtool_graph['extras']) ? $rrdtool_graph['extras'] . " --base=1024" : " --base=1024" ;
+    }
+
     // The order of the other arguments isn't important, except for the
     // 'extras' and 'series' values.  These two require special handling.
     // Otherwise, we just loop over them later, and tack $extras and
@@ -864,6 +930,7 @@ if ( $user['json_output'] ||
     $buffer = fgets($fp, 4096);
     $string .= $buffer;
   }
+
   // Parse it
   $xml = simplexml_load_string($string);
 
@@ -881,12 +948,12 @@ if ( $user['json_output'] ||
     // we need to iterate over those
     if ( is_array($values["v"]) ) {
       foreach ( $values["v"] as $key => $value ) {
-        $output_array[$key]["datapoints"][] = 
-	  array(floatval($value), intval($values['t']));
+	$output_array[$key]["datapoints"][] = 
+	  array(build_value_for_json($value), intval($values['t']));
       }
     } else {
       $output_array[0]["datapoints"][] = 
-	array(floatval($values["v"]), intval($values['t']));
+	array(build_value_for_json($values["v"]), intval($values['t']));
     }
 
   }
@@ -1258,7 +1325,7 @@ if ( $showEvents == "show" &&
 if ( $user['trend_line'] ) {
   
     $command .= " VDEF:D2=sum,LSLSLOPE VDEF:H2=sum,LSLINT CDEF:avg2=sum,POP,D2,COUNT,*,H2,+";
-    $command .= " 'LINE3:avg2#53E2FF:Trend:dashes'";
+    $command .= " 'LINE3:avg2" . $conf['trend_line_color'] . ":Trend:dashes'";
 
 }
 
@@ -1266,6 +1333,7 @@ if ( $user['trend_line'] ) {
 // Timeshift is only available to metric graphs
 ////////////////////////////////////////////////////////////////////////////////
 if ( $user['time_shift'] && $graph == "metric" ) {
+
 
     preg_match_all("/(DEF|CDEF):((([^ \"'])+)|(\"[^\"]*\")|('[^']*'))+/", 
                  " " . $rrdtool_graph['series'], 
@@ -1278,7 +1346,7 @@ if ( $user['time_shift'] && $graph == "metric" ) {
     $def = str_replace("DEF:'sum'", "DEF:'sum2'", trim($matches[0][0])) . ":start=end-" . $offset;
     
     $command .= " " . $def . " SHIFT:sum2:" . $start;
-    $command .= " 'LINE2:sum2#FFE466:Previous " . $range . ":dashes'";
+    $command .= " 'LINE2:sum2" . $conf['timeshift_line_color'] . ":Previous " . $range . ":dashes'";
 }
 
 ////////////////////////////////////////////////////////////////////////////////

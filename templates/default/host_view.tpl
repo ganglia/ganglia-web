@@ -111,12 +111,27 @@ function removeMetricGroup(mgName) {
 
 function toggleMetricGroup(mgId, mgDiv) {
   var mgName = g_mgMap[mgId];
-  if (mgDiv.is(":visible"))
+  if (mgDiv.is(":visible")) {
     // metric group is being closed
     removeMetricGroup(mgName);
-  else
+    mgDiv.html("");
+    mgDiv.hide();
+  } else {
     addMetricGroup(mgName);
-  document.ganglia_form.submit();
+    var url = 'metric_group_view.php?{$baseGraphArgs}&metric_group=' + mgName;
+    url += "&event=";
+    url += ($("#show_all_events").attr("checked") == "checked") ? "show" : "hide";
+    url += "&ts=";
+    url += ($("#timeshift_overlay").attr("checked") == "checked") ? "1" : "0";
+
+    $.get(url, 
+          function(data) {
+            mgDiv.html(data);
+	    mgInitEventBtns(mgDiv);
+	    mgInitTimeshiftBtns(mgDiv);
+            mgDiv.show();
+          });
+  }
 }
 
 function jumpToMetricGroup(mgId) {
@@ -145,6 +160,30 @@ function refreshHostView() {
       var d = new Date();
       $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
     }    
+  });
+}
+
+function mgInitEventBtns(mgDiv) {
+  var checked = $("#show_all_events").attr("checked");
+  mgDiv.find("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
+    $(this).button();
+    if (checked == "checked")
+      $(this).attr("checked", 'checked');
+    else
+      $(this).removeAttr("checked");
+    $(this).button('refresh');
+  });
+}
+
+function mgInitTimeshiftBtns(mgDiv) {
+  var checked = $("#timeshift_overlay").attr("checked");
+  mgDiv.find("[id^=" + TIME_SHIFT_BASE_ID + "]").each(function() {
+    $(this).button();
+    if (checked == "checked")
+      $(this).attr("checked", 'checked');
+    else
+      $(this).removeAttr("checked");
+    $(this).button('refresh');
   });
 }
 
@@ -203,6 +242,7 @@ $(function() {
     $(this).click(function() {
       var id = $(this).attr('id');
       toggleMetricGroup(id, $("#"+id+"_div"));
+      return false;
     });
   });
 });
@@ -315,41 +355,7 @@ g_mgMap["{$mgId}"] = "{$group}";
 <div id="{$mgId}_div" class="ui-helper-hidden">
 {/if}
 {if $g_metrics.visible}
-<table><tr>
-{$i = 0}
-{foreach $g_metrics["metrics"] g_metric}
-<td>
-<font style="font-size: 8px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font><br>
-{if $may_edit_views}
-{$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
-<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActions('{$g_metric.host_name}','{$g_metric.metric_name}', 'metric', '{$graph_args}'); return false;">+</button>
-{/if}
-<button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;csv=1';return false;">CSV</button>
-<button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='./graph.php?{$g_metric.graphargs}&amp;json=1';return false;">JSON</button>
-<button title="Inspect Graph" onClick="inspectGraph('{$g_metric.graphargs}'); return false;" class="shiny-blue">Inspect</button>
-<button title="6 month trend" onClick="drawTrendGraph('./graph.php?{$g_metric.graphargs}&amp;trend=1&amp;z=xlarge'); return false;" class="shiny-blue">Trend</button>
-
-{if $graph_engine == "flot"}
-<br>
-<div id="placeholder_{$g_metric.graphargs}" class="flotgraph2 img_view"></div>
-<div id="placeholder_{$g_metric.graphargs}_legend" class="flotlegend"></div>
-{else}
-{$graphId = cat($GRAPH_BASE_ID $mgId $i)}
-{$showEventsId = cat($SHOW_EVENTS_BASE_ID $mgId $i)}
-<input title="Hide/Show Events" type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
-{$timeShiftId = cat($TIME_SHIFT_BASE_ID $mgId $i)}
-<input title="Timeshift Overlay" type="checkbox" id="{$timeShiftId}" onclick="showTimeShift('{$graphId}', this.checked)"/><label class="show_timeshift_text" for="{$timeShiftId}">Timeshift</label>
-<br>
-<a href="./graph_all_periods.php?{$g_metric.graphargs}&amp;z=large">
-<img id="{$graphId}" class="noborder {$additional_host_img_css_classes}" style="margin:5px;" alt="{$g_metric.alt}" src="./graph.php?{$g_metric.graphargs}" title="{$g_metric.desc}" />
-</A>
-{/if}
-</td>
-{$g_metric.new_row}
-{math "$i + 1" assign=i}
-{/foreach}
-</tr>
-</table>
+{include('metric_group_view.tpl')}
 {/if}
 </div>
 {/foreach}

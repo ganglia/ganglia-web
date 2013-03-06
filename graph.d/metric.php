@@ -11,7 +11,6 @@ function graph_metric ( &$rrdtool_graph ) {
            $jobstart,
            $load_color,
            $max,
-           $meta_designator,
            $metricname,
            $metrictitle,
            $min,
@@ -73,11 +72,11 @@ function graph_metric ( &$rrdtool_graph ) {
             break;
 
         case 'meta':
-            $rrdtool_graph['title'] = "$meta_designator ". $rrdtool_graph['title'] ."last $range";
+            $rrdtool_graph['title'] = "${conf['meta_designator']} ". $rrdtool_graph['title'] ."last $range";
             break;
 
         case 'grid':
-            $rrdtool_graph['title'] = "$meta_designator ". $rrdtool_graph['title'] ."last $range";
+            $rrdtool_graph['title'] = "${conf['meta_designator']} ". $rrdtool_graph['title'] ."last $range";
             break;
 
         case 'cluster':

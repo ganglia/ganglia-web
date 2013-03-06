@@ -23,10 +23,10 @@ $line_width = "2";
 $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $_GET['hreg'], $_GET['mreg']);
 
 foreach ( $_GET['hreg'] as $index => $arg ) {
-  print "<input type=hidden name=hreg[] value='" . $arg . "'>";
+  print "<input type=hidden name=hreg[] value='" . htmlspecialchars($arg) . "'>";
 }
 foreach ( $_GET['mreg'] as $index => $arg ) {
-  print "<input type=hidden name=mreg[] value='" . $arg . "'>";
+  print "<input type=hidden name=mreg[] value='" . htmlspecialchars($arg) . "'>";
 }
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';

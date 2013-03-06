@@ -41,7 +41,8 @@ $(function(){
 	  showOn: "button",
 	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
-	  buttonImageOnly: true
+	  buttonImageOnly: true,
+	  hideNowButton: true
     });
 
   $( "#datepicker-cs").datetimepicker();
@@ -51,7 +52,8 @@ $(function(){
 	  showOn: "button",
 	  constrainInput: false,
 	  buttonImage: "img/calendar.gif",
-	  buttonImageOnly: true
+	  buttonImageOnly: true,
+	  hideNowButton: true
     });
 
   var create_new_view_dialog = $( "#create-new-view-dialog" );

@@ -207,7 +207,8 @@ function start_everything ($parser, $tagname, $attrs)
 
          case "HOST":
             $hostname = $attrs['NAME'];
-	    $index_array['cluster'][$hostname][] = $cluster_name;
+            if (host_alive($attrs, $cluster_name))
+                $index_array['cluster'][$hostname][] = $cluster_name;
 
          case "METRIC":
             $metricname = rawurlencode($attrs['NAME']);

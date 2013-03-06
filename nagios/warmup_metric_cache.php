@@ -26,6 +26,8 @@ foreach ( $metrics as $mhost => $host_metrics ) {
     }
 }
 
-file_put_contents($conf['nagios_cache_file'], serialize($new_metrics));
+$temp_file = $conf['nagios_cache_file'] . ".temp";
+file_put_contents($temp_file, serialize($new_metrics));
+rename($temp_file, $conf['nagios_cache_file']);
 
 ?>

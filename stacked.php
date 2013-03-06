@@ -51,7 +51,7 @@ unset($hosts);
 $max_len = 0;
 
 foreach($index_array['cluster'] as $host => $cluster_array ) {
-    
+
     foreach ( $cluster_array as $index => $cluster ) {
         // Check cluster name
         if ( $cluster == $clustername ) {
@@ -63,14 +63,14 @@ foreach($index_array['cluster'] as $host => $cluster_array ) {
             } else {
                 $hosts[] = $host;
             }
-            
+
             #
             if ($conf['strip_domainname'])
               $host_len = strlen(strip_domainname($host));
-            else  
+            else
               $host_len = strlen($host);
             $max_len = max($host_len, $max_len);
-        }    
+        }
     }
 }
 
@@ -89,19 +89,20 @@ foreach ( $hosts as $index => $host ) {
             unset($hosts[$index]);
         }
 }
-    
+
 $mean_cmd = " CDEF:'mean'=total,$index,/";
 
 $first_color = get_col(0);
+$min_index = min(array_keys($hosts));
 
 foreach($hosts as $index =>  $host) {
     $cx = $index/(1+count($hosts));
     $color = get_col($cx);
     if ($conf['strip_domainname'])
          $host = strip_domainname($host);
-    if ( $index != 0 )
+    if ( $index != $min_index )
        $command .= " STACK:'a$index'#$color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
-    else 
+    else
        $command .= " AREA:'a$index'#$first_color:'".str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT)."'";
 
     $c++;

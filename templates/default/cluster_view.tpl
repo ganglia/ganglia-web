@@ -198,7 +198,7 @@ vis.render();
 <table width="100%" border=0>
 <tr>
   <td colspan="1">
-  <font size="+1">Stacked Graph - {$metric}</font> 
+  <font size="+1" style="text-align:center">Stacked Graph - {$metric}</font> 
   </td>
 </tr>
 <tr>

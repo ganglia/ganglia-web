@@ -12,8 +12,8 @@
 ./usr/share/ganglia-webfrontend/footer.php
 ./usr/share/ganglia-webfrontend/login.php
 ./usr/share/ganglia-webfrontend/graph_all_periods.php
-./usr/share/ganglia-webfrontend/js/jquery-1.7.1.min.js
-./usr/share/ganglia-webfrontend/js/jquery-ui-1.8.14.custom.min.js
+./usr/share/ganglia-webfrontend/js/jquery-1.8.2.min.js
+./usr/share/ganglia-webfrontend/js/jquery-ui-1.9.1.custom.min.js
 ./usr/share/ganglia-webfrontend/js/jquery.gangZoom.js
 ./usr/share/ganglia-webfrontend/js/excanvas.min.js
 ./usr/share/ganglia-webfrontend/js/jquery.cookie.js
@@ -67,7 +67,7 @@
 ./usr/share/ganglia-webfrontend/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png
 ./usr/share/ganglia-webfrontend/css/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png
 ./usr/share/ganglia-webfrontend/css/smoothness/images/ui-bg_flat_75_ffffff_40x100.png
-./usr/share/ganglia-webfrontend/css/smoothness/jquery-ui-1.8.14.custom.css
+./usr/share/ganglia-webfrontend/css/smoothness/jquery-ui-1.9.1.custom.css
 ./usr/share/ganglia-webfrontend/css/jquery.liveSearch.css
 ./usr/share/ganglia-webfrontend/css/jquery.mobile-1.0.min.css
 ./usr/share/ganglia-webfrontend/ganglia.php
@@ -117,8 +117,8 @@
 ./usr/share/ganglia-webfrontend/api/events.php
 ./usr/share/ganglia-webfrontend/show_node.php
 ./usr/share/ganglia-webfrontend/index.php
-./usr/share/ganglia-webfrontend/dash/js/jquery-1.7.1.min.js
-./usr/share/ganglia-webfrontend/dash/js/jquery-ui-1.8.14.custom.min.js
+./usr/share/ganglia-webfrontend/dash/js/jquery-1.8.2.min.js
+./usr/share/ganglia-webfrontend/dash/js/jquery-ui-1.9.1.custom.min.js
 ./usr/share/ganglia-webfrontend/dash/css/smoothness/images/ui-bg_glass_65_ffffff_1x400.png
 ./usr/share/ganglia-webfrontend/dash/css/smoothness/images/ui-icons_cd0a0a_256x240.png
 ./usr/share/ganglia-webfrontend/dash/css/smoothness/images/ui-icons_222222_256x240.png
@@ -132,7 +132,7 @@
 ./usr/share/ganglia-webfrontend/dash/css/smoothness/images/ui-bg_glass_75_e6e6e6_1x400.png
 ./usr/share/ganglia-webfrontend/dash/css/smoothness/images/ui-bg_glass_55_fbf9ee_1x400.png
 ./usr/share/ganglia-webfrontend/dash/css/smoothness/images/ui-bg_flat_75_ffffff_40x100.png
-./usr/share/ganglia-webfrontend/dash/css/smoothness/jquery-ui-1.8.14.custom.css
+./usr/share/ganglia-webfrontend/dash/css/smoothness/jquery-ui-1.9.1.custom.css
 ./usr/share/ganglia-webfrontend/dash/css/dash.css
 ./usr/share/ganglia-webfrontend/dash/index.html
 ./usr/share/ganglia-webfrontend/dash/img/ajax-loader.gif

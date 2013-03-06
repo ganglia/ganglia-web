@@ -366,6 +366,18 @@ function is_valid_hex_color( $string )
 }
 
 #------------------------------------------------------------------------------
+# Allowed view name characters are alphanumeric plus space, dash and underscore
+function is_proper_view_name( $string )
+{
+  if(preg_match("/[^a-zA-z0-9_\-\ ]/", $string)){
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
+#------------------------------------------------------------------------------
 # Return a shortened version of a FQDN
 # if "hostname" is numeric only, assume it is an IP instead
 # 
@@ -681,8 +693,8 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	  }
 
-    if ( isset($item['glegend']) )
-      $graph_args_array[] = "glegend=" . $item["glegend"];
+          if ( isset($item['glegend']) )
+            $graph_args_array[] = "glegend=" . $item["glegend"];
 
 	  if ( isset($item['cluster']) ) {
 	    $graph_args_array[] = "c=" . urlencode($item['cluster']);
@@ -699,8 +711,18 @@ function get_view_graph_elements($view) {
 	  );
 
 	  unset($graph_args_array);
-	// It's standard metric graph
-	} else {
+          
+        // Check whether it's a composite graph/report. It needs to have an item id
+	} else if ( $item['item_id'] ) {
+          
+	  $graph_args_array[] = "vn=" . $view['view_name'];
+          $graph_args_array[] = "item_id=" . $item['item_id'];
+	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array)
+	  );
+          unset($graph_args_array);
+          
+	// It's standard metric graph          
+        } else {
 	  // Is it a metric or a graph(report)
 	  if ( isset($item['metric']) ) {
 	    $graph_args_array[] = "m=" . $item['metric'];
@@ -1289,5 +1311,57 @@ function getHostOverViewData($hostname,
     }
   }
   $data->assign("c_metrics_data", $c_metrics_data);
+}
+
+function buildMetricMaps($metrics,
+			 $always_timestamp,
+			 $always_constant,
+			 $baseGraphArgs) {
+  $metricMap = NULL;
+  $metricGroupMap = NULL;
+  foreach ($metrics as $name => $metric) {
+    if ($metric['TYPE'] == "string" or 
+	$metric['TYPE'] == "timestamp" or
+	(isset($always_timestamp[$name]) and $always_timestamp[$name])) {
+    } elseif ($metric['SLOPE'] == "zero" or
+	      (isset($always_constant[$name]) and $always_constant[$name])) {
+    } else {
+      $graphArgs = $baseGraphArgs . "&amp;v=$metric[VAL]&amp;m=$name";
+      # Adding units to graph 2003 by Jason Smith <smithj4@bnl.gov>.
+      if ($metric['UNITS']) {
+	$encodeUnits = rawurlencode($metric['UNITS']);
+	$graphArgs .= "&amp;vl=$encodeUnits";
+      }
+      if (isset($metric['TITLE'])) {
+	$title = $metric['TITLE'];
+	$encodeTitle = rawurlencode($title);
+	$graphArgs .= "&amp;ti=$encodeTitle";
+      }
+      // dump_var($graphArgs, "graphArgs");
+
+      $metricMap[$name]['graph'] = $graphArgs;
+      $metricMap[$name]['description'] = 
+	isset($metric['DESC']) ? $metric['DESC'] : '';
+      $metricMap[$name]['title'] = 
+	isset($metric['TITLE']) ? $metric['TITLE'] : '';
+
+      # Setup an array of groups that can be used for sorting in group view
+      if ( isset($metrics[$name]['GROUP']) ) {
+	$groups = $metrics[$name]['GROUP'];
+      } else {
+	$groups = array("");
+      }
+
+      foreach ($groups as $group) {
+	if (isset($metricGroupMap[$group])) {
+	  $metricGroupMap[$group] = 
+	    array_merge($metricGroupMap[$group], (array)$name);
+	} else {
+	  $metricGroupMap[$group] = array($name);
+	}
+      }
+    } // if
+  } // foreach
+  return array($metricMap, $metricGroupMap);
 }
 ?>

@@ -1,19 +1,22 @@
-# Location where gweb should be installed to
+##########################################################
+# User configurables:
+##########################################################
+# Location where gweb should be installed to (excluding conf, dwoo dirs).
 GDESTDIR = /var/www/html/ganglia
 
-APACHE_USER = apache
+# Gweb statedir (where conf dir and Dwoo templates dir are stored)
+GWEB_STATEDIR = /var/lib/ganglia-web
+
+# Gmetad rootdir (parent location of rrd folder)
+GMETAD_ROOTDIR = /var/lib/ganglia
+
+APACHE_USER =  apache
+##########################################################
 
 # Gweb version
 GWEB_MAJOR_VERSION = 3
 GWEB_MINOR_VERSION = 5
-GWEB_MICRO_VERSION = 3
-
-# Gweb statedir (where RRD files, Dwoo templates are stored)
-GWEB_STATEDIR = /var/lib
-GANGLIA_STATEDIR = $(GWEB_STATEDIR)/ganglia
-
-# Dwoo compile directory
-GWEB_DWOO = $(GANGLIA_STATEDIR)/dwoo
+GWEB_MICRO_VERSION = 7
 
 GWEB_VERSION = $(GWEB_MAJOR_VERSION).$(GWEB_MINOR_VERSION).$(GWEB_MICRO_VERSION)
 
@@ -31,10 +34,10 @@ clean:
 	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
 
 conf_default.php:	conf_default.php.in
-	sed -e "s|@varstatedir@|$(GWEB_STATEDIR)|" conf_default.php.in > conf_default.php
+	sed -e "s|@vargmetadir@|$(GMETAD_ROOTDIR)|" -e "s|@vargwebstatedir@|$(GWEB_STATEDIR)|g" conf_default.php.in > conf_default.php
 
 ganglia-web.spec:	ganglia-web.spec.in
-	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ -e "s|@varstatedir@|$(GWEB_STATEDIR)|" -e "s|@varapacheuser@|$(APACHE_USER)|g" ganglia-web.spec.in > ganglia-web.spec
+	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ -e "s|@vargwebdir@|$(GWEB_STATEDIR)|" -e "s|@varapacheuser@|$(APACHE_USER)|g" ganglia-web.spec.in > ganglia-web.spec
 
 version.php:	version.php.in
 	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
@@ -43,12 +46,11 @@ dist-dir:	default
 	rsync --exclude "rpmbuild" --exclude "*.gz" --exclude "Makefile" --exclude "*debian*" --exclude "$(DIST_DIR)" --exclude ".git*" --exclude "*.in" --exclude "*~" --exclude "#*#" --exclude "ganglia-web.spec" -a . $(DIST_DIR)
 
 install:	dist-dir
-	mkdir -p $(DESTDIR)/$(GWEB_DWOO)/compiled && \
-	mkdir -p $(DESTDIR)/$(GWEB_DWOO)/cache && \
-	mkdir -p $(DESTDIR)/$(GANGLIA_STATEDIR) && \
-	rsync -a $(DIST_DIR)/conf/ $(DESTDIR)/$(GANGLIA_STATEDIR)/conf && \
+	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/compiled && \
+	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/cache && \
+	rsync -a $(DIST_DIR)/conf $(DESTDIR)/$(GWEB_STATEDIR) && \
 	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR)/$(GDESTDIR) && \
-	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_DWOO) $(DESTDIR)/$(GANGLIA_STATEDIR)/conf	
+	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_STATEDIR)
 
 dist-gzip:	dist-dir
 	if [ -f $(DIST_TARBALL) ]; then \
@@ -67,5 +69,5 @@ rpm: dist-gzip ganglia-web.spec
 	rpmbuild --define '_topdir $(PWD)/rpmbuild' -bb ganglia-web.spec
 
 uninstall:
-	rm -rf $(GDESTDIR) $(GWEB_DWOO) $(GANGLIA_STATEDIR)/conf
+	rm -rf $(DESTDIR)/$(GDESTDIR)  $(DESTDIR)/$(GWEB_STATEDIR)
 

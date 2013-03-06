@@ -83,7 +83,8 @@ function Timepicker() {
 		altFieldTimeOnly: true,
 		showTimepicker: true,
 		timezoneIso8609: false,
-		timezoneList: null
+		timezoneList: null,
+		hideNowButton: false
 	};
 	$.extend(this._defaults, this.regional['']);
 }
@@ -346,7 +347,8 @@ $.extend(Timepicker.prototype, {
             secMax  = (o.secondMax - ((o.secondMax - o.secondMin) % o.stepSecond)).toFixed(0),
 			millisecMax  = (o.millisecMax - ((o.millisecMax - o.millisecMin) % o.stepMillisec)).toFixed(0),
 			dp_id = this.inst.id.toString().replace(/([^A-Za-z0-9_])/g, '');
-
+		if (o.hideNowButton)
+		  $dp.find(".ui-datepicker-current").hide();
 		// Prevent displaying twice
 		//if ($dp.find("div#ui-timepicker-div-"+ dp_id).length === 0) {
 		if ($dp.find("div#ui-timepicker-div-"+ dp_id).length === 0 && o.showTimepicker) {
@@ -1177,7 +1179,7 @@ $.datepicker._getDateDatepicker = function(target, noDefault) {
 };
 
 //#######################################################################################
-// override parseDate() because UI 1.8.14 throws an error about "Extra characters"
+// override parseDate() because UI 1.9.1 throws an error about "Extra characters"
 // An option in datapicker to ignore extra format characters would be nicer.
 //#######################################################################################
 $.datepicker._base_parseDate = $.datepicker.parseDate;

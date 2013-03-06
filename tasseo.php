@@ -6,7 +6,7 @@ include_once("./functions.php");
 //////////////////////////////////////////////////////////////////////////////////////////
 // Print out 
 //////////////////////////////////////////////////////////////////////////////////////////
-if ( ! isset($_GET['view_name']) ) {
+if ( ! isset($_REQUEST['view_name']) ) {
 
   $available_views = get_available_views();
 
@@ -27,18 +27,23 @@ if ( ! isset($_GET['view_name']) ) {
 
   $available_views = get_available_views();
 
+  $view_found = 0;
+  
+  $user['view_name'] = $_REQUEST['view_name'];
+  
   // I am not quite sure at this point whether I should cache view info so
   // for now I will have to do this
   foreach ( $available_views as $id => $view ) {
     # Find view settings
-    if ( $_GET['view_name'] == $view['view_name'] )
+    if ( $user['view_name'] == $view['view_name'] ) {
+      $view_found = 1;
       break;
+    }
   }
-
   unset($available_views);
 
-  if ( sizeof($view['items']) == 0 ) {
-      die ("<font color=red size=4>There are no graphs in view '" . $_GET['view_name'] . "'. Please go back and add some.</font>");
+  if ( $view_found == 0 || sizeof($view['items']) == 0 ) {
+      die ("<font color=red size=4>There are no graphs in view you supplied or view does not exist.</font>");
   }
 
   // Let's get all View graph elements
@@ -46,16 +51,16 @@ if ( ! isset($_GET['view_name']) ) {
   ?>
 <html>
 <head>
-<title>Live Dashboard for <?php print $_REQUEST['view_name']; ?></title>
+<title>Live Dashboard for <?php print $user['view_name']; ?></title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="css/tasseo.css" />
-<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="js/d3.v2.min.js"></script>
 <script type="text/javascript" src="js/rickshaw.min.js"></script>
 </head>
 <body>
    <div id='title'>
-      <span><?php print $_REQUEST['view_name']; ?></span>
+      <span><?php print $user['view_name']; ?></span>
       <div id='toolbar'>
         <ul class='timepanel'>
           <li class='timepanel live selected'>

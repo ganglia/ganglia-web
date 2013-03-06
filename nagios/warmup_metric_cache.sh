@@ -14,7 +14,7 @@ SCRIPT_HOME=${0%/*}
 while [ 1 ]; do
 
   echo "Metric cache - "`date`
-  sudo -u www-data php $SCRIPT_HOME/warmup_metric_cache.php
+  sudo -u $WEB_USER php $SCRIPT_HOME/warmup_metric_cache.php
   sleep $SLEEP_TIME
 
 done
