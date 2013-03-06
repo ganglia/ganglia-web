@@ -2,15 +2,12 @@
 <script language="javascript" type="text/javascript" src="js/jquery.flot.crosshair.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.stack.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.multiselect.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.multiselect.filter.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.events.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
-<div id="inspect_graph_container">
-  <div id="placeholder" style="overflow:hidden"></div>
-  <div id="spacer" style="height:5px;"></div>
-  <div id="graphcontrols"></div>
-</div>
+<div id="inspect_graph_container"></div>
 
 <?php
 include_once "./eval_conf.php";
@@ -25,13 +22,40 @@ $(function () {
   var first_time = true;
   var VALUE_SEPARATOR = " :: ";
   var plot = null;
+  var zooming = false;
+  var graphContainer = $("#inspect_graph_container");
+  var placeHolder = null;
+  var graphControls = null;
+  var spacer = null;
+  var selectSeries = null;
+  var selectLine = null;
+  var selectStack = null;
+  var tooltip = null;
+
+  function lastUpdateIndex(datasets) {
+    var index = 0;
+    $.each(datasets, function(key, dataset) {
+      if (dataset.data == null)
+	return;
+
+      for (var i = dataset.data.length - 1; 
+	   i >= 0 && i > index; 
+	   i--) {
+	if (dataset.data[i][1] != "NaN") {
+	  index = i;
+	  break;
+	} 
+      }
+    });
+    return index;
+  }
 
   function resize() {
     var popupDialog = $("#popup-dialog");
-    $("#placeholder").height(popupDialog.height() -
-			     $("#graphcontrols").height() - 
-			     $("#spacer").height());
-    $("#inspect_graph_container").width(popupDialog.width() - 20);
+    placeHolder.height(popupDialog.height() -
+		       graphControls.height() - 
+		       spacer.height());
+    graphContainer.width(popupDialog.width() - 20);
   }
 
   $("#popup-dialog").bind("dialogresizestop.inspect", 
@@ -48,25 +72,27 @@ $(function () {
 			      refresh_timer = null;
 			    }
 			  });
+
+  graphContainer.append('<div id="placeholder" style="overflow:hidden"></div><div id="spacer" style="height:5px;"></div><div id="graphcontrols"></div>');
+  spacer = graphContainer.find("#spacer");
     
   var datasets = []; // global array of dataset objects {label, data, color}
-  var plotRanges = null;
   var graph_title = null;
 
-  var placeHolder = $("#placeholder");
+  placeHolder = graphContainer.find("#placeholder");
   placeHolder.bind("plothover", hoverHandler);
   placeHolder.bind("plotselected", selectRangeHandler);
     
   var dataurl = '<?php print $dataurl; ?>';
   var refresh_interval = '<?php print $refresh_interval; ?>';
 
-  var graphControls = $("#graphcontrols");
+  graphControls = graphContainer.find("#graphcontrols");
   var series_select = '<select id="select_series" name="select_series" multiple="multiple"></select>';
   // Add multi-select menu to controls
   graphControls.append(series_select);
     
-  var select_series = $("#select_series");
-  select_series.multiselect({
+  selectSeries = graphControls.find("#select_series");
+  selectSeries.multiselect({
     height: "auto",
     position : {
       my: "left top",
@@ -81,7 +107,7 @@ $(function () {
     click: function(event, ui) {
       plotAccordingToChoices();
     }
-  });
+    }).multiselectfilter();
 
   var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"/><label style="font-size:0.825em;" for="line">Line</label><input type="radio" id="stack" name="gopt"/><label style="font-size:0.825em" for="stack">Stack</label></span>';
   html += '<input id="resetzoom" type="button" style="font-size:0.825em;" value="Reset zoom"/>';
@@ -89,16 +115,23 @@ $(function () {
   // Add option buttons to controls 
   graphControls.append(html);
   
-  $("#gopt").buttonset();
-  $("#line").button().click(function() {
+  graphControls.find("#gopt").buttonset();
+  selectLine = graphControls.find("#line");
+  selectLine.button().click(function() {
     plotAccordingToChoices();
   });
-  $("#stack").button().click(function() {
+  selectStack = graphControls.find("#stack");
+  selectStack.button().click(function() {
     plotAccordingToChoices();
   });
-  $("#resetzoom").button();
-  $("#resetzoom").click(function () {
-    plotRanges = null;
+  var resetZoomElem = graphControls.find("#resetzoom");
+  resetZoomElem.button();
+  resetZoomElem.click(function () {
+    delete plotOpt.xaxis.min;
+    delete plotOpt.xaxis.max;
+    delete plotOpt.yaxis.min;
+    delete plotOpt.yaxis.max;
+    zooming = false;
     plotAccordingToChoices();  
   });
   var plotOpt =  {
@@ -118,24 +151,31 @@ $(function () {
     datasets = series;
 
     var stacked = false;
-    var series_select = $("#select_series");
     var series_labels = 
-      $("#select_series>option").map(function(){
+      selectSeries.children("option").map(function(){
 	  var text = $(this).text();
 	  var label = text;
 	  if (text.indexOf(VALUE_SEPARATOR) != -1)
 	    label = text.split(VALUE_SEPARATOR)[0];
 	  return label;
 	});
-    var series_options = $("#select_series>option").map(function(){
+    var series_options = selectSeries.children("option").map(function(){
 	return $(this);
       });
 
     var start_time = Number.MAX_VALUE;
     var end_time = 0;
 
+    // Determine point index corresponding to last update
+    // Typically the dataset will have trailing NaNs that 
+    // should be ignored
+    var lastUpdate = lastUpdateIndex(datasets);
+
     var i = 0;
     $.each(datasets, function(key, dataset) {
+      if (dataset.data == null)
+	return;
+
       start_time = Math.min(dataset.data[0][0], start_time);
       end_time = Math.max(dataset.data[dataset.data.length - 1][0], 
 			  end_time);
@@ -156,8 +196,11 @@ $(function () {
 
       i++;
 
-      var current_value = 
-	formattedSiVal(dataset.data[dataset.data.length - 1][1], 2);
+      var current_value = dataset.data[lastUpdate][1];
+      if (current_value != "NaN")
+	current_value = formattedSiVal(current_value, 2);
+      else
+        current_value = "";
       var seriesIndex = $.inArray(dataset.label, series_labels);
       if (seriesIndex == -1) {
 	var option = $('<option/>', 
@@ -166,7 +209,7 @@ $(function () {
 	      VALUE_SEPARATOR +
 	      current_value});
 	option.attr('selected', 'selected');
-	option.appendTo(series_select);
+	option.appendTo(selectSeries);
 	var colorBox = '<div style="border:1px solid #ccc;padding:1px;display:inline-block;"><div style="width:4px;height:0;border:5px solid ' + dataset.color + ';overflow:hidden"></div></div>';
 	option.data("pre_checkbox_html", colorBox);
       } else {
@@ -178,10 +221,10 @@ $(function () {
       }
     });
       
-    series_select.multiselect('refresh');
+    selectSeries.multiselect('refresh');
 
     if (first_time) {
-      var gopt = stacked ? $("#stack") : $("#line");
+      var gopt = stacked ? selectStack : selectLine;
       gopt.attr("checked", "checked");
       gopt.button("refresh");
 
@@ -230,7 +273,7 @@ $(function () {
 
     plotAccordingToChoices();
 
-    if ((plotRanges == null) && (dataurl.indexOf("&r=custom") == -1))
+    if ((!zooming) && (dataurl.indexOf("&r=custom") == -1))
       refresh_timer = setTimeout(refresh, refresh_interval * 1000);
   }
   
@@ -263,7 +306,7 @@ $(function () {
   }
 
   function showTooltip(x, y, contents) {
-    $('<div id="tooltip">' + contents + '</div>').css( {
+    tooltip = $('<div id="tooltip">' + contents + '</div>').css( {
       position: 'absolute',
       display: 'none',
       'z-index': 2000,
@@ -304,19 +347,30 @@ $(function () {
   function selectRangeHandler(event, ranges) {
     if ($("#event_tooltip")[0])
       return;
-    plotRanges = ranges;
+
+    var plotRanges = ranges;
+
+    if (plotRanges.xaxis.to - plotRanges.xaxis.from < 0.00001)
+      plotRanges.xaxis.to = plotRanges.xaxis.from + 0.00001;
+    if (plotRanges.yaxis.to - plotRanges.yaxis.from < 0.00001)
+      plotRanges.yaxis.to = plotRanges.yaxis.from + 0.00001;
+
+    plotOpt.xaxis.min = plotRanges.xaxis.from;
+    plotOpt.xaxis.max = plotRanges.xaxis.to;
+    plotOpt.yaxis.min = plotRanges.yaxis.from;
+    plotOpt.yaxis.max = plotRanges.yaxis.to;
+
+    zooming = true;
     plotAccordingToChoices();
   }
 
   function hoverHandler(event, pos, item) {
-    $("#x").text(utcTimeStr(pos.x));
-    $("#y").text(pos.y.toFixed(2));
-
     if (item) {
       if (previousPoint != item.dataIndex) {
 	previousPoint = item.dataIndex;
-                
-	$("#tooltip").remove();
+               
+	if (tooltip != null)
+	  tooltip.remove();
 	var y = formattedSiVal(item.datapoint[1], 2);
 	showTooltip(item.pageX, 
 		    item.pageY,
@@ -325,7 +379,8 @@ $(function () {
 		    " = " + y);
       }
     } else {
-      $("#tooltip").remove();
+      if (tooltip != null)
+	tooltip.remove();
       previousPoint = null;            
     }
   }
@@ -338,37 +393,45 @@ $(function () {
       success: onDataReceived});
   }
 
+  function updatePlotOptions() {
+    plot.getOptions().events.data = plotOpt.events.data;
+    if (zooming) {
+      plot.getOptions().xaxes[0].min = plotOpt.xaxis.min;
+      plot.getOptions().xaxes[0].max = plotOpt.xaxis.max;
+      plot.getOptions().yaxes[0].min = plotOpt.yaxis.min;
+      plot.getOptions().yaxes[0].max = plotOpt.yaxis.max;
+    } else {
+      delete plot.getOptions().xaxes[0].min;
+      delete plot.getOptions().xaxes[0].max;
+      delete plot.getOptions().yaxes[0].min;
+      delete plot.getOptions().yaxes[0].max;
+    }
+    plot.getOptions().series.stack = plotOpt.series.stack;
+    plot.getOptions().series.lines.fill = plotOpt.lines.fill;
+  }
+
   function plotAccordingToChoices() {
-    var selected_series = $("#select_series").multiselect("getChecked").map(function(){return this.value}).get();
+    var selected_series = selectSeries.multiselect("getChecked").map(function(){return this.value}).get();
     var data = [];
     for (var i = 0; i < selected_series.length; i++) {
       data.push(datasets[selected_series[i]]);
     }
 
-    var stack = $("#stack").attr('checked') == 'checked';
+    var stack = selectStack.prop('checked');
 
-    plotOpt.lines.fill = stack;
+      plotOpt.lines.fill = stack;
     plotOpt.series.stack = stack ? 1 : null;
 
-    // Apply zoom if set
-    if (plotRanges != null) {
-      if (plotRanges.xaxis.to - plotRanges.xaxis.from < 0.00001)
-        plotRanges.xaxis.to = plotRanges.xaxis.from + 0.00001;
-      if (plotRanges.yaxis.to - plotRanges.yaxis.from < 0.00001)
-        plotRanges.yaxis.to = plotRanges.yaxis.from + 0.00001;
-
-      plotOpt.xaxis.min = plotRanges.xaxis.from;
-      plotOpt.xaxis.max = plotRanges.xaxis.to;
-      plotOpt.yaxis.min = plotRanges.yaxis.from;
-      plotOpt.yaxis.max = plotRanges.yaxis.to;
+    if (plot == null) {
+      plot = $.plot(placeHolder, data, plotOpt);
     } else {
-      delete plotOpt.xaxis.min;
-      delete plotOpt.xaxis.max;
-      delete plotOpt.yaxis.min;
-      delete plotOpt.yaxis.max;
+      plot.clearEvents();
+      plot.clearSelection();
+      updatePlotOptions(); // must precede call to setData()
+      plot.setData(data);
+      plot.setupGrid();
+      plot.draw();
     }
-
-    plot = $.plot($("#placeholder"), data, plotOpt);
   }
 });
 </script>
