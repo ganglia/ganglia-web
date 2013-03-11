@@ -12,14 +12,14 @@
 if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 ?>
 <script TYPE="text/javascript" SRC="js/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.9.1.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="css/jquery.multiselect.css" type="text/css" />
 <?php
 }

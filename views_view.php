@@ -8,7 +8,8 @@ if (! checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::VIEW, $conf))
 
 $user['view_name'] = $_REQUEST['view_name'];
 
-if( !is_proper_view_name ( $user['view_name'])){
+if (!is_proper_view_name($user['view_name']) ||
+    (isset($_GET['vn']) && !is_proper_view_name($_GET['vn']))) {
 ?>
 <div class="ui-widget">
   <div class="ui-state-default ui-corner-all" styledefault="padding: 0 .7em;"> 
