@@ -924,11 +924,21 @@ if ( $user['json_output'] ||
     . $rrd_options . " " . $rrdtool_graph_args;
 
   // Read in the XML
-  $fp = popen($command,"r"); 
   $string = "";
-  while (!feof($fp)) { 
-    $buffer = fgets($fp, 4096);
-    $string .= $buffer;
+  if (strlen($command) < 100000) {
+    $fp = popen($command,"r"); 
+    while (!feof($fp)) { 
+      $buffer = fgets($fp, 4096);
+      $string .= $buffer;
+    }
+  } else {
+    $tempfile = tempnam("/tmp", "ganglia-graph-json");
+    file_put_contents($tempfile, $command);
+    $tempstring = exec("/bin/bash $tempfile", $tempout);
+    foreach( $tempout as $line ) {
+      $string .= $line;
+    }
+    unlink($tempfile);
   }
 
   // Parse it
