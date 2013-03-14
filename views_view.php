@@ -203,7 +203,7 @@ if (isset($_GET['add_to_view'])) {
   exit(0);
 } 
 
-if (isset($_GET['ad-hoc-view'])) {
+if (isset($conf['ad-hoc-views']) && $conf['ad-hoc-views'] === true && isset($_GET['ad-hoc-view'])) {
   $is_ad_hoc = true;
   $ad_hoc_view_json = json_decode(heuristic_urldecode($_GET['ad-hoc-view']), true);
 }
