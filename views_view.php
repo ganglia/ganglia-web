@@ -220,13 +220,18 @@ if (isset($_GET['add_to_view'])) {
   exit(0);
 } 
 
+if (isset($conf['ad-hoc-views']) && $conf['ad-hoc-views'] === true && isset($_GET['ad-hoc-view'])) {
+  $is_ad_hoc = true;
+  $ad_hoc_view_json = json_decode(heuristic_urldecode($_GET['ad-hoc-view']), true);
+}
+
 $available_views = get_available_views();
 $existing_views = '';
 foreach ($available_views as $view) {
- $v = $view['view_name'];
- $vid = viewId($v);
- $checked = ($_GET['vn'] == $v);
- $existing_views .= '<input type="radio" id="' . $vid . '" onClick="selectView(\'' . $v . '\'); return false;"' . ($checked ? " checked" : "") . '><label style="text-align:left;" class="nobr" for="' . $vid . '">' . $v . '</label>'; 
+  $v = $view['view_name'];
+  $vid = viewId($v);
+  $checked = ($_GET['vn'] == $v);
+  $existing_views .= '<input type="radio" id="' . $vid . '" onClick="selectView(\'' . $v . '\'); return false;"' . ($checked ? " checked" : "") . '><label style="text-align:left;" class="nobr" for="' . $vid . '">' . $v . '</label>'; 
 }
 
 if (isset($_GET['views_menu'])) {
@@ -242,10 +247,14 @@ if (isset($_GET['views_menu'])) {
 $tpl = new Dwoo_Template_File( template("views_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("range",$range);
+if ($is_ad_hoc) {
+  $data->assign("ad_hoc_view", true);
+  $data->assign("ad_hoc_view_json", rawurlencode($_GET['ad-hoc-view']));
+}
 
 // Pop up a warning message if there are no available views
 // (Disable temporarily, otherwise we can't create views)
-if (sizeof($available_views) == -1) {
+if (sizeof($available_views) == -1 && !$is_ad_hoc) {
   $error_msg = '
     <div class="ui-widget">
       <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
@@ -262,7 +271,7 @@ $size = $size == 'medium' ? 'default' : $size;
 
 $additional_host_img_css_classes = "";
 if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true )
-    $additional_host_img_css_classes = "host_${size}_zoomable";
+  $additional_host_img_css_classes = "host_${size}_zoomable";
 
 $data->assign("additional_host_img_css_classes", 
               $additional_host_img_css_classes);
@@ -271,29 +280,40 @@ $data->assign("existing_views", $existing_views);
 $data->assign("view_name", $user["viewname"]);
 
 $view_items = NULL;
-foreach ($available_views as $view_id => $view) {
- if ($view['view_name'] == $user["viewname"]) {
-   $view_elements = get_view_graph_elements($view);
-   $view_items = array();
-   if ( count($view_elements) != 0) {
-     $graphargs = "";
-     if ($cs)
-       $graphargs .= "&amp;cs=" . rawurlencode($cs);
-     if ($ce)
-       $graphargs .= "&amp;ce=" . rawurlencode($ce);
-        
-     foreach ($view_elements as $id => $element) {
-       $view_items[] = array ("legend" => isset($element['hostname']) ? $element['hostname'] : "Aggregate graph",
-                               "url_args" => htmlentities($element['graph_args']) . "&amp;r=" . $range . $graphargs,
+if ($is_ad_hoc) {
+  $available_views[] = $ad_hoc_view_json;
+}
 
-                               "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0
-        );
-      }
+foreach ($available_views as $view_id => $view) {
+  if ($view['view_name'] != $user["viewname"] && !$is_ad_hoc) {
+    continue;
+  }
+  if ($is_ad_hoc) {
+    $view_elements = get_view_graph_elements($ad_hoc_view_json);
+  }
+  else {
+    $view_elements = get_view_graph_elements($view);
+  }
+
+  $view_items = array();
+  if ( count($view_elements) != 0) {
+    $graphargs = "";
+    if ($cs)
+      $graphargs .= "&amp;cs=" . rawurlencode($cs);
+    if ($ce)
+      $graphargs .= "&amp;ce=" . rawurlencode($ce);
+        
+    foreach ($view_elements as $id => $element) {
+      $view_items[] = array ("legend" => isset($element['hostname']) ? $element['hostname'] : "Aggregate graph",
+                             "url_args" => htmlentities($element['graph_args']) . "&amp;r=" . $range . $graphargs,
+
+                             "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0
+                             );
     }
+  }
     
-    $data->assign("number_of_view_items", sizeof($view_items));
-    break;    
- }  // end of if ( $view['view_name'] == $view_name
+  $data->assign("number_of_view_items", sizeof($view_items));
+  break;
 } // end of foreach ( $views as $view_id 
 
 if (isset($view_items))
