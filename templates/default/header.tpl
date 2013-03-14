@@ -220,19 +220,21 @@
 {/if}
 
 <div id="tabs">
-<ul>
-  <li><a href="#tabs-main">Main</a></li>
-  <li><a href="#tabs-search">Search</a></li>
-  <li><a href="#tabs-main">Views</a></li>
-  <li><a href="aggregate_graphs.php">Aggregate Graphs</a></li>
-  <li><a href="#tabs-main">Compare Hosts</a></li>
-{if $overlay_events}
-  <li><a href="events.php">Events</a></li>
-{/if}
-  <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
-  <li><a href="#tabs-livedashboard" onclick="liveDashboardChooser();">Live Dashboard</a></li>  
-  <li><a href="#tabs-mobile" onclick="window.location.href='mobile.php';">Mobile</a></li>
-</ul>
+  <div id="tabs-menu", {if $hide_header} style="visibility: hidden; display: none;" {/if}>
+    <ul>
+      <li><a href="#tabs-main">Main</a></li>
+      <li><a href="#tabs-search">Search</a></li>
+      <li><a href="#tabs-main">Views</a></li>
+      <li><a href="aggregate_graphs.php">Aggregate Graphs</a></li>
+      <li><a href="#tabs-main">Compare Hosts</a></li>
+      {if $overlay_events}
+      <li><a href="events.php">Events</a></li>
+      {/if}
+      <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
+      <li><a href="#tabs-livedashboard" onclick="liveDashboardChooser();">Live Dashboard</a></li>
+      <li><a href="#tabs-mobile" onclick="window.location.href='mobile.php';">Mobile</a></li>
+    </ul>
+  </div>
 
 <div id="tabs-main">
 <form action="{$page}" method="GET" name="ganglia_form">
@@ -257,6 +259,11 @@
 
 <input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
 <input type="hidden" id="vn" name="vn" value="{$view_name}">
+{if $hide_header}
+<input type="hidden" id="hide-hf" name="hide-hf" value="true">
+{else}
+<input type="hidden" id="hide-hf" name="hide-hf" value="false">
+{/if}
 {if $overlay_events}
 <input type="hidden" id="overlay_events" value="true">
 {else}

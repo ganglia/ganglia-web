@@ -56,9 +56,9 @@ Loading view, please wait...<img src="img/spinner.gif" />
 </div>
 
 
-<hr />
 <div align="center">
-<font size="-1" class="footer">
+<font size="-1" class="footer" {if $hide_footer} style="visibility: hidden; display: none;" {/if}>
+<hr />
 Ganglia Web Frontend version {$webfrontend_version}
 <a href="http://ganglia.sourceforge.net/downloads.php?component=ganglia-webfrontend&amp;version={$webfrontend_version}">Check for Updates.</a><br />
 
