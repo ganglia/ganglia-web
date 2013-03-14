@@ -1,0 +1,30 @@
+Ad-hoc-views allow [views](http://sourceforge.net/apps/trac/ganglia/wiki/ganglia-web-2) to be generated on the fly by passing along the entire view configuration json as a url parameter (`ad-hoc-view`).  The listing of server side defined views will be hidden with an ad-hoc one is displayed, but the functionality is otherwise identical.
+
+By default ad-hoc-views are disabled and must be enabled by setting `'ad-hoc-views' = true;` in the config.  For example, a view such as:
+
+```json
+{
+  "view_name": "ad-hoc",
+  "view_type": "standard",
+  "items": [
+    {
+      "hostname": "my-server.domain.local",
+      "graph": "cpu_report"
+    },
+    {
+      "hostname": "my-server.domain.local",
+      "metric": "disk_free"
+    },
+    {
+      "hostname": "my-server.domain.local",
+      "metric": "disk_total"
+    }
+  ]
+}
+```
+
+Could be displayed with the somewhat long url:
+
+    http://my-gweb.example.com/?&tab=v&r=1hr&ad-hoc-view=%7b%0a%20%20%22view_name%22%3a%20%22ad-hoc%22%2c%0a%20%20%22view_type%22%3a%20%22standard%22%2c%0a%20%20%22items%22%3a%20%5b%0a%20%20%20%20%7b%0a%20%20%20%20%20%20%22hostname%22%3a%20%22my-server.domain.local%22%2c%0a%20%20%20%20%20%20%22graph%22%3a%20%22cpu_report%22%0a%20%20%20%20%7d%2c%0a%20%20%20%20%7b%0a%20%20%20%20%20%20%22hostname%22%3a%20%22my-server.domain.local%22%2c%0a%20%20%20%20%20%20%22metric%22%3a%20%22disk_free%22%0a%20%20%20%20%7d%2c%0a%20%20%20%20%7b%0a%20%20%20%20%20%20%22hostname%22%3a%20%22my-server.domain.local%22%2c%0a%20%20%20%20%20%20%22metric%22%3a%20%22disk_total%22%0a%20%20%20%20%7d%0a%20%20%5d%0a%7d%0a
+
+If the program generating ad-hoc-views is doing so to embed inside another web application, it can also set `hide-hf=true` to hide the default header and footer.
