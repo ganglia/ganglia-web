@@ -243,7 +243,9 @@ $(function () {
 
   function utcTimeStr(tstamp) {
     var date = new Date(tstamp);
+    return date.toLocaleString();
 
+/* Removed because we don't ever want to display UTC time in inspect
     var month = date.getUTCMonth() + 1;
     if ( month < 10 )
       month = "0" + month;
@@ -260,6 +262,7 @@ $(function () {
     if (sec < 10)
       sec = "0" + sec; 
     return date.getUTCFullYear() + "-" + month + "-" + day + " " + hr + ":" + min + ":" + sec;
+*/
   }
 
   function showTooltip(x, y, contents) {
