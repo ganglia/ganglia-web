@@ -321,7 +321,7 @@ $conf['external_location'] = "http://localhost/ganglia-2";
 # From version 3.2, backwards compatibility will be disabled by default.
 # default: true  (for gmetad < 3.2)
 # default: false (for gmetad >= 3.2)
-$conf['case_sensitive_hostnames'] = true;
+$conf['case_sensitive_hostnames'] = false;
 
 # The following property controls whether the graphs contained in metric
 # groups are initially displayed or collapsed
