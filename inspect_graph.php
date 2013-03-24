@@ -31,6 +31,17 @@ $(function () {
   var selectLine = null;
   var selectStack = null;
   var tooltip = null;
+  var lastUpdate = 0;
+
+  function zeroOutMissing(dataset, index) {
+    if (dataset.data == null || index < 0)
+      return;
+
+    for (var i = 0; i <= index; i++) {
+      if (dataset.data[i][1] == "NaN")
+	dataset.data[i][1] = 0;
+    }
+  }
 
   function lastUpdateIndex(datasets) {
     var index = 0;
@@ -169,7 +180,7 @@ $(function () {
     // Determine point index corresponding to last update
     // Typically the dataset will have trailing NaNs that 
     // should be ignored
-    var lastUpdate = lastUpdateIndex(datasets);
+    lastUpdate = lastUpdateIndex(datasets);
 
     var i = 0;
     $.each(datasets, function(key, dataset) {
@@ -411,15 +422,19 @@ $(function () {
   }
 
   function plotAccordingToChoices() {
+    var stack = selectStack.prop('checked');
+
     var selected_series = selectSeries.multiselect("getChecked").map(function(){return this.value}).get();
     var data = [];
     for (var i = 0; i < selected_series.length; i++) {
-      data.push(datasets[selected_series[i]]);
+      var dataset = datasets[selected_series[i]];
+      data.push(dataset);
+      // The Flot stack plugin does not handle missing data correctly
+      if (stack)
+	zeroOutMissing(dataset, lastUpdate);
     }
 
-    var stack = selectStack.prop('checked');
-
-      plotOpt.lines.fill = stack;
+    plotOpt.lines.fill = stack;
     plotOpt.series.stack = stack ? 1 : null;
 
     if (plot == null) {
