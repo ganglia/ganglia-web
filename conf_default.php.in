@@ -127,6 +127,7 @@ $conf['cpu_system_color'] = "dd0000";
 $conf['cpu_wio_color'] = "ff8a60";
 $conf['cpu_idle_color'] = "e2e2f2";
 $conf['cpu_steal_color'] = "990099";
+$conf['cpu_sintr_color'] = "009933";
 
 #
 # Colors for the MEMORY report graph
@@ -395,4 +396,11 @@ $conf['enable_pass_in_arguments_to_optional_graphs'] = false;
 # Control wether present graphs with 'bytes', 'Bytes', 'bytes/s', 'Bytes/s', 'kB', 'MB', 'GB', 'bits', 'Bits', 'bits/s', 'Bits/s'
 # as vertical label have their base value set to 1024
 $conf['rrdtool_base_1024'] = false;
+
+# Allow views to be generated on the fly by passing the json object
+# along with the 'ad-hoc-view' parameter.  While there are no known
+# vulnerabilities, passing a complex json object on a url may be an
+# attack vector for malicious users so ad-hoc-views are disabled by
+# default.
+  $conf['ad-hoc-views'] = false;
 ?>

@@ -77,6 +77,10 @@ function graph_cpu_report( &$rrdtool_graph )
         $series .= "DEF:'cpu_steal'='${rrd_dir}/cpu_steal.rrd':'sum':AVERAGE ";
     }
 
+    if (file_exists("$rrd_dir/cpu_sintr.rrd")) {
+        $series .= "DEF:'cpu_sintr'='${rrd_dir}/cpu_sintr.rrd':'sum':AVERAGE ";
+    }
+
     if ($context != "host" ) {
         $series .= "CDEF:'ccpu_user'=cpu_user,num_nodes,/ "
                 . $cpu_nice_cdef
@@ -85,6 +89,10 @@ function graph_cpu_report( &$rrdtool_graph )
 
         if (file_exists("$rrd_dir/cpu_wio.rrd")) {
             $series .= "CDEF:'ccpu_wio'=cpu_wio,num_nodes,/ ";
+        }
+
+        if (file_exists("$rrd_dir/cpu_sintr.rrd")) {
+            $series .= "CDEF:'ccpu_sintr'=cpu_sintr,num_nodes,/ ";
         }
 
         if (file_exists("$rrd_dir/cpu_steal.rrd")) {
@@ -169,6 +177,22 @@ function graph_cpu_report( &$rrdtool_graph )
                         . "GPRINT:'steal_min':'${space1}Min\:%5.1lf%%${eol1}' "
                         . "GPRINT:'steal_avg':'${space2}Avg\:%5.1lf%%' "
                         . "GPRINT:'steal_max':'${space1}Max\:%5.1lf%%\\l' ";
+        }
+    }
+
+    if (file_exists("$rrd_dir/cpu_sintr.rrd")) {
+        $series .= "STACK:'${plot_prefix}_sintr'#${conf['cpu_sintr_color']}:'Sintr${rmspace}' ";
+
+        if ( $conf['graphreport_stats'] ) {
+                $series .= "CDEF:sintr_pos=${plot_prefix}_sintr,0,INF,LIMIT "
+                        . "VDEF:sintr_last=sintr_pos,LAST "
+                        . "VDEF:sintr_min=sintr_pos,MINIMUM "
+                        . "VDEF:sintr_avg=sintr_pos,AVERAGE "
+                        . "VDEF:sintr_max=sintr_pos,MAXIMUM "
+                        . "GPRINT:'sintr_last':'  ${space1}Now\:%5.1lf%%' "
+                        . "GPRINT:'sintr_min':'${space1}Min\:%5.1lf%%${eol1}' "
+                        . "GPRINT:'sintr_avg':'${space2}Avg\:%5.1lf%%' "
+                        . "GPRINT:'sintr_max':'${space1}Max\:%5.1lf%%\\l' ";
         }
     }
 
