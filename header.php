@@ -591,8 +591,13 @@ if($conf['auth_system'] == 'enabled') {
 }
 
 
-if ( $conf['overlay_events'] == true )
+if ( $conf['overlay_events'] == true ) {
   $data->assign('overlay_events', true);
+}
+
+if ( $conf['picker_autocomplete'] == true ) {
+  $data->assign('picker_autocomplete', true);
+}
 
 $data->assign('selected_tab', htmlspecialchars($user['selected_tab']) );
 $data->assign('view_name', $user['viewname']);
