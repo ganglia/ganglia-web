@@ -104,9 +104,14 @@ function build_rrdtool_args_from_json( &$rrdtool_graph, $graph_config ) {
            isset($item['line_width']) && 
            in_array( $item['line_width'], $line_widths) ? 
              $line_width = $item['line_width'] : $line_width = "1";
-           $graphdef .= "LINE" . 
-                      $line_width . 
-                      ":'$unique_id'#{$item['color']}:'{$label}' ";
+           $graphdef .= "LINE" . $line_width;
+           if (isset($graph_config['percent']) && $graph_config['percent'] == '1') {
+             $graphdef .= ":'p${unique_id}'#${item['color']}:'${label}' ";
+           } else if (isset($graph_config['scale'])) {
+             $graphdef .= ":'s${unique_id}'#${item['color']}:'${label}' ";
+           } else {
+             $graphdef .= ":'$unique_id'#${item['color']}:'${label}' ";
+           }
            break;
        
          case "stack":
