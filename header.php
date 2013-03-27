@@ -381,6 +381,71 @@ if (($context != 'views') && ($context != 'compare_hosts')) {
   # Save other CGI variables
   if ($physical)
     $node_menu .= hiddenvar("p", $physical);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Cluster name has been specified. It comes right after
+  // Grid >
+  /////////////////////////////////////////////////////////////////////////////
+  if ( $clustername ) {
+    $url = rawurlencode($clustername);
+    $node_menu .= "<b><a href=\"./?c=$url&amp;$get_metric_string\">$clustername</a></b> ";
+    $node_menu .= "<b>&gt;</b>\n";
+    $node_menu .= hiddenvar("c", $clustername);
+  } else if ($context == "decompose_graph") {
+    $node_menu .= '<input type="hidden" name="dg" value="1">';
+    $node_menu .= "Decompose Graph";
+  }  else {
+    # No cluster has been specified, so drop in a list
+    $node_menu .= "<select name=\"c\" OnChange=\"ganglia_form.submit();\">\n";
+    $node_menu .= "<option value=\"\">--Choose a Source\n";
+    ksort($grid);
+    foreach ($grid as $k => $v) {
+      if ($k == $self) continue;
+      if (isset($v['GRID']) and $v['GRID']) {
+        $url = $v['AUTHORITY'];
+        $node_menu .="<option value=\"$url\">$k $meta_designator\n";
+      } else {
+        $url = rawurlencode($k);
+        $node_menu .="<option value=\"$url\">$k\n";
+      }
+    }
+    $node_menu .= "</select>\n";
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // We are in the cluster view pop up a list box of nodes
+  /////////////////////////////////////////////////////////////////////////////
+  if ($clustername && !$hostname) {
+    # Drop in a host list if we have hosts
+    if (!$showhosts) {
+      $node_menu .= "[Summary Only]";
+    } elseif (is_array($hosts_up) || is_array($hosts_down)) {
+      $node_menu .= "<select name=\"h\" OnChange=\"ganglia_form.submit();\">";
+      $node_menu .= "<option value=\"\">--Choose a Node</option>";
+      if (is_array($hosts_up)) {
+        uksort($hosts_up, "strnatcmp");
+        foreach ($hosts_up as $k=> $v) {
+          $url = rawurlencode($k);
+          $node_menu .= "<option value=\"$url\">$k</option>\n";
+        }
+      }
+      if (is_array($hosts_down)) {
+        uksort($hosts_down, "strnatcmp");
+        foreach ($hosts_down as $k=> $v) {
+          $url = rawurlencode($k);
+          $node_menu .= "<option value=\"$url\">$k</option>\n";
+        }
+      }
+      $node_menu .= "</select>\n";
+    } else {
+      $node_menu .= "<b>No Hosts</b>\n";
+    }
+  } else {
+    $node_menu .= "<b>$hostname</b>\n";
+    $node_menu .= hiddenvar("h", $hostname);
+  }
+
+  # Save other CGI variables
   $node_menu .= hiddenvar("cr", $controlroom);
   $node_menu .= hiddenvar("js", $jobstart);
   $node_menu .= hiddenvar("jr", $jobrange);
@@ -530,8 +595,13 @@ if($conf['auth_system'] == 'enabled') {
 }
 
 
-if ( $conf['overlay_events'] == true )
+if ( $conf['overlay_events'] == true ) {
   $data->assign('overlay_events', true);
+}
+
+if ( $conf['picker_autocomplete'] == true ) {
+  $data->assign('picker_autocomplete', true);
+}
 
 $data->assign('selected_tab', htmlspecialchars($user['selected_tab']) );
 $data->assign('view_name', $user['viewname']);

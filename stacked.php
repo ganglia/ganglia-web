@@ -74,6 +74,7 @@ foreach($index_array['cluster'] as $host => $cluster_array ) {
     }
 }
 
+// Force all hosts to be in name order
 sort($hosts);
 
 foreach ( $hosts as $index => $host ) {

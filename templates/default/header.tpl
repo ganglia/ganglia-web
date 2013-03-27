@@ -118,7 +118,27 @@
     });
 
     $(function() {
+      {if $picker_autocomplete}
+      var cache = { }, lastXhr;
+      $("#metrics-picker").autocomplete({
+        minLength: 2,
+        source: function( request, response ) {
+          var term = request.term;
+          if ( term in cache ) {
+            response( cache[term] );
+            return;
+          }
+          lastXhr = $.getJSON("api/metrics_autocomplete.php", request, function( data, status, xhr ) {
+            cache[term] = data.message;
+            if ( xhr == lastXhr ) {
+              response(data.message);
+            }
+          });
+        }
+      });
+      {else}
       $("#metrics-picker").combobox();
+      {/if}
 
       {$is_metrics_picker_disabled}
 
@@ -248,7 +268,11 @@
     <div style="clear:both;"></div>
   </div>
   <div id="sort_menu" style="padding:5px 5px 0 5px;">
+   {if $picker_autocomplete}
+   Metric&nbsp;&nbsp; <input name="m" id="metrics-picker" />&nbsp;&nbsp;
+   {else}
    Metric&nbsp;&nbsp; <select name="m" id="metrics-picker">{$picker_metrics}</select>&nbsp;&nbsp;
+   {/if}
      {$sort_menu}
   </div>
 {if $node_menu != ""}
