@@ -2,16 +2,20 @@
 
     if (!isset($debug)) { $debug = 0; }
 
-    if($conf['cachedata'] == 1 && file_exists($conf['cachefile'])) {
+    $cmodule = !empty($conf['cachemodule']) ? $conf['cachemodule'] : 'Json';
+
+    include_once dirname(__FILE__) . "/Cache/Driver_${cmodule}.php";
+
+    if ($conf['cachedata'] == 1 && g_cache_exists()) {
         // check for the cached file
         // snag it and return it if it is still fresh
-        $time_diff = time() - filemtime($conf['cachefile']);
+        $time_diff = g_cache_expire();
         $expires_in = $conf['cachetime'] - $time_diff;
         if( $time_diff < $conf['cachetime']){
                 if ( $debug == 1 ) {
                   echo("DEBUG: Fetching data from cache. Expires in " . $expires_in . " seconds.\n");
                 }
-                $index_array = unserialize(file_get_contents($conf['cachefile']));
+                $index_array = g_cache_deserialize();
         }
     }
 
@@ -32,7 +36,7 @@
         asort($hosts);
         $index_array['hosts'] = $hosts;
 
-        file_put_contents($conf['cachefile'], serialize($index_array));
+        g_cache_serialize($index_array);
 
     }
 
