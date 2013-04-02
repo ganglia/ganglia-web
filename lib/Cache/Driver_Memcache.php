@@ -1,4 +1,5 @@
 <?php
+// vim: tabstop=2:softtabstop=2:shiftwidth=2:noexpandtab
 
 function g_cache_exists() {
 	$mc = g_get_memcache();
@@ -27,13 +28,14 @@ function g_cache_expire () {
 
 function g_get_memcache() {
 	global $conf;
-        if (!$GLOBALS['__memcached_pool']) {
-                $GLOBALS['__memcached_pool'] = new Memcached();
-                foreach ($conf['memcached_servers'] AS $server) {
-                        list($host, $port) = explode(':', $server);
-                        $GLOBALS['__memcached_pool']->addServer( $host, (int)$port );
-                }
-        }
+	if (!$GLOBALS['__memcached_pool']) {
+		$GLOBALS['__memcached_pool'] = new Memcached();
+		$GLOBALS['__memcached_pool']->setOption(Memcached::OPT_DISTRIBUTION, Memcached::DISTRIBUTION_CONSISTENT);
+		foreach ($conf['memcached_servers'] AS $server) {
+			list($host, $port) = explode(':', $server);
+			$GLOBALS['__memcached_pool']->addServer( $host, (int)$port );
+		}
+	}
 	return $GLOBALS['__memcached_pool'];
 } // end function g_get_memcache
 
