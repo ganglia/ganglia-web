@@ -14,14 +14,15 @@ function g_cache_serialize($data) {
 
 function g_cache_deserialize() {
 	global $conf;
+	$mc = g_get_memcache();
 	$index_array = $mc->get( 'ganglia_cache_' . gethostname() );
 	return $index_array;
 } // end function g_cache_deserialize
 
 function g_cache_expire () {
 	global $conf;
-	
-	return time() - $mc->set( 'ganglia_cache_timestamp_' . gethostname() ) <= time() );
+	$mc = g_get_memcache();
+	return time() - $mc->set( 'ganglia_cache_timestamp_' . gethostname() ) <= time();
 } // end function g_cache_expire
 
 function g_get_memcache() {
