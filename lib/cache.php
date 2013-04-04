@@ -10,7 +10,7 @@
         // check for the cached file
         // snag it and return it if it is still fresh
         $cache_age = g_cache_expire();
-        if( $cache_age > $conf['cachetime']){
+        if( $cache_age <= $conf['cachetime']){
                 if ( $debug == 1 ) {
                   echo("DEBUG: Fetching data from cache. Expires in " . $conf['cachetime'] . " seconds.\n");
                 }
