@@ -1142,6 +1142,10 @@ function retrieve_metrics_cache () {
 
    global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics, $context;
 
+   require dirname(__FILE__) . '/lib/cache.php';
+   return;
+
+   /*
    if($conf['cachedata'] == 1 && file_exists($conf['cachefile'])) {
       // check for the cached file
       // snag it and return it if it is still fresh
@@ -1174,7 +1178,7 @@ function retrieve_metrics_cache () {
       file_put_contents($conf['cachefile'], serialize($index_array));
 
    }
-
+    */
 } // end of function get_metrics_cache () {
 
 function getHostOverViewData($hostname, 

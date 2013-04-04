@@ -9,11 +9,10 @@
     if ($conf['cachedata'] == 1 && g_cache_exists()) {
         // check for the cached file
         // snag it and return it if it is still fresh
-        $time_diff = g_cache_expire();
-        $expires_in = $conf['cachetime'] - $time_diff;
-        if( $time_diff < $conf['cachetime']){
+        $cache_age = g_cache_expire();
+        if( $cache_age > $conf['cachetime']){
                 if ( $debug == 1 ) {
-                  echo("DEBUG: Fetching data from cache. Expires in " . $expires_in . " seconds.\n");
+                  echo("DEBUG: Fetching data from cache. Expires in " . $conf['cachetime'] . " seconds.\n");
                 }
                 $index_array = g_cache_deserialize();
         }
@@ -37,7 +36,6 @@
         $index_array['hosts'] = $hosts;
 
         g_cache_serialize($index_array);
-
     }
 
 ?>
