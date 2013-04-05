@@ -1,5 +1,6 @@
 etc/ganglia-webfrontend
 usr/share/ganglia-webfrontend
-usr/share/ganglia-webfrontend/lib/dwoo/compiled
-usr/share/ganglia-webfrontend/lib/dwoo/cache
+var/lib/ganglia-web/dwoo
+var/lib/ganglia-web/dwoo/compiled
+var/lib/ganglia-web/dwoo/cache
 var/www/html/ganglia
