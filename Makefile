@@ -48,7 +48,9 @@ dist-dir:	default
 install:	dist-dir
 	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/compiled && \
 	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/cache && \
+	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR) && \
 	rsync -a $(DIST_DIR)/conf $(DESTDIR)/$(GWEB_STATEDIR) && \
+	mkdir -p $(DESTDIR)/$(GDESTDIR) && \
 	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR)/$(GDESTDIR) && \
 	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_STATEDIR)
 
