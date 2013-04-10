@@ -33,10 +33,9 @@ else
    exit 1 
 fi
 
-RESULT=`curl -s "${GANGLIA_URL}?${CHECK_ARGS}"`
-EXIT_CODE=`echo $RESULT | cut -f1 -d'|'`
-
-REST=`echo $RESULT | cut -f2 -d'|'`
+RESULT=`curl -s -g "${GANGLIA_URL}?${CHECK_ARGS}"`
+EXIT_CODE=`echo $RESULT | cut -f1 -d'!'`
+REST=`echo $RESULT | cut -f2 -d'!'`
 for x in $EXIT_CODE; do
   case $x in
   OK)

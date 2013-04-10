@@ -9,19 +9,16 @@
 #
 # You need to supply following GET values
 #
-#  hreg = "Host Regular Expression"
+#  hreg = "Hostname Regex"
 #  checks = is a list of checks separated  with a colon. Check is defined by
 #  comma delimiting following
-#      metric_name e.g. load_one, bytes_out
-#      operator for critical condition e.g. less, more, equal, notequal
-#      critical_value e.g. value for critical
-#  ignore_unknowns = ignore unknown values, by default this is set to 0 (false). This  
-#      option is useful if you are checking a large number of hosts and some may not
-#      have a particular metric.
+#  metric_name e.g. load_one, bytes_out
+#  operator for critical condition e.g. less, more, equal, notequal,totalmore,totalless
+#  critical_value e.g. value for critical
 #
 #  Example would be
 #
-#  ?hreg=apache\tomcat&checks=disk_rootfs,more,10:disk_tmp,more,20
+#  ?hreg=apache\tomcat&checks=disk_rootfs,totalmore,10:disk_tmp,more,20
 #
 ##########################################################################################
 $conf['gweb_root'] = dirname(dirname(__FILE__));
@@ -29,7 +26,7 @@ $conf['gweb_root'] = dirname(dirname(__FILE__));
 include_once $conf['gweb_root'] . "/eval_conf.php";
 
 # To turn on debug set to 1
-$debug = 0;
+$debug = $_GET['debug'];
 
 if ( isset($_GET['hreg']) && isset($_GET['checks']) ) {
    $host_reg = $_GET['hreg'];
@@ -84,6 +81,7 @@ $ganglia_hosts_array = array_keys($metrics);
 
 $results_ok = array();
 $results_notok = array();
+$metric_total_value = array();
 
 # Loop through all hosts looking for matches
 foreach ( $ganglia_hosts_array as $index => $hostname ) {
@@ -112,12 +110,24 @@ foreach ( $ganglia_hosts_array as $index => $hostname ) {
 	 }
 	 
 	 $ganglia_units = $metrics[$hostname][$metric_name]['UNITS'];
+
+     if ( $operator == "totalmore" || $operator == "totalless") {
+         if ( isset($metric_total_value[$metric_name]) ){
+             $metric_total_value[$metric_name]['VAL'] += $metric_value;
+         }else{
+             $metric_total_value[$metric_name]['VAL'] = $metric_value;
+             $metric_total_value[$metric_name]['UNITS'] = $ganglia_units;
+             $metric_total_value[$metric_name]['CRIT'] = $critical_value;
+             $metric_total_value[$metric_name]['OPER'] = $operator;
+         }
+     }else{
 	 
-	 if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
-	    $results_ok[] =  "OK " . $hostname . " " . $metric_name . " = " . $metric_value . " " . $ganglia_units;
-	 } else {
-	    $results_notok[] =  "CRITICAL " . $hostname . " " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
-	 }
+         if ( ($operator == "less" && $metric_value > $critical_value) || ( $operator == "more" && $metric_value < $critical_value ) || ( $operator == "equal" && trim($metric_value) != trim($critical_value) ) || ( $operator == "notequal" && trim($metric_value) == trim($critical_value) ) ) {
+            $results_ok[] =  "OK " . $hostname . " " . $metric_name . " = " . $metric_value . " " . $ganglia_units;
+         } else {
+            $results_notok[] =  "CRITICAL " . $hostname . " " . $metric_name . " = ". $metric_value . " " . $ganglia_units;
+         }
+     }
      
       } // end of foreach ( $checks as $index => $check
      
@@ -125,11 +135,25 @@ foreach ( $ganglia_hosts_array as $index => $hostname ) {
 
 } // end of foreach ( $ganglia_hosts_array as $index => $hostname ) {
 
+# Check for total metric value
+if( !empty($metric_total_value) ) {
+    foreach ( $metric_total_value as $metric_name => $metric_total ) {
+        if ( ( $metric_total['OPER'] == 'totalmore' && $metric_total['VAL'] < $metric_total['CRIT'] )
+             || ( $metric_total['OPER'] == 'totalless' && $metric_total['VAL'] > $metric_total['CRIT'] ) ){
+                 $results_ok[] = 'OK "' . $host_reg . '" Total of ' . $metric_name . ' = ' . $metric_total['VAL'] . ' ' . $metric_total['UNITS'];
+             } else {
+                 $results_notok[] = 'CRITICAL ' . $host_reg . ' Total of ' . $metric_name . ' = ' . $metric_total['VAL'] . ' ' . $metric_total['UNITS'];
+             }
+    } 
+}
+
+unset($metric_total_value);
+
 if ( sizeof( $results_notok ) == 0 ) {
-	print "OK|# Services OK = " . count($results_ok);
+	print "OK!# Services OK = " . count($results_ok) . " ; " . join(",", $results_ok);
 	exit(0);
 } else {
-	print "CRITICAL|# Services OK = " . count($results_ok) . ", CRIT/UNK = " . count($results_notok) . " ; " . join(", ", $results_notok);
+	print "CRITICAL!# Services OK = " . count($results_ok) . ", CRIT/UNK = " . count($results_notok) . " ; " . join(", ", $results_notok);
 	exit(2);
 }
 
