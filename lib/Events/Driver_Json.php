@@ -80,7 +80,8 @@ function ganglia_event_delete( $event_id ) {
 			$conf['overlay_events_file'] . 
 			". Please check permissions." );
     } else {
-      $message = array( "status" => "ok", "event_id" => $event_id );
+        $message = array( "status" => "ok", "message" => "Event ID " . $event_id . " deleted successfully" );
+        return $message;
     }
   }
   api_return_error( "Event ID ". $event_id . " not found" );
