@@ -4,13 +4,13 @@
 <head>
 <title>Ganglia:: {$page_title}</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-<link type="text/css" href="css/smoothness/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.multiselect.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.flot.events.css" rel="stylesheet" />
 <link type="text/css" href="./styles.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.10.2.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
@@ -22,7 +22,6 @@
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
-    
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
 
     function refreshHeader() {
@@ -92,7 +91,7 @@
         if (typeof g_tabIndex[selected_tab] != 'undefined') {
           try {
             //alert("Selecting tab: " + selected_tab);
-            tabs.tabs("select", g_tabIndex[selected_tab]);
+            tabs.tabs('option', 'active', g_tabIndex[selected_tab]);
             if (selected_tab == "rot")
               autoRotationChooser();
           } catch (err) {
@@ -104,15 +103,18 @@
             }
           }
         }
-
-        tabs.bind("tabsselect", function(event, ui) {
-          $("#selected_tab").val(g_tabName[ui.index]);
-          if (g_tabName[ui.index] != "mob")
-            $.cookie("ganglia-selected-tab-" + window.name, ui.index);
-          if (ui.index == g_tabIndex["m"] ||
-              ui.index == g_tabIndex["v"] ||
-              ui.index == g_tabIndex["ch"])
-            ganglia_form.submit();
+        tabs.tabs({
+          beforeActivate: 
+          function(event, ui) {
+            var tabIndex = ui.newTab.index();
+            $("#selected_tab").val(g_tabName[tabIndex]);
+            if (g_tabName[tabIndex] != "mob")
+              $.cookie("ganglia-selected-tab-" + window.name, tabIndex);
+            if (tabIndex == g_tabIndex["m"] ||
+              tabIndex == g_tabIndex["v"] ||
+              tabIndex == g_tabIndex["ch"])
+              ganglia_form.submit();
+          }
         });
       }
     });
