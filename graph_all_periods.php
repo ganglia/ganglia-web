@@ -12,6 +12,7 @@
 if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 ?>
 <script TYPE="text/javascript" SRC="js/jquery-1.9.1.min.js"></script>
+<script>$.uiBackCompat = false;</script>
 <script type="text/javascript" src="js/jquery-ui-1.10.2.custom.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
@@ -115,6 +116,7 @@ if ( ! isset($_GET['embed'] ) ) {
 ?>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.time.min.js"></script>
 <?php
 } // end of if ( ! isset($_GET['embed'] )
 ?>
