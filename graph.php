@@ -1002,7 +1002,7 @@ if ( $user['json_output'] ||
   if ( $user['flot_output'] ) {
     foreach ( $output_array as $key => $metric_array ) {
       foreach ( $metric_array['datapoints'] as $key => $values ) {
-        $data_array[] = array ( ($values[1] + date('Z'))*1000, $values[0]);
+        $data_array[] = array ($values[1]*1000, $values[0]);
       }
 
       $gdata = array('label' => strip_domainname($metric_array['host_name']) . 

@@ -150,7 +150,7 @@ $(function () {
     lines: { show: true, fill: false },
     points: { show: false },
     crosshair: { mode: "x" },
-    xaxis: { mode: "time" },
+    xaxis: { mode: "time", timezone: "browser" },
     yaxis: {tickFormatter: suffixFormatter},
     selection: { mode: "xy" },
     legend: {show : false},
