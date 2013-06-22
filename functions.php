@@ -1169,11 +1169,7 @@ function retrieve_metrics_cache () {
       include_once $conf['gweb_root'] . "/ganglia.php";
       Gmetad($conf['ganglia_ip'], $conf['ganglia_port']);
 
-      foreach ( $index_array['cluster'] as $hostname => $elements ) {
-         $hosts[] = $hostname;
-      }
-      asort($hosts);
-      $index_array['hosts'] = $hosts;
+      $index_array['hosts'] = array_keys($index_array['cluster']);
 
       file_put_contents($conf['cachefile'], serialize($index_array));
 

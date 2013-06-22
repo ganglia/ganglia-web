@@ -145,6 +145,7 @@ function start_cluster ($parser, $tagname, $attrs)
 
             if (host_alive($attrs, $cluster))
                {
+
 		  isset($cluster['HOSTS_UP']) or $cluster['HOSTS_UP'] = 0;
                   $cluster['HOSTS_UP']++;
                   $hosts_up[$hostname] = $attrs;
@@ -207,8 +208,10 @@ function start_everything ($parser, $tagname, $attrs)
 
          case "HOST":
             $hostname = $attrs['NAME'];
-            if (host_alive($attrs, $cluster_name))
-                $index_array['cluster'][$hostname][] = $cluster_name;
+            # For some reason this occasionally will end up marking live hosts not alive
+            # causing them to miss out from aggregate graphs
+            # if (host_alive($attrs, $cluster_name))
+            $index_array['cluster'][$hostname][] = $cluster_name;
 
          case "METRIC":
             $metricname = rawurlencode($attrs['NAME']);
