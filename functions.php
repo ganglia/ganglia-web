@@ -741,16 +741,21 @@ function get_view_graph_elements($view) {
             $hostname = $item['hostname'];
             $cluster = array_key_exists($hostname, $index_array['cluster']) ?
 	      $index_array['cluster'][$hostname][0] : NULL;
+	      $graph_args_array[] = "h=" . urlencode($hostname);
           } else if (isset($item['cluster'])) {
 	    $hostname = "";
             $cluster = $item['cluster'];
+	    $graph_args_array[] = "c=" . urlencode($cluster);
 	  } else {
             $hostname = "";
             $cluster = "";
 	  }
 
-	  $graph_args_array[] = "h=" . urlencode($hostname);
-	  $graph_args_array[] = "c=" . urlencode($cluster);
+          if (isset($item['upper_limit']))
+            $graph_args_array[] = "x=" .$item['upper_limit'];
+
+	  if (isset($item['lower_limit']))
+	    $graph_args_array[] = "n=" .$item['lower_limit'];
 
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
