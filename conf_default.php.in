@@ -310,6 +310,10 @@ $conf['graph_sizes_keys'] = array_keys( $conf['graph_sizes'] );
 # the view .json file.
 $conf['default_view_graph_size'] = 'medium';
 
+# sets a default graph size for optional graphs separate from the regular
+# default graph size.
+$conf['default_optional_graph_size'] = 'medium';
+
 # The API can serve up graphs, but the URLs should be fully qualified.
 # The default value is a hack to serve up the called hostname when
 # possible. It is best to define this manually.
