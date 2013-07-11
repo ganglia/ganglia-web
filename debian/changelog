@@ -1,3 +1,9 @@
+ganglia-webfrontend (3.5.10-1wheezy2) wheezy; urgency=low
+
+  * path fixes for postinst script 
+
+ -- root <root@vester.mysportgroup.de>  Thu, 11 Jul 2013 14:48:51 +0200
+
 ganglia-webfrontend (3.5.10-1wheezy1) wheezy; urgency=low
 
   * new version 
