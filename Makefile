@@ -2,7 +2,7 @@
 # User configurables:
 ##########################################################
 # Location where gweb should be installed to (excluding conf, dwoo dirs).
-GDESTDIR = /var/www/html/ganglia
+GDESTDIR = /usr/share/ganglia-webfrontend
 
 # Gweb statedir (where conf dir and Dwoo templates dir are stored)
 GWEB_STATEDIR = /var/lib/ganglia-web
@@ -10,7 +10,7 @@ GWEB_STATEDIR = /var/lib/ganglia-web
 # Gmetad rootdir (parent location of rrd folder)
 GMETAD_ROOTDIR = /var/lib/ganglia
 
-APACHE_USER =  apache
+APACHE_USER = www-data 
 ##########################################################
 
 # Gweb version
