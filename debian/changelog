@@ -1,3 +1,698 @@
+ganglia-webfrontend (3.5.10-1wheezy1) wheezy; urgency=low
+
+  * new version 
+
+ -- root <root@vester.mysportgroup.de>  Thu, 11 Jul 2013 14:17:23 +0200
+
+ganglia-webfrontend (2.2.1+nmu1) unstable; urgency=low
+
+  [ Peter Piela ]
+  * Non-maintainer upload.
+  * Fix consistency issues between Makefile, conf_default.in, and gweb.spec.in
+  * Add "rpm" target for building gweb rpm package
+  * Cleanup
+  * Change the shade_alpha for events from 50 to 20. The lower setting provides better contrast with the graph lines.
+  * Added missing dependency for rpm target
+
+  [ Vladimir Vuksan ]
+  * Merge pull request #112 from drawks/master
+
+  [ vuksan ]
+  * New check to verify certain metric is the same across a set of machines
+
+  [ Carlo Marcelo Arenas Belon ]
+  * cleanup: trivial svn related cruft
+
+  [ Peter Piela ]
+  * Prototype implementation for controlling whether events are displayed on graphs
+  * Used for manipulating urls
+
+  [ vuksan ]
+  * Add what nodes have differing values
+
+  [ Peter Piela ]
+  * Fix a consistency issue. The directory used to store dwoo compiled files is located below gmetad_root, not gweb_root.
+  * Replace the hard-coded apache user value in gweb.spec.in with the value defined in the Makefile
+
+  [ vuksan ]
+  * Previous commit changed end from N to now. Adjusting event code for that
+  * Change the Show Events to Hide/Show Events
+
+  [ Peter Piela ]
+  * Added header button to control event display in all graphs
+
+  [ Jeff Buchbinder ]
+  * Add host API, only get action implemented at the moment.
+  * Add 'list' action to host API.
+  * Compress jquery-ui css.
+
+  [ Peter Piela ]
+  * Fix hide/show event prototype to work with aggregate graphs
+  * Improve the refresh function so it does not require the current time (&_) to be the last query string parameter.
+
+  [ Jeff Buchbinder ]
+  * Required for ganglia-web to not break compilation of monitor-core when included as a submodule.
+
+  [ Peter Piela ]
+  * Ensure that dwoo directories are created and configured during the install proces.
+  * Extend show events prototype to support Views
+  * Used to declare global constants
+  * Extend show events prototype to Compare Hosts
+  * Extend show events to support the host view
+
+  [ vuksan ]
+  * Make the hide/show all graphs on page button more clear
+  * Add all target
+  * Increment version to 4.0.0.
+  * Turn on events and turn on slope mode
+  * Add empty events JSON files
+
+  [ Peter Piela ]
+  * Fix an error in the logic used to export csv, json, ... data from a graph
+  * Ensure proper alignment of buttons
+  * Use buttons for alternate views instead of anchors. Minor formatting changes.
+
+  [ Jeff Buchbinder ]
+  * Add external location URL for fully qualified images.
+
+  [ Kris Buytaert ]
+  * Update .gitignore
+
+  [ Peter Piela ]
+  * Refactored cluster_view.php to make it more maintainable, and prepare for partial page refreshing.
+
+  [ vuksan ]
+  * Support either GETs or POSTs
+  * Center the stacked graph
+  * Support host regexes with stacked graphs
+  * Switch values for show hosts scaled to default to auto instead of same
+
+  [ John Goulah ]
+  * removing this br tag seems to fix the vertical graph alignment which is otherwise slightly off
+  * add grid overview graphs and tighten up stacked graph ui
+
+  [ vuksan ]
+  * Undo the cluster_extra change
+  * Add metric name in the stacked graph title
+  * Enable stacked graphs by default
+
+  [ Ian Meyer ]
+  * Add function to hide legend in aggregate graphs.
+  * Add glegend option to view creation
+
+  [ John Goulah ]
+  * added cluster overview graphs back with config option off by default
+  * fix variables to show the right graphs here
+
+  [ vuksan ]
+  * Add stylying to graph type and legend options
+
+  [ John Goulah ]
+  * fix up layout of graphs on main page
+  * Revert "fix variables to show the right graphs here"
+  * Revert "added cluster overview graphs back with config option off by default"
+
+  [ Jeff Buchbinder ]
+  * Fixes to host API.
+
+  [ vuksan ]
+  * Support strip domainname in stacked graphs
+
+  [ Jeff Buchbinder ]
+  * Always populate title.
+
+  [ vuksan ]
+  * Adjust version to 3.3.0
+  * Minor mobile view fixes
+  * Submit a form once metric has been selected in metic picker
+  * Add files needed for Debian
+  * Sanitize the input going into stacked
+  * sanitize breaks GPRINT. Moving sanitization prior to it
+
+  [ Carlo Marcelo Arenas Belon ]
+  * build: not using automake anymore
+
+  [ Ben Hartshorne ]
+  * adding 'size' and 'default_size' to views.  adding global config 'default_view_graph_size' to set the default size for views separately from the overall default.
+
+  [ Peter Piela ]
+  * Refactoring changes
+  * Clsuter view refactoring changes
+  * Do host metric selection using an autocomplete-enabled combobox
+  * Autocomplete-enabled combobox widget
+
+  [ Jeffrey Lensen ]
+  * Use Graphite to determine the $max limit when using the Graphite render engine
+
+  [ Peter Piela ]
+  * Eliminate the Go button associated with choosing a host metric. Instead, submit the form when a metric is selected from the dropdown menu.
+
+  [ Alex Dean ]
+  * change method for calculating tz offset from browser to server.
+
+  [ vuksan ]
+  * Change default view size to medium.
+
+  [ Alex Dean ]
+  * simplify code for readability.
+
+  [ vuksan ]
+  * Bump up to version 3.3.1
+  * Fix a warning
+  * Add a trend line
+  * Missing seconds in start statement
+  * Corrections for trend line to print out
+
+  [ Peter Piela ]
+  * Add smooth refresh to the clsuter view
+  * Add option to include user data in the gweb header
+
+  [ vuksan ]
+  * Add a button to add a trend line
+  * Change the reference for inspect-graph-dialog to popup-dialog. Make it more versatile.
+  * Add a trend range ie. how far ahead to show the trend line
+  * Separate trend navigation into a separate file
+  * Use better styling on the month chooser
+  * Add more months
+
+  [ root ]
+  * Modify event file creation logic to ensure that parent directories are also created if required.
+  * Consolidate tab processing in header.tpl for easier maintenance
+
+  [ vuksan ]
+  * Make the permissions less permissive
+
+  [ root ]
+  * Fixed a bug in inpect graph processing. No inspected graphs were being displayed.
+  * Move file specific functions into the files in which they are used. Use functions.php for common functions.
+  * Fix issue with inspected graphs not being displayed.
+  * This file was essentially obsoleted by views_view.php; however, some functionality was used by prototype dashboard. All non-dashboard functionality has been removed.
+
+  [ Scott Bessler ]
+  * fix ganglia-web issue #49 where host parameter is ignored by nagios/check_metric.php
+  * fix ganglia-web issue #51 to do a full-host-name match instead of substring
+
+  [ root ]
+  * Fixed a bunch of bugs associated with aggregate graphs. The following items had stopped working: save/restore of graph defn across tab selection, inspect graph, metric selection autocomplete. Inspect graph was not working for decomposed graphs; the change from inspect-graph-dialog to popup-dialog had quite an effect.
+
+  [ vuksan ]
+  * Add ability to select how far back to look for trending
+  * Add metric cache warmup script
+  * Add a space when outputing the date
+  * Add UI option to use only x months of data when drawing a trendline
+  * Strip off old trendrange and trendhistory so we don't end up with long argument lines
+
+  [ root ]
+  * Fix the check that determines whether external javascript files are included
+  * Create an empty graph when the graph series is missing or empty, as opposed to a broken image.
+  * Fix html errors
+
+  [ vuksan ]
+  * Didn't rename all variables when changing
+
+  [ Carlo Marcelo Arenas Belon ]
+  * web: bump version number to match core
+
+  [ root ]
+  * Remove html warnings
+
+  [ Jeff Buchbinder ]
+  * Show background color (if specified) for non-small graphs.
+
+  [ root ]
+  * Added feature to delete selected view
+
+  [ Peter Piela ]
+  * Fixes for issue #32
+  * Fix last commit
+  * Add a user check before deleting a view
+
+  [ Simão Fontes ]
+  * The http api for events was ignoring the description. Added this to the array that described the event.
+  * Typo in the descriptionwq
+
+  [ pcpiela ]
+  * Fixed an issue in which the event description was being ignored when creating an event
+  * Incorporate the rrdcached into xport commands when appropriate
+
+  [ Jeff Buchbinder ]
+  * Space-separate multiple regex matches for readability.
+
+  [ pcpiela ]
+  * Make Inspect graphs resizeable
+  * Added show All/None buttons.
+
+  [ Jeff Buchbinder ]
+  * Issue 67: Escape '#' character in vertical label and title ( https://github.com/ganglia/ganglia-web/issues/67 )
+  * Back out last change.
+
+  [ pcpiela ]
+  * Fixed a bug in the xport functionality associated with the handling of a custom time range
+  * Added the capability to view graphs in both line and stack formats Added a handler for the y-axis to print values with an SI suffix
+  * Flot plugin for stacked graphs
+  * Make the top/height of the zoom overaly equal to the graph image. Gives a consistent appearance for all graphs, and is not dependent on height of title and legend.
+
+  [ Jeff Buchbinder ]
+  * Issue 67 : Sanitize parts of image URL ( https://github.com/ganglia/ganglia-web/issues/67 )
+  * fix #67 (additional encoding, some html fixes rolled in as well)
+
+  [ pcpiela ]
+  * Multiselect list used by Inspect graph
+  * Locate the legend for Inspect graphs at the bottom of the graph. Use a multiselect list to select which series are plotted. make the colors in the inspect graph consistent with the originating graph.
+  * Added stylesheet for multiselect list
+  * Fixed an issue with single item lists
+
+  [ vuksan ]
+  * Too many columns
+  * Fix for
+  * Provide explanation for optional_reports
+  * Add list of optional reports to the metrics picker
+  * Treat reports as reports and not metric
+  * Fix
+  * Bump version
+  * Yet another fix
+
+  [ pcpiela ]
+  * Insert line break beween metric graph title and buttons
+
+  [ Jeff Buchbinder ]
+  * Add metrics API, very basic at the moment.
+
+  [ vuksan ]
+  * Missing quote
+  * Add Live Dashboard based on Tasseo
+  * Minor fixes
+  * Add spinner before graphs are added
+  * Merge changes from tasseo github repo
+  * Change refresh interval to 15 seconds
+
+  [ Jeff Buchbinder ]
+  * Avoid inconvenient null return value error.
+  * Adjustment to allow build arguments function to assign rrdtool extras without them being clobbered, plus formatting fixes.
+
+  [ vuksan ]
+  * Appearance fixes
+  * Commit forgotten images
+  * Minor tasseo improvements
+  * Minor fix
+
+  [ Jeff Buchbinder ]
+  * full fix for issue #49 in other scripts
+
+  [ vuksan ]
+  * Add warning and critical thresholds to metric graphs
+  * Add warning and critical lines to view graphs
+  * Remove non functional Nagios alert stuff
+  * Version bump
+  * Add available metrics back
+
+  [ Dave Mangot ]
+  * 3.4.1 tarball would not build RPMS until this was changed/fixed
+
+  [ vuksan ]
+  * Merge changes from github.com/obfuscurity/tasseo
+  * Fix for #88
+  * Change gweb.spec to ganglia-web.spec
+  * Add support for aggregate graphs in Live Dashboard
+
+  [ Jeff Buchbinder ]
+  * Default to "ganglia" web app name instead of "gweb" for install.
+  * Use "ganglia" prefix instead of "gweb".
+  * Fix off by one error.
+
+  [ vuksan ]
+  * Initial support for timeshift overlay
+  * Add timeshift overlay
+  * Add timeshifting to graph_all_periods
+  * More timeshift improvements
+  * Make the dashed line thinner
+
+  [ Ian Meyer ]
+  * Add custom var to define the web_prefixdir.
+  * Makefile updates.
+  * Use a better way to define custom_web_prefixdir.
+
+  [ Jeff Buchbinder ]
+  * If no host view configuration exists but a cluster config does, default to showing that cluster config for the host view.
+
+  [ vuksan ]
+  * Take into account cluster override reports
+  * Fix
+  * Fix for stacked graphs
+
+  [ Falk Stern ]
+  * fixed database stuff for events
+  * fixed scale in host view - same now actually uses the same scale
+
+  [ pcpiela ]
+  * Use fill instead of bars for stacked graphs. Gives a cleaner appearance.
+  * Improve readability of metric graphs. Insert line break between metric name and graph buttons.
+
+  [ vuksan ]
+  * Add NFS V3 Client report
+
+  [ Gil Raphaelli ]
+  * graph cpu steal if available
+  * allow end_time as seconds since the epoch
+
+  [ graphaelli ]
+  * add jump to metric group
+
+  [ vuksan ]
+  * Add zooming to inspect graph
+  * Bump version
+
+  [ James Golick ]
+  * add remember_open_metric_groups config option
+
+  [ mshearer ]
+  * Fixed output where a host is not found in the host array, will now output the hostname that was looked for
+  * Added extended check_multiple_metrics_warn scripts, which are based off the check_multiple_metrics scripts, but with longer output and a warning threshold added
+  * Added extended check_multiple_metrics_warn scripts, which are based off the check_multiple_metrics scripts, but with longer output and a warning threshold added
+
+  [ vuksan ]
+  * Aggregate stuff errors out. Removing for now.
+
+  [ pcpiela ]
+  * Fix persistence of graph-type. Add persistence for show-legend.
+  * Tweaks and fixes for timeshift
+
+  [ Daniel Pocock ]
+  * Add original (non-minified) version of jquery-1.7.1.js
+  * Add original (non-minified and non-customised) version of jquery-1.8.14.js
+  * Add original (non-minified and non-customised) version of flot-0.7 .js files
+  * Add original (non-minified and non-customised) version of d3.v2.js file
+
+  [ pcpiela ]
+  * Formatting change to presentation of Lower/Upper bounds
+
+  [ Daniel Pocock ]
+  * Add original (non-minified and non-customised) version of rickshaw.js file
+  * Add original (non-minified and non-customised) version of jquery.ba-bbq.js file
+  * Add original (non-minified and non-customised) version of jquery.livesearch.js file
+  * Add original (non-minified and non-customised) version of jquery.mobile-1.0.js file
+  * Add original (non-minified and non-customised) version of protovis-d3.2.js file
+  * Rename liveSearch.js -> livesearch.min.js and update references to it
+
+  [ pcpiela ]
+  * HTML cleanup. Make the UI more jquery theme friendly. Replace button in anchor with scrollTo plugin.
+  * Replace bare anchors with vertical list of buttons to display existing views Cleanup style and font-size specifications to provide a theme friendly elastic layout
+
+  [ Varun Kapoor ]
+  * Make 'r=job' in the query args to graph.php actually work.
+
+  [ pcpiela ]
+  * Continued rationalization of fonts/styles
+
+  [ Varun Kapoor ]
+  * Make the 'cs' and 'ce' query args to graph.php actually take effect.
+  * Allow users to specify a custom step when exporting raw data from graph.php.
+
+  [ vuksan ]
+  * Add area type
+
+  [ Varun Kapoor ]
+  * Take care of --maxrows when applying user-specified steps.
+
+  [ pcpiela ]
+  * Replace tables with divs for layout
+
+  [ Daniel Pocock ]
+  * Add original (non-minified) version of excanvas.js file - taken from flot 0.7 source tarball
+
+  [ Jeff Buchbinder ]
+  * Support same host name in multiple clusters.
+  * Config option: allow DOWN hosts to be hidden in cluster view.
+
+  [ vuksan ]
+  * Fix for path traversal issue when supplying name of a graph
+  * Bump version to 3.5.1
+  * Remove graph_arguments. Make sure events are not writeable when auth is readonly
+  * Provide better explanation
+  * Return font size to prior
+  * Fix for broken stacked graphs caused by the fix for same hostname in multiple cluster issue. Ugh.
+
+  [ pcpiela ]
+  * Reinstate the optional graph arguments feature in a secure manner. The use of the eval() function has been removed. A user configuration option has been added to control this feature conf[enable_pass_in_arguments_to_optional_graphs] that has a default value of false.
+
+  [ Daniel Pocock ]
+  * Rename internal Makefile variable DESTDIR to GDESTDIR to avoid confusion and conflict with packaging systems that set DESTDIR to the root of their destination tree
+  * Update Makefile to use DESTDIR root specified by wrapper/packaging scripts
+  * Make scripts executable
+
+  [ pcpiela ]
+  * Use Ajax to retrieve plot data. Refactoring and other cleanup.
+
+  [ vuksan ]
+  * Make graph selection xy
+  * Add scripts to check for stuck gmonds
+
+  [ Jeff Buchbinder ]
+  * Patch from Jochen Hein to enable passing of JSON "extras".
+  * Add "percent" graph type to enable JSON graphs to produce percentage reports.
+  * Revert "extras" patch.
+  * Fix search for metrics; was displaying "Array" rather than cluster name.
+
+  [ Andreas Lappe ]
+  * Fixes broken HTTPS-detection
+
+  [ pcpiela ]
+  * Use str_getcsv to process additional graph arguments
+
+  [ Jeff Buchbinder ]
+  * Add tentative support for "ls" flag / "log_scale" graph option to enable logarithmic scaling.
+  * Move to 'gs' option / 'graph_scale' config, with value 'log' for log scale.
+
+  [ Dan LaRocque ]
+  * Suppress enter key in live-search box
+
+  [ Robin Humble ]
+  * changing time ranges in cluster view with sh=0 doesn't work until data is refreshed with 'get fresh data'.
+  * c=$cluster_url is duplicated in graph.php urls.
+
+  [ Jeff Buchbinder ]
+  * Add "show_total" option to indicate optional totals for aggregate graphs.
+
+  [ Billy McCarthy ]
+  * invalid directories cause 'fakeroot debian/rules build' to fail.
+
+  [ Jeff Buchbinder ]
+  * Add support for graph scaling.
+  * Compensate for scaling when using show_total.
+
+  [ pcpiela ]
+  * Added support for dynamic refresh of inspect graphs
+
+  [ clowwindy ]
+  * fix metrics missing in cluster view if different hosts have different metrics
+
+  [ Falk Stern ]
+  * make mobile.php honor "strip_domainname"
+
+  [ pcpiela ]
+  * Add support for overlay events to inspect graphs
+
+  [ Scott Bessler ]
+  * fix issue 127 by returning a non-zero return value on curl failure
+
+  [ chris ]
+  * support check total matric value and fix some bugs
+
+  [ Jeff Buchbinder ]
+  * Fix stacked displays breaking if component hosts don't contain specified stacking metric.
+  * Add 'vl' and 'title' options to stacked graphs, some security fixes for CLI injections.
+  * Sort hosts in name order before displaying.
+  * Use + instead of ADDNAN for addition, since it breaks current total and average.
+  * Update documentation a little.
+
+  [ pcpiela ]
+  * Fixed an issue with swapping between Line and Stacked modes after the first refresh
+  * Use the title from the inspected graph to make things clearer
+
+  [ Vlado ]
+  * Add option to ignore unknown values
+  * Add documentation for check_host_regex
+  * Push version to 3.5.3
+
+  [ Kevin Mullin ]
+  * events api: add action=list for output
+
+  [ Jeff Buchbinder ]
+  * Implement autocomplete for metrics picker (needs to be sped up).
+  * Clean up HTML, etc.
+
+  [ Vlado ]
+  * Fix for broken data sources in stacked.php
+  * Better vertical aligning of hostnames for stacked graphs.
+
+  [ Jeff Buchbinder ]
+  * Add check_metric_regex, for regex checking of both hosts and metrics, aggregate graphs style.
+
+  [ Vlado ]
+  * WEB_USER wasn't referenced
+
+  [ Kevin Hildebrand ]
+  * Allow sites to configure their own meta designator
+
+  [ Vlado ]
+  * Better error logging
+  * Add note about overriding values in conf.php
+  * - Update Jquery to 1.8.2. - Add ability to add composite graph definitions directly into views
+  * Commit forgotten JQuery and JQueryUI scripts
+  * Fix the graph title not to show the grid name
+  * Add support for percentile lines for composite graphs
+  * Bump Makefile to 3.5.5
+  * Default percentile to 95
+
+  [ pcpiela ]
+  * Cleanup and refactoring for easier maintenance
+  * Changes to supoort opening and closing of individual metric groups in the host view using Ajax to give a smoother user experience.
+
+  [ Mikhail Anisimov ]
+  * add host to the cluster only if it is not expired
+
+  [ Dmytro Ilchenko ]
+  * Config file option to enable automatically setting base value to 1024 for graphs which have values in bytes/bits and alike
+
+  [ Tim Staley ]
+  * Fixes and simplications of build files.
+
+  [ pcpiela ]
+  * Update to version 1.13. New version has several bug fixes.
+  * More refactoring
+  * Dont export data points with missing (NaN) values
+  * Add current series value to the popup series selector
+
+  [ Dmytro Ilchenko ]
+  * Sometimes items are removed from  array due non-existence of rrd files and there might be no k/v w/ index == 0
+
+  [ Vladimir ]
+  * Validate view names to make sure they are valid
+
+  [ Josh Toft ]
+  * Center cluster-view font for the stacked graph
+
+  [ pcpiela ]
+  * Incorporate the legend into into selection menu. Various cleanups.
+
+  [ Grant Heffernan ]
+  * missing semicolon in stacked.php
+
+  [ Vladimir ]
+  * Write to temp file then rename
+  * Escape special characters. Clean up input
+
+  [ pcpiela ]
+  * Fix memory leak
+  * Fixed an issue in the host view where the specified graph size was ignored, and only small graphs were produced. Other attributes such as custom start/end times were also ignored.
+  * Remove the recent change that was targeted at avoiding memory leaks. It caused more problems than it fixed.
+
+  [ Vladimir ]
+  * Upgrade to jQuery 1.9.1. Revert mobile to 1.7.1 as CSS stuff is broken.
+  * Commit 1.9.1 which was not commited and resurrect 1.7.1.min.js which is used by mobile view. Sorry.
+  * Bump to 3.5.7
+
+  [ pcpiela ]
+  * More refactoring Added filtering to the inspect-graph legend selection list
+  * Hide the "Now" button in the custom time datetimepicker
+  * Added option to hide the "Now" button
+  * Add filtering to legend selection list
+  * Add filtering to inspect-graph legend selection list
+  * Add a check that ignores null datasets
+
+  [ cburroughs ]
+  * allow header/footer to be hidden fo cleaner embedding of graphs/views etc from other applications
+  * I don't trust myself to edit these inconsistent blocks, indent-regions first
+  * allow ad-hoc views from url parameters
+  * Pass along new fields with spiffy hidden inmputs
+
+  [ pcpiela ]
+  * Fixed line/stack toggle for jQuery 1.9
+  * Updates for jQuery 1.9
+  * Incorporate cowyn #141 request for handling "NaN" values in export operations, and update the inspect graph functionality accordingly.
+
+  [ cburroughs ]
+  * don't hide header if hide-hf=false
+
+  [ Vladimir ]
+  * Add limitation for view names. Fixes #160
+  * Version bump
+
+  [ pcpiela ]
+  * Add a check for existing views that have names that are no longer proper
+
+  [ Maciej Pawlik ]
+  * Delegate rrdtool execution to bash script instead of running command directly.
+
+  [ pcpiela ]
+  * Upgrade to jquery-ui 1.9.2 It has some important interoperability bug fixes for jquery 1.9.1
+  * Updated to jQuery ui 1.9.2. Contains important bug fixes
+
+  [ Vladimir ]
+  * Add sintr to CPU report graphs
+  * Add color for cpu_sintr
+  * Switch for a better color
+
+  [ cburroughs ]
+  * Make ad-hoc views configurable, and disabled by default
+  * precedent setting documentation
+
+  [ pcpiela ]
+  * Fixed an issue associated with how the Flot stack plugin teats missing data elements
+
+  [ Jeff Buchbinder ]
+  * Fix percentage and scaled metric totals (and display) for line graphs.
+  * Make picker autocomplete configurable.
+  * Remove duplicate header pieces.
+  * Attempt to implement modular event caching, including PECL memcached based caching.
+  * Correct issues causing driver to crash.
+  * Consistent hashing/distribution, fix formatting.
+  * Add "warmup cache" script for ganglia metrics cache so that it can be cron'd.
+  * Fix memcache caching to expire properly.
+  * Wrong operator (paper bag).
+  * Small packaging fixes.
+  * Ignore generated RPM packaging.
+
+  [ Vladimir ]
+  * Commit Host Regex changes with total
+
+  [ aarwine ]
+  * Fix bug with event api deletion
+
+  [ Brooks Swinnerton ]
+  * adding support for flot timezone
+
+  [ pcpiela ]
+  * Update jquery-ui to 1.10.2
+  * Upgrade jquery-ui to 1.10.2
+  * Added a local modification that was left out of the last upgrade.
+  * Upgrade to Flot 0.8
+  * Upgrade to Flot 0.8
+
+  [ vuksan ]
+  * Bump version to 3.5.9
+
+  [ pcpiela ]
+  * Revert recent commit for flot timezone support because it breaks overlay event processing in inspect graphs. The desire to display time using browser timezone will be handled in inspect_graph,php.
+  * Take advantage of Flot 0.8's time plugin to display time values using the browser timezone.
+  * Update to Flot 0.81. Bug fixes.
+  * Update to Flot 0.81. Bug fixes.
+
+  [ Vlado ]
+  * Version bump
+  * On occasion if for whatever reason hosts is deemed down it will disappear from aggregation. We will not just add it to the index / caching array since it doesn't hurt anything
+  * Handle properly cluster graphs/metrics that are added to a view. Allow those to have max and min
+
+  [ Jochen Hein ]
+  * We'd like to have the optional graphs in the cluster and host view bigger.  In the past, I just modified cluster_view.php and host_view.php.  To avoid that modification and forward porting of my changes I've added a new configuration option.
+
+  [ Vlado ]
+  * Sort metrics by name.
+
+  [ root ]
+
+ -- root <root@vester.mysportgroup.de>  Thu, 11 Jul 2013 14:10:57 +0200
+
 ganglia-webfrontend (2.2.1) unstable; urgency=low
 
   [ Dave Rawks ]
