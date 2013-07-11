@@ -11,8 +11,8 @@ if [ "$1" = "configure" ]; then
     autoconfigure="$RET"
     webserver="apache2"
 
-    chown www-data /usr/share/ganglia-webfrontend/lib/dwoo/cache
-    chown www-data /usr/share/ganglia-webfrontend/lib/dwoo/compiled
+    chown www-data /var/lib/ganglia-web/dwoo/cache
+    chown www-data /var/lib/ganglia-web/dwoo/compiled
 
     if [ "$autoconfigure" = true ]; then
         test -x /usr/sbin/$webserver || continue
