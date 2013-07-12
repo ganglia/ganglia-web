@@ -1,3 +1,12 @@
+ganglia-webfrontend (3.5.10-1wheezy3) wheezy; urgency=low
+
+  [ do ]
+  * merged with master.
+
+  [ Udo Waechter ]
+
+ -- do <do@maketank.net>  Fri, 12 Jul 2013 21:11:54 +0200
+
 ganglia-webfrontend (3.5.10-1wheezy2) wheezy; urgency=low
 
   * path fixes for postinst script 
