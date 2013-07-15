@@ -412,4 +412,6 @@ $conf['ad-hoc-views'] = false;
 # Configure memcache server(s) for any memcached capabilities.
 $conf['memcached_servers'] = array ( '127.0.0.1:11211' );
 
+# Choose between tavular or calendar views
+$conf['display_events_using_calendar'] = false;
 ?>
