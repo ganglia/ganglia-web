@@ -127,7 +127,7 @@ function getOptionalReports($hostname,
 	$showEventBtn = '<input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $report_name . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $report_name . '">Hide/Show Events</label>';
 	if(checkAccess(GangliaAcl::ALL_VIEWS, GangliaAcl::EDIT, $conf))
 	  $optional_reports .= $addMetricBtn . '&nbsp;';
-	$optional_reports .= $csvBtn . '&nbsp;' . $jsonBtn . '&nbsp;' .$inspectBtn . '&nbsp;' . $showEventBtn . "<br />" . $graph_anchor . "<img id=\"" . $graphId . "\" $additional_cluster_img_html_args border=\"0\" title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=medium&amp;c=$cluster_url\" style=\"margin-top:5px;\" /></a></div>";
+	$optional_reports .= $csvBtn . '&nbsp;' . $jsonBtn . '&nbsp;' .$inspectBtn . '&nbsp;' . $showEventBtn . "<br />" . $graph_anchor . "<img id=\"" . $graphId . "\" $additional_cluster_img_html_args border=\"0\" title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=" . $conf['default_optional_graph_size'] . "&amp;c=$cluster_url\" style=\"margin-top:5px;\" /></a></div>";
       }
     }
   } // foreach
