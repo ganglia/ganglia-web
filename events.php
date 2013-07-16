@@ -63,7 +63,7 @@ $(function(){
     disableDragging: true,
     disableResizing: true,	
     events: 'events.php?calendar_events_only=1',
-    defaultView: 'basicDay',
+    defaultView: 'basicWeek',
     header: {left: 'title', 
 	     center: '', 
   	     right: 'today prev next basicDay basicWeek month'},
@@ -78,6 +78,9 @@ $(function(){
             target: 'mouse',
 	    adjust: {x: 20}
 	  },
+	  style: {
+            classes: 'ganglia-qtip'
+          }
        })
     }
   });
