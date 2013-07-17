@@ -390,3 +390,11 @@ label[class~="show_event_text"] span.ui-button-text {
 label[class~="show_timeshift_text"] span.ui-button-text {
   font-size: 60% !important
 }
+
+.ganglia-qtip {
+  width: 250px;
+}
+
+.ganglia-qtip .qtip-content {
+  font-size: 14px;
+}
