@@ -29,9 +29,11 @@
         include_once $conf['gweb_root'] . "/ganglia.php";
         include_once $conf['gweb_root'] . "/get_ganglia.php";
 
-	$index_array['hosts'] = array_keys($index_array['cluster']);
-
-        g_cache_serialize($index_array);
+        // only save if the result looks good
+        if (count($index_array) > 0) {
+          $index_array['hosts'] = array_keys($index_array['cluster']);
+          g_cache_serialize($index_array);
+        }
     }
 
 ?>
