@@ -18,7 +18,7 @@
         }
     }
 
-    if ( ! isset($index_array) ) {
+    if (empty($index_array)) {
 
         if ( $debug == 1 ) {
             echo("DEBUG: Querying GMond for new data\n");
