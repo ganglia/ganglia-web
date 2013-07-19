@@ -24,10 +24,10 @@
             echo("DEBUG: Querying GMond for new data\n");
         }
         // Set up for cluster summary
-        $context = "index_array";
         include_once $conf['gweb_root'] . "/functions.php";
         include_once $conf['gweb_root'] . "/ganglia.php";
-        include_once $conf['gweb_root'] . "/get_ganglia.php";
+        $GLOBALS['context'] = "index_array";
+        include $conf['gweb_root'] . "/get_ganglia.php";
 
         // only save if the result looks good
         if (count($index_array) > 0) {
