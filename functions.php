@@ -1149,37 +1149,6 @@ function retrieve_metrics_cache () {
 
    require dirname(__FILE__) . '/lib/cache.php';
    return;
-
-   /*
-   if($conf['cachedata'] == 1 && file_exists($conf['cachefile'])) {
-      // check for the cached file
-      // snag it and return it if it is still fresh
-      $time_diff = time() - filemtime($conf['cachefile']);
-      $expires_in = $conf['cachetime'] - $time_diff;
-      if( $time_diff < $conf['cachetime']){
-          if ( $debug == 1 ) {
-            echo("DEBUG: Fetching data from cache. Expires in " . $expires_in . " seconds.\n");
-          }
-          $index_array = unserialize(file_get_contents($conf['cachefile']));
-      }
-   }
-
-   if ( ! isset($index_array) || sizeof($index_array) == 0 ) {
-
-      if ( $debug == 1 ) {
-         echo("DEBUG: Querying GMond for new data\n");
-      }
-      // Set up for cluster summary
-      $context = "index_array";
-      include_once $conf['gweb_root'] . "/ganglia.php";
-      Gmetad($conf['ganglia_ip'], $conf['ganglia_port']);
-
-      $index_array['hosts'] = array_keys($index_array['cluster']);
-
-      file_put_contents($conf['cachefile'], serialize($index_array));
-
-   }
-    */
 } // end of function get_metrics_cache () {
 
 function getHostOverViewData($hostname, 
