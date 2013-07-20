@@ -745,11 +745,11 @@ function get_view_graph_elements($view) {
           } else if (isset($item['cluster'])) {
 	    $hostname = "";
             $cluster = $item['cluster'];
-	    $graph_args_array[] = "c=" . urlencode($cluster);
 	  } else {
             $hostname = "";
             $cluster = "";
 	  }
+      $graph_args_array[] = "c=" . urlencode($cluster);
 
           if (isset($item['upper_limit']))
             $graph_args_array[] = "x=" .$item['upper_limit'];
