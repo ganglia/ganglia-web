@@ -389,6 +389,9 @@ $conf['show_stacked_graphs'] = 1;
 # single cluster has been defined.
 $conf['always_display_grid_view'] = true;
 
+# In the host view, should we include/exclude optional cluster graphs?
+$conf['optional_cluster_graphs_for_host_view'] = true;
+
 # Color for the timeshift line
 $conf['timeshift_line_color'] = "#FFD17F";
 
