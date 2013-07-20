@@ -13,8 +13,8 @@ if (isset($_GET['calendar_events_only'])) {
   foreach ( $events as $id => $event ) {
     $end_time = isset($event['end_time']) ? $event['end_time'] : "";
     $cal_event = array('title' => $event['summary'],
-		       'start' => $event['start_time'],
-		       'end' => $end_time,
+                       'start' => $event['start_time'],
+                       'end' => $end_time,
                        'gweb_event_id' => $event['event_id'],
                        'grid' => $event['grid'],
                        'cluster' => $event['cluster'],
@@ -43,42 +43,49 @@ function refreshOverlayEvent() {
 }
 
 $(function(){
-  $( "#add-event-dialog" ).dialog({autoOpen: false,
-	                           height: 300,
-                                   width: 550,
-                                   modal: true});
-  $( "#event-start-date" ).datetimepicker({showOn: "button",
-      	                                   constrainInput: false,
+  $( "#add-event-dialog" ).dialog({height: 250,
+                                   width: 500,
+                                   autoOpen: false,
+	                           position: {
+                                     my: 'center top',
+	                             at: 'center bottom+30',
+                                     of: '#add-an-event-button'
+                                   },
+	                           modal: true});
+    $( "#event-start-date" ).datetimepicker({showOn: "button",
+                                           constrainInput: false,
                                            buttonImage: "img/calendar.gif", 
-                                           buttonImageOnly: true});
+                                           buttonImageOnly: true,
+                                           hideNowButton: true});
   $( "#event-end-date" ).datetimepicker({showOn: "button",
-                                       	 constrainInput: false,
+                                         constrainInput: false,
                                          buttonImage: "img/calendar.gif",
-                                         buttonImageOnly: true});
+                                         buttonImageOnly: true,
+                                         hideNowButton: true});
   $('#add-event-button').button();
 
 <?php if ($conf['display_events_using_calendar']) { ?>
   $('#calendar').fullCalendar({
     editable: false,
     disableDragging: true,
-    disableResizing: true,	
+    disableResizing: true,      
     events: 'events.php?calendar_events_only=1',
     defaultView: 'basicWeek',
     header: {left: 'title', 
-	     center: '', 
-  	     right: 'today prev next basicDay basicWeek month'},
+             center: '', 
+             right: 'today prev next basicDay basicWeek month'},
     eventRender: function(event, element) {
-	element.qtip({
-	  content : {
-	    text: event.title + 
-	      '<br>Start: ' + $.fullCalendar.formatDate(new Date(event.start_time * 1000), "HH:mm:ss") + 
-	      '<br>End: ' + $.fullCalendar.formatDate(new Date(event.end_time * 1000), "HH:mm:ss")
+        element.qtip({
+          content : {
+            text: event.title + 
+              '<br>Start: ' + $.fullCalendar.formatDate(new Date(event.start_time * 1000), "HH:mm:ss") + 
+              '<br>End: ' + $.fullCalendar.formatDate(new Date(event.end_time * 1000), "HH:mm:ss")
           },
-	  position: {
+          position: {
             target: 'mouse',
-	    adjust: {x: 20}
-	  },
-	  style: {
+            adjust: {x: 20}
+          },
+          style: {
             classes: 'ganglia-qtip'
           }
        })
@@ -87,27 +94,80 @@ $(function(){
 <?php } ?>
 });
 
+function parseDateTime(str) {
+  var parts = str.split(" ");
+  var date = parts[0].split("/");
+  var time = parts[1].split(":");
+  return new Date(date[2], date[0] - 1, date[1], time[0], time[1], 0, 0);
+}
+
 function eventActions(action) {
-  $("#event-message").html('<img src="img/spinner.gif">');
-  var queryString = "";
-  if ($("#event-start-date").val() != "")
-    queryString += "&start_time=" + $("#event-start-date").val();
-  if ($("#event-end-date").val() != "")
-    queryString += "&end_time=" + $("#event-end-date").val();
-  if ( $("#host_reg").val() != "" ) {
-    queryString += "&host_regex=" + $("#host_regex").val();    
-  } else {
-    alert("You need to specify Host Regex");
+  var summary = $.trim($("#event_summary").val());
+  if (summary == "") {
+    alert("Please specify a value for the Event Summary");
     return false;
   }
+
+  var startDate = $.trim($("#event-start-date").val());
+  var endDate = $.trim($("#event-end-date").val());
+
+  var dateTimeRegexp = /^(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/(19|20)\d\d (0[0-9]|1[0-9]|2[0-3])\:([0-5][0-9])$/;
+
+  if (startDate == "" && endDate == "") {
+    alert("Please specify either a start date or an end date or both");
+    return false;
+  }
+
+  var queryString = "";
+  if (startDate != "") {
+    if (startDate.match(dateTimeRegexp) == null) {
+      alert("Malformed start date: " + startDate + 
+	    "\nPlease specify date-time using the format: mm/dd/yyyy hh:mm");
+      return false;
+    }
+    queryString += "&start_time=" + startDate;
+  }
+
+  if (endDate != "") {
+    if (endDate.match(dateTimeRegexp) == null) {
+      alert("Malformed end date: " + endDate + 
+	    "\nPlease specify date-time using the format: mm/dd/yyyy hh:mm");
+      return false;
+    }
+    queryString += "&end_time=" + endDate;
+  }
+
+  if (startDate != "" && endDate != "") {
+    var start = parseDateTime(startDate);
+    var end = parseDateTime(endDate);
+    if (start.getTime() > end.getTime()) {
+      alert("Start time is greater than end time");
+      return false;
+    }
+  }
+
+  var host_regex = $.trim($("#host_regex").val());
+  if (host_regex == "") {
+    alert("You must specify a regular expression describing the host(s) to which this event should be associated.");
+    return false;
+  }
+  queryString += "&host_regex=" + host_regex;    
+
+  /*
+  alert('api/events.php' + 
+        "action=" + action + 
+        "&summary=" + summary + queryString);
+  */
+
+  $("#event-message").html('<img src="img/spinner.gif">');
   $.get('api/events.php', 
         "action=" + action + 
-        "&summary=" + $("#event_summary").val() + queryString, function(data) {
+        "&summary=" + summary + queryString, function(data) {
       $("#event-message").html(data);
   });
 }
 </script>
-<div align=center><button onClick='$("#add-event-dialog").dialog("open");' class="minimal-indent">Add an Event</button></div>
+<div align=center><button id='add-an-event-button' onClick='$("#add-event-dialog").dialog("open");' class="minimal-indent">Add an Event</button></div>
 
 <div id=add-event-dialog title="Add Event">
 You can specify either start date or end date or both.<p>
@@ -163,13 +223,13 @@ if ($conf['display_events_using_calendar']) {
       $description = isset($event['description']) ? $event['description'] : "";
       $end_time = isset($event['end_time']) ? date("Y/m/d H:i", $event['end_time']) : "";
       print "<tr><td>" . date("Y/m/d H:i", $event['start_time']) . "</td>" .
-	"<td>" . $end_time . "</td>" .
-	"<td>" . $event['summary'] . "</td>" .
-	"<td>" . $description . "</td>" .
-	"<td>" . $event['grid'] . "</td>" .
-	"<td>" . $event['cluster'] . "</td>" .
-	"<td>" . $event['host_regex'] . "</td>" .
-	"</tr>";
+        "<td>" . $end_time . "</td>" .
+        "<td>" . $event['summary'] . "</td>" .
+        "<td>" . $description . "</td>" .
+        "<td>" . $event['grid'] . "</td>" .
+        "<td>" . $event['cluster'] . "</td>" .
+        "<td>" . $event['host_regex'] . "</td>" .
+        "</tr>";
     }
   }
   print "</table>";
