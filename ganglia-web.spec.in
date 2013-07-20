@@ -7,6 +7,7 @@ License: BSD
 Vendor: Ganglia Development Team <ganglia-developers@lists.sourceforge.net>
 Group: System Environment/Base
 Source: %{name}-%{version}.tar.gz
+Source1: apache.conf
 Buildroot: %{_tmppath}/%{name}-%{version}-buildroot
 Obsoletes: ganglia-webfrontend
 Requires: php >= 5, php-gd
@@ -28,6 +29,7 @@ written in the PHP5 language and uses the Dwoo templating engine.
 
 %prep
 %setup -n %{name}-%{version}
+%__cp %{SOURCE1} .
 
 %build
 
@@ -38,28 +40,50 @@ written in the PHP5 language and uses the Dwoo templating engine.
 %__mkdir -p $RPM_BUILD_ROOT/%{web_prefixdir}
 %__cp -rf * $RPM_BUILD_ROOT/%{web_prefixdir}
 %__rm -rf $RPM_BUILD_ROOT/%{web_prefixdir}/conf
+%__rm -rf $RPM_BUILD_ROOT/%{web_prefixdir}/apache.conf
 %__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/filters
 %__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/conf
 %__cp -rf conf/* $RPM_BUILD_ROOT@vargwebdir@/conf
 %__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo
 %__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo/compiled
 %__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo/cache
+%__install -d -m 0755 $RPM_BUILD_ROOT@etcdir@
+%__cp -f apache.conf $RPM_BUILD_ROOT@etcdir@/
 
 %files
 %defattr(-,root,root)
 %attr(0755,nobody,nobody)@vargwebdir@/filters
-%attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/conf
-%attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/dwoo
+%dir %attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/conf
+%dir %attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/dwoo
 %attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/dwoo/compiled
 %attr(0755,@varapacheuser@,@varapacheuser@)@vargwebdir@/dwoo/cache
-%{web_prefixdir}/*
-@vargwebdir@/conf/*
+%{web_prefixdir}/
 %config(noreplace) %{web_prefixdir}/conf_default.php
+@vargwebdir@/conf/*
+%config(noreplace) @etcdir@/apache.conf
 
 %clean
 %__rm -rf $RPM_BUILD_ROOT
 
+%post
+
+%triggerin -- httpd
+if [ $1 -eq 1 -a $2 -eq 1 ]; then
+	if [ ! -e /etc/httpd/conf.d/ganglia-web.conf ] ; then
+		ln -s @etcdir@/apache.conf /etc/httpd/conf.d/ganglia-web.conf
+	fi
+fi
+
+%triggerun -- httpd
+if [ $2 -eq 0 ]; then
+	if [ -h /etc/httpd/conf.d/ganglia-web -a "`readlink /etc/httpd/conf/httpd.conf`" = "@etcdir@/apache.conf" ]; then
+		rm /etc/httpd/conf.d/ganglia-web.conf
+	fi
+fi
+
 %changelog
+* Tue Jun 04 2013 Wesley Hirsch <emperorshishire@gmail.com>
+- Added default apache configuration
 * Thu Mar 17 2011 Bernard Li <bernard@vanhpc.org>
 - Renamed conf.php -> conf_default.php
 * Fri Dec 17 2010 Bernard Li <bernard@vanhpc.org>
