@@ -1,0 +1,9 @@
+Alias /ganglia @GDESTDIR@
+
+<Directory "@GDESTDIR@">
+	AllowOverride All
+	Order allow,deny
+	Allow from all
+	Deny from none
+</Directory>
+
