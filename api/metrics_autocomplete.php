@@ -41,9 +41,9 @@ if ( ! is_array( $metrics ) ) {
     	$new_metrics[$mhost][$name]['UNITS'] = $metrics[$mhost][$name]['UNITS'];
     }
   }
-  file_put_contents($conf['nagios_cache_file'], serialize($new_metrics));
   unset($metrics);
-  $metrics = $new_metrics;
+  file_put_contents($conf['nagios_cache_file'], serialize($new_metrics));
+  $metrics = $new_metrics;  
   unset($new_metrics);
 }
 
