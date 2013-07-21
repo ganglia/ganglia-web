@@ -88,11 +88,32 @@ function getOptionalReports($hostname,
     }
   }
 
+  // Here we are looking for reports like cluster_<name>.*_report.json
+ 
+  if ($handle = opendir($conf['gweb_root'] . '/graph.d/')) {
+     $fs_reports = array();
+     // If we are using RRDtool reports can be json or PHP suffixes
+     if ( $conf['graph_engine'] == "rrdtool" )
+       $report_suffix = "php|json";
+     else
+       $report_suffix = "json";
+ 
+     while (false !== ($file = readdir($handle))) {
+       if ( preg_match("/(host_" . $hostname . ".*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
+         $fs_reports["$out[1]"] = $out[1] . "_report";
+       }
+     }
+ 
+     closedir($handle);
+  }
+ 
+
   // Merge arrays
   $reports["included_reports"] = array_merge( 
     $default_reports["included_reports"], 
     $cluster_override_reports["included_reports"], 
-    $override_reports["included_reports"]);
+    $override_reports["included_reports"],
+    $fs_reports);
 
   $reports["excluded_reports"] = array_merge(
     $default_reports["excluded_reports"] , 
