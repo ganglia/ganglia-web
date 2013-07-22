@@ -88,7 +88,7 @@ function getOptionalReports($hostname,
     }
   }
 
-  // Here we are looking for reports like cluster_<name>.*_report.json
+  // Here we are looking for reports like host_<name>.*_report.json
  
   if ($handle = opendir($conf['gweb_root'] . '/graph.d/')) {
      $fs_reports = array();
