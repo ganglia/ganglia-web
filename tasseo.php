@@ -3,10 +3,16 @@
 include_once("./eval_conf.php");
 include_once("./functions.php");
 
+if (isset($conf['ad-hoc-views']) && $conf['ad-hoc-views'] === true && isset($_GET['ad-hoc-view'])) {
+  $is_ad_hoc = true;
+  $ad_hoc_view_json = json_decode(heuristic_urldecode($_GET['ad-hoc-view']), true);
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // Print out 
 //////////////////////////////////////////////////////////////////////////////////////////
-if ( ! isset($_REQUEST['view_name']) ) {
+if ( ! isset($_REQUEST['view_name']) and ! $is_ad_hoc ) {
 
   $available_views = get_available_views();
 
@@ -42,12 +48,17 @@ if ( ! isset($_REQUEST['view_name']) ) {
   }
   unset($available_views);
 
-  if ( $view_found == 0 || sizeof($view['items']) == 0 ) {
+  if ( ($view_found == 0 || sizeof($view['items']) == 0) && !$is_ad_hoc ) {
       die ("<font color=red size=4>There are no graphs in view you supplied or view does not exist.</font>");
   }
 
   // Let's get all View graph elements
-  $view_elements = get_view_graph_elements($view);
+  if ($is_ad_hoc) {
+    $view_elements = get_view_graph_elements($ad_hoc_view_json);
+  }
+  else {
+    $view_elements = get_view_graph_elements($view);
+  }
   ?>
 <html>
 <head>
