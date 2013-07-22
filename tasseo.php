@@ -114,7 +114,7 @@ foreach ( $view_elements as $index => $element ) {
       if ( isset($element['aggregate_graph'])) {
         $tasseo_e['name'] = "Aggr " . $element['name'];
       } else {
-        $tasseo_e['name'] = $element['hostname'] . " " . $element['name'];
+        $tasseo_e['name'] = ($conf['strip_domainname'] ? strip_domainname($element['hostname']) : $element['hostname']) . " " . $element['name'];
       }
       if ( isset($element['warning']))
          $tasseo_e['warning'] = $element['warning'];
