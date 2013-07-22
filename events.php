@@ -11,17 +11,20 @@ if (isset($_GET['calendar_events_only'])) {
   $events = ganglia_events_get($_GET['start'], $_GET['end']);
   $cal_events = array();
   foreach ( $events as $id => $event ) {
-    $end_time = isset($event['end_time']) ? $event['end_time'] : "";
     $cal_event = array('title' => $event['summary'],
                        'start' => $event['start_time'],
-                       'end' => $end_time,
+                       'end' => (isset($event['end_time']) ? 
+				 $event['end_time'] : ""),
                        'gweb_event_id' => $event['event_id'],
                        'grid' => $event['grid'],
                        'cluster' => $event['cluster'],
                        'host_regex' => $event['host_regex'],
                        'start_time' => $event['start_time'],
-                       'end_time' => $event['end_time'],
                        'description' => $event['description']);
+
+    if (isset($event['end_time']))
+      $cal_event['end_time'] = $event['end_time'];
+	
     array_push($cal_events, $cal_event);
   }
   $json = json_encode($cal_events);
@@ -75,15 +78,18 @@ $(function(){
              center: '', 
              right: 'today prev next basicDay basicWeek month'},
     eventRender: function(event, element) {
+	var tipText = event.title + 
+	  '<br>Start: ' + $.fullCalendar.formatDate(new Date(event.start_time * 1000), "HH:mm:ss");
+	if ('end_time' in event)
+	  tipText += '<br>End: ' + $.fullCalendar.formatDate(new Date(event.end_time * 1000), "HH:mm:ss");
+
         element.qtip({
           content : {
-            text: event.title + 
-              '<br>Start: ' + $.fullCalendar.formatDate(new Date(event.start_time * 1000), "HH:mm:ss") + 
-              '<br>End: ' + $.fullCalendar.formatDate(new Date(event.end_time * 1000), "HH:mm:ss")
+            text: tipText
           },
           position: {
             target: 'mouse',
-            adjust: {x: 20}
+	    adjust: {x: 5, y: 5}
           },
           style: {
             classes: 'ganglia-qtip'
@@ -192,6 +198,7 @@ if ($conf['display_events_using_calendar']) {
   print "<div id='calendar'></div>";
 } else {
   print "<table id='overlay_event_table' width='90%'>";
+  print "<thead>";
   print "<tr>";
   print "<th>Start Time</th>";
   print "<th>End Time</th>";
@@ -201,6 +208,7 @@ if ($conf['display_events_using_calendar']) {
   print "<th>Cluster</th>";
   print "<th>Host Regex</th>";
   print "</tr>";
+  print "</thead>";
   
   include_once $conf['gweb_root'] . "/functions.php";
   include_once $conf['gweb_root'] . "/lib/common_api.php";
@@ -218,6 +226,7 @@ if ($conf['display_events_using_calendar']) {
   
   $events_array = ganglia_events_get();
   if (sizeof($events_array) > 0) {
+    print "<tbody>";
     usort($events_array, 'start_time_cmp');
     foreach ( $events_array as $id => $event ) {
       $description = isset($event['description']) ? $event['description'] : "";
@@ -231,6 +240,7 @@ if ($conf['display_events_using_calendar']) {
         "<td>" . $event['host_regex'] . "</td>" .
         "</tr>";
     }
+    print "</tbody>";
   }
   print "</table>";
 }
