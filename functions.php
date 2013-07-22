@@ -772,6 +772,9 @@ function get_view_graph_elements($view) {
             $graph_args_array[] = "crit=" . $item['critical'];
           }
 
+          if (isset($item['alias'])) {
+              $view_e['alias'] = $item['alias'];
+          }
 
           $view_e["graph_args"] = join("&", $graph_args_array);
           $view_e['hostname'] = $hostname;
