@@ -56,20 +56,17 @@ $(function(){
 	  hideNowButton: true
     });
 
-  var create_new_view_dialog = $( "#create-new-view-dialog" );
+  var create_new_view_dialog = $("#create-new-view-dialog");
   if (create_new_view_dialog[0])
     create_new_view_dialog.dialog({
       autoOpen: false,
-      height: 200,
-      width: 350,
+      height: "auto",
+      width: "auto",
       modal: true,
       close: function() {
         $("#create-new-view-layer").toggle();
         $("#create-new-view-confirmation-layer").html("");
-        $.get('views_view.php?views_menu=1',
-              function(data) {
-	        $("#views_menu").html(data);
-              });
+	newViewDialogCloseCallback();
       }
     });
 
@@ -78,25 +75,6 @@ $(function(){
 
 function selectTab(tab_index) {
   $("#tabs").tabs("select", tab_index);
-}
-
-function viewId(view_name) {
-  return "v_" + view_name.replace(/[^a-zA-Z0-9_]/g, "_");
-}
-
-function selectView(view_name) {
-  $.cookie('ganglia-selected-view-' + window.name, view_name);
-  $("#vn").val(view_name);
-  ganglia_form.submit();
-}
-
-function createView() {
-  $("#create-new-view-confirmation-layer").html('<img src="img/spinner.gif">');
-  $.get('views_view.php', $("#create_view_form").serialize() , function(data) {
-    $("#create-new-view-layer").toggle();
-    $("#create-new-view-confirmation-layer").html(data);
-  });
-  return false;
 }
 
 function addItemToView() {
@@ -111,13 +89,12 @@ function initMetricActionsDialog() {
   if (metric_actions_dialog[0]) 
     metric_actions_dialog.dialog({
       autoOpen: false,
-      height: 250,
-      width: 450,
+      width: "auto",
       modal: true
     });
 }
 
-function metricActions(host_name,metric_name,type,graphargs) {
+function metricActions(host_name, metric_name, type, graphargs) {
     $( "#metric-actions-dialog" ).dialog( "open" );
     $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
     $.get('actions.php',

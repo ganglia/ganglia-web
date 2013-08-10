@@ -559,6 +559,78 @@ function filter_permit($source_name)
    return isset($filter_permit_list[$source_name]);
 }
 
+$VIEW_NAME_SEP = '--';
+
+function viewName($view) {
+  global $VIEW_NAME_SEP;
+
+  $vn = '';
+  if ($view['parent'] != NULL)
+    $vn = str_replace('/', $VIEW_NAME_SEP, $view['parent']) . $VIEW_NAME_SEP;
+  $vn .= $view['view_name'];
+  return $vn;
+}
+
+class ViewList {
+  private $available_views;
+
+  public function __construct() {
+    $this->available_views = get_available_views();
+  }
+
+  public function viewExists($view_name) {
+    foreach ($this->available_views as $view) {
+      if ($view['view_name'] == $view_name) {
+	return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  public function getView($view_name) {
+    foreach ($this->available_views as $view) {
+      if (viewName($view) == $view_name) {
+	return $view;
+      }
+    }
+    return NULL;
+  }
+
+  public function removeView($view_name) {
+    foreach ($this->available_views as $key => $view) {
+      if (viewName($view) == $view_name) {
+	unset($this->available_views[$key]);
+	return;
+      }
+    }
+  }
+
+  public function getViews() {
+    return $this->available_views;
+  }
+}
+
+function getViewItems($view, $range, $cs, $ce) {
+  $view_elements = get_view_graph_elements($view);
+  $view_items = array();
+  if (count($view_elements) != 0) {
+    $graphargs = "";
+    if ($cs)
+      $graphargs .= "&amp;cs=" . rawurlencode($cs);
+    if ($ce)
+      $graphargs .= "&amp;ce=" . rawurlencode($ce);
+    
+    foreach ($view_elements as $element) {
+      $view_items[] = 
+	array("legend" => isset($element['hostname']) ? 
+	      $element['hostname'] : "Aggregate graph",
+	      "url_args" => htmlentities($element['graph_args']) . 
+	      "&amp;r=" . $range . $graphargs,
+	      "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0);
+    }
+  }
+  return $view_items;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Get all the available views
@@ -574,44 +646,43 @@ function get_available_views() {
   $available_views = array();
 
   if ($handle = opendir($conf['views_dir'])) {
-
-      while (false !== ($file = readdir($handle))) {
-
-	if ( preg_match("/^view_(.*)\.json$/", $file, $out) ) {
-	  $view_config_file = $conf['views_dir'] . "/" . $file;
-	  if ( ! is_file ($view_config_file) ) {
-	    echo("Can't read view config file " . $view_config_file . ". Please check permissions");
-	  }
-
-	  $view = json_decode(file_get_contents($view_config_file), TRUE);
-	  // Check whether view type has been specified ie. regex. 
-          // If not it's standard view
-	  $view_type = 
-            isset($view['view_type']) ? $view['view_type'] : "standard";
-          $default_size = isset($view['default_size']) ? 
-	    $view['default_size'] : $conf['default_view_graph_size'];
-	  $available_views[] = array ("file_name" => $view_config_file, 
-                                      "view_name" => $view['view_name'],
-                                      "default_size" => $default_size, 
-                                      "items" => $view['items'], 
-                                      "view_type" => $view_type);
-
-	  unset($view);
-
+    while (false !== ($file = readdir($handle))) {
+      if (preg_match("/^view_(.*)\.json$/", $file, $out)) {
+	$view_config_file = $conf['views_dir'] . "/" . $file;
+	if (!is_file ($view_config_file)) {
+	  echo("Can't read view config file " . 
+	       $view_config_file . ". Please check permissions");
 	}
+
+	$view = json_decode(file_get_contents($view_config_file), TRUE);
+	// Check whether view type has been specified ie. regex. 
+	// If not it's standard view
+	$view_type = 
+	  isset($view['view_type']) ? $view['view_type'] : "standard";
+	$default_size = isset($view['default_size']) ? 
+	  $view['default_size'] : $conf['default_view_graph_size'];
+	$view_parent = 
+	  isset($view['parent']) ? $view['parent'] : NULL;
+
+	$available_views[] = array ("file_name" => $view_config_file, 
+				    "view_name" => $view['view_name'],
+				    "default_size" => $default_size, 
+				    "items" => $view['items'], 
+				    "view_type" => $view_type,
+				    "parent" => $view_parent);
+	unset($view);
       }
-
-      closedir($handle);
+    }
+    closedir($handle);
   }
-
+  
   foreach ($available_views as $key => $row) {
-    $name[$key]  = strtolower($row['view_name']);
+    $name[$key] = strtolower($row['view_name']);
   }
-
-  @array_multisort($name,SORT_ASC, $available_views);
-
-  return $available_views;
-
+  
+  @array_multisort($name, SORT_ASC, $available_views);
+  
+  return $available_views; 
 }
 
 ///////////////////////////////////////////////////////////////////////////////

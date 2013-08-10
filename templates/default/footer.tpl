@@ -22,9 +22,9 @@
     <form id="create_view_form">
       <input type="hidden" name="create_view" value="1">
       <fieldset>
-	 <label for="name">View Name</label>
-	 <input type="text" name="view_name" id="view_name" class="text ui-widget-content ui-corner-all" />
-         <center><button onclick="createView(); return false;">Create</button></center>
+	 <label for="new_view_name">View Name</label>
+	 <input type="text" name="vn" id="new_view_name" class="text ui-widget-content ui-corner-all" />
+         <center><button style="margin:10px;" onclick="createView(); return false;">Create</button></center>
       </fieldset>
     </form>
   </div>

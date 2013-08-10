@@ -25,16 +25,18 @@
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript" src="js/fullcalendar.js"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
+<script type="text/javascript" src="js/jquery.jstree.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
 
     function refreshHeader() {
-      $.get('header.php?date_only=1', function(data) {
+      $.get('header.php?date_only=1', function(datetime) {
         var title = $("#page_title").text();
-        var l = title.lastIndexOf(" for ");
-        title = title.substring(0, l);
-        title += " for " + data;
+        var l = title.lastIndexOf(" at ");
+        if (l != -1)
+          title = title.substring(0, l);
+        title += " at " + datetime;
         $("#page_title").text(title);
         });
     }
