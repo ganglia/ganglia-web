@@ -419,6 +419,13 @@ $conf['ad-hoc-views'] = false;
 # Configure memcache server(s) for any memcached capabilities.
 $conf['memcached_servers'] = array ( '127.0.0.1:11211' );
 
-# Choose between tavular or calendar views
+# Choose between tabular or calendar views
 $conf['display_events_using_calendar'] = false;
+
+# Organize views using a tree. A new attribute "parent" has been
+# added to the json definition of a view that is used to specify
+# the path from the root node to its desired folder, e.g. 
+# "Exchange Servers/Throughtput". Individual path entries are
+# separated by a forward slash.
+$conf['display_views_using_tree'] = true;
 ?>

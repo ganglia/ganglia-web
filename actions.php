@@ -4,9 +4,9 @@ include_once("./eval_conf.php");
 include_once("./functions.php");
 
 if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   // Show available views
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
   $available_views = get_available_views();
   ?>
 
@@ -58,14 +58,18 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
     ?>
     <br />
     <center>
-    <select onChange="addItemToView()" name="view_name">
+    <select onChange="addItemToView()" name="vn">
     <option value="none">Please choose a view to add to</option>
     <?php
-    foreach ( $available_views as $view_id => $view ) {
-      print "<option value=\"" . $view['view_name'] . "\">" . $view['view_name'] . "</option>";
+    $sorted_views = array();
+    foreach ($available_views as $view) {
+      $sorted_views[viewName($view)] = $view;
+    }
+    ksort($sorted_views);
+    foreach ($sorted_views as $view_name => $view) {
+      print "<option value=\"" . $view_name . "\">" . $view_name . "</option>";
     } 
-
-  ?>
+    ?>
     </select>
     </center>
   </form>
