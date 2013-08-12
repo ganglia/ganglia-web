@@ -15,7 +15,7 @@ function constructUrl(index, period) {
 function constructGraphs() {
   for (var i=0; i<metrics.length; i++) {
     constructUrl(i, period);
-    aliases[i] = metrics[i].name;
+    aliases[i] = metrics[i].alias || metrics[i].name;
     datum[i] = [{ x:0, y:0 }];
     graphs[i] = new Rickshaw.Graph({
       element: document.querySelector('.graph' + i),
