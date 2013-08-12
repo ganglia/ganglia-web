@@ -11,9 +11,64 @@
 	var src = $(this).attr("src");
 	if (src.indexOf("graph.php") == 0) {
 	  var d = new Date();
-	  $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
+	  $(this).attr("src", 
+                       jQuery.param.querystring(src, "&_=" + d.getTime()));
 	}    
     });
+  }
+
+  function viewId(view_name) {
+    return "v_" + view_name.replace(/[^a-zA-Z0-9_]/g, "_");
+  }
+
+  function createView() {
+    $("#create-new-view-confirmation-layer").html('<img src="img/spinner.gif">');
+    $.get('views_view.php', 
+          $("#create_view_form").serialize() , 
+          function(data) {
+      $("#create-new-view-layer").toggle();
+      $("#create-new-view-confirmation-layer").html(data.output);
+      if ("tree_node" in data) {
+ 	$('#views_menu').jstree('create',
+				'#root',
+				'last',
+				data.tree_node,
+				null,
+				true);
+     }
+   }, "json");
+   return false;
+  }
+
+  function selectView(view_name) {
+    $.cookie('ganglia-selected-view-' + window.name, view_name);
+    $("#vn").val(view_name);
+    {if !$display_views_using_tree}
+    $.get("views_view.php?vn=" + view_name + "&views_menu",
+          function(data) {
+            $("#views_menu").html(data);
+          }); 
+    {/if}
+    var qs = jQuery.deparam.querystring();
+    $.get("view_content.php?vn=" + view_name + 
+  	  "&r=" + qs.r + 
+	  "&cs=" + $("#datepicker-cs").val() + 
+	  "&ce=" + $("#datepicker-ce").val(),
+	  function(data) {
+	    $("#views-content").html(data);
+	    initShowEvent();
+	  });
+    $("#page_title").text('"' + view_name.replace(/--/g, " / ") + '"');
+    refreshHeader();
+  }
+
+  function newViewDialogCloseCallback() {
+  {if !$display_views_using_tree}
+    $.get('views_view.php?views_menu=1',
+	  function(data) {
+	    $("#views_menu").html(data);
+          });
+  {/if}
   }
 
   $(function() {
@@ -28,19 +83,47 @@
       .click(function() {
         if ($("#vn").val() != "") {
 	  if (confirm("Are you sure you want to delete the view: " + $("#vn").val() + " ?")) {
-	    $.get('views_view.php?view_name=' + 
+	    $.get('views_view.php?vn=' + 
                   encodeURIComponent($("#vn").val()) +
                   '&delete_view&views_menu',
                   function(data) {
-                    $("#views_menu").html(data);
-                    $("#view_graphs").html("");  
-                    $.cookie('ganglia-selected-view-' + window.name, "");
-		    $("#vn").val("");
+                    {if $display_views_using_tree}
+                      $('#views_menu').jstree("remove", null);
+                    {else}
+                      $("#views_menu").html(data);
+		      $("#view_graphs").html("");  
+                      $.cookie('ganglia-selected-view-' + window.name, "");
+		      $("#vn").val("");
+                    {/if}
                   });
           }
         } else
 	  alert("Please select the view to delete");
     });
+    {if $display_views_using_tree}
+    $('#views_menu').jstree({
+      "json_data" : {
+         "data" : {$existing_views}
+      },
+      'core': { animation: 0 },
+      'plugins': ['themes', 'json_data', 'ui', 'cookies', 'crrm'],
+      themes: { 
+        theme: 'default', dots: true, icons: false}})
+    .bind("select_node.jstree", 
+          function (event, data) {
+            selectView(data.rslt.obj.attr("view_name"));
+            return false;
+          })
+    .bind("before.jstree", 
+          function (e, data) {
+            if (data.func === "select_node" &&
+                !data.inst.is_leaf(data.args[0])) {
+	      data.inst.toggle_node(data.args[0]);
+	      e.stopImmediatePropagation();
+	      return false;
+            }
+          });
+    {/if}
   });
 </script>
 
@@ -52,49 +135,19 @@
 <table id="views_table">
 <tr><td valign="top">
 <div id="views_menu" {if $ad_hoc_view} style="visibility: hidden; display: none;" {/if}>
+  {if !$display_views_using_tree}
     {$existing_views}
+  {/if}
 </div>
-<script type="text/javascript">$(function() { $("#views_menu").buttonsetv(); });</script>
+{if !$display_views_using_tree}
+<script type="text/javascript">
+  $(function() { $("#views_menu").buttonsetv(); });
+</script>
+{/if}
 </td>
 <td valign="top">
 <div>
-<div id="views-content">
-  <div id=view_graphs>
-    {if isset($number_of_view_items)}
-    {if $number_of_view_items == 0 }
-    <div class="ui-widget">
-      <div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
-        <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
-          No graphs defined for this view. Please add some
-      </div>
-    </div>
-    {else}
-      {$i = 0}
-      {foreach $view_items view_item}
-      {$graphId = cat($GRAPH_BASE_ID "view_" $i)}
-      {$showEventsId = cat($SHOW_EVENTS_BASE_ID "view_" $i)}
-      <div class="img_view">
-        <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;csv=1';return false;">CSV</button>
-        <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;json=1';return false;">JSON</button>
-        {if $view_item.aggregate_graph == 1}
-        <button title="Decompose aggregate graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&amp;dg=1&amp;tab=v';return false;">Decompose</button>
-        {/if}
-        <button title="Inspect Graph" onClick="inspectGraph('{$view_item.url_args}'); return false;" class="shiny-blue">Inspect</button>
-        <input type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label title="Hide/Show Events" class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
-        <br />
-{if $graph_engine == "flot"}
-<div id="placeholder_{$view_item.url_args}" class="flotgraph2 img_view"></div>
-<div id="placeholder_{$view_item.url_args}_legend" class="flotlegend"></div>
-{else}
-<a href="graph_all_periods.php?{$view_item.url_args}"><img id="{$graphId}" class="noborder {$additional_host_img_css_classes}" style="margin-top:5px;" src="graph.php?{$view_item.url_args}" /></a>
-{/if}
-      </div>
-      {math "$i + 1" assign=i}
-      {/foreach}
-    {/if}
-    {/if}
-  </div>
-</div>
+  {include('view_content.tpl')}
 <div style="clear: left"></div>
 </div>
 </td>

@@ -217,7 +217,7 @@ $("#metrics-picker").val("{$metric_name}");
 
 
 <div id="cluster_view_chooser">
-<table border="0" width="100%">
+<table style="border-collapse:collapse;" width="100%">
   <tr>
   <td style="text-align:center;background:rgb(238,238,238);">
   Show Hosts Scaled:
@@ -236,7 +236,12 @@ $("#metrics-picker").val("{$metric_name}");
    </font>
 {/if}
   </td>
-</tr>
+  </tr>
+  <tr>
+    <td style="text-align:center;background:rgb(238,238,238);">
+      {$additional_filter_options}
+    </td>
+  </tr>
 </table>
 </div>
 
