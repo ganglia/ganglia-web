@@ -983,9 +983,11 @@ if ( $user['json_output'] ||
       foreach ( $output_array[0]['datapoints'] as $index => $datapoint ) {
         // Data point is an array with value and UNIX time stamp. Initialize
         // summed output as 0
-        $summed_output[$index] = array( 0, $datapoint[1] );
-        for ( $i = 0 ; $i < sizeof($output_array) ; $i++ ) {
-          $summed_output[$index][0] += $output_array[$i]['datapoints'][$index][0];
+        if (is_numeric($datapoint[0]) && is_numeric($datapoint[1])) {
+          $summed_output[$index] = array( 0, $datapoint[1] );
+          for ( $i = 0 ; $i < sizeof($output_array) ; $i++ ) {
+            $summed_output[$index][0] += $output_array[$i]['datapoints'][$index][0];
+          }
         }
       }
       
