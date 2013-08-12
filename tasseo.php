@@ -127,6 +127,8 @@ foreach ( $view_elements as $index => $element ) {
       } else {
         $tasseo_e['name'] = ($conf['strip_domainname'] ? strip_domainname($element['hostname']) : $element['hostname']) . " " . $element['name'];
       }
+      if ( isset($element['alias']))
+         $tasseo_e['alias'] = $element['alias'];
       if ( isset($element['warning']))
          $tasseo_e['warning'] = $element['warning'];
       if ( isset($element['critical']))
