@@ -1,16 +1,10 @@
+<?php
+if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
+?>
 <html>
 <head>
 <title>Ganglia: Graph all periods</title>
 <link rel="stylesheet" href="./styles.css" type="text/css" />
-<style type="text/css">
-.img_view {
-  float: left;
-  margin: 0 0 10px 10px;
-}
-</style>
-<?php
-if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
-?>
 <script TYPE="text/javascript" SRC="js/jquery-1.9.1.min.js"></script>
 <script>$.uiBackCompat = false;</script>
 <script type="text/javascript" src="js/jquery-ui-1.10.2.custom.min.js"></script>
@@ -23,9 +17,8 @@ if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 <link type="text/css" href="css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="css/jquery.multiselect.css" type="text/css" />
 <?php
-}
+} // if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 ?>
-
 <script type="text/javascript">
   function openDecompose($url) {
     $.cookie("ganglia-selected-tab-" + window.name, 0);
@@ -35,11 +28,14 @@ if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
   $(function() {
     initShowEvent();
     initTimeShift();
-<?php if ( isset($_GET['embed'] ) ) { ?>
+<?php if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) { ?>
     initMetricActionsDialog();
-<?php } ?>
-<?php if ( ! isset($_REQUEST['mobile'])) { ?>
-    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
+    $("#popup-dialog").dialog({ autoOpen: false, 
+                                width:800, 
+                                height:500,
+                                position: { my: "top",
+                                            at: "top+200",
+                                            of: window } } );
 <?php } ?>
   });
 </script>
@@ -48,19 +44,19 @@ if ( ! isset($_REQUEST['embed'] ) && ! isset($_REQUEST['mobile']) ) {
 include_once "./eval_conf.php";
 include_once "./global.php";
 
-// build a query string but drop r and z since those designate time window and size. Also if the 
-// get arguments are an array rebuild them. For example with hreg (host regex)
+// build a query string but drop r and z since those designate time 
+// window and size. Also if the get arguments are an array rebuild them. 
+// For example with hreg (host regex)
 $ignore_keys_list = array("r", "z", "st", "cs", "ce", "hc");
 
 foreach ($_GET as $key => $value) {
-  if ( ! in_array($key, $ignore_keys_list) && ! is_array($value))
+  if (!in_array($key, $ignore_keys_list) && !is_array($value))
     $query_string_array[] = rawurlencode($key) . "=" . urlencode($value);
 
   // $_GET argument is an array. Rebuild it to pass it on
-  if ( is_array($value) ) {
-    foreach ( $value as $index => $value2 )
+  if (is_array($value)) {
+    foreach ($value as $index => $value2)
       $query_string_array[] = rawurlencode($key) . "[]=" . urlencode($value2);
-
   }
 }
 
@@ -96,13 +92,12 @@ else
   $metric_description = "Unknown";
 
 # Determine if it's aggregate graph
-if ( preg_match("/aggregate=1/", $query_string) )
+if (preg_match("/aggregate=1/", $query_string))
   $is_aggregate = true;
 else
   $is_aggregate = false;
 
-
-if ( $conf['graph_engine'] == "flot" ) {
+if ($conf['graph_engine'] == "flot") {
 ?>
 <style type="text/css">
 .flotgraph {
@@ -111,14 +106,14 @@ if ( $conf['graph_engine'] == "flot" ) {
 }
 </style>
 <?php
-// Add JQuery and flot loading only if this is not embedded in the Aggregate Graphs Tab
-if ( ! isset($_GET['embed'] ) ) {
-?>
+// Add JQuery and flot loading only if this is not embedded in the 
+// Aggregate Graphs Tab
+if (!isset($_GET['embed'])) { ?>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
 <script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.time.min.js"></script>
 <?php
-} // end of if ( ! isset($_GET['embed'] )
+} // end of if (!isset($_GET['embed'])
 ?>
 <script type="text/javascript">
   var default_time = 'hour';
@@ -126,15 +121,16 @@ if ( ! isset($_GET['embed'] ) ) {
   var base_url = "<?php print 'graph.php?flot=1&amp;' . $_GET['m'] . $query_string ?>" + "&amp;r=" + default_time;
 </script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
-<?php
-} // end of if ( $conf['graph_engine'] == "flot" ) {
+<?php 
+} // end of if ($conf['graph_engine'] == "flot") { 
 ?>
-</head>
 
+<?php if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) { ?>
+</head>
 <body onSubmit="return false;">
-<?php
-if ( ! isset($_REQUEST['mobile']) ) {
-?>
+<?php } ?>
+
+<?php if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) { ?>
 <div id="popup-dialog" style="display: none" title="Inspect Graph">
   <div id="popup-dialog-content">
   </div>
@@ -142,14 +138,18 @@ if ( ! isset($_REQUEST['mobile']) ) {
 <?php
 }
 ?>
+
+<?php if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) { ?>
 <div id="metric-actions-dialog" style="display: none" title="Metric Actions">
 <div id="metric-actions-dialog-content">
 	Available Metric actions.
 </div>
 </div>
+<?php } ?>
+
 <form>
 <?php
-if ( isset($_REQUEST['mobile'])) {
+if (isset($_REQUEST['mobile'])) {
 ?>
     <div data-role="page" class="ganglia-mobile" id="view-home">
     <div data-role="header">
@@ -162,16 +162,16 @@ if ( isset($_REQUEST['mobile'])) {
 }
 
 // Skip printing if this is an embedded graph e.g. from Aggregate graph screen
-if ( ! isset($_REQUEST['embed'] )  ) {
+if (!isset($_REQUEST['embed'])) {
 ?>
   <div><b>Host/Cluster/Host Regex: </b><?php print $description ?>&nbsp;<b>Metric/Graph/Metric Regex: </b><?php print $metric_description;?>&nbsp;&nbsp;
 <?php
 }
 
-if ( ! isset($_REQUEST['mobile'] )  ) {
+if (!isset($_REQUEST['mobile'])) {
    print '<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label class="show_event_text" for="show_all_events">Hide/Show Events All Graphs</label>';
    # Make sure it's not aggregate or composite graph
-  if ( ! $is_aggregate && ! isset($_GET['g']) )
+  if (!$is_aggregate && ! isset($_GET['g']) )
      print '<input title="Timeshift Overlay" type="checkbox" id="timeshift_overlay" onclick="showTimeshiftOverlay(this.checked)"/><label class="show_timeshift_text" for="timeshift_overlay">Timeshift Overlay</label><br />';
   print "</div>";
 } // end of if ( ! isset($_REQUEST['mobile'] )  ) {
@@ -180,66 +180,60 @@ if (isset($_GET['embed'])) {
   print "<div style='height:10px;'/>";
 }
 
-
-foreach ( $conf['time_ranges'] as $key => $value ) {
-
+foreach ($conf['time_ranges'] as $key => $value) {
   # Skip job 
   if ( $value == "job" )
     continue;
 
   print '<div class="img_view">';
   
-  if ( ! isset($_REQUEST['mobile']) ) {
+  if (!isset($_REQUEST['mobile'])) {
 
   print '<span style="padding-left: 4em; padding-right: 4em; text-weight: bold;">' . $key . '</span>';
 
   // If this is for mobile hide some of the options
+  // Check if it's an aggregate graph
+  if ($is_aggregate) {
+    print '<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' . $query_string . '\'); return false;">+</button>';
+  }
   
-    // Check if it's an aggregate graph
-    if ( $is_aggregate  ) {
-      print '<button class="cupid-green" title="Metric Actions - Add to View, etc" onclick="metricActionsAggregateGraph(\'' . $query_string . '\'); return false;">+</button>';
-    }
+  print ' <button title="Export to CSV" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;csv=1\';return false">CSV</button> ';
   
-    print ' <button title="Export to CSV" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;csv=1\';return false">CSV</button> ';
+  print ' <button title="Export to JSON" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;json=1\';return false;">JSON</button> ';
   
-    print ' <button title="Export to JSON" class="cupid-green" onclick="window.location=\'./graph.php?r=' . $key . $query_string . '&amp;json=1\';return false;">JSON</button> ';
-  
-     // Check if it's an aggregate graph
-    if ( $is_aggregate  ) {
-	print ' <button title="Decompose aggregate graph" class="shiny-blue" onClick="openDecompose(\'?r=' . $key . $query_string  . '&amp;dg=1\');return false;">Decompose</button>';
-    }
+  // Check if it's an aggregate graph
+  if ($is_aggregate) {
+    print ' <button title="Decompose aggregate graph" class="shiny-blue" onClick="openDecompose(\'?r=' . $key . $query_string  . '&amp;dg=1\');return false;">Decompose</button>';
+  }
    
-    print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>';
+  print ' <button title="Inspect Graph" onClick="inspectGraph(\'r=' . $key . $query_string  . '\'); return false;" class="shiny-blue">Inspect</button>';
 
-    $graphId = $GRAPH_BASE_ID . $key;
+  $graphId = $GRAPH_BASE_ID . $key;
 
-    print ' <input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $key . '">Hide/Show Events</label>';
-    if ( ! $is_aggregate && ! isset($_GET['g']) )
-      print ' <input title="Timeshift Overlay" type="checkbox" id="' . $TIME_SHIFT_BASE_ID . $key . '" onclick="showTimeShift(\'' . $graphId . '\', this.checked)"/><label class="show_timeshift_text" for="' . $TIME_SHIFT_BASE_ID . $key . '">Timeshift</label>';
-
+  print ' <input title="Hide/Show Events" type="checkbox" id="' . $SHOW_EVENTS_BASE_ID . $key . '" onclick="showEvents(\'' . $graphId . '\', this.checked)"/><label class="show_event_text" for="' . $SHOW_EVENTS_BASE_ID . $key . '">Hide/Show Events</label>';
+  if (!$is_aggregate && !isset($_GET['g']))
+    print ' <input title="Timeshift Overlay" type="checkbox" id="' . $TIME_SHIFT_BASE_ID . $key . '" onclick="showTimeShift(\'' . $graphId . '\', this.checked)"/><label class="show_timeshift_text" for="' . $TIME_SHIFT_BASE_ID . $key . '">Timeshift</label>';
   } 
 
   print  '<br />';
 
   // If we are using flot we need to use a div instead of an image reference
   if ( $conf['graph_engine'] == "flot" ) {
-
     print '<div id="placeholder_' . $key . '" class="flotgraph img_view"></div>';
     print '<div id="placeholder_' . $key . '_legend" class="flotlegend"></div>';
-
   } else {
-
     print '<a href="./graph.php?r=' . $key . '&amp;z=' . $xlargesize . $query_string . '"><img class="noborder" id="' . $graphId . '" style="margin-top:5px;" title="Last ' . $key . '" src="graph.php?r=' . $key . '&amp;z=' . $largesize . $query_string . '"></a>';
-
   }
-
   print "</div>";
-
 }
-// The div below needs to be added to clear float left since in aggregate view things
-// will start looking goofy
+// The div below needs to be added to clear float left since in aggregate 
+// view things will start looking goofy
 ?>
 <div style="clear: left"></div>
 </form>
+<?php
+if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
+?>
 </body>
 </html>
+<?php } ?>

@@ -11,10 +11,6 @@
   padding-right: 4em;
   font-weight: bold;
 }
-.img_view {
-  float: left;
-  margin: 0 0 10px 10px;
-}
 </style>
 <script type="text/javascript">
 var SEPARATOR = "_|_";
@@ -195,7 +191,6 @@ $(function() {
     beforeClose: function(event, ui) { location.reload(true); } });
 
   $("#close_edit_optional_graphs_link").button();
-  $("#popup-dialog").dialog({ autoOpen: false, minWidth: 850 });
 
   $("#edit_optional_graphs_button").button();
   $("#edit_optional_graphs_button").click(function(event) {
@@ -264,17 +259,6 @@ $(function() {
   #effect { width: 240px; height: 135px; padding: 0.4em; position: relative; }
   #effect h3 { margin: 0; padding: 0.4em; text-align: center; }
 </style>
-
-<div id="metric-actions-dialog" title="Metric Actions">
-  <div id="metric-actions-dialog-content">
-	Available Metric actions.
-  </div>
-</div>
-<div id="popup-dialog" title="Inspect Graph">
-  <div id="popup-dialog-navigation"></div>
-  <div id="popup-dialog-content">
-  </div>
-</div>
 
 <div>
 <button id="host_overview" class="button">Host Overview</button>

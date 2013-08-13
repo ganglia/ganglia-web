@@ -1,14 +1,3 @@
-<style>
-.img_view {
-  float: left;
-  margin: 0 0 10px 10px;
-}
-</style>
-<div id="metric-actions-dialog" title="Metric Actions">
-<div id="metric-actions-dialog-content">
-	Available Metric actions.
-</div>
-</div>
 <div id="inspect-graph-dialog" title="Inspect Graph">
   <div id="inspect-graph-dialog-content">
   </div>

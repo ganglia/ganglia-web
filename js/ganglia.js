@@ -55,22 +55,6 @@ $(function(){
 	  buttonImageOnly: true,
 	  hideNowButton: true
     });
-
-  var create_new_view_dialog = $("#create-new-view-dialog");
-  if (create_new_view_dialog[0])
-    create_new_view_dialog.dialog({
-      autoOpen: false,
-      height: "auto",
-      width: "auto",
-      modal: true,
-      close: function() {
-        $("#create-new-view-layer").toggle();
-        $("#create-new-view-confirmation-layer").html("");
-	newViewDialogCloseCallback();
-      }
-    });
-
-  initMetricActionsDialog();	
   });
 
 function selectTab(tab_index) {
@@ -87,18 +71,21 @@ function addItemToView() {
 function initMetricActionsDialog() {
   var metric_actions_dialog = $("#metric-actions-dialog");
   if (metric_actions_dialog[0]) 
-    metric_actions_dialog.dialog({
-      autoOpen: false,
-      width: "auto",
-      modal: true
-    });
+    metric_actions_dialog.dialog({autoOpen: false,
+		                  width: "auto",
+		                  modal: true,
+		                  position: { my: "top",
+		                              at: "top+200",
+                                              of: window}});
 }
 
 function metricActions(host_name, metric_name, type, graphargs) {
-    $( "#metric-actions-dialog" ).dialog( "open" );
+    $("#metric-actions-dialog").dialog("open");
     $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
     $.get('actions.php',
-          "action=show_views&host_name=" + host_name + "&metric_name=" + metric_name + "&type=" + type + graphargs, 
+          "action=show_views&host_name=" + host_name + 
+	  "&metric_name=" + metric_name + 
+	  "&type=" + type + graphargs, 
           function(data) {$("#metric-actions-dialog-content").html(data);});
     return false;
 }
@@ -146,12 +133,10 @@ function inspectGraph(graphArgs) {
   $("#popup-dialog").bind("dialogbeforeclose", 
                                   function(event, ui) {
                                     $("#enlargeTooltip").remove();});
-//  $('#popup-dialog-content').html('<img src="graph.php?' + graphArgs + '" />');
   $.get('inspect_graph.php',
         "flot=1&" + graphArgs, 
-        function(data) {$('#popup-dialog-content').html(data);})
+        function(data) {$('#popup-dialog-content').html(data);});
 }
-
 
 /* ----------------------------------------------------------------------------
   Draw a trend line on a graph.

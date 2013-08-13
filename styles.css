@@ -403,3 +403,9 @@ label[class~="show_timeshift_text"] span.ui-button-text {
 .ganglia-qtip .qtip-content {
   font-size: 14px;
 }
+
+.img_view {
+  float: left;
+  margin: 0 0 10px 10px;
+}
+
