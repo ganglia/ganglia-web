@@ -112,12 +112,6 @@ $(function() {
   } 
 </style>
 
-<div id="metric-actions-dialog" title="Metric Actions">
-  <div id="metric-actions-dialog-content">
-    Available Metric actions.
-  </div>
-</div>
-
 <div id="edit_optional_graphs">
   <div style="text-align:center">
     <button  id='save_optional_graphs_button'>Save</button>

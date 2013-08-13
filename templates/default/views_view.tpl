@@ -1,10 +1,3 @@
-<style type="text/css">
-.img_view {
-  float: left;
-  margin: 0 0 10px 10px;
-}
-</style>
-
 <script type="text/javascript">
   function refreshView() {
     $("#view_graphs img").each(function (index) {
@@ -72,11 +65,10 @@
   }
 
   $(function() {
-    $( "#popup-dialog" ).dialog({ autoOpen: false, width:850 });
     $("#create_view_button")
       .button()
       .click(function() {
-	$( "#create-new-view-dialog" ).dialog( "open" );
+	$("#create-new-view-dialog").dialog("open");
     });
     $("#delete_view_button")
       .button()
@@ -108,7 +100,7 @@
       'core': { animation: 0 },
       'plugins': ['themes', 'json_data', 'ui', 'cookies', 'crrm'],
       themes: { 
-        theme: 'default', dots: true, icons: false}})
+        theme: 'default', dots: false, icons: false}})
     .bind("select_node.jstree", 
           function (event, data) {
             selectView(data.rslt.obj.attr("view_name"));
@@ -126,11 +118,6 @@
     {/if}
   });
 </script>
-
-<div id="popup-dialog" title="Inspect Graph">
-  <div id="popup-dialog-content">
-  </div>
-</div>
 
 <table id="views_table">
 <tr><td valign="top">

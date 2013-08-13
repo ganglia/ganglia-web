@@ -31,6 +31,39 @@
   <div id="create-new-view-confirmation-layer"></div>
 </div>
 
+<script>
+$(function(){
+  var create_new_view_dialog = $("#create-new-view-dialog");
+  if (create_new_view_dialog[0])
+    create_new_view_dialog.dialog({
+      autoOpen: false,
+      height: "auto",
+      width: "auto",
+      modal: true,
+      position: { my: "top",
+                  at: "top+200",
+                  of: window },
+      close: function() {
+        $("#create-new-view-layer").toggle();
+        $("#create-new-view-confirmation-layer").html("");
+	newViewDialogCloseCallback();
+      }
+    });
+});
+</script>
+
+<div id="metric-actions-dialog" title="Metric Actions">
+  <div id="metric-actions-dialog-content">
+	Available Metric actions.
+  </div>
+</div>
+
+<script>
+$(function(){
+  initMetricActionsDialog();	
+});
+</script>
+
 <div id="tabs-mobile"></div>
 
 <div id="tabs-autorotation">
@@ -71,7 +104,23 @@ Images created with <a href="http://www.rrdtool.org/">RRDtool</a> version {$rrdt
 </font>
 </div>
 </div> <!-- div-tabs -->
-</BODY>
+<div id="popup-dialog" title="Inspect Graph">
+  <div id="popup-dialog-navigation"></div>
+  <div id="popup-dialog-content">
+  </div>
+</div>
+
+<script>
+$(function(){
+  $("#popup-dialog").dialog({ autoOpen: false, 
+                              width:800, 
+                              height:500,
+                              position: { my: "top",
+                                          at: "top+200",
+                                          of: window } } );
+});
+</script>
+</body>
 <!-- End footer.tpl -->
-</HTML>
+</html>
 
