@@ -1,9 +1,3 @@
-<style>
-.img_view {
-  float: left;
-  margin: 0 0 10px 10px;
-}
-</style>
 <script>
   function refreshDecomposeGraph() {
     $("#decompose-graphs img").each(function (index) {
@@ -19,7 +13,6 @@
   }
 
   $(function() {
-    $( "#popup-dialog" ).dialog({ autoOpen: false, minWidth: 850 });
     $("#create_view_button")
       .button()
       .click(function() {
@@ -27,15 +20,6 @@
     });;
   });
 </script>
-<div id="metric-actions-dialog" title="Metric Actions">
-<div id="metric-actions-dialog-content">
-	Available Metric actions.
-</div>
-</div>
-<div id="popup-dialog" title="Inspect Graph">
-  <div id="popup-dialog-content">
-  </div>
-</div>
 <div id="decompose-graph-content">
   <div id=decompose-graphs>
     {if $number_of_items == 0 }

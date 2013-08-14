@@ -378,6 +378,7 @@ if (sizeof($viewList->getViews()) == -1 && !$is_ad_hoc) {
 }
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
+
 // set to 'default' to preserve old behavior
 if ($size == 'medium') 
   $size = 'default';
