@@ -423,8 +423,10 @@ if (is_array($context_metrics) and $context == "cluster") {
 
     while (false !== ($file = readdir($handle))) {
       if ( preg_match("/(.*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
-        if ( ! in_array($out[1] . "_report", $context_metrics) )
-          $context_metrics[] = $out[1] . "_report";
+        if ( ! preg_match("/((cluster|host)_.*)(_report)/", $file) ) {
+          if ( ! in_array($out[1] . "_report", $context_metrics) )
+            $context_metrics[] = $out[1] . "_report";
+        }
       }
     }
 

@@ -185,8 +185,10 @@ if ($handle = opendir($conf['gweb_root'] . '/graph.d')) {
 
     while (false !== ($file = readdir($handle))) {
       if ( preg_match("/(.*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
-        if ( ! in_array($out[1] . "_report", $available_reports) )
-          $available_reports[] = $out[1] . "_report";
+        if ( ! preg_match("/((cluster|host)_.*)(_report)/", $file) ) {
+          if ( ! in_array($out[1] . "_report", $available_reports) )
+            $available_reports[] = $out[1] . "_report";
+        }
       }
     }
 
