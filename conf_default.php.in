@@ -189,6 +189,12 @@ $conf['strip_domainname'] = false;
 $conf['cluster_hide_down_hosts'] = false;
 
 #
+# hide special metrics from drop-down list in cluster view,
+# all metrics matching the regular expression are hidden
+#
+$conf['cluster_hide_metrics_from_menu'] = '^(cluster|host)_.*_report';
+
+#
 # Optional summary graphs
 # This function is deprecated. Please configure included reports
 # in the UI or default.json. Please do not use 
