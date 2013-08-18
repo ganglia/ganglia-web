@@ -43,8 +43,14 @@ $data->assign("additional_host_img_css_classes",
 
 $view_items = NULL;
 $view = $viewList->getView($view_name);
-if ($view != NULL)
+if ($view != NULL) {
+  $range = isset($_GET["r"]) ? escapeshellcmd(rawurldecode($_GET["r"])) : NULL;
+  $cs = isset($_GET["cs"]) ? escapeshellcmd($_GET["cs"]) : NULL;
+  $ce = isset($_GET["ce"]) ? escapeshellcmd($_GET["ce"]) : NULL;
+  if ($cs or $ce)
+    $range = "custom";
   $view_items = getViewItems($view, $range, $cs, $ce);
+}
 
 if (isset($view_items)) {
   $data->assign("view_items", $view_items);
