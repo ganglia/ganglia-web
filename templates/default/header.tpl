@@ -75,6 +75,16 @@
     }
 
     $(function() {
+      var range_menu = $("#range_menu");
+      if (range_menu[0])
+        range_menu.buttonset();
+      var custom_range_menu = $("#custom_range_menu");
+      if (custom_range_menu[0])
+        custom_range_menu.buttonset();
+      var sort_menu = $("#sort_menu");
+      if (sort_menu[0])
+        sort_menu.buttonset();
+
       g_overlay_events = ($("#overlay_events").val() == "true");
 
       g_tabIndex = new Object();
