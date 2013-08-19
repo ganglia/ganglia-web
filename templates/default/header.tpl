@@ -78,9 +78,11 @@
       var range_menu = $("#range_menu");
       if (range_menu[0])
         range_menu.buttonset();
+
       var custom_range_menu = $("#custom_range_menu");
       if (custom_range_menu[0])
         custom_range_menu.buttonset();
+
       var sort_menu = $("#sort_menu");
       if (sort_menu[0])
         sort_menu.buttonset();
@@ -278,7 +280,7 @@
 <div id="tabs-main">
 <form action="{$page}" method="GET" name="ganglia_form">
   <div style="background-color:#dddddd;padding:5px;">
-     <big style="float:left;"><b id="page_title">{$page_title} for {$date}</b></big><input style="float:right;" class="header_btn" type="submit" value="Get Fresh Data"/><div style="clear:both"></div>
+     <big style="float:left;"><b id="page_title">{$page_title} at {$date}</b></big><input style="float:right;" class="header_btn" type="submit" value="Get Fresh Data"/><div style="clear:both"></div>
   </div>
   <div style="padding:5px 5px 0 5px;">
     <div style="float:left;" id="range_menu" class="nobr">{$range_menu}</div>
