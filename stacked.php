@@ -138,7 +138,7 @@ if (isset($_GET['debug']))
 else
     {
     header ("Content-type: image/png");
-    passthru($command);
+    my_passthru($command);
     }
 
 function HSV_TO_RGB ($H, $S, $V){
