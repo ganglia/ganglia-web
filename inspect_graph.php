@@ -107,8 +107,8 @@ $(function () {
   selectSeries.multiselect({
     height: "auto",
     position : {
-      my: "left top",
-      at: "left bottom"
+      my: "left bottom",
+      at: "left top"
     },
     checkAll: function(event, ui) {
       plotAccordingToChoices();
@@ -120,6 +120,7 @@ $(function () {
       plotAccordingToChoices();
     }
     }).multiselectfilter();
+  $(".ui-multiselect-menu").draggable();
 
   var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"/><label style="font-size:0.825em;" for="line">Line</label><input type="radio" id="stack" name="gopt"/><label style="font-size:0.825em" for="stack">Stack</label></span>';
   html += '<input id="resetzoom" type="button" style="font-size:0.825em;" value="Reset zoom"/>';
@@ -387,7 +388,7 @@ $(function () {
 	showTooltip(item.pageX, 
 		    item.pageY,
 		    item.series.label + " at " + 
-		    utcTimeStr(item.datapoint[0]) + 
+		    (new Date(item.datapoint[0])).toLocaleString() + 
 		    " = " + y);
       }
     } else {
