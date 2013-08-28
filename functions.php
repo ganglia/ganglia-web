@@ -1384,4 +1384,18 @@ function heuristic_urldecode($blob) {
   }
   return $blob;
 }
+
+// alternative passthru() implementation to avoid incomplete images shown in
+// browsers.
+function my_passthru($command) {
+  $tf = tempnam('/tmp', 'ganglia-graph.');
+  $ret = exec("$command > $tf");
+  $size = filesize($tf);
+  header("Content-Length: $size");
+  $fp = fopen($tf, 'rb');
+  fpassthru($fp);
+  fclose($fp);
+  unlink($tf);
+}
+
 ?>

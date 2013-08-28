@@ -1219,11 +1219,11 @@ function execute_graph_command($graph_engine, $command) {
     case "flot":
     case "rrdtool":
       if (strlen($command) < 100000) {
-	passthru($command);
+	my_passthru($command);
       } else {
 	$tf = tempnam("/tmp", "ganglia-graph");
 	file_put_contents($tf, $command);
-	passthru("/bin/bash $tf");
+	my_passthru("/bin/bash $tf");
 	unlink($tf);
       }
     break;
