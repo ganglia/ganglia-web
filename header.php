@@ -401,7 +401,9 @@ $data->assign("node_menu", $node_menu);
 if (count($metrics)) {
   foreach ($metrics as $firsthost => $bar) {
       foreach ($metrics[$firsthost] as $m => $foo)
-        $context_metrics[$m] = $m;
+        if ( ! preg_match("/" . $conf['cluster_hide_metrics_from_menu'] . "/", $m) ) {
+          $context_metrics[$m] = $m;
+	}
   }
   foreach ($reports as $r => $foo)
     $context_metrics[] = $r;
@@ -430,8 +432,10 @@ if (is_array($context_metrics) and $context == "cluster") {
 
     while (false !== ($file = readdir($handle))) {
       if ( preg_match("/(.*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
-        if ( ! in_array($out[1] . "_report", $context_metrics) )
-          $context_metrics[] = $out[1] . "_report";
+        if ( ! preg_match("/" . $conf['cluster_hide_metrics_from_menu'] . "/", $file) ) {
+          if ( ! in_array($out[1] . "_report", $context_metrics) )
+            $context_metrics[] = $out[1] . "_report";
+        }
       }
     }
 
