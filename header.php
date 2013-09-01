@@ -61,25 +61,32 @@ function make_metric_cols_menu() {
 function make_sort_menu($context, $sort) {
   $sort_menu = "";
   if ($context == "meta" or $context == "cluster") {
-    $context_sorts[] = "ascending";
-    $context_sorts[] = "descending";
-    $context_sorts[] = "by name";
+    $context_sorts[] = array("ascending",
+			     "Sort hosts by ascending metric value");
+    $context_sorts[] = array("descending",
+			     "Sort hosts by descending metric value");
+    $context_sorts[] = array("by name",
+			     "Sort hosts by name");
 
     // Show sort order options for meta context only:
 
     if ($context == "meta" ) {
-      $context_sorts[] = "by hosts up";
-      $context_sorts[] = "by hosts down";
+      $context_sorts[] = array("by hosts up",
+			       "Display hosts in UP state first");
+      $context_sorts[] = array("by hosts down",
+			       "Display hosts in DOWN state first");
     }
 
     $sort_menu = "Sorted&nbsp;&nbsp;";
     foreach ($context_sorts as $v) {
-      $url = rawurlencode($v);
-      if ($v == $sort)
+      $label = $v[0];
+      $title = $v[1];
+      $url = rawurlencode($label);
+      if ($label == $sort)
 	$checked = "checked=\"checked\"";
       else
 	$checked = "";
-      $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" .str_replace(" ", "_", $v) . "\" name=\"s\" value=\"$v\" $checked/><label for=\"radio-" . str_replace(" ", "_", $v) . "\">$v</label>";
+      $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" . str_replace(" ", "_", $label) . "\" name=\"s\" value=\"$label\" $checked/><label title=\"$title\" for=\"radio-" . str_replace(" ", "_", $label) . "\">$label</label>";
     }
   }
   return $sort_menu;

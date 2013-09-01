@@ -98,9 +98,12 @@
          "data" : {$existing_views}
       },
       'core': { animation: 0 },
-      'plugins': ['themes', 'json_data', 'ui', 'cookies', 'crrm'],
+      'plugins': ['themes', 'json_data', 'ui', 'cookies', 'crrm', 'sort'],
       themes: { 
-        theme: 'default', dots: false, icons: false}})
+        theme: 'default', dots: false, icons: false},
+      ui : {
+        select_limit: 1, selected_parent_close: false}
+    })
     .bind("select_node.jstree", 
           function (event, data) {
             selectView(data.rslt.obj.attr("view_name"));

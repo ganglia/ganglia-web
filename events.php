@@ -58,13 +58,11 @@ $(function(){
     $( "#event-start-date" ).datetimepicker({showOn: "button",
                                            constrainInput: false,
                                            buttonImage: "img/calendar.gif", 
-                                           buttonImageOnly: true,
-                                           hideNowButton: true});
+                                           buttonImageOnly: true});
   $( "#event-end-date" ).datetimepicker({showOn: "button",
                                          constrainInput: false,
                                          buttonImage: "img/calendar.gif",
-                                         buttonImageOnly: true,
-                                         hideNowButton: true});
+                                         buttonImageOnly: true});
   $('#add-event-button').button();
 
 <?php if ($conf['display_events_using_calendar']) { ?>
@@ -131,7 +129,7 @@ function eventActions(action) {
 	    "\nPlease specify date-time using the format: mm/dd/yyyy hh:mm");
       return false;
     }
-    queryString += "&start_time=" + startDate;
+    queryString += "&start_time=@" + parseDateTime(startDate).getTime()/1000
   }
 
   if (endDate != "") {
@@ -140,7 +138,7 @@ function eventActions(action) {
 	    "\nPlease specify date-time using the format: mm/dd/yyyy hh:mm");
       return false;
     }
-    queryString += "&end_time=" + endDate;
+    queryString += "&end_time=@" + parseDateTime(endDate).getTime()/1000
   }
 
   if (startDate != "" && endDate != "") {
