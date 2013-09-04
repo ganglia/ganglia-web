@@ -15,16 +15,19 @@ $context = "cluster";
 include_once $conf['gweb_root'] . "/functions.php";
 include_once $conf['gweb_root'] . "/ganglia.php";
 include_once $conf['gweb_root'] . "/get_ganglia.php";
-# Put the serialized metrics into a file
-file_put_contents($conf['nagios_cache_file'], serialize($metrics));
 
-foreach ( $metrics as $mhost => $host_metrics ) {
+foreach ( $metrics as $host => $host_metrics ) {
     foreach ( $host_metrics as $name => $attributes ) {
-        $new_metrics[$mhost][$name]['VAL'] = $metrics[$mhost][$name]['VAL'];
-        if ( isset($metrics[$mhost][$name]['UNITS']) ) 
-        $new_metrics[$mhost][$name]['UNITS'] = $metrics[$mhost][$name]['UNITS'];
+        $new_metrics[$host][$name]['VAL'] = $metrics[$host][$name]['VAL'];
+        if ( isset($metrics[$host][$name]['UNITS']) ) 
+        $new_metrics[$host][$name]['UNITS'] = $metrics[$host][$name]['UNITS'];
     }
+    
+    # Put host metrics in their own files as well
+    file_put_contents($conf['nagios_cache_file'] . "_" . $host, serialize($new_metrics[$host]));
+    
 }
+
 
 $temp_file = $conf['nagios_cache_file'] . ".temp";
 file_put_contents($temp_file, serialize($new_metrics));
