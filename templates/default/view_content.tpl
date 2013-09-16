@@ -16,9 +16,7 @@
       <div class="img_view">
         <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;csv=1';return false;">CSV</button>
         <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$view_item.url_args}&amp;json=1';return false;">JSON</button>
-        {if $view_item.aggregate_graph == 1}
-        <button title="Decompose aggregate graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&amp;dg=1&amp;tab=v';return false;">Decompose</button>
-        {/if}
+        <button title="Decompose graph" class="shiny-blue" onClick="javascript:location.href='?{$view_item.url_args}&amp;dg=1&amp;tab=v';return false;">Decompose</button>
         <button title="Inspect Graph" onClick="inspectGraph('{$view_item.url_args}'); return false;" class="shiny-blue">Inspect</button>
         <input type="checkbox" id="{$showEventsId}" onclick="showEvents('{$graphId}', this.checked)"/><label title="Hide/Show Events" class="show_event_text" for="{$showEventsId}">Hide/Show Events</label>
         <br />

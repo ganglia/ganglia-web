@@ -77,7 +77,7 @@ if (isset($_GET['h']) && ($_GET['h'] != ''))
   $description = htmlspecialchars($_GET['h']);
 else if (isset($_GET['c']) && ($_GET['c'] != ''))
   $description = htmlspecialchars($_GET['c']);
-else if (is_array($_GET['hreg']))
+else if (isset($_GET['hreg']) && is_array($_GET['hreg']))
   $description = htmlspecialchars( join(",", $_GET['hreg']) );
 else
   $description = "Unknown";
@@ -86,7 +86,7 @@ if (isset($_GET['g']))
   $metric_description = htmlspecialchars($_GET['g']);
 else if ( isset($_GET['m'] ))
   $metric_description = htmlspecialchars($_GET['m']);
-else if (is_array($_GET['mreg']) )
+else if (isset($_GET['mreg']) && is_array($_GET['mreg']) )
   $metric_description = htmlspecialchars( join(",", $_GET['mreg']) );
 else
   $metric_description = "Unknown";

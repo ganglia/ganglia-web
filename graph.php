@@ -43,6 +43,7 @@ function graphdef_add_series($graphdef,
 			     $conf_graphreport_stats,
 			     $conf_graphreport_stat_items) {
   static $line_widths = array("1", "2", "3");
+  
   $label = str_pad(sanitize($series['label']), $max_label_length);
   switch ($series_type) {
   case "line":
@@ -108,7 +109,7 @@ function graphdef_add_series($graphdef,
     }
     $graphdef .= legendEntry($id, $conf_graphreport_stat_items);
   }
-
+  
   return array($graphdef, $stack_counter);
 }
 
@@ -122,6 +123,7 @@ function rrdtool_graph_merge_args_from_json($rrdtool_graph,
 					    $conf_rrds,
 					    $conf_graphreport_stats,
 					    $conf_graphreport_stat_items) {
+					    
   $title = sanitize($graph_config['title']);
   $rrdtool_graph['title'] = $title; 
   // If vertical label is empty or non-existent set it to space otherwise 
@@ -189,7 +191,7 @@ function rrdtool_graph_merge_args_from_json($rrdtool_graph,
 
       // By default graph is a line graph
       $series_type = isset($series['type']) ? $series['type'] : "line";
-
+      
       list($graphdef, $stack_counter) =
 	graphdef_add_series($graphdef, 
 			    $series,
@@ -201,7 +203,7 @@ function rrdtool_graph_merge_args_from_json($rrdtool_graph,
 			    $max_label_length,
 			    $conf_graphreport_stats,
 			    $conf_graphreport_stat_items);
-    }
+    } // end of if (is_file($metric_file))
   }
 
   $show_total = isset($graph_config['show_total']) && 
@@ -225,11 +227,11 @@ function rrdtool_graph_merge_args_from_json($rrdtool_graph,
   // empty graph
   if ($seriesdef == "") {
     $rrdtool_graph['series'] = 
-      'HRULE:1#FFCC33:"No matching metrics detected"';   
+      'HRULE:1#FFCC33:"No matching metrics detected or RRDs not readable"';   
   } else {
     $rrdtool_graph['series'] = $seriesdef . ' ' . $cdef . ' ' . $graphdef;
   }
-
+  
   return $rrdtool_graph;
 }
 
@@ -315,6 +317,12 @@ function build_aggregate_graph_config_from_url($conf_graph_colors) {
   return $graph_config;
 }
 
+###############################################################################
+# This builds rrdtool config for composite graphs that are defined directly
+# in a view. It requires a view name and item id in order to be able
+# to find the graph configuration. item_id needs to be unique otherwise
+# only first definition will be used
+###############################################################################
 function rrdtool_graph_build_view_graph($rrdtool_graph,
 					$view_name,
 					$item_id,
@@ -334,7 +342,6 @@ function rrdtool_graph_build_view_graph($rrdtool_graph,
     if ($item_id == $view_item['item_id'])
       break;
   }
-
   $rrdtool_graph = 
     rrdtool_graph_merge_args_from_json($rrdtool_graph,
 				       $view_item,
@@ -343,7 +350,7 @@ function rrdtool_graph_build_view_graph($rrdtool_graph,
 				       $conf_rrds,
 				       $conf_graphreport_stats,
 				       $conf_graphreport_stat_items);
-  return $rrdtool_graph;
+  return array( $rrdtool_graph, $view_item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -818,6 +825,10 @@ function process_graph_arguments($graph) {
   return array($graph_report, $graph_arguments);
 }
 
+
+##############################################################################
+# Build rrdtool command line
+##############################################################################
 function rrdgraph_cmd_build($rrdtool_graph,
 			    $vlabel,
 			    $conf,
@@ -1013,6 +1024,10 @@ function rrdgraph_cmd_build($rrdtool_graph,
   return array($command, $rrdtool_graph);
 }
 
+
+#############################################################################
+# Output data in external non-image formats e.g. CSV, JSON etc.
+#############################################################################
 function output_data_to_external_format($rrdtool_graph_series,
 					$rrdtool_graph_start,
 					$rrdtool_graph_end,
@@ -1506,16 +1521,20 @@ if (isset($_GET["aggregate"]) && $_GET['aggregate'] == 1) {
 ///////////////////////////////////////////////////////////////////////////
 $user['view_name'] = isset($_GET["vn"]) ? sanitize ($_GET["vn"]) : NULL;
 $user['item_id'] = isset($_GET["item_id"]) ? sanitize ($_GET["item_id"]) : NULL;
-if ($user['view_name'] && $user['item_id'])
-  $rrdtool_graph = 
+if ($user['view_name'] && $user['item_id']) {
+  list ($rrdtool_graph, $graph_config) = 
     rrdtool_graph_build_view_graph($rrdtool_graph,
 				   $user['view_name'],
 				   $user['item_id'],
+				   $context,
 				   $size,
-				   $conf_rrds,
+				   $conf['rrds'],
 				   $conf_graphreport_stats,
 				   $conf_graphreport_stat_items);
-
+  # Reset title
+  $title ="";			   
+}
+				   
 //////////////////////////////////////////////////////////////////////////////
 // Build graph execution command based graph engine
 //////////////////////////////////////////////////////////////////////////////
@@ -1538,7 +1557,7 @@ switch ($conf['graph_engine']) {
       }
     }
 
-  list($command,
+    list($command,
        $rrdtool_graph) = rrdgraph_cmd_build($rrdtool_graph,
 					    $vlabel,
 					    $conf,
