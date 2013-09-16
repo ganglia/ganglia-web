@@ -5,6 +5,113 @@ include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
 
+function add_total_to_cdef($cdef, 
+			   $total_ids, 
+			   $graph_config_scale) {
+  // Percentage calculation for cdefs, if required
+  $total = " CDEF:'total'=";
+  if (count($total_ids) == 0) {
+    // Handle nothing gracefully, do nothing
+  } else if (count($total_ids) == 1) {
+    // Concat just that id, leave it at that (100%)
+    $total .= $total_ids[0];
+    if (isset($graph_config_scale))
+      $total .= ",${graph_config_scale},*";
+    $cdef = $total . ' ' . $cdef;
+  } else {
+    $total .= $total_ids[0];
+    for ($i = 1; $i < count($total_ids); $i++)
+      $total .= ',' . $total_ids[$i] . ',ADDNAN';
+    
+    if (isset($graph_config['scale']))
+      $total .= ",${graph_config_scale},*";
+    
+    // Prepend total calculation
+    $cdef = $total . ', ' . $cdef;
+  }
+  return $cdef;
+}
+
+function graphdef_add_series($graphdef, 
+			     $series,
+			     $series_type,
+			     $graph_config_percent,
+			     $graph_config_scale,
+			     $stack_counter,
+			     $series_id,
+			     $max_label_length,
+			     $conf_graphreport_stats,
+			     $conf_graphreport_stat_items) {
+  static $line_widths = array("1", "2", "3");
+  $label = str_pad(sanitize($series['label']), $max_label_length);
+  switch ($series_type) {
+  case "line":
+    // Make sure it's a recognized line type
+    $line_width = isset($series['line_width']) && 
+      in_array($series['line_width'], $line_widths) ? 
+      $series['line_width'] : '1';
+    $graphdef .= "LINE" . $line_width;
+    $graphdef .= ":'";
+    if (isset($graph_config_percent) && 
+	$graph_config_percent == '1') {
+      $graphdef .= "p";
+    } else if (isset($graph_config_scale)) {
+      $graphdef .= "s";
+    }
+    $graphdef .= "${series_id}'#${series['color']}:'${label}' ";
+    break;
+    
+  case "stack":
+  case "percent":
+    // First element in a stack has to be AREA
+    if ($stack_counter == 0) {
+      $graphdef .= "AREA";
+      $stack_counter++;
+    } else {
+      $graphdef .= "STACK";
+    }
+    $graphdef .= ":'";
+    if (isset($graph_config_percent) && 
+	$graph_config_percent == '1') {
+      $graphdef .= "p";
+    } else if (isset($graph_config_scale)) {
+      $graphdef .= "s";
+    }
+    $graphdef .= "${series_id}'#${series['color']}:'${label}' ";
+    break;
+  
+    // Percentile lines
+  case "percentile":
+    $percentile = isset($series['percentile']) ? 
+      floatval($series['percentile']): 95;
+    $graphdef .= "VDEF:t${series_id}=${series_id},${percentile},PERCENT ";
+    $line_width = isset($series['line_width']) && 
+      in_array($series['line_width'], $line_widths) ? 
+      $series['line_width'] : '1';
+    $graphdef .= "LINE" . $line_width . 
+      ":'t$series_id'#{$series['color']}:'{$label}':dashes ";
+    break;
+    
+  case "area":
+    $graphdef .= "AREA";
+    $graphdef .= ":'$series_id'#${series['color']}:'${label}' ";
+    break;
+  }
+
+  if ($conf_graphreport_stats) {
+    $id = $series_id;
+    if (isset($graph_config_percent) && 
+	$graph_config_percent == '1') {
+      $id = 'p' . $id;
+    } else if (isset($graph_config_scale)) {
+      $id = 's' . $id;
+    }
+    $graphdef .= legendEntry($id, $conf_graphreport_stat_items);
+  }
+
+  return array($graphdef, $stack_counter);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Populate $rrdtool_graph from $config (from JSON file).
 ///////////////////////////////////////////////////////////////////////////////
@@ -39,48 +146,39 @@ function rrdtool_graph_merge_args_from_json($rrdtool_graph,
   // find longest label length, so we pad the others accordingly to get 
   // consistent column alignment
   $max_label_length = 0;
-  foreach($graph_config['series'] as $item)
-    $max_label_length = max(strlen($item['label']), $max_label_length);
+  foreach($graph_config['series'] as $series)
+    $max_label_length = max(strlen($series['label']), $max_label_length);
   
-  $series = '';
+  $seriesdef = '';
   $cdef = '';
   $graphdef = '';
-  
   $stack_counter = 0;
-
-  // Available line types
-  $line_widths = array("1", "2", "3");
-
   $total_ids = array();
 
-  // Loop through all the graph items
-  foreach ($graph_config['series'] as $index => $item) {
-    // ignore item if context is not defined in json template
-    if (isset($item['contexts']) and 
-	!in_array($context, $item['contexts']))
+  // Loop through all the graph series
+  foreach ($graph_config['series'] as $series_id => $series) {
+    // ignore series if context is not defined in json template
+    if (isset($series['contexts']) and 
+	!in_array($context, $series['contexts']))
       continue;
 
     $rrd_dir = $conf_rrds . "/" . 
-      $item['clustername'] . "/" . 
-      $item['hostname'];
+      $series['clustername'] . "/" . 
+      $series['hostname'];
     
-    $metric = sanitize($item['metric']);
-    
+    $metric = sanitize($series['metric']);
     $metric_file = $rrd_dir . "/" . $metric . ".rrd";
     
     // Make sure metric file exists. Otherwise we'll get a broken graph
     if (is_file($metric_file)) {
       // Need this when defining graphs that may use same metric names
-      $unique_id = "a" . $index;
+      $unique_id = "a" . $series_id;
       $total_ids[] = $unique_id;
         
-      // Pad the label with spaces 
-      $label = str_pad(sanitize($item['label']), $max_label_length);
-
       // use custom DS defined in json template if it's 
       // defined (default = 'sum')
-      $DS = isset($item['ds']) ? sanitize($item['ds']) : 'sum';
-      $series .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
+      $DS = isset($series['ds']) ? sanitize($series['ds']) : 'sum';
+      $seriesdef .= " DEF:'$unique_id'='$metric_file':'$DS':AVERAGE ";
 
       if (isset($graph_config['scale']))
 	$cdef .= 
@@ -90,118 +188,52 @@ function rrdtool_graph_merge_args_from_json($rrdtool_graph,
 	$cdef .= " CDEF:'p${unique_id}'=${unique_id},total,/,100,* ";
 
       // By default graph is a line graph
-      $item_type = isset($item['type']) ? $item['type'] : "line";
+      $series_type = isset($series['type']) ? $series['type'] : "line";
 
-      // TODO sanitize color
-      switch ($item_type) {
-      case "line":
-	// Make sure it's a recognized line type
-	$line_width = isset($item['line_width']) && 
-	  in_array($item['line_width'], $line_widths) ? 
-	  $item['line_width'] : '1';
-	$graphdef .= "LINE" . $line_width;
-	$graphdef .= ":'";
-	if (isset($graph_config['percent']) && 
-	    $graph_config['percent'] == '1') {
-	  $graphdef .= "p";
-	} else if (isset($graph_config['scale'])) {
-	  $graphdef .= "s";
-	}
-	$graphdef .= "${unique_id}'#${item['color']}:'${label}' ";
-	break;
-       
-      case "stack":
-      case "percent":
-	// First element in a stack has to be AREA
-	if ( $stack_counter == 0 ) {
-	  $graphdef .= "AREA";
-	  $stack_counter++;
-	} else {
-	  $graphdef .= "STACK";
-	}
-        $graphdef .= ":'";
-        if (isset($graph_config['percent']) && 
-	    $graph_config['percent'] == '1') {
-	  $graphdef .= "p";
-	} else if (isset($graph_config['scale'])) {
-	  $graphdef .= "s";
-	}
-	$graphdef .= "${unique_id}'#${item['color']}:'${label}' ";
-	break;
-      
-      // Percentile lines
-      case "percentile":
-	$percentile = isset($item['percentile']) ? 
-	  floatval($item['percentile']): 95;
-	$graphdef .= "VDEF:t${unique_id}=${unique_id},${percentile},PERCENT ";
-	$line_width = isset($item['line_width']) && 
-	  in_array($item['line_width'], $line_widths) ? 
-	  $item['line_width'] : '1';
-	$graphdef .= "LINE" . $line_width . ":'t$unique_id'#{$item['color']}:'{$label}':dashes ";
-	break;
-
-      case "area":
-	$graphdef .= "AREA";
-	$graphdef .= ":'$unique_id'#${item['color']}:'${label}' ";
-	break;
-      } // end of switch ( $item_type )
-     
-      if ($conf_graphreport_stats) {
-	$id = $unique_id;
-	if (isset($graph_config['percent']) && 
-	    $graph_config['percent'] == '1') {
-	  $id = 'p' . $id;
-	} else if (isset($graph_config['scale'])) {
-	  $id = 's' . $id;
-	}
-	$graphdef .= legendEntry($id, $conf_graphreport_stat_items);
-      }
-    } // end of if ( is_file($metric_file) ) {
-  } // end of foreach( $graph_config[ 'series' ] as $index => $item )
-
-  // Percentage calculation for cdefs, if required
-  $total = " CDEF:'total'=";
-  if (count($total_ids) == 0) {
-    // Handle nothing gracefully, do nothing
-  } else if (count($total_ids) == 1) {
-    // Concat just that id, leave it at that (100%)
-    $total .= $total_ids[0];
-    if (isset($graph_config['scale']))
-      $total .= ",${graph_config['scale']},*";
-    $cdef = $total . ' ' . $cdef;
-  } else {
-    $total .= $total_ids[0];
-    for ($i = 1; $i < count($total_ids); $i++)
-      $total .= ',' . $total_ids[$i] . ',ADDNAN';
-
-    if (isset($graph_config['scale']))
-      $total .= ",${graph_config['scale']},*";
-
-    // Prepend total calculation
-    $cdef = $total . ', ' . $cdef;
+      list($graphdef, $stack_counter) =
+	graphdef_add_series($graphdef, 
+			    $series,
+			    $series_type,
+			    $graph_config['percent'],
+			    $graph_config['scale'],
+			    $stack_counter,
+			    $unique_id,
+			    $max_label_length,
+			    $conf_graphreport_stats,
+			    $conf_graphreport_stat_items);
+    }
   }
 
-  if (isset($graph_config['show_total']) && 
-      $graph_config['show_total'] == 1 ) {
-    $cdef .= " LINE1:'total'#000000:'Total' " . 
-      legendEntry('total', $conf_graphreport_stat_items);
+  $show_total = isset($graph_config['show_total']) && 
+    ($graph_config['show_total'] == 1);
+  if ($show_total ||
+      (isset($graph_config['percent']) && 
+       $graph_config['percent'] == '1')) {
+    $cdef = add_total_to_cdef($cdef,
+			      $total_ids,
+			      $graph_config['scale']);
+    if ($show_total) {
+      $cdef .= " LINE1:'total'#000000:'Total' ";
+      if ($conf_graphreport_stats)
+	$cdef .= legendEntry('total', $conf_graphreport_stat_items);
+    }
   }
 
   // If we end up with the empty series it means that no RRD files matched. 
   // This can happen if we are trying to create a report and metrics for 
   // this host were not collected. If that happens we should create an 
   // empty graph
-  if ($series == "") {
+  if ($seriesdef == "") {
     $rrdtool_graph['series'] = 
       'HRULE:1#FFCC33:"No matching metrics detected"';   
   } else {
-    $rrdtool_graph['series'] = $series . ' ' . $cdef . ' ' . $graphdef;
+    $rrdtool_graph['series'] = $seriesdef . ' ' . $cdef . ' ' . $graphdef;
   }
 
   return $rrdtool_graph;
 }
 
-function build_aggregate_graph_cfg($conf) {
+function build_aggregate_graph_config_from_url($conf_graph_colors) {
   // If graph type is not specified default to line graph
   $graph_type = isset($_GET["gtype"]) && 
     in_array($_GET["gtype"], array("stack", "line", "percent")) ?
@@ -223,7 +255,7 @@ function build_aggregate_graph_cfg($conf) {
   /////////////////////////////////////////////////////////////////////////////
   if (isset($_GET['hl'])) {
     $counter = 0;
-    $color_count = sizeof($conf['graph_colors']);
+    $color_count = sizeof($conf_graph_colors);
     $metric_name = str_replace("$", 
 			       "", 
 			       str_replace("^", 
@@ -240,7 +272,7 @@ function build_aggregate_graph_cfg($conf) {
                       "clustername" => $clustername,
                       "fill" => "true", 
                       "metric" => $metric_name,  
-                      "color" => $conf['graph_colors'][$color_index], 
+                      "color" => $conf_graph_colors[$color_index], 
                       "label" => $hostname, 
                       "type" => $graph_type);
 
@@ -288,7 +320,9 @@ function rrdtool_graph_build_view_graph($rrdtool_graph,
 					$item_id,
 					$context,
 					$size,
-					$conf) {
+					$conf_rrds,
+					$conf_graphreport_stats,
+					$conf_graphreport_stat_items) {
   $available_views = get_available_views();
   foreach ($available_views as $view) {
     // Find view settings
@@ -306,9 +340,9 @@ function rrdtool_graph_build_view_graph($rrdtool_graph,
 				       $view_item,
 				       $context,
 				       $size,
-				       $conf['rrds'],
-				       $conf['graphreport_stats'],
-				       $conf['graphreport_stat_items']);
+				       $conf_rrds,
+				       $conf_graphreport_stats,
+				       $conf_graphreport_stat_items);
   return $rrdtool_graph;
 }
 
@@ -790,7 +824,10 @@ function rrdgraph_cmd_build($rrdtool_graph,
 			    $graph_config,
 			    $max,
 			    $min,
-			    $user,
+			    $user_trend_range,
+			    $user_trend_history,
+			    $user_trend_line,
+			    $user_clustername,
 			    $rrd_options,
 			    $range,
 			    $title,
@@ -832,14 +869,14 @@ function rrdgraph_cmd_build($rrdtool_graph,
 	  json_decode(file_get_contents($json_report_file), TRUE );
 	
 	// We need to add hostname and clustername if it's not specified
-	foreach ($graph_config['series'] as $index => $item) {
+	foreach (array_keys($graph_config['series']) as $series_id) {
 	  if (! isset($graph_config['series'][$index]['hostname'])) {
-	    $graph_config['series'][$index]['hostname'] = $raw_host;
+	    $graph_config['series'][$series_id]['hostname'] = $raw_host;
 	    if (isset($grid))
-	      $graph_config['series'][$index]['clustername'] = $grid;
+	      $graph_config['series'][$series_id]['clustername'] = $grid;
 	    else
-	      $graph_config['series'][$index]['clustername'] = 
-		$user['clustername'];
+	      $graph_config['series'][$series_id]['clustername'] = 
+		$user_clustername;
 	  }
 	}
 
@@ -866,7 +903,7 @@ function rrdgraph_cmd_build($rrdtool_graph,
   
   // We must have a 'series' value, or this is all for naught
   if (!array_key_exists('series', $rrdtool_graph) || 
-      !strlen($rrdtool_graph['series']) ) {
+      !strlen($rrdtool_graph['series'])) {
     $rrdtool_graph['series'] = 
       'HRULE:1#FFCC33:"Empty RRDtool command. Likely bad graph config"';
   }
@@ -880,7 +917,7 @@ function rrdgraph_cmd_build($rrdtool_graph,
 
   // add slope-mode if rrdtool_slope_mode is set
   if (isset($conf['rrdtool_slope_mode']) && 
-      $conf['rrdtool_slope_mode'] == True)
+      $conf['rrdtool_slope_mode'] == TRUE)
     $rrdtool_graph['slope-mode'] = '';
   
   if (isset($rrdtool_graph['title']) && isset($title)) {
@@ -893,14 +930,14 @@ function rrdgraph_cmd_build($rrdtool_graph,
   $command = $conf['rrdtool'] . " graph - $rrd_options ";
 
   // Look ahead six months
-  if ($user['trend_line']) {
+  if ($user_trend_line) {
     // We may only want to use last x months of data since for example
     // if we are trending disk we may have added a disk recently which will
     // skew a trend line. By default we'll use 6 months however we'll let
     // user define this if they want to.
-    $rrdtool_graph['start'] = "-" . $user['trend_history'] * 2592000 . "s";
+    $rrdtool_graph['start'] = "-" . $user_trend_history * 2592000 . "s";
     // Project the trend line this many months ahead
-    $rrdtool_graph['end'] = "+" . $user["trend_range"] * 2592000 . "s";
+    $rrdtool_graph['end'] = "+" . $user_trend_range * 2592000 . "s";
   }
 
   if ($max)
@@ -1035,13 +1072,15 @@ function output_data_to_external_format($rrdtool_graph_series,
   $command = $rrdtool . 
     " xport --start '" . $rrdtool_graph_start . 
     "' --end '" .  $rrdtool_graph_end . "' " 
-    // Allow a custom step, if it was specified by the user. 
-    // Also, we need to specify a --maxrows in case the number 
-    // of rows with $step end up being higher than 
-    // rrdxport's default (in which case the step is changed 
-    // to fit inside the default --maxrows), but we also need 
-    // to guard against "underflow" because rrdxport craps out 
-    //when --maxrows is less than 10.
+    /*
+      Allow a custom step, if it was specified by the user. 
+      Also, we need to specify a --maxrows in case the number 
+      of rows with $step end up being higher than 
+      rrdxport's default (in which case the step is changed 
+      to fit inside the default --maxrows), but we also need 
+      to guard against "underflow" because rrdxport craps out 
+      when --maxrows is less than 10.
+    */
     . ($step ? 
        " --step '" . $step . "' --maxrows '" 
        . max(10, round(($rrdtool_graph_end - 
@@ -1059,7 +1098,7 @@ function output_data_to_external_format($rrdtool_graph_series,
   } else {
     $tempfile = tempnam("/tmp", "ganglia-graph-json");
     file_put_contents($tempfile, $command);
-    $tempstring = exec("/bin/bash $tempfile", $tempout);
+    exec("/bin/bash $tempfile", $tempout);
     foreach ($tempout as $line) {
       $string .= $line;
     }
@@ -1261,7 +1300,8 @@ $min = isset($_GET["n"]) && is_numeric($_GET["n"]) ? $_GET["n"] : NULL;
 
 $summary = isset($_GET["su"]) ? 1 : 0;
 $debug = isset($_GET['debug']) ? clean_number(sanitize($_GET["debug"])) : 0;
-$user['time_shift'] = isset($_GET["ts"]) ? clean_number(sanitize($_GET["ts"])) : 0;
+$user['time_shift'] = isset($_GET["ts"]) ? 
+  clean_number(sanitize($_GET["ts"])) : 0;
 
 $user['json_output'] = isset($_GET["json"]) ? 1 : NULL;
 // Request for live dashboard
@@ -1455,7 +1495,7 @@ if (isset($_GET["aggregate"]) && $_GET['aggregate'] == 1) {
   // Set start time, assume that start is negative number of seconds
   $start = time() + $start;
 
-  $graph_config = build_aggregate_graph_cfg($conf);
+  $graph_config = build_aggregate_graph_config_from_url($conf['graph_colors']);
 
   // Reset graph title 
   $title = (isset($_GET['title']) && $_GET['title'] != "") ? "" : "Aggregate";
@@ -1467,11 +1507,14 @@ if (isset($_GET["aggregate"]) && $_GET['aggregate'] == 1) {
 $user['view_name'] = isset($_GET["vn"]) ? sanitize ($_GET["vn"]) : NULL;
 $user['item_id'] = isset($_GET["item_id"]) ? sanitize ($_GET["item_id"]) : NULL;
 if ($user['view_name'] && $user['item_id'])
-  $rrdtool_graph = rrdtool_graph_build_view_graph($rrdtool_graph,
-						  $user['view_name'],
-						  $user['item_id'],
-						  $size,
-						  $conf);
+  $rrdtool_graph = 
+    rrdtool_graph_build_view_graph($rrdtool_graph,
+				   $user['view_name'],
+				   $user['item_id'],
+				   $size,
+				   $conf_rrds,
+				   $conf_graphreport_stats,
+				   $conf_graphreport_stat_items);
 
 //////////////////////////////////////////////////////////////////////////////
 // Build graph execution command based graph engine
@@ -1502,7 +1545,10 @@ switch ($conf['graph_engine']) {
 					    $graph_config,
 					    $max,
 					    $min,
-					    $user,
+					    $user['trend_range'],
+					    $user['trend_history'],
+					    $user['trend_line'],
+					    $user['clustername'],
 					    $rrd_options,
 					    $range,
 					    $title,
