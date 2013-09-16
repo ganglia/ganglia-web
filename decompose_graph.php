@@ -20,6 +20,33 @@ if ( !isset($_GET['hreg']) or !isset($_GET['mreg']) ) {
 
 $graph_type = "line";
 $line_width = "2";
+
+if ( isset($_GET['vn']) && isset($_GET['item_id']) ) {
+
+if ( $user['view_name'] and $user['item_id'] ) {
+ 
+  $available_views = get_available_views();
+  foreach ( $available_views as $id => $view ) {
+    # Find view settings
+    if ( $user['view_name'] == $view['view_name'] )
+      break;
+  }
+
+  unset($available_views);
+
+  foreach ( $view['items'] as $index => $graph_config ) {
+    if (  $user['item_id'] == $graph_config['item_id'] )
+      break;
+  }
+
+  unset($view);
+
+  $title = "";
+
+  $graph_config = build_rrdtool_args_from_json ( $rrdtool_graph, $graph_config );
+} else {
+
+
 $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $_GET['hreg'], $_GET['mreg']);
 
 foreach ( $_GET['hreg'] as $index => $arg ) {
@@ -27,6 +54,8 @@ foreach ( $_GET['hreg'] as $index => $arg ) {
 }
 foreach ( $_GET['mreg'] as $index => $arg ) {
   print "<input type=hidden name=mreg[] value='" . htmlspecialchars($arg) . "'>";
+}
+
 }
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
