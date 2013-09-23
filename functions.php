@@ -621,12 +621,16 @@ function getViewItems($view, $range, $cs, $ce) {
       $graphargs .= "&amp;ce=" . rawurlencode($ce);
     
     foreach ($view_elements as $element) {
+      $canBeDecomposed = isset($element['aggregate_graph']) ||
+	((strpos($element['graph_args'], 'vn=') !== FALSE) &&
+	 (strpos($element['graph_args'], 'item_id=') !== FALSE));
       $view_items[] = 
 	array("legend" => isset($element['hostname']) ? 
 	      $element['hostname'] : "Aggregate graph",
 	      "url_args" => htmlentities($element['graph_args']) . 
 	      "&amp;r=" . $range . $graphargs,
-	      "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0);
+	      "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0,
+	      "canBeDecomposed" => $canBeDecomposed ? 1 : 0);
     }
   }
   return $view_items;
@@ -692,45 +696,41 @@ function get_available_views() {
 // It is up to the caller to add proper size information, time ranges etc.
 ///////////////////////////////////////////////////////////////////////////////
 function get_view_graph_elements($view) {
-
   global $conf, $index_array;
 
   retrieve_metrics_cache();
-
+  
   $view_elements = array();
 
   // set the default size from the view or global config
   if ( isset($conf['default_view_graph_size']) ) {
     $default_size = $conf['default_view_graph_size'];
   }
+
   if ( isset($view['default_size']) ) {
     $default_size = $view['default_size'];
   }
 
 
   switch ( $view['view_type'] ) {
-
-    case "standard":
+  case "standard":
     // Does view have any items/graphs defined
     if ( sizeof($view['items']) == 0 ) {
       continue;
       // print "No graphs defined for this view. Please add some";
     } else {
-
-
       // Loop through graph items
-      foreach ( $view['items'] as $item_id => $item ) {
-
+      foreach ($view['items'] as $item_id => $item) {
 	// Check if item is an aggregate graph
-	if ( isset($item['aggregate_graph']) ) {
-
+	if (isset($item['aggregate_graph'])) {
 	  foreach ( $item['host_regex'] as $reg_id => $regex_array ) {
 	    $graph_args_array[] = "hreg[]=" . urlencode($regex_array["regex"]);
 	  }
 
-	  if ( isset($item['metric_regex']) ) {
+	  if (isset($item['metric_regex'])) {
 	    foreach ( $item['metric_regex'] as $reg_id => $regex_array ) {
-	      $graph_args_array[] = "mreg[]=" . urlencode($regex_array["regex"]);
+	      $graph_args_array[] = 
+		"mreg[]=" . urlencode($regex_array["regex"]);
               $mreg[] = $regex_array["regex"];
 	    }
 	  }
@@ -740,62 +740,61 @@ function get_view_graph_elements($view) {
           } else {
             $graph_args_array[] = "z=" . $default_size;
           }
-
-
+	  
 	  // If graph type is not specified default to line graph
-	  if ( isset($item['graph_type']) && in_array($item['graph_type'], array('line', 'stack') ) )
+	  if (isset($item['graph_type']) && 
+	      in_array($item['graph_type'], array('line', 'stack')))
 	    $graph_args_array[] = "gtype=" . $item['graph_type'];
 	  else
 	    $graph_args_array[] = "gtype=line";
-
+	  
 	  if (isset($item['upper_limit']))
 	    $graph_args_array[] = "x=" .$item['upper_limit'];
-
+	  
 	  if (isset($item['lower_limit']))
 	    $graph_args_array[] = "n=" .$item['lower_limit'];
-
+	  
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
-
+	  
 	  if (isset($item['title']))
 	    $graph_args_array[] = "title=" . urlencode($item['title']);
 
-	  if ( isset($item['metric']) ) {
+	  if (isset($item['metric']))
 	    $graph_args_array[] = "m=" . $item['metric'];
-	  }
 
-          if ( isset($item['glegend']) )
+          if (isset($item['glegend']))
             $graph_args_array[] = "glegend=" . $item["glegend"];
 
-	  if ( isset($item['cluster']) ) {
+	  if (isset($item['cluster']))
 	    $graph_args_array[] = "c=" . urlencode($item['cluster']);
-	  }
 
-	  if ( isset($item['exclude_host_from_legend_label']) ) {
-	    $graph_args_array[] = "lgnd_xh=" . $item['exclude_host_from_legend_label'];
-	  }
+	  if (isset($item['exclude_host_from_legend_label']))
+	    $graph_args_array[] = 
+	      "lgnd_xh=" . $item['exclude_host_from_legend_label'];
 	  
 	  $graph_args_array[] = "aggregate=1";
-	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array), 
-	      "aggregate_graph" => 1,
-	      "name" => isset($item['title']) && $item['title'] != "" ? $item['title'] : $mreg[0] . " Aggregate graph"
-	  );
-
+	  $view_elements[] = 
+	    array("graph_args" => join("&", $graph_args_array), 
+		  "aggregate_graph" => 1,
+		  "name" => isset($item['title']) && $item['title'] != "" ? 
+		  $item['title'] : $mreg[0] . " Aggregate graph");
+	  
 	  unset($graph_args_array);
           
-        // Check whether it's a composite graph/report. It needs to have an item id
-	} else if ( $item['item_id'] ) {
-          
+	  // Check whether it's a composite graph/report. 
+	  // It needs to have an item id
+	} else if ($item['item_id']) {
 	  $graph_args_array[] = "vn=" . $view['view_name'];
           $graph_args_array[] = "item_id=" . $item['item_id'];
-	  $view_elements[] = array ( "graph_args" => join("&", $graph_args_array)
-	  );
+	  $view_elements[] = 
+	    array("graph_args" => join("&", $graph_args_array));
           unset($graph_args_array);
           
-	// It's standard metric graph          
+	  // It's standard metric graph          
         } else {
 	  // Is it a metric or a graph(report)
-	  if ( isset($item['metric']) ) {
+	  if (isset($item['metric'])) {
 	    $graph_args_array[] = "m=" . $item['metric'];
 	    $name = $item['metric'];
 	  } else {
@@ -812,7 +811,7 @@ function get_view_graph_elements($view) {
             $hostname = $item['hostname'];
             $cluster = array_key_exists($hostname, $index_array['cluster']) ?
 	      $index_array['cluster'][$hostname][0] : NULL;
-	      $graph_args_array[] = "h=" . urlencode($hostname);
+	    $graph_args_array[] = "h=" . urlencode($hostname);
           } else if (isset($item['cluster'])) {
 	    $hostname = "";
             $cluster = $item['cluster'];
@@ -820,20 +819,20 @@ function get_view_graph_elements($view) {
             $hostname = "";
             $cluster = "";
 	  }
-      $graph_args_array[] = "c=" . urlencode($cluster);
+	  $graph_args_array[] = "c=" . urlencode($cluster);
 
           if (isset($item['upper_limit']))
             $graph_args_array[] = "x=" .$item['upper_limit'];
-
+	  
 	  if (isset($item['lower_limit']))
 	    $graph_args_array[] = "n=" .$item['lower_limit'];
-
+	  
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
-
+	  
 	  if (isset($item['title']))
 	    $graph_args_array[] = "title=" . urlencode($item['title']);
-
+	  
           if (isset($item['warning'])) {
             $view_e['warning'] = $item['warning'];
             $graph_args_array[] = "warn=" . $item['warning'];
@@ -844,68 +843,60 @@ function get_view_graph_elements($view) {
           }
 
           if (isset($item['alias'])) {
-              $view_e['alias'] = $item['alias'];
+	    $view_e['alias'] = $item['alias'];
           }
 
           $view_e["graph_args"] = join("&", $graph_args_array);
           $view_e['hostname'] = $hostname;
           $view_e['cluster'] = $cluster;
           $view_e['name'] = $name;
-                  
+	  
 	  $view_elements[] = $view_e;
-
+	  
           unset($view_e);
 	  unset($graph_args_array);
-
 	}
-
       } // end of foreach ( $view['items']
     } // end of if ( sizeof($view['items'])
     break;
-    ;;
 
     ///////////////////////////////////////////////////////////////////////////
     // Currently only supports matching hosts.
     ///////////////////////////////////////////////////////////////////////////
-    case "regex":
-      foreach ( $view['items'] as $item_id => $item ) {
-	// Is it a metric or a graph(report)
-	if ( isset($item['metric']) ) {
-	  $metric_suffix = "m=" . $item['metric'];
-	  $name = $item['metric'];
-	} else {
-	  $metric_suffix = "g=" . $item['graph'];
-	  $name = $item['graph'];
-	}
-
-	// Find hosts matching a criteria
-	$query = $item['hostname'];
-	foreach ( $index_array['hosts'] as $key => $host_name ) {
-	  if ( preg_match("/$query/", $host_name ) ) {
-	    $clusters = $index_array['cluster'][$host_name];
-	    foreach ($clusters AS $cluster) {
+  case "regex":
+    foreach ($view['items'] as $item_id => $item) {
+      // Is it a metric or a graph(report)
+      if ( isset($item['metric']) ) {
+	$metric_suffix = "m=" . $item['metric'];
+	$name = $item['metric'];
+      } else {
+	$metric_suffix = "g=" . $item['graph'];
+	$name = $item['graph'];
+      }
+      
+      // Find hosts matching a criteria
+      $query = $item['hostname'];
+      foreach ( $index_array['hosts'] as $key => $host_name ) {
+	if (preg_match("/$query/", $host_name)) {
+	  $clusters = $index_array['cluster'][$host_name];
+	  foreach ($clusters AS $cluster) {
 	    $graph_args_array[] = "h=" . urlencode($host_name);
 	    $graph_args_array[] = "c=" . urlencode($cluster);
 
-	    $view_elements[] = array ( "graph_args" => $metric_suffix . "&" . join("&", $graph_args_array), 
-	      "hostname" => $host_name,
-	      "cluster" => $cluster,
-	      "name" => $name);
-
+	    $view_elements[] = 
+	      array("graph_args" => $metric_suffix . "&" . join("&", $graph_args_array), 
+		    "hostname" => $host_name,
+		    "cluster" => $cluster,
+		    "name" => $name);
+	    
 	    unset($graph_args_array);
-            }
-
 	  }
 	}
-	
-      } // end of foreach ( $view['items'] as $item_id => $item )
+      }
+    } // end of foreach ( $view['items'] as $item_id => $item )
     break;;
-  
   } // end of switch ( $view['view_type'] ) {
-
-
   return ($view_elements);
-
 }
 
 function legendEntry($vname, $legend_items) {

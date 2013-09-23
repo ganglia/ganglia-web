@@ -1529,8 +1529,8 @@ if ($user['view_name'] && $user['item_id']) {
 				   $context,
 				   $size,
 				   $conf['rrds'],
-				   $conf_graphreport_stats,
-				   $conf_graphreport_stat_items);
+				   $conf['graphreport_stats'],
+				   $conf['graphreport_stat_items']);
   # Reset title
   $title ="";			   
 }

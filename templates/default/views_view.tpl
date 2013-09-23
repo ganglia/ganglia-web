@@ -123,8 +123,8 @@
 </script>
 
 <table id="views_table">
-<tr><td valign="top">
-<div id="views_menu" {if $ad_hoc_view} style="visibility: hidden; display: none;" {/if}>
+<tr><td valign="top" {if $display_views_using_tree} style="padding:5px;border-style:none;border-right-style:dotted;border-right-width:1px;" {/if}>
+<div id="views_menu" {if $display_views_using_tree} style="background-color:white" {/if} {if $ad_hoc_view} style="visibility: hidden; display: none;" {/if}>
   {if !$display_views_using_tree}
     {$existing_views}
   {/if}
