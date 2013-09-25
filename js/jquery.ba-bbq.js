@@ -975,9 +975,8 @@
     
     // IE6/7 specifically need some special love when it comes to back-button
     // support, so let's do a little browser sniffing..
-    browser = $.browser,
     mode = document.documentMode,
-    is_old_ie = browser.msie && ( mode === undefined || mode < 8 ),
+      is_old_ie = (navigator.userAgent.match(/msie/i)) && ( mode === undefined || mode < 8 ),
     
     // Does the browser support window.onhashchange? Test for IE version, since
     // IE8 incorrectly reports this when in "IE7" or "IE8 Compatibility View"!

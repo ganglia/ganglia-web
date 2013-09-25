@@ -269,19 +269,23 @@ class ViewTreeNode {
     $this->parent = $parent;
   }
 
-  public function toJson() {
+  public function toJson($initially_open) {
     $pathName = $this->getPathName();
     $id = viewId($pathName);
     $json = '{"data":"' . $this->name . '","attr":{"id":"' . $id . '"';
     if ($this->data != NULL)
       $json .= ',"view_name":"' . $pathName . '"';
     $json .= '}';
+    
+    if ($initially_open && in_array($pathName, $initially_open))
+      $json .= ',"state":"open"';
+
     if ($this->children != NULL) {
       $json .= ',"children":[';
       $i = 0;
       foreach ($this->children as $child_node) {
 	if ($i++ > 0) $json .= ',';
-	$json .= $child_node->toJson();
+	$json .= $child_node->toJson($initially_open);
       }
       $json .= ']';
     }
@@ -322,15 +326,21 @@ function build_view_tree($views) {
 
 $existing_views = '';
 if ($conf['display_views_using_tree']) {
+  $initially_open = NULL;
+  if (!isset($_SESSION['view_tree_built']) && 
+      isset($conf['view_tree_nodes_initially_open']))
+    $initially_open = $conf['view_tree_nodes_initially_open'];
+
   $view_tree = build_view_tree($viewList->getViews());
   $existing_views = '[';
   $i = 0;
   foreach ($view_tree->getChildren() as $view_node) {
     if ($i++ > 0) $existing_views .= ',';
-    $existing_views .= $view_node->toJson();
+    $existing_views .= $view_node->toJson($initially_open);
     $i++;
   }
   $existing_views .= ']';
+  $_SESSION['view_tree_built'] = TRUE;
 } else {
   foreach ($viewList->getViews() as $view) {
     if ($view['parent'] == NULL) {
