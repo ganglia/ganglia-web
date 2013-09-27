@@ -22,6 +22,37 @@ if ($refresh) {
   }
  }
 
+function get_picker_metrics($context_metrics, $gweb_root, $graph_engine) {
+  $picker_metrics = array();
+
+  // Find all the optional reports
+  if ($handle = opendir($gweb_root . '/graph.d')) {
+    // If we are using RRDtool reports can be json or PHP suffixes
+    if ( $graph_engine == "rrdtool" )
+      $report_suffix = "php|json";
+    else
+      $report_suffix = "json";
+    
+    while (false !== ($file = readdir($handle))) {
+      if (preg_match("/(.*)(_report)\.(" . $report_suffix .")/", 
+		     $file, 
+		     $out)) {
+        if (!in_array($out[1] . "_report", $context_metrics))
+          $context_metrics[] = $out[1] . "_report";
+      }
+    }
+    closedir($handle);
+  }
+
+  sort($context_metrics);
+
+  foreach ($context_metrics as $metric) {
+    $url = rawurlencode($metric);
+    $picker_metrics[] = "<option value=\"$url\">$metric</option>";
+  }
+  return $picker_metrics;
+}
+
 function get_load($host, $metrics) {
   if (isset($metrics[$host]["cpu_num"]['VAL']) and 
       $metrics[$host]["cpu_num"]['VAL'] != 0 ) {
@@ -48,7 +79,7 @@ function get_load_pie($showhosts,
 		      $cluster,
 		      $name,
 		      $data) {
-  if ($showhosts) {
+  if ($showhosts != 0) {
     $percent_hosts = array();
     foreach ($hosts_up as $host => $val) {
       // If host_regex is defined
@@ -97,8 +128,8 @@ function get_load_pie($showhosts,
   }
 }
 
-function get_host_metric_graphs($showhosts, 
-                                $hosts_up, 
+function get_host_metric_graphs($showhosts,
+				$hosts_up, 
                                 $hosts_down, 
                                 $user, 
                                 $conf,
@@ -118,32 +149,34 @@ function get_host_metric_graphs($showhosts,
 			        $data) {
   $sorted_hosts = array();
   $down_hosts = array();
-  if ($showhosts) {
-    foreach ($hosts_up as $host => $val) {
-      // If host_regex is defined
-      if (isset($user['host_regex']) && 
-          ! preg_match("/" .$user['host_regex'] . "/", $host))
-        continue;
-      
-      $load = get_load($host, $metrics);
-      $host_load[$host] = $load;
 
-      if ($metricname == "load_one")
-        $sorted_hosts[$host] = $load;
-      else if (isset($metrics[$host][$metricname]))
-        $sorted_hosts[$host] = $metrics[$host][$metricname]['VAL'];
-      else
-        $sorted_hosts[$host] = "";
-    } // foreach hosts_up
+  if ($showhosts == 0)
+    return;
+
+  foreach ($hosts_up as $host => $val) {
+    // If host_regex is defined
+    if (isset($user['host_regex']) && 
+	! preg_match("/" .$user['host_regex'] . "/", $host))
+      continue;
+
+    $load = get_load($host, $metrics);
+    $host_load[$host] = $load;
+
+    if ($metricname == "load_one")
+      $sorted_hosts[$host] = $load;
+    else if (isset($metrics[$host][$metricname]))
+      $sorted_hosts[$host] = $metrics[$host][$metricname]['VAL'];
+    else
+      $sorted_hosts[$host] = "";
+  } // foreach hosts_up
          
-    foreach ($hosts_down as $host => $val) {
-      $down_hosts[$host] = -1.0;
-    }
-
-    $data->assign("node_legend", 1);
+  foreach ($hosts_down as $host => $val) {
+    $down_hosts[$host] = -1.0;
   }
 
-  if (!is_array($hosts_up) or !$showhosts)
+  $data->assign("node_legend", 1);
+
+  if (!is_array($hosts_up))
     return;
 
   switch ($sort) {
@@ -438,7 +471,7 @@ function get_load_heatmap($hosts_up, $user, $metrics, $data) {
   foreach ($hosts_up as $host => $val) {
     // If host_regex is defined
     if (isset($user['host_regex']) && 
-        ! preg_match("/" .$user['host_regex'] . "/", $host))
+        ! preg_match("/" . $user['host_regex'] . "/", $host))
       continue;
     
     $load = get_load($host, $metrics);
@@ -446,6 +479,8 @@ function get_load_heatmap($hosts_up, $user, $metrics, $data) {
   }
 
   $num_hosts = count($host_load);
+  if ($num_hosts == 0)
+    return;
 
   $matrix = ceil(sqrt($num_hosts));
 
@@ -580,20 +615,27 @@ if (! $refresh) {
       $max_graphs_values .= "<option>" . $value . "</option>";
   }
 
-  $data->assign("additional_filter_options", 
-		'Show only nodes matching <input name=host_regex ' . 
-		$set_host_regex_value . '>' . 
-		'<input class="header_btn" type="SUBMIT" VALUE="Filter">' .
-		'<span style="padding-left:10px;" class="nobr">Max graphs to show <select onChange="ganglia_submit();" name="max_graphs">' . 
-		$max_graphs_values . 
-		'</select></span>');
+  $data->assign("additional_filter_options", "");
+  if ($showhosts) {
+    $data->assign("additional_filter_options", 
+		  'Show only nodes matching <input name=host_regex ' . 
+		  $set_host_regex_value . '>' . 
+		  '<input class="header_btn" type="SUBMIT" VALUE="Filter">' .
+		  '<div style="display:inline;padding-left:10px;" class="nobr">Max graphs to show <select onChange="ganglia_submit();" name="max_graphs">' . 
+		  $max_graphs_values . 
+		  '</select></div>' .
+		  '<div style="display:inline;padding-left:10px;" class="nobr">' .
+		  make_sort_menu($context, $sort) .
+		  '</div>');
+  } 
 
   //////////////////////////////////////////////////////////////////////////////
   // End Host Display Controller
   //////////////////////////////////////////////////////////////////////////////
  }
 
-if (!(isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1))
+if ((count($hosts_up) == 0) ||
+    !(isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1))
   get_load_pie($showhosts, 
 	       $hosts_up, 
 	       $hosts_down, 
@@ -604,37 +646,42 @@ if (!(isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1))
 	       $name,
 	       $data);
 
-get_host_metric_graphs($showhosts, 
-                       $hosts_up, 
-                       $hosts_down, 
-                       $user, 
-                       $conf,
-                       $metrics, 
-                       $metricname,
-                       $sort,
-                       $clustername,
-                       $get_metric_string,
-                       $cluster,
-                       $always_timestamp,
-                       $reports[$metricname],
-                       $clustergraphsize,
-                       $range,
-                       $cs,
-                       $ce,
-                       $vlabel,
-		       $data);
-
-// No reason to go on if we have no up hosts.
-if (!is_array($hosts_up) or !$showhosts) {
-  $dwoo->output($tpl, $data);
-  return;
-}
+if ($showhosts != 0)
+  get_host_metric_graphs($showhosts,
+			 $hosts_up, 
+			 $hosts_down, 
+			 $user, 
+			 $conf,
+			 $metrics, 
+			 $metricname,
+			 $sort,
+			 $clustername,
+			 $get_metric_string,
+			 $cluster,
+			 $always_timestamp,
+			 $reports[$metricname],
+			 $clustergraphsize,
+			 $range,
+			 $cs,
+			 $ce,
+			 $vlabel,
+			 $data);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Creates a heatmap
 ///////////////////////////////////////////////////////////////////////////////
-if (isset($conf['heatmaps_enabled']) and $conf['heatmaps_enabled'] == 1)
+if (isset($conf['heatmaps_enabled']) and 
+    $conf['heatmaps_enabled'] == 1 and
+    (count($hosts_up) > 0))
   get_load_heatmap($hosts_up, $user, $metrics, $data);
+
+$data->assign("showhosts", $showhosts);
+
+// No reason to go on if we are not displaying individual hosts
+if (!is_array($hosts_up) or !$showhosts) {
+  $dwoo->output($tpl, $data);
+  return;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Show stacked graphs
@@ -647,6 +694,17 @@ if (isset($conf['show_stacked_graphs']) and
   if (isset($user['host_regex']))
     $stacked_args .= "&amp;host_regex=" . $user['host_regex'];
   $data->assign("stacked_graph_args", $stacked_args);
+}
+
+if ($conf['picker_autocomplete'] == true) {
+  $data->assign('picker_autocomplete', true);
+}
+
+if (is_array($context_metrics)) {
+  $picker_metrics = get_picker_metrics($context_metrics, 
+				       $conf['gweb_root'], 
+				       $conf['graph_engine']);
+  $data->assign("picker_metrics", join("", $picker_metrics));
 }
 
 $dwoo->output($tpl, $data);

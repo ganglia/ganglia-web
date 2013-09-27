@@ -285,6 +285,9 @@ class piechart
           if( $to > 360 )
             $to = 360;
 
+	  if ($to == $from)
+	    continue;
+
           $color = $colors[$p];
           $orig_colors = imageColorsForIndex( $this->im, $color );
 
@@ -293,7 +296,6 @@ class piechart
           $dark_blue = ( $orig_colors['blue'] > 30 ) ? $orig_colors['blue'] - 30 : $orig_colors['blue'];
 
           $new_color = ImageColorAllocate( $this->im, $dark_red, $dark_green, $dark_blue );
-        
           ImageFilledArc( $this->im, $this->center_x, $j, $this->diameter, $this->diameter, $from, $to, $new_color, IMG_ARC_PIE );
 
         }
@@ -307,6 +309,9 @@ class piechart
 
         if( $to > 360 )
           $to = 360;
+
+	if ($to == $from)
+	  continue;
 
         ImageFilledArc( $this->im, $this->center_x, $this->center_y, $this->diameter, $this->diameter, $from, $to, $color, IMG_ARC_PIE );
 

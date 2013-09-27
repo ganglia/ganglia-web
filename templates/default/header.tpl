@@ -279,7 +279,7 @@
 
 <div id="tabs-main">
 <form action="{$page}" method="GET" name="ganglia_form">
-  <div style="background-color:#dddddd;padding:5px;">
+  <div style="padding:5px;background-color:#dddddd">
      <big style="float:left;"><b id="page_title">{$page_title} at {$date}</b></big><input style="float:right;" class="header_btn" type="submit" value="Get Fresh Data"/><div style="clear:both"></div>
   </div>
   <div style="padding:5px 5px 0 5px;">
@@ -288,16 +288,19 @@
     <div style="float:right;">{$additional_buttons}&nbsp;&nbsp;{$alt_view}</div>
     <div style="clear:both;"></div>
   </div>
-  <div id="sort_menu" style="padding:5px 5px 0 5px;">
+  {if $context != "cluster" && $context != "cluster-summary"}
+  <div style="padding:5px 5px 0 5px;">
+   Metric&nbsp;
    {if $picker_autocomplete}
-   Metric&nbsp;&nbsp; <input name="m" id="metrics-picker" />&nbsp;&nbsp;
+   <input name="m" id="metrics-picker" />
    {else}
-   Metric&nbsp;&nbsp; <select name="m" id="metrics-picker">{$picker_metrics}</select>&nbsp;&nbsp;
+   <select name="m" id="metrics-picker">{$picker_metrics}</select>
    {/if}
      {$sort_menu}
   </div>
+  {/if}
 {if $node_menu != ""}
-  <div id="sort_menu" style="padding:5px 5px 0 5px;">
+  <div id="node_menu" style="padding:5px 5px 0 5px;">
     {$node_menu}&nbsp;&nbsp;{$additional_filter_options}
   </div>
 {/if}

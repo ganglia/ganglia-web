@@ -86,7 +86,6 @@ $(function() {
         });
       return false;
     });
-
 });
 </script>
 
@@ -204,40 +203,41 @@ vis.render();
 </center>
 {/if}
 
-<script type="text/javascript">
-// Need to set the field value to metric name
-$("#metrics-picker").val("{$metric_name}");
-</script>
-
-
-<div id="cluster_view_chooser">
-<table style="border-collapse:collapse;" width="100%">
-  <tr>
-  <td style="text-align:center;background:rgb(238,238,238);">
-  Show Hosts Scaled:
-  {foreach $showhosts_levels id showhosts implode=""}
-  <input type="radio" name="sh" value="{$id}" id="shch{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}><label for="shch{$id}">{$showhosts.name}</label>
-  {/foreach}&nbsp;
-  |
-  <span class="nobr">{$cluster} <strong>{$metric}</strong>
-  last <strong>{$range}</strong>
-  sorted <strong>{$sort}</strong></span>
-{if isset($columns_size_dropdown)}
-  |
-   <font>
-   <span class="nobr">Size&nbsp;&nbsp;{$size_menu}</span>
-   <span class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</span>
-   </font>
-{/if}
-  </td>
-  </tr>
-  <tr>
-    <td style="text-align:center;background:rgb(238,238,238);">
-      {$additional_filter_options}
-    </td>
-  </tr>
-</table>
+<div id="cluster_view_chooser" style="padding:5px;background:rgb(238,238,238);">
+  <div style="text-align:center;padding:5px;">
+    {if $showhosts != 0}
+    <div class="nobr">{$cluster} <strong>{$metric}</strong>
+      last <strong>{$range}</strong>
+      sorted <strong>{$sort}</strong>
+    </div>
+    <div style="display:inline;">
+     Metric&nbsp;
+     {if $picker_autocomplete}
+       <input name="m" id="metrics-picker" />
+     {else}
+       <select name="m" id="metrics-picker">{$picker_metrics}</select>
+     {/if}
+    </div>
+    {/if}
+    <div id="show_hosts_scaled" style="display:inline;padding-left:10px;">Show Hosts Scaled:
+      {foreach $showhosts_levels id showhosts implode=""}
+      <input type="radio" name="sh" value="{$id}" id="shch{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}><label for="shch{$id}">{$showhosts.name}</label>
+      {/foreach}
+    </div>
+    {if isset($columns_size_dropdown) && ($showhosts != 0)}
+      <div style="display:inline;padding-left:10px;" class="nobr">Size&nbsp;&nbsp;{$size_menu}</div>
+      <div style="display:inline;padding-left:10px;" class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</div>
+    {/if}
+  </div>
+  <div style="text-align:center;">
+    {$additional_filter_options}
+  </div>
 </div>
+
+<script type="text/javascript">
+  // Need to set the field value to metric name
+  $("#metrics-picker").val("{$metric_name}");
+</script>
 
 <div id="host_metric_graphs">
 {include('cluster_host_metric_graphs.tpl')}
@@ -245,7 +245,7 @@ $("#metrics-picker").val("{$metric_name}");
 
 <script type="text/javascript">
 $(function() {
-  $( "#cluster_view_chooser" ).buttonset();
+  $("#show_hosts_scaled").buttonset();
 });
 </script>
 <!-- End cluster_view.tpl -->
