@@ -77,7 +77,7 @@ function make_sort_menu($context, $sort) {
 			       "Display hosts in DOWN state first");
     }
 
-    $sort_menu = "Sorted&nbsp;&nbsp;";
+    $sort_menu = "<div id=\"sort_menu\" class=\"nobr\" style=\"display:inline\">Sorted&nbsp;&nbsp;";
     foreach ($context_sorts as $v) {
       $label = $v[0];
       $title = $v[1];
@@ -88,6 +88,7 @@ function make_sort_menu($context, $sort) {
 	$checked = "";
       $sort_menu .= "<input OnChange=\"ganglia_submit();\" type=\"radio\" id=\"radio-" . str_replace(" ", "_", $label) . "\" name=\"s\" value=\"$label\" $checked/><label title=\"$title\" for=\"radio-" . str_replace(" ", "_", $label) . "\">$label</label>";
     }
+    $sort_menu .= "</div>";
   }
   return $sort_menu;
 }
@@ -96,22 +97,23 @@ function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
   global $conf;
 
   $range_menu = "";
-  if (!$physical) {
-    $context_ranges = array_keys($conf['time_ranges']);
-    if ($jobrange)
-      $context_ranges[] = "job";
-    if ($cs or $ce)
-      $context_ranges[] = "custom";
+  if ($physical)
+    return $range_menu;
 
-    $range_menu = "Last&nbsp;&nbsp;";
-    foreach ($context_ranges as $v) {
-      $url = rawurlencode($v);
-      if ($v == $range)
-	$checked = "checked=\"checked\"";
-      else
-	$checked = "";
-      $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
-    }
+  $context_ranges = array_keys($conf['time_ranges']);
+  if ($jobrange)
+    $context_ranges[] = "job";
+  if ($cs or $ce)
+    $context_ranges[] = "custom";
+
+  $range_menu = "Last&nbsp;&nbsp;";
+  foreach ($context_ranges as $v) {
+    $url = rawurlencode($v);
+    if ($v == $range)
+      $checked = "checked=\"checked\"";
+    else
+      $checked = "";
+    $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
   }
   return $range_menu;
 }
@@ -414,38 +416,10 @@ $range_menu = make_range_menu($physical, $jobrange, $cs, $ce, $range);
 $data->assign("range_menu", $range_menu);
 
 #
-# Only compute metric-picker options if we have some, and are in cluster context.
+# Only compute metric-picker options if we have some, 
+# and are in cluster context.
 #
 if (is_array($context_metrics) and $context == "cluster") {
-  $picker_metrics = array();
-
-  # Find all the optional reports
-  if ($handle = opendir($conf['gweb_root'] . '/graph.d')) {
-
-    // If we are using RRDtool reports can be json or PHP suffixes
-    if ( $conf['graph_engine'] == "rrdtool" )
-      $report_suffix = "php|json";
-    else
-      $report_suffix = "json";
-
-    while (false !== ($file = readdir($handle))) {
-      if ( preg_match("/(.*)(_report)\.(" . $report_suffix .")/", $file, $out) ) {
-        if ( ! in_array($out[1] . "_report", $context_metrics) )
-          $context_metrics[] = $out[1] . "_report";
-      }
-    }
-
-    closedir($handle);
-  }
-
-  sort($context_metrics);
-
-  foreach ($context_metrics as $key) {
-    $url = rawurlencode($key);
-    $picker_metrics[] = "<option value=\"$url\">$key</option>";
-  }
-
-  $data->assign("picker_metrics", join("", $picker_metrics));
   $data->assign("is_metrics_picker_disabled", "");  
 } else {
   // We have to disable the sort_menu if we are not in the cluster context
@@ -453,12 +427,14 @@ if (is_array($context_metrics) and $context == "cluster") {
   $data->assign("picker_metrics", "" );
 }
 
+if ($context != 'cluster') {
 #
 # Show sort order if there is more than one physical machine present.
 #
-$sort_menu = make_sort_menu($context, $sort);
-$data->assign("sort_menu", $sort_menu );
-   
+  $sort_menu = make_sort_menu($context, $sort);
+  $data->assign("sort_menu", $sort_menu );
+}
+
 if ($context == "physical" or $context == "cluster" or $context == 'host') {
   $cols_menu = make_cols_menu();
   $size_menu = make_size_menu($clustergraphsize, $context);
@@ -470,7 +446,13 @@ if ($context == "host") {
 
 $custom_time = "";
 
-if ( in_array($context , array ("meta", "cluster", "host", "views", "decompose_graph", "compare_hosts") ) ) {
+if (in_array($context, array ("meta", 
+			      "cluster", 
+			      "cluster-summary", 
+			      "host", 
+			      "views", 
+			      "decompose_graph", 
+			      "compare_hosts"))) {
    $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
       . " -2 days, start + 1 hour, etc.";
    $custom_time = "or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
@@ -527,6 +509,8 @@ header ("Pragma: no-cache"); # HTTP/1.0
 
 if (file_exists("./templates/${conf['template_name']}/user_header.tpl"))
   $data->assign('user_header', "1");
+
+$data->assign('context', $context);
 
 $dwoo->output($tpl, $data);
 
