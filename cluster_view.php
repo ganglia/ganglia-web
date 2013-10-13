@@ -143,6 +143,8 @@ function get_host_metric_graphs($showhosts,
                                 $reports_metricname,
                                 $clustergraphsize,
                                 $range,
+				$start,
+				$end,
                                 $cs,
                                 $ce,
                                 $vlabel,
@@ -203,8 +205,24 @@ function get_host_metric_graphs($showhosts,
   // metric. The $start,$end variables comes from get_context.php, 
   // included in index.php.
   // Do this only if person has not selected a maximum set of graphs to display
-  if ($max_graphs == 0 && $showhosts == 1 )
-    list($min, $max) = find_limits($sorted_hosts, $metricname);
+  if ($max_graphs == 0 && $showhosts == 1) {
+    $cs = $user['cs'];
+    if ($cs and (is_numeric($cs) or strtotime($cs)))
+      $start = $cs;
+
+    $ce = $user['ce'];
+    if ($ce and (is_numeric($ce) or strtotime($ce)))
+      $end = $ce;
+
+    list($min, $max) = find_limits($clustername,
+				   $sorted_hosts, 
+				   $metricname,
+				   $start,
+				   $end,
+				   $metrics,
+				   $conf,
+				   $rrd_options);
+  }
 
   // Second pass to output the graphs or metrics.
   $i = 1;
@@ -662,6 +680,8 @@ if ($showhosts != 0)
 			 $reports[$metricname],
 			 $clustergraphsize,
 			 $range,
+			 $start,
+			 $end,
 			 $cs,
 			 $ce,
 			 $vlabel,
