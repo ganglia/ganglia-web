@@ -138,35 +138,9 @@
       }
     });
 
-    $(function() {
-      {if $picker_autocomplete}
-      var cache = { }, lastXhr;
-      $("#metrics-picker").autocomplete({
-        minLength: 2,
-        source: function( request, response ) {
-          var term = request.term;
-          if ( term in cache ) {
-            response( cache[term] );
-            return;
-          }
-          lastXhr = $.getJSON("api/metrics_autocomplete.php", request, function( data, status, xhr ) {
-            cache[term] = data.message;
-            if ( xhr == lastXhr ) {
-              response(data.message);
-            }
-          });
-        }
-      });
-      {else}
-      $("#metrics-picker").combobox();
-      {/if}
-
-      {$is_metrics_picker_disabled}
-
-      $(".header_btn").button();
-    });
-
   $(function () {
+    $("#metrics-picker").val("{$metric_name}");
+    $(".header_btn").button();
 
     done = function done(startTime, endTime) {
             setStartAndEnd(startTime, endTime);
@@ -289,21 +263,18 @@
     <div style="clear:both;"></div>
   </div>
   {if $context != "cluster" && $context != "cluster-summary"}
+  <input type="hidden" name="m" id="metrics-picker">
+  {/if}
+  {if $context == "meta"}
   <div style="padding:5px 5px 0 5px;">
-   Metric&nbsp;
-   {if $picker_autocomplete}
-   <input name="m" id="metrics-picker" />
-   {else}
-   <select name="m" id="metrics-picker">{$picker_metrics}</select>
-   {/if}
-     {$sort_menu}
+    {$sort_menu}
   </div>
   {/if}
-{if $node_menu != ""}
+  {if $node_menu != ""}
   <div id="node_menu" style="padding:5px 5px 0 5px;">
     {$node_menu}&nbsp;&nbsp;{$additional_filter_options}
   </div>
-{/if}
+  {/if}
 
 <input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
 <input type="hidden" id="vn" name="vn" value="{$view_name}">
