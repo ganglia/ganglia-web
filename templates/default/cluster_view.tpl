@@ -42,50 +42,80 @@ function refreshClusterView() {
 
 $(function() {
   // Modified from http://jqueryui.com/demos/toggle/
-  //run the currently selected effect
+  // run the currently selected effect
   function runEffect(id){
-    //most effect types need no options passed by default
+    // most effect types need no options passed by default
     var options = { };
 
     options = { to: { width: 200,height: 60 } }; 
     
-    //run the effect
+    // run the effect
     $("#"+id+"_div").toggle("blind",options,500);
   };
  
-  //set effect from select menu value
+  // set effect from select menu value
   $('.button').click(function(event) {
     runEffect(event.target.id);
     return false;
   });
 
-    $(function() {
-        $( "#edit_optional_graphs" ).dialog({ autoOpen: false, minWidth: 550,
-          beforeClose: function(event, ui) {  location.reload(true); } })
-        $( "#edit_optional_graphs_button" ).button();
-        $( "#save_optional_graphs_button" ).button();
-        $( "#close_edit_optional_graphs_link" ).button();
-    });
+  $("#edit_optional_graphs").dialog({ autoOpen: 
+                                      false, minWidth: 550,
+                                      beforeClose: function(event, ui) {  
+                                        location.reload(true); 
+                                      }});
+  $("#edit_optional_graphs_button").button();
+  $("#save_optional_graphs_button").button();
+  $("#close_edit_optional_graphs_link").button();
 
-    $("#edit_optional_graphs_button").click(function(event) {
-      $("#edit_optional_graphs").dialog('open');
-      $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
-      $.get('edit_optional_graphs.php', "clustername={$cluster}", function(data) {
-          $('#edit_optional_graphs_content').html(data);
-      })
-      return false;
-    });
+  $("#edit_optional_graphs_button").click(function(event) {
+    $("#edit_optional_graphs").dialog('open');
+    $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
+    $.get('edit_optional_graphs.php', 
+          "clustername={$cluster}", 
+          function(data) {
+            $('#edit_optional_graphs_content').html(data);
+          });
+    return false;
+  });
 
-    $("#save_optional_graphs_button").click(function(event) {
-       $.get('edit_optional_graphs.php', $("#edit_optional_reports_form").serialize(), function(data) {
-          $('#edit_optional_graphs_content').html(data);
-          $("#save_optional_graphs_button").hide();
-          setTimeout(function() {
-             $('#edit_optional_graphs').dialog('close');
-          }, 5000);
-        });
-      return false;
+  $("#save_optional_graphs_button").click(function(event) {
+    $.get('edit_optional_graphs.php', 
+          $("#edit_optional_reports_form").serialize(), 
+          function(data) {
+            $('#edit_optional_graphs_content').html(data);
+            $("#save_optional_graphs_button").hide();
+            setTimeout(function() {
+              $('#edit_optional_graphs').dialog('close');}, 5000);
+          });
+    return false;
+  });
+
+  $("#show_hosts_scaled").buttonset();
+
+  {if $picker_autocomplete}
+    var cache = { }, lastXhr;
+    $("#metrics-picker").autocomplete({
+      minLength: 2,
+      source: function( request, response ) {
+        var term = request.term;
+        if ( term in cache ) {
+          response( cache[term] );
+          return;
+        }
+        lastXhr = $.getJSON("api/metrics_autocomplete.php",
+                            request, 
+                            function( data, status, xhr ) {
+                              cache[term] = data.message;
+                              if ( xhr == lastXhr ) {
+                                response(data.message);
+                              }
+                            });
+      }
     });
+  {else}
+    $("#metrics-picker").combobox();
+  {/if}
 });
 </script>
 
@@ -234,18 +264,8 @@ vis.render();
   </div>
 </div>
 
-<script type="text/javascript">
-  // Need to set the field value to metric name
-  $("#metrics-picker").val("{$metric_name}");
-</script>
-
 <div id="host_metric_graphs">
 {include('cluster_host_metric_graphs.tpl')}
 </div>
 
-<script type="text/javascript">
-$(function() {
-  $("#show_hosts_scaled").buttonset();
-});
-</script>
 <!-- End cluster_view.tpl -->
