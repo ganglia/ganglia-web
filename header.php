@@ -415,22 +415,7 @@ if (count($metrics)) {
 $range_menu = make_range_menu($physical, $jobrange, $cs, $ce, $range);
 $data->assign("range_menu", $range_menu);
 
-#
-# Only compute metric-picker options if we have some, 
-# and are in cluster context.
-#
-if (is_array($context_metrics) and $context == "cluster") {
-  $data->assign("is_metrics_picker_disabled", "");  
-} else {
-  // We have to disable the sort_menu if we are not in the cluster context
-  $data->assign("is_metrics_picker_disabled", '$("#sort_menu").toggle(); ');
-  $data->assign("picker_metrics", "" );
-}
-
-if ($context != 'cluster') {
-#
-# Show sort order if there is more than one physical machine present.
-#
+if ($context == 'meta') {
   $sort_menu = make_sort_menu($context, $sort);
   $data->assign("sort_menu", $sort_menu );
 }
@@ -511,6 +496,7 @@ if (file_exists("./templates/${conf['template_name']}/user_header.tpl"))
   $data->assign('user_header', "1");
 
 $data->assign('context', $context);
+$data->assign("metric_name","$metricname");
 
 $dwoo->output($tpl, $data);
 
