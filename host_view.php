@@ -209,7 +209,14 @@ function getMetricGroups($metrics,
       if (($visible && ($open_groups[0] == "NOGROUPS")) ||
 	  (!$visible && ($open_groups[0] == "ALLGROUPS")))
 	$new_open_groups .= "_|_" . $group;
-      
+ 
+      if (function_exists("sort_metric_group_metrics")) {
+	$metric_array = sort_metric_group_metrics($group, $metric_array);
+      } else {
+	// Sort by metric_name
+	asort($metric_array);
+      }
+
       $i = 0;
       foreach ($metric_array as $name) {
 	$metrics_group_data[$group]["metrics"][$name]["graphargs"] = $metricMap[$name]['graph'];

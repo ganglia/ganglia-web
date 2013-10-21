@@ -61,9 +61,14 @@ function getMetricGroup($metrics,
   $metric_array = $metricGroupMap[$metric_group];
   $num_metrics = count($metric_array);
 
+  if (function_exists("sort_metric_group_metrics")) {
+    $metric_array = sort_metric_group_metrics($group, $metric_array);
+  } else {
+    // Sort by metric_name
+    asort($metric_array);
+  }
+
   $i = 0;
-  # Sort by metric_name
-  asort($metric_array);  
   foreach ($metric_array as $name) {
     $group["metrics"][$name]["graphargs"] = $metricMap[$name]['graph'];
     $group["metrics"][$name]["alt"] = "$hostname $name";
