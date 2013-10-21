@@ -20,9 +20,23 @@ if ($refresh) {
       "<br><br>The compile directory should be owned and writable by the apache user.</H4>";
     exit;
   }
- }
+}
 
-function get_picker_metrics($context_metrics, $gweb_root, $graph_engine) {
+function get_picker_metrics($metrics, $reports, $gweb_root, $graph_engine) {
+  $context_metrics = "";
+  if (count($metrics)) {
+    foreach ($metrics as $host_metrics) {
+      foreach ($host_metrics as $metric_name => $metric_value) {
+	$context_metrics[$metric_name] = rawurldecode($metric_name);
+      }
+    }
+    foreach ($reports as $report_name => $report_value)
+      $context_metrics[] = $report_name;
+  }
+
+  if (!is_array($context_metrics))
+    return NULL;
+
   $picker_metrics = array();
 
   // Find all the optional reports
@@ -500,30 +514,50 @@ function get_load_heatmap($hosts_up, $user, $metrics, $data) {
   if ($num_hosts == 0)
     return;
 
-  $matrix = ceil(sqrt($num_hosts));
+  $num_cols = ceil(sqrt($num_hosts));
 
-  $xindex = 0;
-  $yindex = 0;
-
-  foreach ($host_load as $key => $value) {
-    if ($xindex >= $matrix) {
-      $string_array[] = "[" . join(",", $matrix_array[$yindex]) . "]";
-      $yindex++;
-      $xindex = 0;
+  $col_index = 0;
+  $row_index = 0;
+  $heatmap = '';
+  $hostmap = '';
+  foreach ($host_load as $host => $load) {
+    if ($col_index == 0) {
+      if ($row_index > 0) {
+	$heatmap .= ',';
+	$hostmap .= ',';
+      }
+      $heatmap .= '[';
+      $hostmap .= '[';
     }
     
-    $matrix_array[$yindex][$xindex] = $value;
-    $xindex++;
+    if ($col_index > 0) {
+      $heatmap .= ',';
+      $hostmap .= ',';
+    }
+
+    $heatmap .= $load;
+    $hostmap .= '"' . $host . '"';
+
+    if ($col_index == $num_cols - 1) {
+      $heatmap .= ']';
+      $hostmap .= ']';
+      $col_index = 0;
+      $row_index++;
+    } else
+      $col_index++;
   }
 
-  $string_array[] = "[" . join(",", $matrix_array[$yindex]) . "]";
+  if ($col_index != 0) {
+    $heatmap .= ']';
+    $hostmap .= ']';
+  }
 
   $conf['heatmap_size'] = 200;
 
-  $heatmap = join(",", $string_array);
-
-  $data->assign("heatmap", $heatmap);
-  $data->assign("heatmap_size", floor($conf['heatmap_size'] / $matrix));
+  $data->assign("heatmap_data", $heatmap);
+  $data->assign("heatmap_host_name", $hostmap);
+  $data->assign("heatmap_num_cols", $num_cols);
+  $data->assign("heatmap_cell_size", floor($conf['heatmap_size'] / $num_cols));
 }
 
 $fn = "cluster_" . ($refresh ? "refresh" : "view") . ".tpl";
@@ -556,6 +590,21 @@ get_cluster_overview($showhosts,
 		     $clustername, 
 		     $data);
 
+$user_metricname = $user['metricname'];
+if (!$showhosts) {
+  if (array_key_exists($user_metricname, $metrics))
+    $units = $metrics[$user_metricname]['UNITS'];
+} else {
+  if (array_key_exists($user_metricname, $metrics[key($metrics)]))
+    if (isset($metrics[key($metrics)][$user_metricname]['UNITS']))
+      $units = $metrics[key($metrics)][$user_metricname]['UNITS'];
+    else
+      $units = '';
+}
+
+if (isset($units))
+  $vlabel = $units;
+
 if (! $refresh) {
   get_cluster_optional_reports($conf, 
 			       $clustername, 
@@ -567,32 +616,18 @@ if (! $refresh) {
   // Begin Host Display Controller
   //////////////////////////////////////////////////////////////////////////////
   
-  // Correct handling of *_report metrics
-  
-  if (!$showhosts) {
-    if (array_key_exists($metricname, $metrics))
-      $units = $metrics[$metricname]['UNITS'];
-  } else {
-    if (array_key_exists($metricname, $metrics[key($metrics)]))
-      if (isset($metrics[key($metrics)][$metricname]['UNITS']))
-	$units = $metrics[key($metrics)][$metricname]['UNITS'];
-      else
-        $units = '';
-  }
-  
   // Correctly handle *_report cases and blank (" ") units
   
   if (isset($units)) {
-    $vlabel = $units;
     if ($units == " ")
       $units = "";
     else
-      $units=$units ? "($units)" : "";
+      $units = $units ? "($units)" : "";
   } else {
     $units = "";
   }
-  $data->assign("metric","$metricname $units");
-  $data->assign("metric_name","$metricname");
+  $data->assign("metric","{$user['metricname']} $units");
+  $data->assign("metric_name","{$user['metricname']}");
   $data->assign("sort", $sort);
   $data->assign("range", $range);
   
@@ -671,13 +706,13 @@ if ($showhosts != 0)
 			 $user, 
 			 $conf,
 			 $metrics, 
-			 $metricname,
+			 $user['metricname'],
 			 $sort,
 			 $clustername,
 			 $get_metric_string,
 			 $cluster,
 			 $always_timestamp,
-			 $reports[$metricname],
+			 $reports[$user['metricname']],
 			 $clustergraphsize,
 			 $range,
 			 $start,
@@ -708,9 +743,9 @@ if (!is_array($hosts_up) or !$showhosts) {
 ///////////////////////////////////////////////////////////////////////////////
 if (isset($conf['show_stacked_graphs']) and 
     $conf['show_stacked_graphs'] == 1  and 
-    ! preg_match("/_report$/", $metricname)) {
+    ! preg_match("/_report$/", $user['metricname'])) {
   $cluster_url = rawurlencode($clustername);
-  $stacked_args = "m=$metricname&amp;c=$cluster_url&amp;r=$range&amp;st=$cluster[LOCALTIME]";
+  $stacked_args = "m={$user['metricname']}&amp;c=$cluster_url&amp;r=$range&amp;st=$cluster[LOCALTIME]";
   if (isset($user['host_regex']))
     $stacked_args .= "&amp;host_regex=" . $user['host_regex'];
   $data->assign("stacked_graph_args", $stacked_args);
@@ -718,13 +753,13 @@ if (isset($conf['show_stacked_graphs']) and
 
 if ($conf['picker_autocomplete'] == true) {
   $data->assign('picker_autocomplete', true);
-}
-
-if (is_array($context_metrics)) {
-  $picker_metrics = get_picker_metrics($context_metrics, 
+} else {
+  $picker_metrics = get_picker_metrics($metrics, 
+				       $reports,
 				       $conf['gweb_root'], 
 				       $conf['graph_engine']);
-  $data->assign("picker_metrics", join("", $picker_metrics));
+  if ($picker_metrics != NULL)
+    $data->assign("picker_metrics", join("", $picker_metrics));
 }
 
 $dwoo->output($tpl, $data);

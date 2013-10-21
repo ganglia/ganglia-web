@@ -1,5 +1,5 @@
 <!-- Begin cluster_view.tpl -->
-{if $heatmap}
+{if $heatmap_data}
 <script type="text/javascript" src="js/protovis-r3.2.js"></script>
 {/if}
 <script type="text/javascript">
@@ -15,7 +15,10 @@ function refreshClusterView() {
       $('#load_pie').attr("src", item[3].replace(/&amp;/g, "&"));
 
     if ($('#heatmap-fig').size()) {
-      eval("heatmap = [" + item[4] + "]")	;
+      eval("heatmap_data = [" + item[4] + "]");
+      eval("heatmap_host_name = [" + item[6] + "]");
+      eval("heatmap_num_cols = " + item[7]);
+      eval("heatmap_cell_size = " + item[8]);
       vis.render();
     }
 
@@ -114,7 +117,11 @@ $(function() {
       }
     });
   {else}
-    $("#metrics-picker").combobox();
+    $("#metrics-picker").chosen({ max_selected_options:1,
+                                  search_contains:true,
+                                  no_results_text:"No metrics matched",
+                                  placeholder_text_single:"Select a metric"}).
+    on('change', function (evt, params) { ganglia_form.submit();});
   {/if}
 });
 </script>
@@ -178,35 +185,47 @@ $(function() {
 
 <tr>
  <td align="center" valign="top">
-{if $php_gd && !$heatmap}
+{if $php_gd && !$heatmap_data}
   <img id="load_pie" src="./pie.php?{$pie_args}" border="0" />
 {/if}
-{if $heatmap && $num_nodes > 0}
-Utilization heatmap<br />
+{if $heatmap_data && $num_nodes > 0}
+Server Load Distribution<br />
 <div id="heatmap-fig">
 <script type="text/javascript+protovis">
-var heatmap = [
-{$heatmap}
+var heatmap_data = [
+{$heatmap_data}
+];
+var heatmap_host_name = [
+{$heatmap_host_name}
 ];
 
-var w = heatmap[0].length,
-    h = heatmap.length;
+var heatmap_num_cols = {$heatmap_num_cols};
+var heatmap_cell_size = {$heatmap_cell_size};
 
 var vis = new pv.Panel()
-    .width(w * {$heatmap_size})
-    .height(h * {$heatmap_size})
-    .margin(2)
-    .strokeStyle("#aaa")
-    .lineWidth(4)
-    .antialias(false);
+  .width(heatmap_num_cols * heatmap_cell_size)
+  .height(heatmap_num_cols * heatmap_cell_size)
+  .margin(2)
+  .strokeStyle("#aaa")
+  .lineWidth(4)
+  .antialias(false);
 
-vis.add(pv.Image)
-    .imageWidth(w)
-    .imageHeight(h)
-    .image(pv.Scale.linear()
-        .domain(0, 0.25, 0.5, 0.75, 1.00)
-        .range("#e2ecff", "#caff98", "#ffde5e" , "#ffa15e","#ff634f")
-        .by(function(i, j) heatmap[j][i]));
+var fill = pv.Scale.linear().
+  domain(0, 0.25, 0.5, 0.75, 1.00).
+  range("#e2ecff", "#caff98", "#ffde5e" , "#ffa15e","#ff634f");
+
+var row = vis.add(pv.Panel)
+  .data(pv.range(heatmap_num_cols))
+  .height(heatmap_cell_size)
+  .top(function(d) d * heatmap_cell_size);
+
+var cell = row.add(pv.Panel)
+  .data(pv.range(heatmap_num_cols))
+  .height(heatmap_cell_size)
+  .width(heatmap_cell_size)
+  .left(function(d) d * heatmap_cell_size)
+  .fillStyle(function(col_index, row_index) fill(heatmap_data[row_index][col_index]))
+  .title(function(col_index, row_index) heatmap_host_name[row_index][col_index] + ", load = " + (heatmap_data[row_index][col_index] * 100).toFixed(0) + "%");
 
 vis.render();
     </script>
