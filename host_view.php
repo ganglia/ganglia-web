@@ -1,6 +1,20 @@
 <?php
 include_once("./global.php");
 
+function make_metric_cols_menu($conf_metriccols) {
+  $metric_cols_menu = 
+    "<select name=\"mc\" OnChange=\"ganglia_form.submit();\">\n";
+
+  foreach (range(1,25) as $metric_cols) {
+    $metric_cols_menu .= "<option value=$metric_cols ";
+    if ($metric_cols == $conf_metriccols)
+      $metric_cols_menu .= "selected";
+    $metric_cols_menu .= ">$metric_cols\n";
+  }
+  $metric_cols_menu .= "</select>\n";
+  return $metric_cols_menu;
+}
+
 $tpl = new Dwoo_Template_File( template("host_view.tpl") );
 $data = new Dwoo_Data();
 
@@ -261,7 +275,7 @@ if ($hosts_down) {
 }
 
 $data->assign('columns_dropdown', 1);
-$data->assign("metric_cols_menu", $metric_cols_menu);
+$data->assign("metric_cols_menu", make_metric_cols_menu($conf['metriccols']));
 $data->assign("size_menu", $size_menu);
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';

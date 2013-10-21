@@ -10,6 +10,7 @@
 <link type="text/css" href="css/jquery.flot.events.css" rel="stylesheet" />
 <link type="text/css" href="css/fullcalendar.css" rel="stylesheet" />
 <link type="text/css" href="css/qtip.min.css" rel="stylesheet" />
+<link type="text/css" href="css/chosen.min.css" rel="stylesheet" />
 <link type="text/css" href="./styles.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script>$.uiBackCompat = false;</script>
@@ -26,6 +27,7 @@
 <script type="text/javascript" src="js/fullcalendar.js"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="js/jquery.jstree.js"></script>
+<script type="text/javascript" src="js/chosen.jquery.min.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);

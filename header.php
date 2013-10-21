@@ -43,21 +43,6 @@ function make_cols_menu() {
   return $cols_menu;
 }
 
-function make_metric_cols_menu() {
-  global $conf;
-
-  $metric_cols_menu = "<select name=\"mc\" OnChange=\"ganglia_form.submit();\">\n";
-
-  foreach(range(1,25) as $metric_cols) {
-    $metric_cols_menu .= "<option value=$metric_cols ";
-    if ($metric_cols == $conf['metriccols'])
-      $metric_cols_menu .= "selected";
-    $metric_cols_menu .= ">$metric_cols\n";
-  }
-  $metric_cols_menu .= "</select>\n";
-  return $metric_cols_menu;
-}
-
 function make_sort_menu($context, $sort) {
   $sort_menu = "";
   if ($context == "meta" or $context == "cluster") {
@@ -242,8 +227,6 @@ function make_node_menu($self,
 # RFM - These definitions are here to eliminate "undefined variable"
 # error messages in ssl_error_log.
 !isset($initgrid) and $initgrid = 0;
-!isset($metricname) and $metricname = "";
-!isset($context_metrics) and $context_metrics = "";
 
 if ($context == "control" && $controlroom < 0)
   $header = "header-nobanner";
@@ -329,7 +312,7 @@ else
 #
 $sort_url = rawurlencode($sort);
 
-$get_metric_string = "m=$metricname&amp;r=$range&amp;s=$sort_url&amp;hc=${conf['hostcols']}&amp;mc=${conf['metriccols']}";
+$get_metric_string = "m={$user['metricname']}&amp;r=$range&amp;s=$sort_url&amp;hc=${conf['hostcols']}&amp;mc=${conf['metriccols']}";
 if ($jobrange and $jobstart)
     $get_metric_string .= "&amp;jr=$jobrange&amp;js=$jobstart";
 if ($cs)
@@ -398,17 +381,6 @@ if (($context != 'views') && ($context != 'compare_hosts')) {
 }
 $data->assign("node_menu", $node_menu);
 
-//////////////////// Build the metric menu ////////////////////////////////////
-
-if (count($metrics)) {
-  foreach ($metrics as $firsthost => $bar) {
-      foreach ($metrics[$firsthost] as $m => $foo)
-        $context_metrics[$m] = $m;
-  }
-  foreach ($reports as $r => $foo)
-    $context_metrics[] = $r;
-}
-
 #
 # If there are graphs present, show ranges.
 #
@@ -423,10 +395,6 @@ if ($context == 'meta') {
 if ($context == "physical" or $context == "cluster" or $context == 'host') {
   $cols_menu = make_cols_menu();
   $size_menu = make_size_menu($clustergraphsize, $context);
-}
-
-if ($context == "host") {
-  $metric_cols_menu = make_metric_cols_menu();
 }
 
 $custom_time = "";
@@ -496,7 +464,7 @@ if (file_exists("./templates/${conf['template_name']}/user_header.tpl"))
   $data->assign('user_header', "1");
 
 $data->assign('context', $context);
-$data->assign("metric_name","$metricname");
+$data->assign("metric_name","{$user['metricname']}");
 
 $dwoo->output($tpl, $data);
 
