@@ -417,10 +417,11 @@ function get_cluster_overview($showhosts,
   $avg_cpu_num = find_avg($clustername, "", "cpu_num");
   if ($avg_cpu_num == 0) 
     $avg_cpu_num = 1;
-  $cluster_util = sprintf("%.0f", 
-	  		  ((double) find_avg($clustername, 
-                                             "",
-					     "load_one") / $avg_cpu_num ) * 100);
+  $cluster_util = 
+    sprintf("%.0f", 
+	    ((double) find_avg($clustername, 
+			       "",
+			       "load_one") / $avg_cpu_num ) * 100);
   $data->assign("cluster_util", "$cluster_util%");
   $data->assign("range", $range);
 }
@@ -441,14 +442,16 @@ function get_cluster_optional_reports($conf,
   if (isset($conf['zoom_support']) && $conf['zoom_support'] === true)
     $additional_cluster_img_html_args = "class=cluster_zoomable";
 
-  $data->assign("additional_cluster_img_html_args", $additional_cluster_img_html_args);
+  $data->assign("additional_cluster_img_html_args", 
+		$additional_cluster_img_html_args);
 
 ###############################################################################
 # Let's find out what optional reports are included
 # First we find out what the default (site-wide) reports are then look
 # for host specific included or excluded reports
 ###############################################################################
-  $default_reports = array("included_reports" => array(), "excluded_reports" => array());
+  $default_reports = array("included_reports" => array(), 
+			   "excluded_reports" => array());
  if (is_file($conf['conf_dir'] . "/default.json")) {
    $default_reports = array_merge(
      $default_reports,
@@ -460,17 +463,21 @@ function get_cluster_optional_reports($conf,
    str_replace(" ", "_", $clustername) . 
    ".json";
 
- $override_reports = array("included_reports" => array(), "excluded_reports" => array());
+ $override_reports = array("included_reports" => array(), 
+			   "excluded_reports" => array());
  if (is_file($cluster_file)) {
-   $override_reports = array_merge($override_reports, 
-				   json_decode(file_get_contents($cluster_file), TRUE));
+   $override_reports = 
+     array_merge($override_reports, 
+		 json_decode(file_get_contents($cluster_file), TRUE));
  }
 
 # Merge arrays
  $reports["included_reports"] = 
-   array_merge($default_reports["included_reports"],$override_reports["included_reports"]);
+   array_merge($default_reports["included_reports"],
+	       $override_reports["included_reports"]);
  $reports["excluded_reports"] = 
-   array_merge($default_reports["excluded_reports"],$override_reports["excluded_reports"]);
+   array_merge($default_reports["excluded_reports"],
+	       $override_reports["excluded_reports"]);
 
 # Remove duplicates
  $reports["included_reports"] = array_unique($reports["included_reports"]);
@@ -499,11 +506,11 @@ function get_cluster_optional_reports($conf,
  $data->assign('optional_graphs_data', $optional_graphs_data);
 }
 
-function get_load_heatmap($hosts_up, $user, $metrics, $data) {
+function get_load_heatmap($hosts_up, $host_regex, $metrics, $data) {
   foreach ($hosts_up as $host => $val) {
     // If host_regex is defined
-    if (isset($user['host_regex']) && 
-        ! preg_match("/" . $user['host_regex'] . "/", $host))
+    if (isset($host_regex) && 
+        ! preg_match("/" . $host_regex . "/", $host))
       continue;
     
     $load = get_load($host, $metrics);
@@ -518,46 +525,32 @@ function get_load_heatmap($hosts_up, $user, $metrics, $data) {
 
   $col_index = 0;
   $row_index = 0;
-  $heatmap = '';
-  $hostmap = '';
+  $heatmap = '[';
   foreach ($host_load as $host => $load) {
     if ($col_index == 0) {
-      if ($row_index > 0) {
+      if ($row_index > 0)
 	$heatmap .= ',';
-	$hostmap .= ',';
-      }
       $heatmap .= '[';
-      $hostmap .= '[';
     }
     
-    if ($col_index > 0) {
+    if ($col_index > 0)
       $heatmap .= ',';
-      $hostmap .= ',';
-    }
 
-    $heatmap .= $load;
-    $hostmap .= '"' . $host . '"';
+    $heatmap .= "{host:\"$host\",load:$load}";
 
     if ($col_index == $num_cols - 1) {
       $heatmap .= ']';
-      $hostmap .= ']';
       $col_index = 0;
       $row_index++;
     } else
       $col_index++;
   }
 
-  if ($col_index != 0) {
+  if ($col_index != 0)
     $heatmap .= ']';
-    $hostmap .= ']';
-  }
-
-  $conf['heatmap_size'] = 200;
+  $heatmap .= ']';
 
   $data->assign("heatmap_data", $heatmap);
-  $data->assign("heatmap_host_name", $hostmap);
-  $data->assign("heatmap_num_cols", $num_cols);
-  $data->assign("heatmap_cell_size", floor($conf['heatmap_size'] / $num_cols));
 }
 
 $fn = "cluster_" . ($refresh ? "refresh" : "view") . ".tpl";
@@ -728,7 +721,7 @@ if ($showhosts != 0)
 if (isset($conf['heatmaps_enabled']) and 
     $conf['heatmaps_enabled'] == 1 and
     (count($hosts_up) > 0))
-  get_load_heatmap($hosts_up, $user, $metrics, $data);
+  get_load_heatmap($hosts_up, $user['host_regex'], $metrics, $data);
 
 $data->assign("showhosts", $showhosts);
 
