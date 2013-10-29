@@ -1132,7 +1132,9 @@ function build_aggregate_graph_config ($graph_type,
         }
       }
     }
-  } 
+  }
+
+  sort($matches);
 
   if( isset($mreg)) {
     // Find matching metrics
