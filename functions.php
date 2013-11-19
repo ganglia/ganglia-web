@@ -1388,7 +1388,7 @@ function my_passthru($command) {
   $cmdfp = fopen($cmdf, 'wb');
   fwrite($cmdfp, $command);
   fclose($cmdfp);
-  $cmd = "/bin/bash $cmdf";
+  $cmd = "/bin/sh $cmdf";
   $tf = tempnam('/tmp', 'ganglia-graph.');
   $ret = exec("$cmd > $tf");
   unlink($cmdf);
