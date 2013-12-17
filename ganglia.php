@@ -356,6 +356,7 @@ function Gmetad ()
             $request = "/$clustername";
              break;
          case "index_array":
+         case "views":
             xml_set_element_handler($parser, "start_everything", "end_all");
             $request = "/";
              break;
