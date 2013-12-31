@@ -3,6 +3,49 @@
 <script type="text/javascript" src="js/protovis-r3.2.js"></script>
 {/if}
 <script type="text/javascript">
+function Heatmap(elem_id, data) {
+  this.elem_id = elem_id;
+  this.data = data;
+  this.num_cols = data.length;
+  this.cell_size = $("#" + elem_id).height() / this.num_cols;
+  var this_map = this;
+
+  this.vis = new pv.Panel()
+    .width($("#" + elem_id).width())
+    .height($("#" + elem_id).height())
+    .margin(2)
+    .strokeStyle("#aaa")
+    .lineWidth(4)
+    .antialias(false);
+
+  this.fill = pv.Scale.linear().
+    domain(0, 0.25, 0.5, 0.75, 1.00).
+    range("#e2ecff", "#caff98", "#ffde5e", "#ffa15e", "#ff634f");
+
+  this.row = this.vis.add(pv.Panel)
+    .data(pv.range(this.num_cols))
+    .height(this.cell_size)
+    .top(function(d) { return d * this_map.cell_size;});
+
+  this.cell = this.row.add(pv.Panel)
+    .data(pv.range(this.num_cols))
+    .height(this.cell_size)
+    .width(this.cell_size)
+    .left(function(d) { return d * this_map.cell_size;})
+    .fillStyle(function(col_index, row_index) { return this_map.fill(this_map.data[row_index][col_index].load);})
+    .title(function(col_index, row_index) { return this_map.data[row_index][col_index].host + ", load = " + (this_map.data[row_index][col_index].load * 100).toFixed(0) + "%";});
+}
+
+Heatmap.prototype.setData = function(data) {
+  this.data = data;
+  this.num_cols = data.length;
+  this.cell_size = $("#" + this.elem_id).height() / this.num_cols;
+}
+
+Heatmap.prototype.render = function() {
+  this.vis.render();
+}
+
 function refreshClusterView() {
   $.get('cluster_view.php?' + jQuery.param.querystring() + '&refresh', function(data) {
     var item = data.split("<!-- || -->");
@@ -15,11 +58,8 @@ function refreshClusterView() {
       $('#load_pie').attr("src", item[3].replace(/&amp;/g, "&"));
 
     if ($('#heatmap-fig').size()) {
-      eval("heatmap_data = [" + item[4] + "]");
-      eval("heatmap_host_name = [" + item[6] + "]");
-      eval("heatmap_num_cols = " + item[7]);
-      eval("heatmap_cell_size = " + item[8]);
-      vis.render();
+      eval("heatmap.setData(" + item[4] + ")");
+      heatmap.render();
     }
 
     if ($('#stacked_graph').size()) {
@@ -191,43 +231,9 @@ $(function() {
 {if $heatmap_data && $num_nodes > 0}
 Server Load Distribution<br />
 <div id="heatmap-fig">
-<script type="text/javascript+protovis">
-var heatmap_data = [
-{$heatmap_data}
-];
-var heatmap_host_name = [
-{$heatmap_host_name}
-];
-
-var heatmap_num_cols = {$heatmap_num_cols};
-var heatmap_cell_size = {$heatmap_cell_size};
-
-var vis = new pv.Panel()
-  .width(heatmap_num_cols * heatmap_cell_size)
-  .height(heatmap_num_cols * heatmap_cell_size)
-  .margin(2)
-  .strokeStyle("#aaa")
-  .lineWidth(4)
-  .antialias(false);
-
-var fill = pv.Scale.linear().
-  domain(0, 0.25, 0.5, 0.75, 1.00).
-  range("#e2ecff", "#caff98", "#ffde5e" , "#ffa15e","#ff634f");
-
-var row = vis.add(pv.Panel)
-  .data(pv.range(heatmap_num_cols))
-  .height(heatmap_cell_size)
-  .top(function(d) d * heatmap_cell_size);
-
-var cell = row.add(pv.Panel)
-  .data(pv.range(heatmap_num_cols))
-  .height(heatmap_cell_size)
-  .width(heatmap_cell_size)
-  .left(function(d) d * heatmap_cell_size)
-  .fillStyle(function(col_index, row_index) fill(heatmap_data[row_index][col_index]))
-  .title(function(col_index, row_index) heatmap_host_name[row_index][col_index] + ", load = " + (heatmap_data[row_index][col_index] * 100).toFixed(0) + "%");
-
-vis.render();
+<script type="text/javascript">
+var heatmap = new Heatmap("heatmap-fig", {$heatmap_data});
+heatmap.render();
     </script>
  </div>
 {/if}
