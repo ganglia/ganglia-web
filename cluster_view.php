@@ -638,7 +638,7 @@ if (! $refresh) {
   }
 
   if (isset($user['host_regex']) && $user['host_regex'] != "")
-    $set_host_regex_value = "value='" . $user['host_regex'] . "'";
+    $set_host_regex_value = "value='" . htmlentities($user['host_regex'], ENT_QUOTES) . "'";
   else
     $set_host_regex_value = "";
 
