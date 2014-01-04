@@ -52,6 +52,11 @@ function getMetricGroup($metrics,
 
   //dump_var($metricMap, "metricMap");
   //dump_var($metricGroupMap, "metricGroupMap");
+  
+  # There is a special case where if you don't set group when you do gmetric
+  # invocation it gets set to no_group which ends up being just [""] array
+  if ( $metric_group == "no_group" ) 
+    $metric_group = "";
 
   if (!isset($metricGroupMap[$metric_group])) {
     error_log("Missing metric group: " . $metric_group);

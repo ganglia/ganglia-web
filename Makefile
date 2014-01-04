@@ -13,7 +13,7 @@ GWEB_STATEDIR = /var/lib/ganglia-web
 # Gmetad rootdir (parent location of rrd folder)
 GMETAD_ROOTDIR = /var/lib/ganglia
 
-APACHE_USER = www-data 
+APACHE_USER = www-data
 ##########################################################
 
 # Gweb version
