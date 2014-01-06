@@ -546,8 +546,12 @@ function get_load_heatmap($hosts_up, $host_regex, $metrics, $data) {
       $col_index++;
   }
 
-  if ($col_index != 0)
+  if ($col_index != 0) {
+    for ($i = 0; $i < ($num_cols * $num_cols - $num_hosts); $i++) {
+      $heatmap .= ",{host:\"unused\",load:0}";
+    }
     $heatmap .= ']';
+  }
   $heatmap .= ']';
 
   $data->assign("heatmap_data", $heatmap);
