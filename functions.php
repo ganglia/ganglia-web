@@ -1128,34 +1128,33 @@ function build_aggregate_graph_config ($graph_type,
       if ( preg_match("/$query/i", $host_name ) ) {
         // We can have same hostname in multiple clusters
         foreach ($index_array['cluster'][$host_name] AS $cluster) {
-            $matches[] = $host_name . "|" . $cluster;
+            $host_matches[] = $host_name . "|" . $cluster;
         }
       }
     }
   }
 
-  sort($matches);
+  sort($host_matches);
 
   if( isset($mreg)) {
     // Find matching metrics
     foreach ( $mreg as $key => $query ) {
-      foreach ( $index_array['metrics'] as $key => $m_name ) {
-        if ( preg_match("/$query/i", $key, $metric_subexpr ) ) {
+      foreach ( $index_array['metrics'] as $metric_key => $m_name ) {
+        if ( preg_match("/$query/i", $metric_key, $metric_subexpr ) ) {
           if (isset($metric_subexpr) && count($metric_subexpr) > 1) {
             $legend = array();
             for ($i = 1; $i < count($metric_subexpr); $i++) {
               $legend[] = $metric_subexpr[$i];
             }
-	    $metric_matches[$key] = implode(' ', $legend);
+	    $metric_matches[$metric_key] = implode(' ', $legend);
           } else {
-            $metric_matches[$key] = $key;
+            $metric_matches[$metric_key] = $metric_key;
           }
         }
       }
     }
     ksort($metric_matches);
   }
-  
   if( isset($metric_matches)){
     $metric_matches_unique = array_unique($metric_matches);
   }
@@ -1163,12 +1162,12 @@ function build_aggregate_graph_config ($graph_type,
     $metric_matches_unique = array($metric_name => $metric_name);
   }
 
-  if ( isset($matches)) {
+  if ( isset($host_matches)) {
 
-    $matches_unique = array_unique($matches);
+    $host_matches_unique = array_unique($host_matches);
 
     // Create graph_config series from matched hosts and metrics
-    foreach ( $matches_unique as $key => $host_cluster ) {
+    foreach ( $host_matches_unique as $key => $host_cluster ) {
 
       $out = explode("|", $host_cluster);
 
@@ -1214,7 +1213,7 @@ function build_aggregate_graph_config ($graph_type,
 //////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////
-function retrieve_metrics_cache () {
+function retrieve_metrics_cache ( $index = "all" ) {
 
    global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics, $context;
 
