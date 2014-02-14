@@ -293,13 +293,20 @@ function build_aggregate_graph_config_from_url($conf_graph_colors) {
     $exclude_host_from_legend_label = 
       (array_key_exists('lgnd_xh', $_GET) && 
        $_GET['lgnd_xh'] == "true") ? TRUE : FALSE;
+
+    $sortit = true;
+    if($_GET['sortit'] == "false") {
+      $sortit = false;
+    }
+
     $graph_config = 
       build_aggregate_graph_config($graph_type, 
 				   $line_width, 
 				   $_GET['hreg'], 
 				   $_GET['mreg'],
 				   $graph_legend,
-				   $exclude_host_from_legend_label);
+				   $exclude_host_from_legend_label,
+                                   $sortit);
   }
 
   // Set up 
