@@ -187,6 +187,10 @@ function get_host_metric_graphs($showhosts,
   } // foreach hosts_up
          
   foreach ($hosts_down as $host => $val) {
+    // If host_regex is defined
+    if (isset($user['host_regex']) && 
+	! preg_match("/" .$user['host_regex'] . "/", $host))
+      continue;
     $down_hosts[$host] = -1.0;
   }
 
