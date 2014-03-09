@@ -938,7 +938,11 @@ function rrdgraph_cmd_build($rrdtool_graph,
 	" last $range";
   }
 
-  $command = $conf['rrdtool'] . " graph - $rrd_options ";
+  $command = 
+    $conf['rrdtool'] . 
+    " graph" . 
+    (isset($_GET["verbose"]) ? 'v' : '') . 
+    " - $rrd_options ";
 
   // Look ahead six months
   if ($user_trend_line) {

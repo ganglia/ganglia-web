@@ -12,6 +12,7 @@
 <link type="text/css" href="css/qtip.min.css" rel="stylesheet" />
 <link type="text/css" href="css/chosen.min.css" rel="stylesheet" />
 <link type="text/css" href="./styles.css" rel="stylesheet" />
+<link type="text/css" href="js/jstree/themes/default/style.min.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
 <script>$.uiBackCompat = false;</script>
 <script type="text/javascript" src="js/jquery-ui-1.10.2.custom.min.js"></script>
@@ -26,7 +27,7 @@
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript" src="js/fullcalendar.js"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
-<script type="text/javascript" src="js/jquery.jstree.js"></script>
+<script type="text/javascript" src="js/jstree/jstree.js"></script>
 <script type="text/javascript" src="js/chosen.jquery.min.js"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
