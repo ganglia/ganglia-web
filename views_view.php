@@ -65,9 +65,9 @@ if (isset($_GET['create_view'])) {
   }
   $json = '{"output": "<div class=\"ui-widget\"><div class=\"ui-state-default ui-corner-all\" style=\"padding: 0 .7em;\"><p><span class=\"ui-icon ui-icon-alert\" style=\"float: left; margin-right: .3em;\"></span>' . $output . '</div></div>"';
   if ($conf['display_views_using_tree']) {
-    $json .= ',"tree_node": {"data":"' . $view_name . '","attr":{"id":"' . viewId($view_name) . '"';
+    $json .= ',"tree_node": {"text":"' . $view_name . '","id":"' . viewId($view_name) . '"';
     $json .= ',"view_name":"' . $view_name . '"';
-    $json .= '}}';
+    $json .= '}';
   }
   $json .= '}';
   echo $json;
@@ -136,6 +136,7 @@ if (isset($_GET['add_to_view'])) {
 	if (isset($_GET['x']) && is_numeric($_GET['x'])) {
 	  $item_array["upper_limit"] = $_GET['x'];
 	}
+
 	if (isset($_GET['n']) && is_numeric($_GET['n'])) {
 	  $item_array["lower_limit"] = $_GET['n'];
 	}
@@ -272,13 +273,12 @@ class ViewTreeNode {
   public function toJson($initially_open) {
     $pathName = $this->getPathName();
     $id = viewId($pathName);
-    $json = '{"data":"' . $this->name . '","attr":{"id":"' . $id . '"';
+    $json = '{"text":"' . $this->name . '","id":"' . $id . '"';
     if ($this->data != NULL)
       $json .= ',"view_name":"' . $pathName . '"';
-    $json .= '}';
     
     if ($initially_open && in_array($pathName, $initially_open))
-      $json .= ',"state":"open"';
+      $json .= ',"state":{"opened": true}';
 
     if ($this->children != NULL) {
       $json .= ',"children":[';
@@ -355,7 +355,7 @@ if (isset($_GET['views_menu'])) {
   if (!$conf['display_views_using_tree']) {
 ?>
 <div id="views_menu">
-  <?php echo $existing_views ?>
+      <?php echo $existing_views ?>
 </div>
     <script type="text/javascript">$(function(){$("#views_menu").buttonsetv();});</script>
   <?php } else { ?>
@@ -413,8 +413,11 @@ if ($is_ad_hoc) {
   $view_items = getViewItems($ad_hoc_view_json, $range, $cs, $ce);
 } else {
   $view = $viewList->getView($view_name);
-  if ($view != NULL)
+  if ($view != NULL) {
     $view_items = getViewItems($view, $range, $cs, $ce);
+    if ($view['common_y_axis'] != 0)
+      $data->assign("common_y_axis", 1);
+  }
 }
 
 if (isset($view_items)) {

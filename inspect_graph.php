@@ -105,9 +105,9 @@ $(function () {
     
   selectSeries = graphControls.find("#select_series");
   selectSeries.multiselect({
-    height: "auto",
+    height: 250,
     position : {
-      my: "left bottom",
+      my: "right bottom",
       at: "left top"
     },
     checkAll: function(event, ui) {
@@ -332,8 +332,6 @@ $(function () {
     }).appendTo("body").fadeIn(200);
   }
 
-  var previousPoint = null;
-
   function formattedSiVal(val, places) {
     if (val >= 1000000000) {
       return (val / 1000000000).toFixed(places) + " G";
@@ -379,22 +377,17 @@ $(function () {
 
   function hoverHandler(event, pos, item) {
     if (item) {
-      if (previousPoint != item.dataIndex) {
-	previousPoint = item.dataIndex;
-               
-	if (tooltip != null)
-	  tooltip.remove();
-	var y = formattedSiVal(item.datapoint[1], 2);
-	showTooltip(item.pageX, 
-		    item.pageY,
-		    item.series.label + " at " + 
-		    (new Date(item.datapoint[0])).toLocaleString() + 
-		    " = " + y);
-      }
+      if (tooltip != null)
+	tooltip.remove();
+      var y = formattedSiVal(item.datapoint[1], 2);
+      showTooltip(item.pageX, 
+		  item.pageY,
+		  item.series.label + " at " + 
+		  (new Date(item.datapoint[0])).toLocaleString() + 
+		  " = " + y);
     } else {
       if (tooltip != null)
 	tooltip.remove();
-      previousPoint = null;            
     }
   }
 

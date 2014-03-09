@@ -55,6 +55,8 @@ if ($view != NULL) {
 if (isset($view_items)) {
   $data->assign("view_items", $view_items);
   $data->assign("number_of_view_items", sizeof($view_items));
+  if ($view['common_y_axis'] != 0)
+    $data->assign("common_y_axis", 1);
 }
 
 $data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);
