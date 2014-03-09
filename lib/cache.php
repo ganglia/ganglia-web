@@ -14,7 +14,7 @@
                 if ( $debug == 1 ) {
                   echo("DEBUG: Fetching data from cache. Expires in " . $conf['cachetime'] . " seconds.\n");
                 }
-                $index_array = g_cache_deserialize();
+                $index_array = g_cache_deserialize($index);
         }
     }
 

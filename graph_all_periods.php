@@ -7,7 +7,7 @@ if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 <link rel="stylesheet" href="./styles.css" type="text/css" />
 <script TYPE="text/javascript" SRC="js/jquery-1.9.1.min.js"></script>
 <script>$.uiBackCompat = false;</script>
-<script type="text/javascript" src="js/jquery-ui-1.10.2.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>

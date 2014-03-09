@@ -81,15 +81,14 @@ for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
 # Host has been found in the Ganglia tree
 if ( $host_found == 1 ) {
   # Check for the existence of a metric
-  if ( isset($metrics[$fqdn]['last_reported_timestamp']['VAL']) ) {
-    $last_reported = $metrics[$fqdn]['last_reported_timestamp']['VAL'];
+  if ( isset($metrics[$fqdn]['last_reported_uptime_in_sec']['VAL']) ) {
+    $last_reported = $metrics[$fqdn]['last_reported_uptime_in_sec']['VAL'];
   } else {
     echo("UNKNOWN|" . $metric_name . " - Invalid metric request for this host. Please check metric exists.");
     exit(3);
   }
 
-  $time_diff = time() - $last_reported;   
-  if ( $time_diff < $threshold  ) {
+  if ( $metrics[$fqdn]['last_reported_uptime_in_sec']['VAL'] < $threshold  ) {
    print "OK|Last beacon received " . $metrics[$fqdn]['last_reported']['VAL'];
    exit (0);
   } else {
