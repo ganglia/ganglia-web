@@ -427,7 +427,7 @@ $conf['display_events_using_calendar'] = false;
 # the path from the root node to its desired folder, e.g. 
 # "Exchange Servers/Throughtput". Individual path entries are
 # separated by a forward slash.
-$conf['display_views_using_tree'] = true;
+$conf['display_views_using_tree'] = false;
 
 # Array of pathnames that define view tree nodes that should be opened
 # when the tree is first created in a browser session. Path entries are 
