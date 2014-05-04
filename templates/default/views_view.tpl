@@ -127,7 +127,6 @@
   }
 
   function selectView(view_name) {
-    $.cookie('ganglia-selected-view-' + window.name, view_name);
     $("#vn").val(view_name);
     {if !$display_views_using_tree}
     $.get("views_view.php?vn=" + view_name + "&views_menu",
@@ -184,7 +183,6 @@
                     {else}
                       $("#views_menu").html(data);
 		      $("#view_graphs").html("");  
-                      $.cookie('ganglia-selected-view-' + window.name, "");
 		      $("#vn").val("");
                     {/if}
                   });
@@ -201,6 +199,7 @@
 	 'check_callback' : true,
          'themes' : { 'icons' : false, 'dots' : false, 'stripes' : true }
       },
+      'state' : { "key" : 'view-tree-' + window.name },
       'plugins' : ['state', 'sort', 'unique']
     })
     .on("select_node.jstree", 
