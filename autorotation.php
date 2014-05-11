@@ -141,7 +141,7 @@ if ( ! isset($_REQUEST['view_name']) ) {
     ?>
     </select> seconds.</form></center>
     </p>
-    <center><a href="/ganglia/">Go back to Ganglia</a></center></div>
+    <center><a href="<?php echo dirname($_SERVER["REQUEST_URI"]) .'/'; ?>">Go back to Ganglia</a></center></div>
 	  </td>
   </tr>
   </table>
