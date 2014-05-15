@@ -6,7 +6,7 @@
   Search term matches any number of metrics and hosts. For example type web or disk; wait a split second, and a drop down menu will show up with choices.
   <!-- Uses LiveSearch from http://andreaslagerkvist.com/jquery/live-search/ -->
   <div id="metric-search">
-    <form method="post" action="/search/">
+    <form method="post" action="/search/" onsubmit="return false;">
       <p>
 	<label>
 	    <small>Search as you type</small><br />
