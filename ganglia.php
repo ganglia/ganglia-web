@@ -187,7 +187,7 @@ function start_cluster ($parser, $tagname, $attrs)
 
 function start_everything ($parser, $tagname, $attrs)
 {
-   global $index_array, $hosts, $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
+   global $index_array, $self, $grid, $debug;
    static $hostname, $cluster_name;
 
    if ($debug) print "<br/>DEBUG: parser start everything [$tagname]\n";
