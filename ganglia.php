@@ -77,13 +77,16 @@ function preamble($ganglia)
    $version[$component] = $ganglia['VERSION'];
 }
 
+function debug_start_meta ($parser, $tagname, $attrs)
+{
+   print "<br/>DEBUG: parser start meta [$tagname]\n";
+   start_meta($parser, $tagname, $attrs);
+}
 
 function start_meta ($parser, $tagname, $attrs)
 {
-   global $metrics, $grid, $self, $debug;
+   global $metrics, $grid, $self;
    static $sourcename, $metricname;
-
-   if ($debug) print "<br/>DEBUG: parser start meta [$tagname]\n";
 
    switch ($tagname)
       {
@@ -93,7 +96,6 @@ function start_meta ($parser, $tagname, $attrs)
 
          case "GRID":
          case "CLUSTER":
-            if ($debug) print "<br/>DEBUG: parser start meta GRID|CLUSTER\n";
             # Our grid will be first.
             if (!$sourcename) $self = $attrs['NAME'];
 
@@ -119,13 +121,17 @@ function start_meta ($parser, $tagname, $attrs)
       }
 }
 
+function debug_start_cluster ($parser, $tagname, $attrs)
+{
+   print "<br/>DEBUG: parser start cluster [$tagname]\n";
+   start_cluster($parser, $tagname, $attrs);
+}
 
 function start_cluster ($parser, $tagname, $attrs)
 {
-   global $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
+   global $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down;
    static $hostname;
 
-   if ($debug) print "<br/>DEBUG: parser start cluster [$tagname]\n";
    switch ($tagname)
       {
          case "GANGLIA_XML":
@@ -185,12 +191,16 @@ function start_cluster ($parser, $tagname, $attrs)
       }
 }
 
+function debug_start_everything ($parser, $tagname, $attrs)
+{
+   print "<br/>DEBUG: parser start everything [$tagname]\n";
+   start_everything($parser, $tagname, $attrs);
+}
+
 function start_everything ($parser, $tagname, $attrs)
 {
-   global $index_array, $self, $grid, $debug;
+   global $index_array, $self, $grid;
    static $hostname, $cluster_name;
-
-   if ($debug) print "<br/>DEBUG: parser start everything [$tagname]\n";
 
    switch ($tagname)
       {
@@ -226,6 +236,11 @@ function start_everything ($parser, $tagname, $attrs)
 
 }
 
+function debug_start_cluster_summary ($parser, $tagname, $attrs)
+{
+   start_cluster_summary($parser, $tagname, $attrs);
+}
+
 function start_cluster_summary ($parser, $tagname, $attrs)
 {
    global $metrics, $cluster, $self, $grid;
@@ -254,6 +269,12 @@ function start_cluster_summary ($parser, $tagname, $attrs)
          default:
             break;
       }
+}
+
+
+function debug_start_host ($parser, $tagname, $attrs)
+{
+   start_host($parser, $tagname, $attrs);
 }
 
 
@@ -340,7 +361,16 @@ function Gmetad ()
             $ip = func_get_arg(0);
       }
 
-   if ($debug) print "<br/>DEBUG: Creating parser\n";
+   if ($debug) 
+      {
+         print "<br/>DEBUG: Creating parser\n";
+         $debug_prefix = "debug_";
+      }
+   else
+      {
+         $debug_prefix = "";
+      }
+
    if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph") 
       return TRUE;
    $parser = xml_parser_create();
@@ -351,26 +381,26 @@ function Gmetad ()
          case "control":
          case "tree":
          default:
-            xml_set_element_handler($parser, "start_meta", "end_all");
+            xml_set_element_handler($parser, $debug_prefix . "start_meta", "end_all");
             $request = "/?filter=summary";
             break;
          case "physical":
          case "cluster":
-            xml_set_element_handler($parser, "start_cluster", "end_all");
+            xml_set_element_handler($parser, $debug_prefix . "start_cluster", "end_all");
             $request = "/$clustername";
             break;
          case "index_array":
          case "views":
-            xml_set_element_handler($parser, "start_everything", "end_all");
+            xml_set_element_handler($parser, $debug_prefix . "start_everything", "end_all");
             $request = "/";
             break;
          case "cluster-summary":
-            xml_set_element_handler($parser, "start_cluster_summary", "end_all");
+            xml_set_element_handler($parser, $debug_prefix . "start_cluster_summary", "end_all");
             $request = "/$clustername?filter=summary";
             break;
          case "node":
          case "host":
-            xml_set_element_handler($parser, "start_host", "end_all");
+            xml_set_element_handler($parser, $debug_prefix . "start_host", "end_all");
             $request = "/$clustername/$hostname";
             $strip_extra = false;
             break;
@@ -387,7 +417,7 @@ function Gmetad ()
    if ($port == 8649)
       {
          # We are connecting to a gmond. Non-interactive.
-         xml_set_element_handler($parser, "start_cluster", "end_all");
+         xml_set_element_handler($parser, $debug_prefix . "start_cluster", "end_all");
       }
    else
       {
