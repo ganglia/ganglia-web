@@ -1,32 +1,24 @@
 
 # The following options are supported:
-#   --with httpd_user=<username>       # defaults to: apache
-#   --with httpd_group=<group>         # defaults to: apache
-#   --with web_prefixdir=<path>        # defaults to: @GDESTDIR@
-#   --with gweb_statedir=<path>        # defaults to: @vargwebdir@
-#   --with gweb_confdir=<path>         # defaults to: @etcdir@
+#   --define 'httpd_user <username>'       # defaults to: apache
+#   --define 'httpd_group <group>'         # defaults to: apache
+#   --define 'web_prefixdir <path>'        # defaults to: @GDESTDIR@
+#   --define 'gweb_statedir <path>'        # defaults to: @vargwebdir@
+#   --define 'gweb_confdir <path>'         # defaults to: @etcdir@
 
-# example: rpmbuild -tb ganglia-web-3.5.12.tar.gz --with httpd_user=www-data --with httpd_group=www-data --with web_prefixdir=/srv/www/ganglia
+# example: rpmbuild -tb ganglia-web-3.5.12.tar.gz --define 'httpd_user www-data' --define 'httpd_group www-data' --define 'web_prefixdir /srv/www/ganglia'
 
-# Default value for web_prefixdir depending on distro.
+# Default values for Above variables.
 %if 0%{?suse_version}
-%define web_prefixdir /srv/www/htdocs/ganglia
+%{!?web_prefixdir: %define web_prefixdir /srv/www/htdocs/ganglia}
 %else
-%define web_prefixdir @GDESTDIR@
+%{!?web_prefixdir: %define web_prefixdir /usr/share/ganglia-webfrontend}
 %endif
 
-# Default value for httpd user and group.
-%define httpd_user apache
-%define httpd_group apache
-%define gweb_statedir @vargwebdir@
-%define gweb_confdir @etcdir@
-
-# Read the provided --with tags if any (overriding default values).
-%{?_with_httpd_user:%define httpd_user %(set -- %{_with_httpd_user}; echo $2 | cut -d= -f2)}
-%{?_with_httpd_group:%define httpd_group %(set -- %{_with_httpd_group}; echo $2 | cut -d= -f2)}
-%{?_with_web_prefixdir:%define web_prefixdir %(set -- %{_with_web_prefixdir}; echo $2 | cut -d= -f2)}
-%{?_with_gweb_statedir:%define gweb_statedir %(set -- %{_with_gweb_statedir}; echo $2 | cut -d= -f2)}
-%{?_with_gweb_confdir:%define gweb_confdir %(set -- %{_with_gweb_confdir}; echo $2 | cut -d= -f2)}
+%{!?httpd_user: %define httpd_user apache}
+%{!?httpd_group: %define httpd_group apache}
+%{!?gweb_statedir: %define gweb_statedir @vargwebdir@}
+%{!?gweb_confdir: %define gweb_confdir @etcdir@}
 
 Summary: Ganglia Web Frontend
 Name: ganglia-web
@@ -48,7 +40,7 @@ ganglia, and to provide historical graphs of collected metrics. This website is
 written in the PHP5 language and uses the Dwoo templating engine.
 
 %prep
-%setup -n %{name}-%{version}
+%setup -q -n %{name}-%{version}
 
 %build
 # Update all needed files
@@ -62,25 +54,12 @@ written in the PHP5 language and uses the Dwoo templating engine.
 # Flush any old RPM build root
 %__rm -rf $RPM_BUILD_ROOT
 
-%__make install GDESTDIR=%{web_prefixdir} \
+%__make install-files GDESTDIR=%{web_prefixdir} \
                APACHE_USER=%{httpd_user} \
                APACHE_GROUP=%{httpd_group} \
                GWEB_STATEDIR=%{gweb_statedir} \
                GCONFDIR=%{gweb_confdir} \
                DESTDIR=$RPM_BUILD_ROOT
-
-#%__mkdir -p $RPM_BUILD_ROOT/%{web_prefixdir}
-#%__cp -rf * $RPM_BUILD_ROOT/%{web_prefixdir}
-#%__rm -rf $RPM_BUILD_ROOT/%{web_prefixdir}/conf
-#%__rm -rf $RPM_BUILD_ROOT/%{web_prefixdir}/apache.conf
-#%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/filters
-#%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/conf
-#%__cp -rf conf/* $RPM_BUILD_ROOT@vargwebdir@/conf
-#%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo
-#%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo/compiled
-#%__install -d -m 0755 $RPM_BUILD_ROOT@vargwebdir@/dwoo/cache
-#%__install -d -m 0755 $RPM_BUILD_ROOT@etcdir@
-#%__cp -f apache.conf $RPM_BUILD_ROOT@etcdir@/
 
 %files
 %defattr(-,root,root)
@@ -116,12 +95,10 @@ fi
 
 %changelog
 * Fri Feb 28 2014 Olivier Lahaye <olivier.lahaye@cea.fr>
-- Added the ability to change Makefile variables using --with switch for the
+- Added the ability to change Makefile variables using --define switch for the
   following variables:
     httpd_user, httpd_group, web_prefixdir, gweb_confdir, gweb_statedir
-- Reworked the web_prefixdir setup from the rpmbuild command line. Moved from
-  --define '%custom_web_prefixdir <webprefix>' to --with web_prefixdir=<prefix>
-  Also fixed a bug that prevented to fix the web_prefixdir on SuSE Linux.
+- Also fixed a bug that prevented to fix the web_prefixdir on SuSE Linux.
 * Tue Jun 04 2013 Wesley Hirsch <emperorshishire@gmail.com>
 - Added default apache configuration
 * Thu Mar 17 2011 Bernard Li <bernard@vanhpc.org>

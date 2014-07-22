@@ -18,12 +18,12 @@ GMETAD_ROOTDIR = /var/lib/ganglia
 ##########################################################
 
 ifndef APACHE_USER
-$(warning APACHE_USER is not set using www-data)
+$(info APACHE_USER is not set using www-data)
 APACHE_USER = www-data
 endif
 
 ifndef APACHE_GROUP
-$(warning APACHE_GROUP is not set, using $(APACHE_USER))
+$(info APACHE_GROUP is not set, using $(APACHE_USER))
 APACHE_GROUP = $(APACHE_USER)
 endif
 
@@ -46,25 +46,38 @@ all: default
 default:	$(TARGETS)
 
 clean:
-	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
+	@echo -n "Cleaning build files ............................... "
+	@rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
+	@echo "DONE."
 
 conf_default.php:	conf_default.php.in
-	sed -e "s|@vargmetadir@|$(GMETAD_ROOTDIR)|" -e "s|@vargwebdir@|$(GWEB_STATEDIR)|g" conf_default.php.in > conf_default.php
+	@echo -n "Generating conf_default.php ........................ "
+	@sed -e "s|@vargmetadir@|$(GMETAD_ROOTDIR)|" -e "s|@vargwebdir@|$(GWEB_STATEDIR)|g" conf_default.php.in > conf_default.php
+	@echo "DONE."
 
 conf_redirect.php:	conf_redirect.php.in
-	sed -e "s|@etcdir@|$(GCONFDIR)|" conf_redirect.php.in > conf_redirect.php
+	@echo -n "Generating conf_redirect.php ....................... "
+	@sed -e "s|@etcdir@|$(GCONFDIR)|" conf_redirect.php.in > conf_redirect.php
+	@echo "DONE."
 
 ganglia-web.spec:	ganglia-web.spec.in
-	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ -e "s|@vargwebdir@|$(GWEB_STATEDIR)|" -e "s|@GDESTDIR@|$(GDESTDIR)|g" -e "s|@etcdir@|$(GCONFDIR)|g" ganglia-web.spec.in > ganglia-web.spec
+	@echo -n "Generating ganglia-web.spec ........................ "
+	@sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ -e "s|@vargwebdir@|$(GWEB_STATEDIR)|" -e "s|@GDESTDIR@|$(GDESTDIR)|g" -e "s|@etcdir@|$(GCONFDIR)|g" ganglia-web.spec.in > ganglia-web.spec
+	@echo "DONE."
 
 version.php:	version.php.in
-	sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
+	@echo -n "Generating version.php ............................. "
+	@sed -e s/@GWEB_VERSION@/$(GWEB_VERSION)/ version.php.in > version.php
+	@echo "DONE."
 
 apache.conf:	apache.conf.in
-	sed -e "s|@GDESTDIR@|$(GDESTDIR)|g" apache.conf.in > apache.conf
+	@echo -n "Generating apache.conf ............................. "
+	@sed -e "s|@GDESTDIR@|$(GDESTDIR)|g" apache.conf.in > apache.conf
+	@echo "DONE."
 
 dist-dir:	default
-	rsync	--exclude "rpmbuild" \
+	@echo -n "Filling dist dir ................................... "
+	@rsync	--exclude "rpmbuild" \
 		--exclude "debian/ganglia-webfrontend" \
 		--exclude "*.gz" \
 		--exclude "$(DIST_DIR)" \
@@ -76,52 +89,72 @@ dist-dir:	default
 		--exclude "*~" \
 		--exclude "#*#" \
 		-a . $(DIST_DIR)
+	@echo "DONE."
 
-install:	dist-dir
-	# Create dwoo sharedstattedir tree
-	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/compiled
-	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/cache
-	mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/filters
-	# Install ganglia-webfrontend low level conf
-	rsync -a $(DIST_DIR)/conf $(DESTDIR)/$(GWEB_STATEDIR)
-	# Set apache daemon ownership to the sharedstattedir files.
-	chown -R $(APACHE_USER):$(APACHE_GROUP) $(DESTDIR)/$(GWEB_STATEDIR)
-	# Install php files
-	mkdir -p $(DESTDIR)/$(GDESTDIR)
-	rsync 	--exclude "conf" \
+install:	install-files
+	@echo -n "Setting ownership to the sharedstattedir files ..... "
+	@chown -R $(APACHE_USER):$(APACHE_GROUP) $(DESTDIR)/$(GWEB_STATEDIR)
+	@echo "DONE."
+
+
+install-files:	dist-dir
+	@echo -n "Creating dwoo sharedstattedir tree ................. "
+	@mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/compiled
+	@mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/dwoo/cache
+	@mkdir -p $(DESTDIR)/$(GWEB_STATEDIR)/filters
+	@echo "DONE."
+	@echo -n "Installing ganglia-webfrontend low level conf ...... "
+	@rsync -a $(DIST_DIR)/conf $(DESTDIR)/$(GWEB_STATEDIR)
+	@echo "DONE."
+	@echo -n "Installing php files ............................... "
+	@mkdir -p $(DESTDIR)/$(GDESTDIR)
+	@rsync 	--exclude "conf" \
 		--exclude conf_redirect.php \
 		--exclude "*.in" \
 		--exclude "*.spec" \
 		-a $(DIST_DIR)/* $(DESTDIR)/$(GDESTDIR)
-	# Intall file that redirect conf.php to /etc/ganglia-webfrontend
-	# so it can be seen as a config file under debian packages.
-	# Do the same for all distro to avoid specific case for debian.
-	cp -f conf_redirect.php $(DESTDIR)/$(GDESTDIR)/conf.php
-	# Install the generated conf_default.php file.
-	cp -f conf_default.php $(DESTDIR)/$(GDESTDIR)/conf_default.php
-	# Create the /etc/ganglia-webfrontend directory.
-	mkdir -p $(DESTDIR)/$(GCONFDIR)
-	cp -f apache.conf $(DESTDIR)/$(GCONFDIR)/
-	# Install the editable copy of conf_default.php
-	cp -f conf_default.php $(DESTDIR)/$(GCONFDIR)/conf.php
+	@echo "DONE."
+	@echo -n "Intalling redirect conf.php ........................ "
+	@# so it can be seen as a config file under debian packages.
+	@# Do the same for all distro to avoid specific case for debian.
+	@cp -f conf_redirect.php $(DESTDIR)/$(GDESTDIR)/conf.php
+	@echo "DONE."
+	@echo -n "Installing the generated conf_default.php file ..... "
+	@cp -f conf_default.php $(DESTDIR)/$(GDESTDIR)/conf_default.php
+	@echo "DONE."
+	@echo -n "Creating the etc/ganglia-webfrontend directory ..... "
+	@mkdir -p $(DESTDIR)/$(GCONFDIR)
+	@echo "DONE."
+	@echo -n "Installing apache.conf ............................. "
+	@cp -f apache.conf $(DESTDIR)/$(GCONFDIR)/
+	@echo "DONE."
+	@echo -n "Installing the editable copy of conf_default.php ... "
+	@cp -f conf_default.php $(DESTDIR)/$(GCONFDIR)/conf.php
+	@echo "DONE."
 
 dist-gzip:	dist-dir $(DIST_GZIP_TARGETS)
-	if [ -f $(DIST_TARBALL) ]; then \
-	rm -rf $(DIST_TARBALL) ;\
-	fi ;\
-	cp -pf $(DIST_GZIP_TARGETS) $(DIST_DIR)
-	tar -czf $(DIST_TARBALL) $(DIST_DIR)/*
+	@echo -n "Creating tarball ................................... "
+	@if [ -f $(DIST_TARBALL) ]; then \
+		rm -rf $(DIST_TARBALL) ;\
+	fi
+	@cp -pf $(DIST_GZIP_TARGETS) $(DIST_DIR)
+	@tar -czf $(DIST_TARBALL) $(DIST_DIR)/*
+	@echo "DONE."
 
 rpm: dist-gzip ganglia-web.spec apache.conf
-	rm -rf rpmbuild
-	mkdir rpmbuild
-	mkdir rpmbuild/SOURCES 
-	mkdir rpmbuild/BUILD 
-	mkdir rpmbuild/RPMS 
-	mkdir rpmbuild/SRPMS
-	ln -s $(DIST_TARBALL) rpmbuild/SOURCES
-	rpmbuild --define '_topdir $(PWD)/rpmbuild' --with web_prefixdir=$(GDESTDIR) -bb ganglia-web.spec
+	@echo -n "Creating binary rpm ................................ "
+	@rm -rf rpmbuild
+	@mkdir rpmbuild
+	@mkdir rpmbuild/SOURCES 
+	@mkdir rpmbuild/BUILD 
+	@mkdir rpmbuild/RPMS 
+	@mkdir rpmbuild/SRPMS
+	@ln -s ../../$(DIST_TARBALL) rpmbuild/SOURCES/$(DIST_TARBALL)
+	@rpmbuild --define '_topdir $(PWD)/rpmbuild' --define 'web_prefixdir $(GDESTDIR)' -bb ganglia-web.spec
+	@echo "DONE."
 
 uninstall:
+	@echo -n "Uninstalling ganglia-web. (conf files untouched) ... "
 	rm -rf $(DESTDIR)/$(GDESTDIR)  $(DESTDIR)/$(GWEB_STATEDIR)
+	@echo "DONE."
 
