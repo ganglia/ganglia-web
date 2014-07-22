@@ -5,33 +5,38 @@
 # Assumes you have already called get_context.php.
 #
 
-if (! Gmetad($conf['ganglia_ip'], $conf['ganglia_port']) )
-   {
-      print "<H4>There was an error collecting ganglia data ".
-         "(${conf['ganglia_ip']}:${conf['ganglia_port']}): $error</H4>\n";
-      exit;
-   }
+# If we are in compare_hosts, views and decompose_graph context we shouldn't attempt
+# any connections to the gmetad
+if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph")  {
+   
+} else {
+   if (! Gmetad($conf['ganglia_ip'], $conf['ganglia_port']) )
+      {
+         print "<H4>There was an error collecting ganglia data ".
+            "(${conf['ganglia_ip']}:${conf['ganglia_port']}): $error</H4>\n";
+         exit;
+      }
+      
+      
+   # If we have no child data sources, assume something is wrong.
+   if (!count($grid) and !count($cluster))
+      {
+         print "<H4>Ganglia cannot find a data source. Is gmond running?</H4>";
+         exit;
+      }
+   # If we only have one cluster source, suppress MetaCluster output.
+   if (count($grid) <= 2 and $context=="meta")
+      {
+         # Lets look for one cluster (the other is our grid).
+         foreach($grid as $source)
+            if (isset($source['CLUSTER']) and $source['CLUSTER'])
+               {
+                  $standalone = 1;
+                  $context = "cluster";
+                  # Need to refresh data with new context.
+                  Gmetad($conf['ganglia_ip'], $conf['ganglia_port']);
+                  $clustername = $source['NAME'];
+               }
+      }
 
-# If we have no child data sources, assume something is wrong.
-if (!count($grid) and !count($cluster))
-   {
-      print "<H4>Ganglia cannot find a data source. Is gmond running?</H4>";
-      exit;
-   }
-
-# If we only have one cluster source, suppress MetaCluster output.
-if (count($grid) <= 2 and $context=="meta")
-   {
-      # Lets look for one cluster (the other is our grid).
-      foreach($grid as $source)
-         if (isset($source['CLUSTER']) and $source['CLUSTER'])
-            {
-               $standalone = 1;
-               $context = "cluster";
-               # Need to refresh data with new context.
-               Gmetad($conf['ganglia_ip'], $conf['ganglia_port']);
-               $clustername = $source['NAME'];
-            }
-   }
-
-?>
+}

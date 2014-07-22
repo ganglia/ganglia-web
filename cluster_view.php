@@ -506,7 +506,7 @@ function get_cluster_optional_reports($conf,
  $data->assign('optional_graphs_data', $optional_graphs_data);
 }
 
-function get_load_heatmap($hosts_up, $host_regex, $metrics, $data) {
+function get_load_heatmap($hosts_up, $host_regex, $metrics, $data, $sort) {
   foreach ($hosts_up as $host => $val) {
     // If host_regex is defined
     if (isset($host_regex) && 
@@ -520,6 +520,19 @@ function get_load_heatmap($hosts_up, $host_regex, $metrics, $data) {
   $num_hosts = count($host_load);
   if ($num_hosts == 0)
     return;
+
+  switch ($sort) {
+  case "descending":
+    arsort($host_load);
+    break;
+  case "by name":
+    uksort($host_load, "strnatcmp");
+    break;
+  default:
+  case "ascending":
+    asort($host_load);
+    break;
+  }
 
   $num_cols = ceil(sqrt($num_hosts));
 
@@ -552,6 +565,7 @@ function get_load_heatmap($hosts_up, $host_regex, $metrics, $data) {
     }
     $heatmap .= ']';
   }
+
   $heatmap .= ']';
 
   $data->assign("heatmap_data", $heatmap);
@@ -628,8 +642,8 @@ if (! $refresh) {
   $data->assign("sort", $sort);
   $data->assign("range", $range);
   
-  $showhosts_levels = array(2 => array('checked'=>'', 'name'=>'Auto'),
-			    1 => array('checked'=>'', 'name'=>'Same'),
+  $showhosts_levels = array(1 => array('checked'=>'', 'name'=>'Auto'),
+			    2 => array('checked'=>'', 'name'=>'Same'),
 			    0 => array('checked'=>'', 'name'=>'None'),
 			    );
   $showhosts_levels[$showhosts]['checked'] = 'checked';
@@ -725,7 +739,7 @@ if ($showhosts != 0)
 if (isset($conf['heatmaps_enabled']) and 
     $conf['heatmaps_enabled'] == 1 and
     (count($hosts_up) > 0))
-  get_load_heatmap($hosts_up, $user['host_regex'], $metrics, $data);
+  get_load_heatmap($hosts_up, $user['host_regex'], $metrics, $data, $sort);
 
 $data->assign("showhosts", $showhosts);
 

@@ -341,6 +341,8 @@ function Gmetad ()
       }
 
    if ($debug) print "<br/>DEBUG: Creating parser\n";
+   if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph") 
+      return TRUE;
    $parser = xml_parser_create();
    switch ($context)
       {

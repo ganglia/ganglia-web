@@ -124,6 +124,12 @@ if(isset($_GET["choose_filter"]))
 }
 
 # Set context.
+#
+# WARNING WARNING WARNING WARNING. If you create another context
+# e.g. views, compare_hosts please make sure you add those to
+# get_ganglia.php and ganglia.php otherwise you may be making
+# requests to the gmetad any time you access it which will impact
+# performance read make it really slow
 $context = NULL;
 if(!$user['clustername'] && !$user['hostname'] && $user['controlroom']) {
       $context = "control";

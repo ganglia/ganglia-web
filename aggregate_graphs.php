@@ -39,8 +39,8 @@ $(function() {
   retrieve_metrics_cache("metric_list");
 
   ksort($index_array['metrics']);
-  foreach ($index_array['metrics'] as $key => $value) {
-    $available_metrics[] = "\"$key\"";
+  foreach ($index_array['metrics'] as $value) {
+    $available_metrics[] = "\"$value\"";
   }
 
   print join(",", $available_metrics);

@@ -1,5 +1,6 @@
 <div id="views-content">
   <div id=view_graphs>
+    <script type="text/javascript">viewCommonYaxis={if $common_y_axis}true{else}false{/if};yAxisUpperLimit=null;yAxisLowerLimit=null;</script>
     {if isset($number_of_view_items)}
     {if $number_of_view_items == 0 }
     <div class="ui-widget">

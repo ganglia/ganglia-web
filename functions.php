@@ -671,13 +671,16 @@ function get_available_views() {
 	  $view['default_size'] : $conf['default_view_graph_size'];
 	$view_parent = 
 	  isset($view['parent']) ? $view['parent'] : NULL;
+	$common_y_axis = 
+	  isset($view['common_y_axis']) ? $view['common_y_axis'] : 0;
 
 	$available_views[] = array ("file_name" => $view_config_file, 
 				    "view_name" => $view['view_name'],
 				    "default_size" => $default_size, 
 				    "items" => $view['items'], 
 				    "view_type" => $view_type,
-				    "parent" => $view_parent);
+				    "parent" => $view_parent,
+				    "common_y_axis" => $common_y_axis);
 	unset($view);
       }
     }
@@ -753,10 +756,10 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "gtype=line";
 	  
 	  if (isset($item['upper_limit']))
-	    $graph_args_array[] = "x=" .$item['upper_limit'];
+	    $graph_args_array[] = "x=" . $item['upper_limit'];
 	  
 	  if (isset($item['lower_limit']))
-	    $graph_args_array[] = "n=" .$item['lower_limit'];
+	    $graph_args_array[] = "n=" . $item['lower_limit'];
 	  
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
@@ -791,6 +794,7 @@ function get_view_graph_elements($view) {
 	} else if ($item['item_id']) {
 	  $graph_args_array[] = "vn=" . $view['view_name'];
           $graph_args_array[] = "item_id=" . $item['item_id'];
+
 	  $view_elements[] = 
 	    array("graph_args" => join("&", $graph_args_array));
           unset($graph_args_array);
@@ -825,11 +829,11 @@ function get_view_graph_elements($view) {
 	  }
 	  $graph_args_array[] = "c=" . urlencode($cluster);
 
-          if (isset($item['upper_limit']))
-            $graph_args_array[] = "x=" .$item['upper_limit'];
+	  if (isset($item['upper_limit']))
+	    $graph_args_array[] = "x=" . $item['upper_limit'];
 	  
 	  if (isset($item['lower_limit']))
-	    $graph_args_array[] = "n=" .$item['lower_limit'];
+	    $graph_args_array[] = "n=" . $item['lower_limit'];
 	  
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
@@ -1132,7 +1136,7 @@ function build_aggregate_graph_config ($graph_type,
         }
       }
     }
-  }
+  } 
 
   sort($host_matches);
 
