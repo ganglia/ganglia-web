@@ -853,6 +853,24 @@ function rrdgraph_cmd_build($rrdtool_graph,
     $php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
     $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
     
+    if (!is_file($php_report_file)) {
+       $parts = preg_split("/[0-9]+/i", $graph);
+       $general_name = $parts[0].$parts[1];
+       preg_match("/[0-9]+/i", $graph, &$matches);
+       $device_index = $matches[0];
+       $php_report_file = $conf['graphdir'] . "/" . $general_name . ".php";
+       if(is_file($php_report_file)) {
+           include_once $php_report_file;
+           $graph_function = "graph_".$general_name;
+           if(isset($graph_arguments)) {
+               $graph_arguments = array_merge($graph_arguments, array("dindex" => $device_index));
+           }
+           else {
+               $graph_arguments = array("dindex" => $device_index);
+           }
+       }
+    }
+    
     if (is_file($php_report_file)) {
       // Check for path traversal issues by making sure real path is 
       // actually in graphdir
@@ -860,8 +878,11 @@ function rrdgraph_cmd_build($rrdtool_graph,
 	$rrdtool_graph['series'] = 
 	  'HRULE:1#FFCC33:"Check \$conf[graphdir] should not be relative path"';
       } else {
-	$graph_function = "graph_${graph}";
-	if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
+	if(!isset($graph_function)) {
+            $graph_function = "graph_${graph}";
+        }
+        
+        if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
 	    count($graph_arguments)) {
 	  $rrdtool_graph['arguments'] = $graph_arguments;
 	  // Pass by reference call, $rrdtool_graph modified inplace
