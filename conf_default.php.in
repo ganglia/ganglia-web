@@ -433,4 +433,9 @@ $conf['display_views_using_tree'] = false;
 # when the tree is first created in a browser session. Path entries are 
 # separated using "--"
 #$conf['view_tree_nodes_initially_open'] = array();
+
+# Gmetad will send back <EXTRA_DATA> information that is not utilized
+# in many code paths. This will pre-emptively strip out the tags in 
+# those code paths to save time during XML parsing.
+$conf['strip_extra'] = true;
 ?>
