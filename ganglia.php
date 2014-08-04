@@ -11,6 +11,7 @@
 $gweb_root = dirname(__FILE__);
 
 include_once($gweb_root . "/version.php");
+include_once("./global.php");
 
 $error="";
 
@@ -341,8 +342,9 @@ function Gmetad ()
       }
 
    if ($debug) print "<br/>DEBUG: Creating parser\n";
-   if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph") 
+   if ( in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
       return TRUE;
+   }
    $parser = xml_parser_create();
    $strip_extra = $conf['strip_extra'];
    switch ($context)

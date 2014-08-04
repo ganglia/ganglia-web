@@ -7,7 +7,7 @@
 
 # If we are in compare_hosts, views and decompose_graph context we shouldn't attempt
 # any connections to the gmetad
-if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph")  {
+if ( in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
    
 } else {
    if (! Gmetad($conf['ganglia_ip'], $conf['ganglia_port']) )
@@ -40,3 +40,5 @@ if ( $context == "compare_hosts" or $context == "views" or $context == "decompos
       }
 
 }
+
+?>
