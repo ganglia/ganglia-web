@@ -1,6 +1,8 @@
 <?php
 // vim: tabstop=2:softtabstop=2:shiftwidth=2:expandtab
 
+session_start();
+
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -938,7 +940,11 @@ function rrdgraph_cmd_build($rrdtool_graph,
 	" last $range";
   }
 
-  $command = 
+  $command = '';
+  if (isset($_SESSION['tz']))
+    $command .= "TZ='" . $_SESSION['tz'] . "' ";
+
+  $command .= 
     $conf['rrdtool'] . 
     " graph" . 
     (isset($_GET["verbose"]) ? 'v' : '') . 

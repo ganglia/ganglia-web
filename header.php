@@ -1,10 +1,36 @@
 <?php
 session_start();
 
+if (isset($_GET['tz'])) {
+  $_SESSION['tz'] = $_GET['tz'];
+}
+
 if (isset($_GET['date_only'])) {
   $d = date("r");
   echo $d;
   exit(0);
+}
+
+/**    Returns the offset from the origin timezone to the remote timezone, 
+ *     in seconds.
+*    @param $remote_tz;
+*    @param $origin_tz; If null the servers current timezone is used as the 
+*                       origin.
+*    @return int;
+*/
+function get_timezone_offset($remote_tz, $origin_tz = null) {
+  if ($origin_tz === null) {
+    if (!is_string($origin_tz = date_default_timezone_get())) {
+      return false; // A UTC timestamp was returned -- bail out!
+    }
+  }
+  $origin_dtz = new DateTimeZone($origin_tz);
+  $remote_dtz = new DateTimeZone($remote_tz);
+  $origin_dt = new DateTime("now", $origin_dtz);
+  $remote_dt = new DateTime("now", $remote_dtz);
+  $offset = $origin_dtz->getOffset($origin_dt) - 
+    $remote_dtz->getOffset($remote_dt);
+  return $offset;
 }
 
 function make_size_menu($clustergraphsize, $context) {
@@ -323,24 +349,28 @@ if ($ce)
 $start_timestamp = null;
 $end_timestamp = null;
 if ($cs) {
-    if (! is_numeric($cs)) {
-        $start_timestamp = strtotime($cs);
-    } else {
-        $start_timestamp = $cs;
-    }
+  if (! is_numeric($cs)) {
+    $start_timestamp = strtotime($cs);
+  } else {
+    $start_timestamp = $cs;
+  }
 
-    if ($ce) {
-        if (! is_numeric($ce)) {
-            $end_timestamp = strtotime($ce);
-        } else {
-            $end_timestamp = $ce;
-        }
+  if ($ce) {
+    if (! is_numeric($ce)) {
+      $end_timestamp = strtotime($ce);
     } else {
-        $end_timestamp = $start_timestamp - $conf['time_ranges'][$range];
+      $end_timestamp = $ce;
     }
+  } else {
+    $end_timestamp = $start_timestamp - $conf['time_ranges'][$range];
+  }
 } else {
+  if (isset($_SESSION['tz'])) {
+    $end_timestamp = time() - get_timezone_offset($_SESSION['tz'], null);
+  } else {
     $end_timestamp = time();
-    $start_timestamp = $end_timestamp - $conf['time_ranges'][$range];
+  }
+  $start_timestamp = $end_timestamp - $conf['time_ranges'][$range];
 }
 
 $data->assign("start_timestamp", $start_timestamp);
