@@ -503,11 +503,11 @@ function build_graphite_url($rrd_graphite_link,
     }
   } 
     
-  if ($cs) 
-    $start = date("H:i_Ymd", strtotime($cs));
+  if ($cs)
+    $start = date("H:i_Ymd", tzTimeToTimestamp($cs));
 
   if ($ce) 
-    $end = date("H:i_Ymd", strtotime($ce));
+    $end = date("H:i_Ymd", tzTimeToTimestamp($ce));
 
   if ($max == 0) 
     $max = "";
@@ -541,12 +541,7 @@ function get_timestamp($time) {
   } else if (is_numeric($time)) {
     $timestamp = $time;
   } else {
-    $t = strtotime($time);
-    if ($t !== FALSE)
-      $timestamp = $t;
-    else
-      error_log("get_timestamp: ".
-		"Unable to convert time ${time} to Unix timestamp");
+    $timestamp = tzTimeToTimestamp($time);
   }
   return $timestamp;
 }

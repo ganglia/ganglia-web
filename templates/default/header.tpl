@@ -29,9 +29,13 @@
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="js/jstree/jstree.js"></script>
 <script type="text/javascript" src="js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="js/jstz-1.0.4.min.js"></script>
+<script type="text/javascript" src="js/moment.min.js"></script>
+<script type="text/javascript" src="js/moment-timezone-with-data.min.js"></script>
 <script type="text/javascript">
-    var server_utc_offset={$server_utc_offset};
+    var server_timezone='{$server_timezone}';
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+    var tz = jstz.determine();
 
     function refreshHeader() {
       $.get('header.php?date_only=1', function(datetime) {
@@ -145,20 +149,20 @@
     $("#metrics-picker").val("{$metric_name}");
     $(".header_btn").button();
 
-    done = function done(startTime, endTime) {
-            setStartAndEnd(startTime, endTime);
-            document.forms['ganglia_form'].submit();
+    gangZoomDone = function done(startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
+      document.forms['ganglia_form'].submit();
     }
 
-    cancel = function (startTime, endTime) {
-            setStartAndEnd(startTime, endTime);
+    gangZoomCancel = function (startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
     }
 
-    defaults = {
-        startTime: {$start_timestamp},
-        endTime: {$end_timestamp},
-        done: done,
-        cancel: cancel
+    gangZoomDefaults = {
+      startTime: {$start_timestamp},
+      endTime: {$end_timestamp},
+      done: gangZoomDone,
+      cancel: gangZoomCancel
     }
 
     $(".host_small_zoomable").gangZoom($.extend({
@@ -166,51 +170,65 @@
         paddingRight: 30,
         paddingTop: 38,
         paddingBottom: 25
-    }, defaults));
+    }, gangZoomDefaults));
 
     $(".host_medium_zoomable").gangZoom($.extend({
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 38,
         paddingBottom: 40
-    }, defaults));
+    }, gangZoomDefaults));
 
     $(".host_default_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 30,
         paddingTop: 37,
         paddingBottom: 50
-    }, defaults));
+    }, gangZoomDefaults));
 
     $(".host_large_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 29,
         paddingTop: 37,
         paddingBottom: 56
-    }, defaults));
+    }, gangZoomDefaults));
 
     $(".cluster_zoomable").gangZoom($.extend({
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 37,
         paddingBottom: 50
-    }, defaults));
+    }, gangZoomDefaults));
 
-    function rrdDateTimeString(date) {
-      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+    function setStartAndEnd(startTimestamp, endTimestamp) {
+      // we're getting local start/end times.
+
+      var start = Math.floor(startTimestamp * 1000);
+      var end = Math.floor(endTimestamp * 1000);
+      if ($("#tz").val() == "") {
+        start = moment.tz(start, server_timezone);
+        end = moment.tz(end, server_timezone);
+      } else {
+        start = moment(start);
+        end = moment(end);
+      }
+      // Generate RRD friendly date/time strings
+      $("#datepicker-cs").val(start.format('MM/D/YYYY HH:mm'));
+      $("#datepicker-ce").val(end.format('MM/D/YYYY HH:mm'));
     }
 
-    function setStartAndEnd(startTime, endTime) {
-        // we're getting local start/end times.
-
-        // getTimezoneOffset returns negative values east of UTC,
-        // which is the opposite of PHP. we want negative values to the west.
-        var local_offset = new Date().getTimezoneOffset() * 60 * -1;
-        var delta = local_offset - server_utc_offset;
-        var date = new Date((Math.floor(startTime) - delta) * 1000);
-        $("#datepicker-cs").val(rrdDateTimeString(date));
-        date = new Date((Math.floor(endTime) - delta) * 1000);
-        $("#datepicker-ce").val(rrdDateTimeString(date));
+    if ($("#timezone-picker").length) {
+      $("#timezone-picker").chosen({ max_selected_options:1,
+                                     disable_search:true}).
+      on('change', function(evt, params) { 
+        if (params.selected == 'browser') {
+          $("#tz").val(tz.name());
+        } else {
+          $("#tz").val("");
+        }
+        ganglia_form.submit();
+      });
+      $("#timezone-picker").val("{$timezone_option}").trigger('chosen:updated');
     }
 
     initShowEvent();
@@ -262,6 +280,7 @@
   <div style="padding:5px 5px 0 5px;">
     <div style="float:left;" id="range_menu" class="nobr">{$range_menu}</div>
     <div style="float:left;" id="custom_range_menu">{$custom_time}</div>
+    <div style="float:left;" id="timezone">{$timezone_picker}</div>
     <div style="float:right;">{$additional_buttons}&nbsp;&nbsp;{$alt_view}</div>
     <div style="clear:both;"></div>
   </div>
@@ -281,6 +300,7 @@
 
 <input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
 <input type="hidden" id="vn" name="vn" value="{$view_name}">
+<input type="hidden" id="tz" name="tz" value="{$timezone_value}">
 {if $hide_header}
 <input type="hidden" id="hide-hf" name="hide-hf" value="true">
 {else}
