@@ -750,7 +750,7 @@ function rrdgraph_cmd_add_overlay_events($command,
 	    // We need a dummpy DEF statement, because RRDtool is too stupid
 	    // to plot graphs without a DEF statement.
 	    // We can't count on a static name, so we have to "find" one.
-	    if (preg_match("/DEF:['\"]?(\w+)['\"]?=/", $command, $matches)) {
+	    if (preg_match("/DEF:['\"]?([-\w]+)['\"]?=/", $command, $matches)) {
 	      // stupid rrdtool limitation.
 	      $area_cdef = 
 		" CDEF:area_$counter=$matches[1],POP," .
@@ -761,7 +761,7 @@ function rrdgraph_cmd_add_overlay_events($command,
 		$area .= ':"' . $summary . '"';
 	      $command .= "$area_cdef $area $start_vrule $end_vrule";
 	    } else {
-	      error_log("No DEF statements found in \$command?!");
+	      error_log("No DEF statements found in $command?!");
 	    }
 	  } else {
 	    $command .= " VRULE:" . $evt_start . "#" . $color .
