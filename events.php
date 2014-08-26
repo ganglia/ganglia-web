@@ -169,7 +169,7 @@ function eventActions(action) {
     alert("You must specify a regular expression describing the host(s) to which this event should be associated.");
     return false;
   }
-  queryString += "&host_regex=" + host_regex;    
+  queryString += "&host_regex=" + encodeURIComponent(host_regex);    
 
   /*
   alert('api/events.php' + 
@@ -180,7 +180,7 @@ function eventActions(action) {
   $("#event-message").html('<img src="img/spinner.gif">');
   $.get('api/events.php', 
         "action=" + action + 
-        "&summary=" + summary + queryString, function(data) {
+        "&summary=" + encodeURIComponent(summary) + queryString, function(data) {
       $("#event-message").html(data);
   });
 }
