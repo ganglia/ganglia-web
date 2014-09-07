@@ -23,7 +23,7 @@
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/combobox.js"></script>
-<script type="text/javascript" src="js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript" src="js/fullcalendar.js"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
