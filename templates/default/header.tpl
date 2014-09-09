@@ -231,6 +231,22 @@
       $("#timezone-picker").val("{$timezone_option}").trigger('chosen:updated');
     }
 
+    var dateTimePickerOptions = {
+      showOn: "button",
+      constrainInput: false,
+      buttonImage: "img/calendar.gif",
+      buttonImageOnly: true,
+      showButtonPanel: ("{$timezone_option}" == 'browser')
+    };
+
+    var datepicker_cs = $("#datepicker-cs");
+    if (datepicker_cs[0])
+      datepicker_cs.datetimepicker(dateTimePickerOptions);
+
+    var datepicker_ce = $("#datepicker-ce");
+    if (datepicker_ce[0])
+      datepicker_ce.datetimepicker(dateTimePickerOptions);
+
     initShowEvent();
     initTimeShift();
   });

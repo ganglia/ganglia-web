@@ -936,7 +936,7 @@ function rrdgraph_cmd_build($rrdtool_graph,
   }
 
   $command = '';
-  if (isset($_SESSION['tz']))
+  if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
     $command .= "TZ='" . $_SESSION['tz'] . "' ";
 
   $command .= 
