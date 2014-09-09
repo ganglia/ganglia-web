@@ -7,10 +7,10 @@ function g_cache_exists() {
 
 function g_cache_serialize($data) {
 	global $conf;
-	file_put_contents($conf['cachefile'], serialize($data));
-	file_put_contents($conf['cachefile'] . "_cluster_data", serialize($data["cluster"]));	
-	file_put_contents($conf['cachefile'] . "_host_list", serialize($data["hosts"]));	
-	file_put_contents($conf['cachefile'] . "_metric_list", serialize(array_keys($data["metrics"])));	
+	file_put_contents($conf['cachefile'], serialize($data), LOCK_EX);
+	file_put_contents($conf['cachefile'] . "_cluster_data", serialize($data["cluster"]), LOCK_EX);	
+	file_put_contents($conf['cachefile'] . "_host_list", serialize($data["hosts"]), LOCK_EX);	
+	file_put_contents($conf['cachefile'] . "_metric_list", serialize(array_keys($data["metrics"])), LOCK_EX);	
 } // end function g_cache_serialize
 
 function g_cache_deserialize($index) {
