@@ -403,6 +403,9 @@ function Gmetad ()
 
    $start = gettimeofday();
 
+   xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+   xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+
    while(!feof($fp))
       {
          $data = fread($fp, 16384);
