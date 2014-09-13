@@ -854,21 +854,26 @@ function rrdgraph_cmd_build($rrdtool_graph,
     $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
     
     if (!is_file($php_report_file)) {
-       $parts = preg_split("/[0-9]+/i", $graph);
-       $general_name = $parts[0].$parts[1];
-       preg_match("/[0-9]+/i", $graph, &$matches);
-       $device_index = $matches[0];
-       $php_report_file = $conf['graphdir'] . "/" . $general_name . ".php";
-       if(is_file($php_report_file)) {
-           include_once $php_report_file;
-           $graph_function = "graph_".$general_name;
-           if(isset($graph_arguments)) {
-               $graph_arguments = array_merge($graph_arguments, array("dindex" => $device_index));
-           }
-           else {
-               $graph_arguments = array("dindex" => $device_index);
-           }
-       }
+        $json_mappings = get_custom_graph_mappings($conf);
+        foreach($json_mappings as $mapping) {
+            $matches = array();
+            if(preg_match($mapping->pattern, $graph, $matches)) {
+                $php_report_file = $conf['graphdir'] . "/" . $mapping->graph . ".php";
+                $general_name = $mapping->graph;
+                $device_index = $matches[1];
+                break;
+            }
+        }
+        if(is_file($php_report_file)) {
+            include_once $php_report_file;
+            $graph_function = "graph_".$general_name;
+            if(isset($graph_arguments)) {
+                $graph_arguments = array_merge($graph_arguments, array("dindex" => $device_index));
+            }
+            else {
+                $graph_arguments = array("dindex" => $device_index);
+            }
+        }
     }
     
     if (is_file($php_report_file)) {
