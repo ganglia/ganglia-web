@@ -81,6 +81,76 @@
         ganglia_form.submit();
     }
 
+    function setStartAndEnd(startTimestamp, endTimestamp) {
+      // we're getting local start/end times.
+
+      var start = Math.floor(startTimestamp * 1000);
+      var end = Math.floor(endTimestamp * 1000);
+      if ($("#tz").val() == "") {
+        start = moment.tz(start, server_timezone);
+        end = moment.tz(end, server_timezone);
+      } else {
+        start = moment(start);
+        end = moment(end);
+      }
+      // Generate RRD friendly date/time strings
+      $("#datepicker-cs").val(start.format('MM/D/YYYY HH:mm'));
+      $("#datepicker-ce").val(end.format('MM/D/YYYY HH:mm'));
+    }
+
+    gangZoomDone = function done(startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
+      document.forms['ganglia_form'].submit();
+    }
+
+    gangZoomCancel = function (startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
+    }
+
+    g_gangZoomDefaults = {
+      startTime: {$start_timestamp},
+      endTime: {$end_timestamp},
+      done: gangZoomDone,
+      cancel: gangZoomCancel
+    }
+
+    function initCustomTimeRangeDragSelect(context) {
+      $(".host_small_zoomable", context).gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 38,
+        paddingBottom: 25
+      }, g_gangZoomDefaults));
+
+      $(".host_medium_zoomable", context).gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 38,
+        paddingBottom: 40
+      }, g_gangZoomDefaults));
+
+      $(".host_default_zoomable", context).gangZoom($.extend({
+        paddingLeft: 66,
+        paddingRight: 30,
+        paddingTop: 37,
+        paddingBottom: 50
+      }, g_gangZoomDefaults));
+
+      $(".host_large_zoomable", context).gangZoom($.extend({
+        paddingLeft: 66,
+        paddingRight: 29,
+        paddingTop: 37,
+        paddingBottom: 56
+      }, g_gangZoomDefaults));
+
+      $(".cluster_zoomable", context).gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 37,
+        paddingBottom: 50
+      }, g_gangZoomDefaults));
+    }
+
     $(function() {
       var range_menu = $("#range_menu");
       if (range_menu[0])
@@ -149,73 +219,7 @@
     $("#metrics-picker").val("{$metric_name}");
     $(".header_btn").button();
 
-    gangZoomDone = function done(startTime, endTime) {
-      setStartAndEnd(startTime, endTime);
-      document.forms['ganglia_form'].submit();
-    }
-
-    gangZoomCancel = function (startTime, endTime) {
-      setStartAndEnd(startTime, endTime);
-    }
-
-    gangZoomDefaults = {
-      startTime: {$start_timestamp},
-      endTime: {$end_timestamp},
-      done: gangZoomDone,
-      cancel: gangZoomCancel
-    }
-
-    $(".host_small_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 25
-    }, gangZoomDefaults));
-
-    $(".host_medium_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 40
-    }, gangZoomDefaults));
-
-    $(".host_default_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-    }, gangZoomDefaults));
-
-    $(".host_large_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 29,
-        paddingTop: 37,
-        paddingBottom: 56
-    }, gangZoomDefaults));
-
-    $(".cluster_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-    }, gangZoomDefaults));
-
-    function setStartAndEnd(startTimestamp, endTimestamp) {
-      // we're getting local start/end times.
-
-      var start = Math.floor(startTimestamp * 1000);
-      var end = Math.floor(endTimestamp * 1000);
-      if ($("#tz").val() == "") {
-        start = moment.tz(start, server_timezone);
-        end = moment.tz(end, server_timezone);
-      } else {
-        start = moment(start);
-        end = moment(end);
-      }
-      // Generate RRD friendly date/time strings
-      $("#datepicker-cs").val(start.format('MM/D/YYYY HH:mm'));
-      $("#datepicker-ce").val(end.format('MM/D/YYYY HH:mm'));
-    }
+    initCustomTimeRangeDragSelect($(document.documentElement));
 
     if ($("#timezone-picker").length) {
       $("#timezone-picker").chosen({ max_selected_options:1,
