@@ -291,7 +291,7 @@ $(function () {
   }
   
   $.ajax({
-    url: dataurl,
+    url: dataurl + '&maxrows=' + placeHolder.width(),
     method: 'GET',
     dataType: 'json',
     success: onDataReceived
@@ -393,7 +393,7 @@ $(function () {
 
   function refresh() {
     $.ajax({
-      url: dataurl,
+      url: dataurl + '&maxrows=' + placeHolder.width(),
       method: 'GET',
       dataType: 'json',
       success: onDataReceived});
