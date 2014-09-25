@@ -1089,9 +1089,9 @@ function output_data_to_external_format($rrdtool_graph_series,
   }
 
   // This command will export values for the specified format in XML
-  $command = $rrdtool . 
-    " xport --start '" . $rrdtool_graph_start . 
-    "' --end '" .  $rrdtool_graph_end . "' " 
+
+  $maxRows = '';
+  if ($step) { 
     /*
       Allow a custom step, if it was specified by the user. 
       Also, we need to specify a --maxrows in case the number 
@@ -1101,11 +1101,20 @@ function output_data_to_external_format($rrdtool_graph_series,
       to guard against "underflow" because rrdxport craps out 
       when --maxrows is less than 10.
     */
-    . ($step ? 
-       " --step '" . $step . "' --maxrows '" 
-       . max(10, round(($rrdtool_graph_end - 
-			$rrdtool_graph_start) / $step)) . "' " : "")
-    . $rrd_options . " " . $rrdtool_graph_args;
+
+    $maxRows = max(10, round(($rrdtool_graph_end - 
+			      $rrdtool_graph_start) / $step));
+  } else if (isset($_GET['maxrows']) && is_numeric($_GET['maxrows'])) {
+    $maxRows = max(10, $_GET['maxrows']);
+  }
+    
+  $command = $rrdtool . 
+    " xport --start '" . $rrdtool_graph_start . 
+    "' --end '" .  $rrdtool_graph_end . "' " .
+    ($step ? " --step '" . $step . "' " : '') .
+    ($maxRows ? " --maxrows '" . $maxRows . "' " : '') . 
+    $rrd_options . " " . 
+    $rrdtool_graph_args;
 
   // Read in the XML
   $string = "";
