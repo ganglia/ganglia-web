@@ -39,12 +39,13 @@
 
     function refreshHeader() {
       $.get('header.php?date_only=1', function(datetime) {
-        var title = $("#page_title").text();
+        var pageTitle = $("#page_title");
+        var title = pageTitle.text();
         var l = title.lastIndexOf(" at ");
         if (l != -1)
           title = title.substring(0, l);
         title += " at " + datetime;
-        $("#page_title").text(title);
+        pageTitle.text(title);
         });
     }
 
@@ -115,35 +116,35 @@
     }
 
     function initCustomTimeRangeDragSelect(context) {
-      $(".host_small_zoomable", context).gangZoom($.extend({
+      context.find(".host_small_zoomable").gangZoom($.extend({
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 38,
         paddingBottom: 25
       }, g_gangZoomDefaults));
 
-      $(".host_medium_zoomable", context).gangZoom($.extend({
+      context.find(".host_medium_zoomable").gangZoom($.extend({
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 38,
         paddingBottom: 40
       }, g_gangZoomDefaults));
 
-      $(".host_default_zoomable", context).gangZoom($.extend({
+      context.find(".host_default_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 30,
         paddingTop: 37,
         paddingBottom: 50
       }, g_gangZoomDefaults));
 
-      $(".host_large_zoomable", context).gangZoom($.extend({
+      context.find(".host_large_zoomable").gangZoom($.extend({
         paddingLeft: 66,
         paddingRight: 29,
         paddingTop: 37,
         paddingBottom: 56
       }, g_gangZoomDefaults));
 
-      $(".cluster_zoomable", context).gangZoom($.extend({
+      context.find(".cluster_zoomable").gangZoom($.extend({
         paddingLeft: 67,
         paddingRight: 30,
         paddingTop: 37,
@@ -221,9 +222,10 @@
 
     initCustomTimeRangeDragSelect($(document.documentElement));
 
-    if ($("#timezone-picker").length) {
-      $("#timezone-picker").chosen({ max_selected_options:1,
-                                     disable_search:true}).
+    var tzPicker = $("#timezone-picker");
+    if (tzPicker.length) {
+      tzPicker.chosen({ max_selected_options:1,
+                        disable_search:true}).
       on('change', function(evt, params) { 
         if (params.selected == 'browser') {
           $("#tz").val(tz.name());
@@ -232,7 +234,7 @@
         }
         ganglia_form.submit();
       });
-      $("#timezone-picker").val("{$timezone_option}").trigger('chosen:updated');
+      tzPicker.val("{$timezone_option}").trigger('chosen:updated');
     }
 
     var dateTimePickerOptions = {
