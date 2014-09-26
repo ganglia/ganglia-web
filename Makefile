@@ -52,7 +52,7 @@ clean:
 
 conf_default.php:	conf_default.php.in
 	@echo -n "Generating conf_default.php ........................ "
-	@sed -e "s|@vargmetadir@|$(GMETAD_ROOTDIR)|" -e "s|@vargwebdir@|$(GWEB_STATEDIR)|g" conf_default.php.in > conf_default.php
+	@sed -e "s|@vargmetadir@|$(GMETAD_ROOTDIR)|" -e "s|@vargwebdir@|$(GWEB_STATEDIR)|g" -e "s|@vargwebroot@|$(GDESTDIR)|g" conf_default.php.in > conf_default.php
 	@echo "DONE."
 
 conf_redirect.php:	conf_redirect.php.in
