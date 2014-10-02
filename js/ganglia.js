@@ -25,26 +25,6 @@ $(function(){
       search_field_q.val(search_value);
   }
 
-  var datepicker_cs = $( "#datepicker-cs" );
-  if (datepicker_cs[0])
-    datepicker_cs.datetimepicker({
-	  showOn: "button",
-	  constrainInput: false,
-	  buttonImage: "img/calendar.gif",
-	  buttonImageOnly: true,
-	  hideNowButton: true
-    });
-
-  $( "#datepicker-cs").datetimepicker();
-  var datepicker_ce = $( "#datepicker-ce" );
-  if (datepicker_ce[0])
-    datepicker_ce.datetimepicker({
-	  showOn: "button",
-	  constrainInput: false,
-	  buttonImage: "img/calendar.gif",
-	  buttonImageOnly: true,
-	  hideNowButton: true
-    });
   });
 
 function selectTab(tab_index) {

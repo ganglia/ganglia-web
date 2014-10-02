@@ -199,7 +199,10 @@
 	 'check_callback' : true,
          'themes' : { 'icons' : false, 'dots' : false, 'stripes' : true }
       },
-      'state' : { "key" : 'view-tree-' + window.name },
+      'state' : {
+        'filter' : function(n) { delete n.core.selected; return n; },
+        'key' : 'view-tree-' + window.name
+      },
       'plugins' : ['state', 'sort', 'unique']
     })
     .on("select_node.jstree", 
@@ -223,9 +226,7 @@
           });
     // Check for a selected view
     var tree = $('#views_menu').jstree(true);
-    var sel = tree.get_selected(true);
-    if (sel.length)
-      selectView(sel[0].original.view_name);
+    tree.select_node(viewId("{$view_name}"), true, false);
     {/if}
   });
 </script>

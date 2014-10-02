@@ -344,6 +344,7 @@ function Gmetad ()
    if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph") 
       return TRUE;
    $parser = xml_parser_create();
+   $strip_extra = $conf['strip_extra'];
    switch ($context)
       {
          case "meta":
@@ -357,12 +358,12 @@ function Gmetad ()
          case "cluster":
             xml_set_element_handler($parser, "start_cluster", "end_all");
             $request = "/$clustername";
-             break;
+            break;
          case "index_array":
          case "views":
             xml_set_element_handler($parser, "start_everything", "end_all");
             $request = "/";
-             break;
+            break;
          case "cluster-summary":
             xml_set_element_handler($parser, "start_cluster_summary", "end_all");
             $request = "/$clustername?filter=summary";
@@ -371,6 +372,7 @@ function Gmetad ()
          case "host":
             xml_set_element_handler($parser, "start_host", "end_all");
             $request = "/$clustername/$hostname";
+            $strip_extra = false;
             break;
       }
 
@@ -401,9 +403,13 @@ function Gmetad ()
 
    $start = gettimeofday();
 
+   xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+   xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+
    while(!feof($fp))
       {
          $data = fread($fp, 16384);
+         if($strip_extra) $data = preg_replace('/<EXTRA_DATA>.*?<\/EXTRA_DATA>/s', '', $data);
          if (!xml_parse($parser, $data, feof($fp)))
             {
                $error = sprintf("XML error: %s at %d",
