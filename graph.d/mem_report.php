@@ -129,6 +129,22 @@ function graph_mem_report ( &$rrdtool_graph ) {
         }
     }
 
+    if (file_exists("$rrd_dir/mem_free.rrd")) {
+        $series .= "STACK:'bmem_free'#${conf['mem_free_color']}:'Free${rmspace}' ";
+
+        if ( $conf['graphreport_stats'] ) {
+            $series .= "CDEF:free_pos=bmem_free,0,INF,LIMIT "
+                    . "VDEF:free_last=free_pos,LAST "
+                    . "VDEF:free_min=free_pos,MINIMUM " 
+                    . "VDEF:free_avg=free_pos,AVERAGE " 
+                    . "VDEF:free_max=free_pos,MAXIMUM " 
+                    . "GPRINT:'free_last':' ${space1}Now\:%6.1lf%s' "
+                    . "GPRINT:'free_min':'${space1}Min\:%6.1lf%s${eol1}' "
+                    . "GPRINT:'free_avg':'${space2}Avg\:%6.1lf%s' "
+                    . "GPRINT:'free_max':'${space1}Max\:%6.1lf%s\\l' ";
+        }
+    }
+
     if (file_exists("$rrd_dir/swap_total.rrd")) {
         $series .= "DEF:'swap_total'='${rrd_dir}/swap_total.rrd':'sum':AVERAGE "
                 . "DEF:'swap_free'='${rrd_dir}/swap_free.rrd':'sum':AVERAGE "
