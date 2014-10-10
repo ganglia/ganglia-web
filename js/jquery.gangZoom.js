@@ -81,6 +81,9 @@
             });
 
             self.img.mousedown(function (event) {
+	        if (event.which != 1)
+		    return;
+
                 event.preventDefault();
                 self.shouldStopClick = false;
                 self.stopped = false;
