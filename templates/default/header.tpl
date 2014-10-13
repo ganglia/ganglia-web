@@ -11,6 +11,11 @@
 <link type="text/css" href="css/fullcalendar.css" rel="stylesheet" />
 <link type="text/css" href="css/qtip.min.css" rel="stylesheet" />
 <link type="text/css" href="css/chosen.min.css" rel="stylesheet" />
+<style type="text/css">
+.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+  height: auto;
+}
+</style>
 <link type="text/css" href="./styles.css" rel="stylesheet" />
 <link type="text/css" href="js/jstree/themes/default/style.min.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
