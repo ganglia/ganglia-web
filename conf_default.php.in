@@ -438,4 +438,9 @@ $conf['display_views_using_tree'] = false;
 # in many code paths. This will pre-emptively strip out the tags in 
 # those code paths to save time during XML parsing.
 $conf['strip_extra'] = true;
+
+# By default, if a host goes down, the graphs and information available
+# under the host view go away. Setting this variable to true will show
+# the information even if the host is down.
+$conf['show_host_data_if_down'] = false;
 ?>
