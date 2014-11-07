@@ -6,6 +6,7 @@
 <script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.time.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.events.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.dashes.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="inspect_graph_container"></div>

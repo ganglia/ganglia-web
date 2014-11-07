@@ -1082,6 +1082,10 @@ function output_data_to_external_format($rrdtool_graph_series,
 	else
 	  $ds_attr['color'] = substr($out[4], $pos_hash); 
       }
+
+      if (strpos($value, ":dashes") !== FALSE)
+	$ds_attr['dashes'] = 1;
+
       $output_array[] = $ds_attr;
       $rrdtool_graph_args .=  
 	" " . "XPORT:'" . $ds_name . "':'" . $metric_name . "' ";
@@ -1202,6 +1206,14 @@ function output_data_to_external_format($rrdtool_graph_series,
       if (array_key_exists('color', $metric_array))
 	$gdata['color'] = $metric_array['color'];
       
+      if (array_key_exists('dashes', $metric_array)) {
+	$gdata['dashes'] = array();
+	$gdata['dashes']['show'] = True;
+	$gdata['dashes']['dashLength'] = 5;
+	$gdata['lines']['show'] = True;
+	$gdata['lines']['lineWidth'] = 0;
+      }
+
       if ($metric_array['graph_type'] == "stack")
 	$gdata['stack'] = '1';
       
