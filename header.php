@@ -175,7 +175,7 @@ function make_node_menu($self,
     $node_menu .= "<option value=\"\">--Choose a Source\n";
     ksort($grid);
     foreach ($grid as $k => $v) {
-      if ($k == $self) continue;
+      if ($k == $self and $context != 'meta') continue;
       if (isset($v['GRID']) and $v['GRID']) {
         $url = $v['AUTHORITY'];
         $node_menu .="<option value=\"$url\">$k ${conf['meta_designator']}\n";
