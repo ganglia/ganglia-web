@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $gweb_root = dirname(__FILE__);
 
 include_once($gweb_root . "/version.php");
+include_once("./global.php");
 
 $error="";
 
@@ -377,18 +378,10 @@ function Gmetad ()
             $ip = func_get_arg(0);
       }
 
-   if ($debug) 
-      {
-         print "<br/>DEBUG: Creating parser\n";
-         $debug_prefix = "debug_";
-      }
-   else
-      {
-         $debug_prefix = "";
-      }
-
-   if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph") 
+   if ($debug) print "<br/>DEBUG: Creating parser\n";
+   if ( in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
       return TRUE;
+   }
    $parser = xml_parser_create();
    $strip_extra = $conf['strip_extra'];
    switch ($context)
