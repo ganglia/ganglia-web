@@ -1406,6 +1406,9 @@ function my_passthru($command) {
 function get_custom_graph_mappings($conf) {
     $mapping_dir = $conf['conf_dir'] . "/mappings";
     $dh  = opendir($mapping_dir);
+    if(!$dh || !is_dir($mapping_dir)) {
+        return trigger_error("'mappings' directory doesn't exist");
+    }
     $json_mappings = array();
     while (false !== ($file = readdir($dh))) {
         if($file != "." && $file != ".." && preg_match("/(.*).json$/i", $file)) {
