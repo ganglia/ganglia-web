@@ -76,10 +76,24 @@ $(function(){
              center: '', 
              right: 'today prev next basicDay basicWeek month'},
     eventRender: function(event, element) {
+        var fmt = "HH:mm:ss";
+
+	if ('end_time' in event) {
+	  var startDate = new Date(event.start_time * 1000);
+	  var endDate = new Date(event.end_time * 1000);
+	  if (startDate.getFullYear() != endDate.getFullYear()) {
+	    fmt = "MM/dd/yyyy " + fmt;
+	  } else {
+	    if ((startDate.getDate() != endDate.getDate()) ||
+		(startDate.getMonth() != endDate.getMonth()))
+	      fmt = "MM/dd " + fmt;
+	  }
+	}
+
 	var tipText = event.title + 
-	  '<br>Start: ' + $.fullCalendar.formatDate(new Date(event.start_time * 1000), "HH:mm:ss");
+	  '<br>Start: ' + $.fullCalendar.formatDate(new Date(event.start_time * 1000), fmt);
 	if ('end_time' in event)
-	  tipText += '<br>End: ' + $.fullCalendar.formatDate(new Date(event.end_time * 1000), "HH:mm:ss");
+	  tipText += '<br>End: ' + $.fullCalendar.formatDate(new Date(event.end_time * 1000), fmt);
 
         element.qtip({
           content : {
@@ -155,7 +169,7 @@ function eventActions(action) {
     alert("You must specify a regular expression describing the host(s) to which this event should be associated.");
     return false;
   }
-  queryString += "&host_regex=" + host_regex;    
+  queryString += "&host_regex=" + encodeURIComponent(host_regex);    
 
   /*
   alert('api/events.php' + 
@@ -166,7 +180,7 @@ function eventActions(action) {
   $("#event-message").html('<img src="img/spinner.gif">');
   $.get('api/events.php', 
         "action=" + action + 
-        "&summary=" + summary + queryString, function(data) {
+        "&summary=" + encodeURIComponent(summary) + queryString, function(data) {
       $("#event-message").html(data);
   });
 }

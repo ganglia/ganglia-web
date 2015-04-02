@@ -10,7 +10,7 @@
 # Gmetad-webfrontend version. Used to check for updates.
 #
 $conf['gweb_root'] = dirname(__FILE__);
-$conf['gweb_confdir'] = "@vargwebstatedir@";
+$conf['gweb_confdir'] = "@vargwebdir@";
 
 include_once $conf['gweb_root'] . "/version.php";
 
@@ -438,4 +438,10 @@ $conf['display_views_using_tree'] = false;
 # in many code paths. This will pre-emptively strip out the tags in 
 # those code paths to save time during XML parsing.
 $conf['strip_extra'] = true;
+
+# The size to try and load data from gmetad at, if your PHP version
+# supports 'stream_set_chunk_size' (PHP >= 5.4).  Otherwise, defaults
+# to 8,192.
+$conf['gmetad_chunk_size'] = 6 * 1024 * 1024; // 6MB
+
 ?>

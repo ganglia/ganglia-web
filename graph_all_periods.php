@@ -5,7 +5,7 @@ if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 <head>
 <title>Ganglia: Graph all periods</title>
 <link rel="stylesheet" href="./styles.css" type="text/css" />
-<script TYPE="text/javascript" SRC="js/jquery-1.9.1.min.js"></script>
+<script TYPE="text/javascript" SRC="js/jquery-1.11.1.min.js"></script>
 <script>$.uiBackCompat = false;</script>
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
@@ -14,7 +14,7 @@ if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 <script type="text/javascript" src="js/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
-<link type="text/css" href="css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="css/jquery.multiselect.css" type="text/css" />
 <?php
 } // if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {

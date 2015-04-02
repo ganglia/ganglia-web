@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+if (isset($_GET['tz'])) {
+  $_SESSION['tz'] = $_GET['tz'];
+}
+
 if (isset($_GET['date_only'])) {
   $d = date("r");
   echo $d;
@@ -101,6 +105,30 @@ function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
     $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
   }
   return $range_menu;
+}
+
+function make_custom_time_selector($cs, $ce) {
+  $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
+    . " -2 days, start + 1 hour, etc.";
+
+  $custom_time = "or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
+  if ($cs)
+    $custom_time .= " value=\"$cs\"";
+  $custom_time .= "> to <input type=\"TEXT\" title=\"$examples\" name=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
+  if ($ce)
+    $custom_time .= " value=\"$ce\"";
+  $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
+  $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>\n";
+  return $custom_time;
+}
+
+function make_timezone_picker() {
+  $picker = "Timezone:&nbsp;";
+  $picker .= '<select id="timezone-picker" style="width:100px;">';
+  $picker .= '<option value="browser">Browser</option>';
+  $picker .= '<option value="server">Server</option>';
+  $picker .= '</select>';
+  return $picker;
 }
 
 function make_alt_view($context, $clustername, $hostname, $get_metric_string) {
@@ -286,13 +314,17 @@ if(count($gridstack) > 1) {
 $tpl = new Dwoo_Template_File( template("$header.tpl") );
 $data = new Dwoo_Data();
 
-if (isset($_GET["hide-hf"]) && filter_input(INPUT_GET, "hide-hf", FILTER_VALIDATE_BOOLEAN, array("flags" => FILTER_NULL_ON_FAILURE))) {
+if (isset($_GET["hide-hf"]) && 
+    filter_input(INPUT_GET, 
+		 "hide-hf", 
+		 FILTER_VALIDATE_BOOLEAN, 
+		 array("flags" => FILTER_NULL_ON_FAILURE))) {
   $data->assign("hide_header", true);
 }
 
-// Server offset used in generating pretty dates and times when zooming
-$data->assign("server_utc_offset", date('Z'));
-//
+// Server timezone used in generating pretty dates and times when zooming
+$data->assign("server_timezone", date_default_timezone_get());
+
 $data->assign("page_title", $title);
 $data->assign("refresh", $conf['default_refresh']);
 
@@ -314,33 +346,34 @@ $sort_url = rawurlencode($sort);
 
 $get_metric_string = "m={$user['metricname']}&amp;r=$range&amp;s=$sort_url&amp;hc=${conf['hostcols']}&amp;mc=${conf['metriccols']}";
 if ($jobrange and $jobstart)
-    $get_metric_string .= "&amp;jr=$jobrange&amp;js=$jobstart";
+  $get_metric_string .= "&amp;jr=$jobrange&amp;js=$jobstart";
 if ($cs)
-    $get_metric_string .= "&amp;cs=" . rawurlencode($cs);
+  $get_metric_string .= "&amp;cs=" . rawurlencode($cs);
 if ($ce)
-    $get_metric_string .= "&amp;ce=" . rawurlencode($ce);
+  $get_metric_string .= "&amp;ce=" . rawurlencode($ce);
 
+// Timestamps are used for graph zoom calculations
 $start_timestamp = null;
 $end_timestamp = null;
 if ($cs) {
-    if (! is_numeric($cs)) {
-        $start_timestamp = strtotime($cs);
-    } else {
-        $start_timestamp = $cs;
-    }
+  if (! is_numeric($cs)) {
+    $start_timestamp = tzTimeToTimestamp($cs);
+  } else {
+    $start_timestamp = $cs;
+  }
 
-    if ($ce) {
-        if (! is_numeric($ce)) {
-            $end_timestamp = strtotime($ce);
-        } else {
-            $end_timestamp = $ce;
-        }
+  if ($ce) {
+    if (! is_numeric($ce)) {
+      $end_timestamp = tzTimeToTimestamp($ce);
     } else {
-        $end_timestamp = $start_timestamp - $conf['time_ranges'][$range];
+      $end_timestamp = $ce;
     }
+  } else {
+    $end_timestamp = $start_timestamp - $conf['time_ranges'][$range];
+  }
 } else {
-    $end_timestamp = time();
-    $start_timestamp = $end_timestamp - $conf['time_ranges'][$range];
+  $end_timestamp = time();
+  $start_timestamp = $end_timestamp - $conf['time_ranges'][$range];
 }
 
 $data->assign("start_timestamp", $start_timestamp);
@@ -398,7 +431,7 @@ if ($context == "physical" or $context == "cluster" or $context == 'host') {
 }
 
 $custom_time = "";
-
+$timezone_picker = "";
 if (in_array($context, array ("meta", 
 			      "cluster", 
 			      "cluster-summary", 
@@ -406,26 +439,24 @@ if (in_array($context, array ("meta",
 			      "views", 
 			      "decompose_graph", 
 			      "compare_hosts"))) {
-   $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
-      . " -2 days, start + 1 hour, etc.";
-   $custom_time = "or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
-   if ($cs)
-      $custom_time .= " value=\"$cs\"";
-   $custom_time .= "> to <input type=\"TEXT\" title=\"$examples\" name=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
-   if ($ce)
-      $custom_time .= " value=\"$ce\"";
-   $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
-   $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>\n";
-#      $custom_time .= $calendar;
-   $data->assign("custom_time", $custom_time);
+  $custom_time = make_custom_time_selector($cs, $ce);
+  $timezone_picker = make_timezone_picker();
 
-#      $tpl->assign("custom_time_head", $calendar_head);
-   $data->assign("custom_time_head", "");
+  #$tpl->assign("custom_time_head", $calendar_head);
+  $data->assign("custom_time_head", "");
 } else {
-   $data->assign("custom_time_head", "");
+  $data->assign("custom_time_head", "");
 }
- 
 $data->assign("custom_time", $custom_time);
+$data->assign("timezone_picker", $timezone_picker);
+
+if (isset($_SESSION['tz']) && ($_SESSION['tz'] != '')) {
+  $data->assign("timezone_option", "browser");
+  $data->assign("timezone_value", $_SESSION['tz']);
+} else {
+  $data->assign("timezone_option", "server");
+  $data->assign("timezone_value", "");
+}
 
 if($conf['auth_system'] == 'enabled') {
   $data->assign('auth_system_enabled', true);
