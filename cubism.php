@@ -17,41 +17,38 @@ require_once('./functions.php');
 $min = (isset($_REQUEST['min']) and is_numeric($_REQUEST['min'])) ? $_REQUEST['min'] : 0;
 $max = (isset($_REQUEST['max']) and is_numeric($_REQUEST['max'])) ? $_REQUEST['max'] : 10;
 
+$mreg = $_REQUEST['mreg'];
+$hreg = $_REQUEST['hreg'];
+
 $height = (isset($_REQUEST['height']) and is_numeric($_REQUEST['height'])) ? $_REQUEST['height'] : 30;
+
+$step = (isset($_REQUEST['step']) and is_numeric($_REQUEST['step'])) ? $_REQUEST['step'] : 15;
+$step_in_ms = $step * 1000;
 
 ?>
 </head>
 <body>
+   <div>
+      <form id="cubism-form">
+      Host Regex: <input size=30 value="<?php print htmlentities($hreg); ?>" name="hreg">
+      Metric Regex: <input size=30 value="<?php print htmlentities($mreg); ?>" name="mreg">
+      Min: <input size=12 value="<?php print htmlentities($min); ?>" name="min">
+      Max: <input size=12 value="<?php print htmlentities($max); ?>" name="max">
+      Height: <input size=3 value="<?php print htmlentities($height); ?>" name="height">
+      Step: <input size=3 value="<?php print htmlentities($step); ?>" name="step">
+      <input type=submit value="Submit">
+      </form>
+   </div>
    <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-      <form>
-      Host Regex: <input size=30 value="<?php print htmlentities($_REQUEST['hreg']); ?>" name="hreg">
-      Metric: <input size=30 value="<?php print htmlentities($_REQUEST['mreg']); ?>" name="mreg">
-      Min: <input size=12 value="<?php print htmlentities($_REQUEST['min']); ?>" name="min">
-      Max: <input size=12 value="<?php print htmlentities($_REQUEST['max']); ?>" name="max">
-      <input type=submit>
-      </form>
-      <?php
-      
-      ?>
-
       </div>
     </div>
 
-<?php
-      if ( ! (isset($_REQUEST['hreg']) ) ) {
-	exit(1);
-      }
-
-      
-retrieve_metrics_cache();
-
-?>
 <script>
 var context = cubism.context()
     .serverDelay(15 * 1000) // allow 15 seconds of collection lag
-    .step(15000) // 20 seconds per value
-    .size(1024); // fetch 1440 values (720p)
+    .step(<?php print $step_in_ms;?>) // what step to use
+    .size(1024); // How many values to fetch
 var ganglia = context.gangliaWeb( { 
   "host": '<?php print $_SERVER["REQUEST_SCHEME"] ?>://<?php print $_SERVER["HTTP_HOST"] ?>', 
   "uriPathPrefix": '<?php print $_SERVER["CONTEXT_PREFIX"] ?>/'} );
@@ -60,13 +57,11 @@ var ganglia = context.gangliaWeb( {
 
 # Most of the cubism graphs are like aggregate graphs so let's avoid redoing
 # the logic
-$mreg = $_REQUEST['mreg'];
-$hreg = $_REQUEST['hreg'];
 
 $graph_config = build_aggregate_graph_config ("line", 
                                        1, 
-                                       $hreg,
-                                       $mreg,
+                                       array($hreg),
+                                       array($mreg),
                                        "hide",
                                        false);
 
@@ -110,7 +105,7 @@ d3.select("body").selectAll(".horizon")
     .attr("class", "horizon")
     .call(
       horizon.extent([<?php print $min . "," . $max;?>])
-      .height(30)
+      .height(<?php print $height; ?>)
       );
 context.on("focus", function(i) {
   d3.selectAll(".value").style("right", i == null ? null : context.size() - 1 - i + "px");

@@ -126,36 +126,40 @@ $(function() {
 
 </script>
 <div id="cubism_graph_header">
+<em>Create a Cubism Dashboard</em>
+<p>Minimum and maximum values are important since they assure correct graph shading. If graph appears to be missing
+data points adjust the step size e.g. 10. Step size is the same as the gmetad polling period.</p>
 <form target="_blank" action="cubism.php" id="cubism_graph_form">
 <table id="cubism_graph_table_form">
 <tr>
   <td>Host Regular expression:</td>
-  <td> <input name="hreg[]" id="hreg" size=30></td>
+  <td> <input name="hreg" id="hreg" size=30></td>
 </tr>
 <tr>
   <td>Metric Regular expression:</td>
-  <td> <input name="mreg[]" id="metric_chooser" size=30></td>
+  <td> <input name="mreg" id="metric_chooser" size=30></td>
 </tr>
 <tr>
-  <td>Limits Min:</td>
-  <td><input style="margin-left:5px;margin-right:10px;" name="min" id="min" value="" size=15></td>
+  <td>Min:</td>
+  <td><input name="min" id="min" value="" size=15></td>
 </tr>
 <tr>
   <td>Max:</td>
-  <td><input style="margin-left:5px;" name="max" id="max" value="" size=15>
+  <td><input name="max" id="max" value="" size=15>
 </td>
 <tr>
-  <td>Graph height:</td>
-  <td><input style="margin-left:5px;" name="height" id="height" value="30" size=5>
-</td>
+  <td>Individual graph height:</td>
+  <td><input name="height" id="height" value="30" size=5></td>
+</tr>
 <tr>
-  <td>
+  <td>Data step in seconds</td>
+  <td><input name="step" id="step" value="15" size=3></td>
+</tr>
+<tr>
+  <td colspan=2>
     <button class="ag_buttons" onclick="createCubismGraph();">Create Graph</button>
   </td>
 </tr>
 </table>
 </form>
-</div>
-<div style="margin-bottom:5px;background-color:#eeeeee;text-align:center;padding:5px;" id="show_direct_link"></div>
-<div id="cubism_graph_display">
 </div>
