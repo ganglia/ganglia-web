@@ -250,6 +250,9 @@
       {/if}
       <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
       <li><a href="#tabs-livedashboard" onclick="liveDashboardChooser();">Live Dashboard</a></li>
+      {if $cubism}
+      <li><a href="cubism_form.php">Cubism</a></li>
+      {/if}
       <li><a href="#tabs-mobile" onclick="window.location.href='mobile.php';">Mobile</a></li>
     </ul>
   </div>

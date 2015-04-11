@@ -441,6 +441,11 @@ if ( $conf['overlay_events'] == true ) {
   $data->assign('overlay_events', true);
 }
 
+# Check whether we should use Cubism
+if ( $conf['cubism_enabled'] ) {
+  $data->assign('cubism', true);
+}
+
 if ( $conf['picker_autocomplete'] == true ) {
   $data->assign('picker_autocomplete', true);
 }

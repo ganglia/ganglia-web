@@ -438,4 +438,13 @@ $conf['display_views_using_tree'] = false;
 # in many code paths. This will pre-emptively strip out the tags in 
 # those code paths to save time during XML parsing.
 $conf['strip_extra'] = true;
-?>
+
+# Enable Cubism integration http://square.github.io/cubism/
+$conf['cubism_enabled'] = true;
+# By default we'll just download Cubism and D3 required libraries from a CDN that offers
+# that for free. If that is undesirable you can override this in conf.php by putting 
+# downloading the asset and putting relative path or absolute paths to it e.g.
+#$conf['cubism_js_path'] = "js/cubism.v1.min.js";
+$conf['cubism_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/cubism/1.6.0/cubism.v1.min.js";
+$conf['cubism_d3_path'] = "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js";
+
