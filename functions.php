@@ -1398,4 +1398,35 @@ function my_passthru($command) {
   unlink($tf);
 }
 
+/**
+ * Generate custom graph mappings
+ * @param array $conf
+ * @return array
+ */
+function get_custom_graph_mappings($conf) {
+    $mapping_dir = $conf['conf_dir'] . "/mappings";
+    $dh  = opendir($mapping_dir);
+    if(!$dh || !is_dir($mapping_dir)) {
+        return trigger_error("'mappings' directory doesn't exist");
+    }
+    $json_mappings = array();
+    while (false !== ($file = readdir($dh))) {
+        if($file != "." && $file != ".." && preg_match("/(.*).json$/i", $file)) {
+             $mapping_string = file_get_contents($mapping_dir."/".$file);
+             $json_mappings = array_merge($json_mappings, json_decode($mapping_string));  
+        }
+    }
+    return $json_mappings;
+}
+
+// Get timestamp of textual date/time specified relative to gweb timezone
+function tzTimeToTimestamp($tzTime) {
+  if (isset($_SESSION['tz']) && ($_SESSION['tz'] != '')) {
+    $dtz = new DateTimeZone($_SESSION['tz']);
+    $dt = new DateTime($tzTime, $dtz);
+    return $dt->getTimestamp();
+  } else {
+    return strtotime($tzTime); // server timezone
+  }
+}
 ?>

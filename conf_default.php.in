@@ -10,7 +10,7 @@
 # Gmetad-webfrontend version. Used to check for updates.
 #
 $conf['gweb_root'] = dirname(__FILE__);
-$conf['gweb_confdir'] = "@vargwebstatedir@";
+$conf['gweb_confdir'] = "@vargwebdir@";
 
 include_once $conf['gweb_root'] . "/version.php";
 

@@ -1,6 +1,8 @@
 <?php
 // vim: tabstop=2:softtabstop=2:shiftwidth=2:expandtab
 
+session_start();
+
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -501,11 +503,11 @@ function build_graphite_url($rrd_graphite_link,
     }
   } 
     
-  if ($cs) 
-    $start = date("H:i_Ymd", strtotime($cs));
+  if ($cs)
+    $start = date("H:i_Ymd", tzTimeToTimestamp($cs));
 
   if ($ce) 
-    $end = date("H:i_Ymd", strtotime($ce));
+    $end = date("H:i_Ymd", tzTimeToTimestamp($ce));
 
   if ($max == 0) 
     $max = "";
@@ -539,12 +541,7 @@ function get_timestamp($time) {
   } else if (is_numeric($time)) {
     $timestamp = $time;
   } else {
-    $t = strtotime($time);
-    if ($t !== FALSE)
-      $timestamp = $t;
-    else
-      error_log("get_timestamp: ".
-		"Unable to convert time ${time} to Unix timestamp");
+    $timestamp = tzTimeToTimestamp($time);
   }
   return $timestamp;
 }
@@ -753,7 +750,7 @@ function rrdgraph_cmd_add_overlay_events($command,
 	    // We need a dummpy DEF statement, because RRDtool is too stupid
 	    // to plot graphs without a DEF statement.
 	    // We can't count on a static name, so we have to "find" one.
-	    if (preg_match("/DEF:['\"]?(\w+)['\"]?=/", $command, $matches)) {
+	    if (preg_match("/DEF:['\"]?([-\w]+)['\"]?=/", $command, $matches)) {
 	      // stupid rrdtool limitation.
 	      $area_cdef = 
 		" CDEF:area_$counter=$matches[1],POP," .
@@ -764,7 +761,7 @@ function rrdgraph_cmd_add_overlay_events($command,
 		$area .= ':"' . $summary . '"';
 	      $command .= "$area_cdef $area $start_vrule $end_vrule";
 	    } else {
-	      error_log("No DEF statements found in \$command?!");
+	      error_log("No DEF statements found in $command?!");
 	    }
 	  } else {
 	    $command .= " VRULE:" . $evt_start . "#" . $color .
@@ -853,6 +850,29 @@ function rrdgraph_cmd_build($rrdtool_graph,
     $php_report_file = $conf['graphdir'] . "/" . $graph . ".php";
     $json_report_file = $conf['graphdir'] . "/" . $graph . ".json";
     
+    if (!is_file($php_report_file)) {
+        $json_mappings = get_custom_graph_mappings($conf);
+        foreach($json_mappings as $mapping) {
+            $matches = array();
+            if(preg_match($mapping->pattern, $graph, $matches)) {
+                $php_report_file = $conf['graphdir'] . "/" . $mapping->graph . ".php";
+                $general_name = $mapping->graph;
+                $device_index = $matches[1];
+                break;
+            }
+        }
+        if(is_file($php_report_file)) {
+            include_once $php_report_file;
+            $graph_function = "graph_".$general_name;
+            if(isset($graph_arguments)) {
+                $graph_arguments = array_merge($graph_arguments, array("dindex" => $device_index));
+            }
+            else {
+                $graph_arguments = array("dindex" => $device_index);
+            }
+        }
+    }
+    
     if (is_file($php_report_file)) {
       // Check for path traversal issues by making sure real path is 
       // actually in graphdir
@@ -860,8 +880,11 @@ function rrdgraph_cmd_build($rrdtool_graph,
 	$rrdtool_graph['series'] = 
 	  'HRULE:1#FFCC33:"Check \$conf[graphdir] should not be relative path"';
       } else {
-	$graph_function = "graph_${graph}";
-	if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
+	if(!isset($graph_function)) {
+            $graph_function = "graph_${graph}";
+        }
+        
+        if ($conf['enable_pass_in_arguments_to_optional_graphs'] &&
 	    count($graph_arguments)) {
 	  $rrdtool_graph['arguments'] = $graph_arguments;
 	  // Pass by reference call, $rrdtool_graph modified inplace
@@ -938,7 +961,11 @@ function rrdgraph_cmd_build($rrdtool_graph,
 	" last $range";
   }
 
-  $command = 
+  $command = '';
+  if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
+    $command .= "TZ='" . $_SESSION['tz'] . "' ";
+
+  $command .= 
     $conf['rrdtool'] . 
     " graph" . 
     (isset($_GET["verbose"]) ? 'v' : '') . 
