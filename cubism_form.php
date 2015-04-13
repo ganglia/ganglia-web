@@ -39,8 +39,8 @@ $(function() {
   $available_metrics = array();
   retrieve_metrics_cache("metric_list");
 
-  asort($index_array['metrics']);
-  foreach ($index_array['metrics'] as $key => $value) {
+  asort($index_array['metric_list']);
+  foreach ($index_array['metric_list'] as $key => $value) {
     $available_metrics[] = "\"$value\"";
   }
 

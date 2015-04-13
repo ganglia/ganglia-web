@@ -248,6 +248,7 @@
       {if $overlay_events}
       <li><a href="events.php">Events</a></li>
       {/if}
+      <li><a href="breakdown_reports.php">Reports</a></li>
       <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
       <li><a href="#tabs-livedashboard" onclick="liveDashboardChooser();">Live Dashboard</a></li>
       {if $cubism}

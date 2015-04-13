@@ -38,8 +38,13 @@ $(function() {
   $available_metrics = array();
   retrieve_metrics_cache("metric_list");
 
-  asort($index_array['metrics']);
-  foreach ($index_array['metrics'] as $key => $value) {
+  # If metric_list hash exists we pulled it out of cache. Otherwise
+  # it was just fetched from gmetad so we need to massage the output
+  if ( ! isset($index_array['metric_list']) ) {
+    $index_array['metric_list'] = array_keys($index_array["metrics"]);
+  }
+  
+  foreach ($index_array['metric_list'] as $key => $value) {
     $available_metrics[] = "\"$value\"";
   }
 
