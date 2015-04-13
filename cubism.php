@@ -50,8 +50,8 @@ var context = cubism.context()
     .step(<?php print $step_in_ms;?>) // what step to use
     .size(1024); // How many values to fetch
 var ganglia = context.gangliaWeb( { 
-  "host": '<?php print $_SERVER["REQUEST_SCHEME"] ?>://<?php print $_SERVER["HTTP_HOST"] ?>', 
-  "uriPathPrefix": '<?php print $_SERVER["CONTEXT_PREFIX"] ?>/'} );
+  "host": '<?php print isset($_SERVER["HTTPS"]) ? "https" : "http" ?>://<?php print $_SERVER["SERVER_NAME"] ?>', 
+  "uriPathPrefix": '<?php print dirname($_SERVER["SCRIPT_NAME"]) ?>/'} );
 
 <?php
 
