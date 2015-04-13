@@ -30,13 +30,13 @@ $step_in_ms = $step * 1000;
 <body>
    <div>
       <form id="cubism-form">
-      Host Regex: <input size=30 value="<?php print htmlentities($hreg); ?>" name="hreg">
-      Metric Regex: <input size=30 value="<?php print htmlentities($mreg); ?>" name="mreg">
-      Min: <input size=12 value="<?php print htmlentities($min); ?>" name="min">
-      Max: <input size=12 value="<?php print htmlentities($max); ?>" name="max">
-      Height: <input size=3 value="<?php print htmlentities($height); ?>" name="height">
-      Step: <input size=3 value="<?php print htmlentities($step); ?>" name="step">
-      <input type=submit value="Submit">
+      Host Regex: <input size=25 value="<?php print htmlentities($hreg); ?>" name="hreg">
+      Metric Regex: <input size=25 value="<?php print htmlentities($mreg); ?>" name="mreg">
+      Min: <input size=10 value="<?php print htmlentities($min); ?>" name="min">
+      Max: <input size=10 value="<?php print htmlentities($max); ?>" name="max">
+      Height: <input size=2 value="<?php print htmlentities($height); ?>" name="height">
+      Step: <input size=2 value="<?php print htmlentities($step); ?>" name="step">
+      <input type="submit" value="Submit">
       </form>
    </div>
    <div class="navbar navbar-fixed-top">
