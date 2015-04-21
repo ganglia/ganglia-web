@@ -10,7 +10,7 @@ Vcs-Browser: http://github.com/vvuksan/ganglia-misc
 
 Package: ganglia-webfrontend
 Architecture: all
-Depends: ${misc:Depends}, apache | apache-ssl | apache-perl | apache2, php5 | php5-cgi | libapache2-mod-php5, rrdtool, debconf (>= 0.5), libgd2-noxpm | libgd2-xpm
+Depends: ${misc:Depends}, apache | apache-ssl | apache-perl | apache2, php5 | php5-cgi | libapache2-mod-php5, rrdtool, debconf (>= 0.5)
 Recommends: gmetad, php5-gd
 Description: cluster monitoring toolkit - web front-end
  Ganglia is a scalable, real-time cluster monitoring environment
