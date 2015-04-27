@@ -184,6 +184,7 @@ function start_cluster ($parser, $tagname, $attrs)
          default:
             break;
       }
+
 }
 
 function start_everything ($parser, $tagname, $attrs)
