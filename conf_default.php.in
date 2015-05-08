@@ -447,4 +447,9 @@ $conf['cubism_enabled'] = true;
 #$conf['cubism_js_path'] = "js/cubism.v1.min.js";
 $conf['cubism_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/cubism/1.6.0/cubism.v1.min.js";
 $conf['cubism_d3_path'] = "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js";
+$conf['cubism_default_height'] = 30;
+$conf['cubism_default_step'] = 15;
 
+# Set this if you are fronted by a proxy and that ends up messing with Cubism URL detection
+#$conf['ganglia_url_prefix'] = "https://metric.domain.com";
+#$conf['ganglia_url_suffix'] = "/ganglia";

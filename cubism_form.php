@@ -149,11 +149,11 @@ data points adjust the step size e.g. 10. Step size is the same as the gmetad po
 </td>
 <tr>
   <td>Individual graph height:</td>
-  <td><input name="height" id="height" value="30" size=5></td>
+  <td><input name="height" id="height" value="<?php print $conf['cubism_default_height']; ?>" size=5></td>
 </tr>
 <tr>
   <td>Data step in seconds</td>
-  <td><input name="step" id="step" value="15" size=3></td>
+  <td><input name="step" id="step" value="<?php print $conf['cubism_default_step']; ?>" size=3></td>
 </tr>
 <tr>
   <td colspan=2>
