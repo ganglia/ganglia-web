@@ -1251,8 +1251,6 @@ function output_data_to_external_format($rrdtool_graph_series,
 function execute_graph_command($graph_engine, $command) {
   global $debug, $user;
 
-  // Make sure the image is not cached
-  header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
   // always modified
   header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); 
   header ("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
