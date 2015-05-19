@@ -60,9 +60,9 @@ $user['jobstart'] = isset($_GET["js"]) ?
     clean_number( $_GET["js"] ) : NULL;
 # custom start and end
 $user['cs'] = isset($_GET["cs"]) ?
-    escapeshellcmd($_GET["cs"]) : NULL;
+    escapeshellcmd(htmlentities($_GET["cs"])) : NULL;
 $user['ce'] = isset($_GET["ce"]) ?
-    escapeshellcmd($_GET["ce"]) : NULL;
+    escapeshellcmd(htmlentities($_GET["ce"])) : NULL;
 # Custom step, primarily for use in exporting the raw data from graph.php
 $user['step'] = isset($_GET["step"]) ?
     clean_number( $_GET["step"] ) : NULL;
@@ -127,9 +127,9 @@ if(isset($_GET["choose_filter"]))
 #
 # WARNING WARNING WARNING WARNING. If you create another context
 # e.g. views, compare_hosts please make sure you add those to
-# global.php, otherwise you may be making requests to the gmetad
-# any time you access it which will impact performance read make
-# it really slow
+# get_ganglia.php and ganglia.php otherwise you may be making
+# requests to the gmetad any time you access it which will impact
+# performance read make it really slow
 $context = NULL;
 if(!$user['clustername'] && !$user['hostname'] && $user['controlroom']) {
       $context = "control";
