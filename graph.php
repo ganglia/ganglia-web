@@ -1249,7 +1249,7 @@ function output_data_to_external_format($rrdtool_graph_series,
 }
 
 function execute_graph_command($graph_engine, $command) {
-  global $debug;
+  global $debug, $user;
 
   // Make sure the image is not cached
   header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
@@ -1272,7 +1272,10 @@ function execute_graph_command($graph_engine, $command) {
     }        
     print "</body></html>";
   } else {
-    header ("Content-type: image/png");
+    if ( $user['image_format'] == "svg" )
+      header ("Content-type: image/svg+xml");
+    else
+      header ("Content-type: image/png");
     switch ($graph_engine) {  
     case "flot":
     case "rrdtool":
@@ -1330,11 +1333,15 @@ if (isset($_REQUEST['live'])) {
 } else {
   $user['live_output'] = NULL;
 }
-$user['csv_output'] = isset($_GET["csv"]) ? 1 : NULL; 
-$user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL; 
-$user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
+$user['csv_output'] = isset($_REQUEST["csv"]) ? 1 : NULL;
+$user['graphlot_output'] = isset($_REQUEST["graphlot"]) ? 1 : NULL;
+$user['flot_output'] = isset($_REQUEST["flot"]) ? 1 : NULL;
 
-$user['trend_line'] = isset($_GET["trend"]) ? 1 : NULL; 
+# Check if user is asking for an alternate image format e.g. SVG
+$user['image_format'] = (isset($_REQUEST["image_format"]) and $_REQUEST["image_format"] == "svg") ? "svg" : NULL;
+
+
+$user['trend_line'] = isset($_REQUEST["trend"]) ? 1 : NULL;
 // How many months ahead to extend the trend e.g. 6 months
 $user['trend_range'] = 
   isset($_GET["trendrange"]) && is_numeric($_GET["trendrange"]) ? 
@@ -1705,6 +1712,13 @@ $critical = isset($_GET["crit"]) && is_numeric($_GET["crit"]) ?
 if ($critical) {
   $command .= " 'HRULE:" . $critical . "#FF0000:Critical:dashes'";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Turn on SVG rendering
+////////////////////////////////////////////////////////////////////////////////
+if ( $user['image_format'] == "svg" )
+  $command .= " -a SVG";
+
 
 if ($debug) {
   error_log("Final rrdtool command:  $command");
