@@ -1,3 +1,14 @@
+ganglia-webfrontend (3.7.0) wheezy; urgency=low
+
+  [ vv ]
+  * Support for Cubism (https://square.github.io/cubism/)
+  * Create breakdown reports
+  * XSS fixes
+
+  [ Vladimir Vuksan]
+
+ -- Vladimir <vlemp@vuksan.com>  Thu, 21 May 2015 12:17:26 -0400
+
 ganglia-webfrontend (3.6.2) wheezy; urgency=low
 
   [ do ]
