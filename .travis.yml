@@ -1,0 +1,12 @@
+language: php
+php:
+ - 5.5
+ - 5.6
+ - 7.0
+ - hhvm
+before_script:
+ - pyrus install http://phptal.org/latest.tar.gz
+ - pear install pear/PHP_CodeSniffer
+ - phpenv rehash
+script:
+ - phpcs --standard=PHPCS -p *.php api graph.d lib nagios test || echo "Completed - Returned $?"
