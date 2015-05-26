@@ -9,4 +9,5 @@ before_script:
  - pear install pear/PHP_CodeSniffer
  - phpenv rehash
 script:
- - phpcs --standard=PHPCS -p *.php api graph.d lib nagios test || echo "Completed - Returned $?"
+ - phpcs --standard=test/phpcs-ganglia-web.xml -p *.php api graph.d lib nagios test || echo "Completed - Returned $?"
+ - phpunit test
