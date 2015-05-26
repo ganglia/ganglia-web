@@ -56,7 +56,7 @@ class Dwoo_Security_Policy
 		'list' => true,
 		'empty' => true,
 		'count' => true,
-		'sizeof' => true,
+		'count' => true,
 		'in_array' => true,
 		'is_array' => true,
 	);

@@ -376,7 +376,7 @@ if (isset($conf['ad-hoc-views']) &&
 
 // Pop up a warning message if there are no available views
 // (Disable temporarily, otherwise we can't create views)
-if (sizeof($viewList->getViews()) == -1 && !$is_ad_hoc) {
+if (count($viewList->getViews()) == -1 && !$is_ad_hoc) {
   $error_msg = '
     <div class="ui-widget">
       <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
@@ -422,7 +422,7 @@ if ($is_ad_hoc) {
 
 if (isset($view_items)) {
   $data->assign("view_items", $view_items);
-  $data->assign("number_of_view_items", sizeof($view_items));
+  $data->assign("number_of_view_items", count($view_items));
 }
 
 $data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);

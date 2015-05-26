@@ -223,7 +223,7 @@ if ($conf['display_events_using_calendar']) {
 
   
   $events_array = ganglia_events_get();
-  if (sizeof($events_array) > 0) {
+  if (count($events_array) > 0) {
     print "<tbody>";
     usort($events_array, 'start_time_cmp');
     foreach ( $events_array as $id => $event ) {

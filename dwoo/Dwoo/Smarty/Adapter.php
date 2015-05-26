@@ -122,7 +122,7 @@ class Dwoo_Smarty__Adapter extends Dwoo_Core
 		'PHP_HANDLING'    => false,
 		'IF_FUNCS'        => array
 		(
-			'list', 'empty', 'count', 'sizeof',
+			'list', 'empty', 'count', 'count',
 			'in_array', 'is_array',
 		),
 		'INCLUDE_ANY'     => false,

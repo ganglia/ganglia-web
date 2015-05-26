@@ -257,7 +257,7 @@ function build_aggregate_graph_config_from_url($conf_graph_colors) {
   /////////////////////////////////////////////////////////////////////////////
   if (isset($_GET['hl'])) {
     $counter = 0;
-    $color_count = sizeof($conf_graph_colors);
+    $color_count = count($conf_graph_colors);
     $metric_name = str_replace("$", 
 			       "", 
 			       str_replace("^", 
@@ -649,7 +649,7 @@ function rrdgraph_cmd_add_overlay_events($command,
   $original_command = $command;
 
   // Loop through all the events
-  $color_count = sizeof($conf_graph_colors);
+  $color_count = count($conf_graph_colors);
   $counter = 0;
   $legend_items = array();
   foreach ($events_array as $id => $event) {
@@ -1154,14 +1154,14 @@ function output_data_to_external_format($rrdtool_graph_series,
     // First let's check if JSON output is requested for 
     // Live Dashboard and we are outputting aggregate graph. 
     // If so we need to add up all the values
-    if ($live_dashboard && sizeof($output_array) > 1) {
+    if ($live_dashboard && count($output_array) > 1) {
       $summed_output = array();
       foreach ($output_array[0]['datapoints'] as $index => $datapoint) {
 	// Data point is an array with value and UNIX time stamp. Initialize
 	// summed output as 0
 	if (is_numeric($datapoint[0]) && is_numeric($datapoint[1])) {
 	  $summed_output[$index] = array(0, $datapoint[1]);
-	  for ($i = 0 ; $i < sizeof($output_array) ; $i++) {
+	  for ($i = 0 ; $i < count($output_array) ; $i++) {
 	    $summed_output[$index][0] += 
 	      $output_array[$i]['datapoints'][$index][0];
 	  }
@@ -1212,7 +1212,7 @@ function output_data_to_external_format($rrdtool_graph_series,
     print "Timestamp";
 
     // Print out headers
-    for ($i = 0 ; $i < sizeof($output_array) ; $i++) {
+    for ($i = 0 ; $i < count($output_array) ; $i++) {
       print "," . $output_array[$i]["metric_name"];
     }
 
@@ -1231,7 +1231,7 @@ function output_data_to_external_format($rrdtool_graph_series,
   if ($graphlot_output) {
     header("Content-Type: application/json");
 
-    $last_index = sizeof($output_array[0]["datapoints"]) - 1;
+    $last_index = count($output_array[0]["datapoints"]) - 1;
   
     $output_vals['step'] = 
       $output_array[0]["datapoints"][1][1] - 

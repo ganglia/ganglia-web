@@ -86,7 +86,7 @@ $data->assign("hreg", $hreg);
 $data->assign("graphargs", $graphargs);
 $data->assign("host_list", $host_list);
 $data->assign("host_metrics", $hmetrics);
-$data->assign("number_of_metrics", sizeof($hmetrics));
+$data->assign("number_of_metrics", count($hmetrics));
 
 $data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);
 $data->assign('SHOW_EVENTS_BASE_ID', $SHOW_EVENTS_BASE_ID);

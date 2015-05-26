@@ -42,7 +42,7 @@ if ( ! isset($_REQUEST['view_name']) ) {
   }
   unset($available_views);
 
-  if ( $view_found == 0 || sizeof($view['items']) == 0 ) {
+  if ( $view_found == 0 || count($view['items']) == 0 ) {
       die ("<font color=red size=4>There are no graphs in view you supplied or view does not exist.</font>");
   }
 

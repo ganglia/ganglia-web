@@ -360,7 +360,7 @@ function get_host_metric_graphs($showhosts,
   
   // If there is an overflow list. These are hosts for which we don't show graphs
   // just names
-  if (sizeof($overflow_list) > 0) {
+  if (count($overflow_list) > 0) {
     $data->assign("overflow_list_header", '<p><table width=80%><tr><td align=center class=metric>
     <a href="#" id="overflow_list_button"onclick="$(\'#overflow_list\').toggle();" class="button ui-state-default ui-corner-all" title="Toggle overflow list">Show more hosts (' 
     . ($overflow_counter - 1) .')</a>

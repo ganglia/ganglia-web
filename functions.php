@@ -722,7 +722,7 @@ function get_view_graph_elements($view) {
   switch ( $view['view_type'] ) {
   case "standard":
     // Does view have any items/graphs defined
-    if ( sizeof($view['items']) == 0 ) {
+    if ( count($view['items']) == 0 ) {
       continue;
       // print "No graphs defined for this view. Please add some";
     } else {
@@ -865,7 +865,7 @@ function get_view_graph_elements($view) {
 	  unset($graph_args_array);
 	}
       } // end of foreach ( $view['items']
-    } // end of if ( sizeof($view['items'])
+    } // end of if ( count($view['items'])
     break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1117,7 +1117,7 @@ function build_aggregate_graph_config ($graph_type,
   
   retrieve_metrics_cache();
   
-  $color_count = sizeof($conf['graph_colors']);
+  $color_count = count($conf['graph_colors']);
 
   $graph_config["report_name"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
   $graph_config["title"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
@@ -1196,7 +1196,7 @@ function build_aggregate_graph_config ($graph_type,
           else
             $label = $host_name;
 
- 	  if (isset($metric_matches) and sizeof($metric_matches_unique) > 1)
+ 	  if (isset($metric_matches) and count($metric_matches_unique) > 1)
             $label .= " $legend";
 	}
 

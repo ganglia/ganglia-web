@@ -303,7 +303,7 @@ ksort($g_metrics_group);
 foreach ( $g_metrics_group as $metric_group_name => $metric_group_members ) {
 ?>
       <div data-role="collapsible" data-collapsed="true">
-	<h3><?php print $metric_group_name . " (" . sizeof($metric_group_members) . ")"; ?></h3>
+	<h3><?php print $metric_group_name . " (" . count($metric_group_members) . ")"; ?></h3>
 <?php
       foreach ( $metric_group_members as $index => $metric_name ) {
 	print "

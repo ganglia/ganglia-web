@@ -48,7 +48,7 @@ if ( ! isset($_REQUEST['view_name']) and ! $is_ad_hoc ) {
   }
   unset($available_views);
 
-  if ( ($view_found == 0 || sizeof($view['items']) == 0) && !$is_ad_hoc ) {
+  if ( ($view_found == 0 || count($view['items']) == 0) && !$is_ad_hoc ) {
       die ("<font color=red size=4>There are no graphs in view you supplied or view does not exist.</font>");
   }
 
