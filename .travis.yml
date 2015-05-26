@@ -2,8 +2,6 @@ language: php
 php:
  - 5.5
  - 5.6
- - 7.0
- - hhvm
 before_script:
  - pyrus install http://phptal.org/latest.tar.gz
  - pear install pear/PHP_CodeSniffer

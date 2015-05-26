@@ -13,6 +13,8 @@
   <exclude name="Generic.WhiteSpace.ScopeIndent" />
   <!-- Function naming -->
   <exclude name="Generic.NamingConventions.CamelCapsFunctionName" />
+  <!-- Multi-line string concat -->
+  <exclude name="Generic.Strings.UnnecessaryStringConcat" />
  </rule>
 
 </ruleset>
