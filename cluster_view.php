@@ -559,13 +559,22 @@ function get_load_heatmap($hosts_up, $host_regex, $metrics, $data, $sort) {
       $col_index++;
   }
 
-  if ($col_index != 0) {
-    for ($i = 0; $i < ($num_cols * $num_cols - $num_hosts); $i++) {
-      $heatmap .= ",{host:\"unused\",load:0}";
+  for( $i = $row_index; $i < $num_cols; $i++ ) {
+    for( $j = $col_index; $j < $num_cols; $j++ ) {
+      if ($j == 0) {
+        if ($i > 0)
+	  $heatmap .= ',';
+        $heatmap .= '[';
+      } 
+      if ($j > 0) {
+        $heatmap .= ',';
+      }
+     
+      $heatmap .= "{host:\"unused\",load:0}";
     }
     $heatmap .= ']';
+    $col_index = 0;
   }
-
   $heatmap .= ']';
 
   $data->assign("heatmap_data", $heatmap);
