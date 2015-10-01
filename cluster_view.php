@@ -741,6 +741,7 @@ if (isset($conf['heatmaps_enabled']) and
     (count($hosts_up) > 0))
   get_load_heatmap($hosts_up, $user['host_regex'], $metrics, $data, $sort);
 
+$data->assign("conf", $conf);
 $data->assign("showhosts", $showhosts);
 
 // No reason to go on if we are not displaying individual hosts

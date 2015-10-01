@@ -1,6 +1,6 @@
 <!-- Begin cluster_view.tpl -->
 {if $heatmap_data}
-<script type="text/javascript" src="js/protovis-r3.2.js"></script>
+<script type="text/javascript" src="{$conf['protovis_js_path']}"></script>
 {/if}
 <script type="text/javascript">
 function Heatmap(elem_id, data) {

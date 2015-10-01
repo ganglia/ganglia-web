@@ -449,6 +449,7 @@ $conf['jqueryui_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.1
 $conf['rickshaw_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js";
 $conf['cubism_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/cubism/1.6.0/cubism.v1.min.js";
 $conf['d3_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js";
+$conf['protovis_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/protovis/3.3.1/protovis.min.js";
 
 # Enable Cubism integration http://square.github.io/cubism/
 $conf['cubism_enabled'] = true;
