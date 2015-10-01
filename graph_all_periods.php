@@ -5,9 +5,9 @@ if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 <head>
 <title>Ganglia: Graph all periods</title>
 <link rel="stylesheet" href="./styles.css" type="text/css" />
-<script TYPE="text/javascript" SRC="js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="<?php print $conf['jquery_js_path']; ?>"></script>
 <script>$.uiBackCompat = false;</script>
-<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="<?php print $conf['jqueryui_js_path']; ?>"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>

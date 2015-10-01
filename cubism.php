@@ -10,7 +10,7 @@ include_once("./eval_conf.php");
 require_once('./functions.php');
 
 ?>
-<script src="<?php print $conf['cubism_d3_path']; ?>"></script>
+<script src="<?php print $conf['d3_js_path']; ?>"></script>
 <script src="<?php print $conf['cubism_js_path']; ?>"></script>
 <?php
 

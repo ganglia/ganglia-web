@@ -452,6 +452,7 @@ if ( $conf['picker_autocomplete'] == true ) {
 
 $data->assign('selected_tab', htmlspecialchars($user['selected_tab']) );
 $data->assign('view_name', $user['viewname']);
+$data->assign('conf', $conf);
 
 $additional_buttons = "";
 if ($context == 'views' || $context == 'decompose_graph' || $context == 'host') {
