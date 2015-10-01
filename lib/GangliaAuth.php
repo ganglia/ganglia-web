@@ -37,13 +37,13 @@ class GangliaAuth {
       if($this->getMagicQuotesGpc()) {
         $cookie = stripslashes($cookie);
       }
-      $data = unserialize($cookie);
+      $data = json_decode($cookie, TRUE);
 
       if(array_keys($data) != array('user','group','token')) {
         return false;
       }
 
-      if($this->getAuthToken($data['user']) == $data['token']) {
+      if($this->getAuthToken($data['user']) === $data['token']) {
         $this->tokenIsValid = true;
         $this->user = $data['user'];
         $this->group = $data['group'];
@@ -82,7 +82,7 @@ class GangliaAuth {
 
   // this is how a user 'logs in'.
   public function setAuthCookie($user, $group=null) {
-    setcookie('ganglia_auth', serialize( array('user'=>$user, 'group'=>$group, 'token'=>$this->getAuthToken($user)) ) );
+    setcookie('ganglia_auth', json_encode( array('user'=>$user, 'group'=>$group, 'token'=>$this->getAuthToken($user)) ) );
     $this->user = $user;
     $this->group = $group;
     $this->tokenIsValid = true;
