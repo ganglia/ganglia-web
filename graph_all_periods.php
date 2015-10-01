@@ -1,4 +1,6 @@
 <?php
+include_once "./eval_conf.php";
+include_once "./global.php";
 if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 ?>
 <html>
@@ -41,8 +43,6 @@ if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 </script>
 
 <?php
-include_once "./eval_conf.php";
-include_once "./global.php";
 
 // build a query string but drop r and z since those designate time 
 // window and size. Also if the get arguments are an array rebuild them. 
