@@ -1,10 +1,13 @@
-<script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.crosshair.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.stack.min.js"></script>
+<?php
+include_once "./eval_conf.php";
+?>
+<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.crosshair.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.stack.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.multiselect.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.multiselect.filter.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.selection.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.time.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.selection.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.time.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.events.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 

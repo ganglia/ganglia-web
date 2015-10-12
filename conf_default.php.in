@@ -453,6 +453,8 @@ $conf['protovis_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/protovis/3.3
 $conf['jstree_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js";
 $conf['jstree_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css";
 
+$conf['jquery_flot_base_path'] = "https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot";
+
 # Enable Cubism integration http://square.github.io/cubism/
 $conf['cubism_enabled'] = true;
 $conf['cubism_default_height'] = 30;
