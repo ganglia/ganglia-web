@@ -17,7 +17,7 @@ APACHE_USER = www-data
 ##########################################################
 
 # Gweb version
-GWEB_VERSION = 3.7.1
+GWEB_VERSION = 3.7.2
 
 DIST_NAME = ganglia-web
 DIST_DIR = $(DIST_NAME)-$(GWEB_VERSION)
