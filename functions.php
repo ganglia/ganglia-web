@@ -747,6 +747,10 @@ function get_view_graph_elements($view) {
           } else {
             $graph_args_array[] = "z=" . $default_size;
           }
+
+          if ( isset($item['sortit']) ) {
+            $graph_args_array[] = "sortit=" . $item['sortit'];
+          }
 	  
 	  // If graph type is not specified default to line graph
 	  if (isset($item['graph_type']) && 
@@ -1111,7 +1115,8 @@ function build_aggregate_graph_config ($graph_type,
                                        $hreg,
                                        $mreg,
                                        $glegend,
-                                       $exclude_host_from_legend_label) {
+                                       $exclude_host_from_legend_label,
+                                       $sortit = true) {
 
   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
   
@@ -1157,7 +1162,9 @@ function build_aggregate_graph_config ($graph_type,
         }
       }
     }
-    ksort($metric_matches);
+    if($sortit) {
+      ksort($metric_matches);
+    }
   }
   if( isset($metric_matches)){
     $metric_matches_unique = array_unique($metric_matches);
