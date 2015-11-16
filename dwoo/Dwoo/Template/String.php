@@ -82,7 +82,7 @@ class Dwoo_Template_String implements Dwoo_ITemplate
 	 *
 	 * @var int
 	 */
-	protected $chmod = 0777;
+	protected $chmod = 0755;
 
 	/**
 	 * creates a template from a string
