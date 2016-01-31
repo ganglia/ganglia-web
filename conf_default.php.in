@@ -140,6 +140,12 @@ $conf['mem_free_color'] = "f0ffc0";
 $conf['mem_swapped_color'] = "9900CC";
 
 #
+# Colors for the DISK report graph
+#
+$conf['disk_used_color'] = "5555cc";
+$conf['disk_free_color'] = "f0ffc0";
+
+#
 # Colors for the LOAD report graph
 #
 $conf['load_one_color'] = "CCCCCC";

@@ -1,0 +1,6 @@
+{
+   "report_name" : "disk_report",
+   "report_type" : "template",
+   "title" : "Disk Report",
+   "graphite" : "target=alias(scale(diffSeries(HOST_CLUSTER.disk_total.sum,HOST_CLUSTER.disk_free.sum),1073741824),'Used')&areaMode=stacked&colorList=5555cc"
+}
