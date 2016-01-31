@@ -52,9 +52,15 @@ function graph_cpu_report( &$rrdtool_graph )
        $space2 = '                 ';
     }
 
+    $cpu_user_def = '';
+    $cpu_user_cdef = '';
     $cpu_nice_def = '';
     $cpu_nice_cdef = '';
 
+    if (file_exists("$rrd_dir/cpu_user.rrd")) {
+        $cpu_user_def = "DEF:'cpu_user'='${rrd_dir}/cpu_user.rrd':'sum':AVERAGE ";
+        $cpu_user_cdef = "CDEF:'ccpu_user'=cpu_user,num_nodes,/ ";
+    }
     if (file_exists("$rrd_dir/cpu_nice.rrd")) {
         $cpu_nice_def = "DEF:'cpu_nice'='${rrd_dir}/cpu_nice.rrd':'sum':AVERAGE ";
         $cpu_nice_cdef = "CDEF:'ccpu_nice'=cpu_nice,num_nodes,/ ";
@@ -64,7 +70,7 @@ function graph_cpu_report( &$rrdtool_graph )
         $series .= "DEF:'num_nodes'='${rrd_dir}/cpu_user.rrd':'num':AVERAGE ";
     }
 
-    $series .= "DEF:'cpu_user'='${rrd_dir}/cpu_user.rrd':'sum':AVERAGE "
+    $series .= $cpu_user_def
             . $cpu_nice_def
             . "DEF:'cpu_system'='${rrd_dir}/cpu_system.rrd':'sum':AVERAGE "
             . "DEF:'cpu_idle'='${rrd_dir}/cpu_idle.rrd':'sum':AVERAGE ";
@@ -82,7 +88,7 @@ function graph_cpu_report( &$rrdtool_graph )
     }
 
     if ($context != "host" ) {
-        $series .= "CDEF:'ccpu_user'=cpu_user,num_nodes,/ "
+        $series .= $cpu_user_cdef
                 . $cpu_nice_cdef
                 . "CDEF:'ccpu_system'=cpu_system,num_nodes,/ "
                 . "CDEF:'ccpu_idle'=cpu_idle,num_nodes,/ ";
