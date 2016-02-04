@@ -354,13 +354,14 @@ $conf['overlay_events_exclude_ranges'] = array("month", "year");
 $conf['overlay_events_line_type'] = "dashed";
 
 # What is the provider use to provide events.
-# Examples: "json", "mdb2"
+# Examples: "json", "mdb2", "pdo"
 $conf['overlay_events_provider'] = "json";
 # Where is the Overlay events file stored
 $conf['overlay_events_file'] = $conf['conf_dir'] . "/events.json";
 
 # If using MDB2, connection string:
 $conf['overlay_events_dsn'] = "mysql://dbuser:dbpassword@localhost/ganglia";
+#$conf['overlay_events_dsn'] = "sqlite:" . $conf['conf_dir'] . "/events.sqlite";
 
 $conf['overlay_events_color_map_file'] = $conf['conf_dir'] . "/event_color.json";
 
