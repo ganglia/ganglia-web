@@ -92,14 +92,16 @@ function graph_cpu_report( &$rrdtool_graph )
     if (file_exists("$rrd_dir/cpu_guest.rrd")) {
         $series .= "DEF:'cpu_guest'='${rrd_dir}/cpu_guest.rrd':'sum':AVERAGE ";
         // cpu_guest has already been included in cpu_user, subtract
-        $series .= "CDEF:'cpu_guest_user'='cpu_user','cpu_guest',- ";
+        // if cpu_guest is unknown (not measured), just use cpu_user
+        $series .= "CDEF:'cpu_guest_user'='cpu_user','cpu_guest',UN,0,'cpu_guest',IF,- ";
         $guest_user = true;
     }
 
     if (file_exists("$rrd_dir/cpu_gnice.rrd")) {
         $series .= "DEF:'cpu_gnice'='${rrd_dir}/cpu_gnice.rrd':'sum':AVERAGE ";
         // cpu_gnice has already been included in cpu_nice, subtract
-        $series .= "CDEF:'cpu_guest_nice'='cpu_nice','cpu_gnice',- ";
+        // if cpu_gnice is unknown (not measured), just use cpu_nice
+        $series .= "CDEF:'cpu_guest_nice'='cpu_nice','cpu_gnice',UN,0,'cpu_gnice',IF,- ";
         $guest_nice = true;
     }
 
