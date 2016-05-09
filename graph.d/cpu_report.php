@@ -125,12 +125,12 @@ function graph_cpu_report( &$rrdtool_graph )
 
         if (file_exists("$rrd_dir/cpu_guest.rrd")) {
             $series .= "CDEF:'ccpu_guest'=cpu_guest,num_nodes,/ ";
-            $series .= "CDEF:'ccpu_guest_user'='ccpu_user','ccpu_guest',- ";
+            $series .= "CDEF:'ccpu_guest_user'='ccpu_user','ccpu_guest',UN,0,'ccpu_guest',IF,- ";
         }
 
         if (file_exists("$rrd_dir/cpu_gnice.rrd")) {
             $series .= "CDEF:'ccpu_gnice'=cpu_gnice,num_nodes,/ ";
-            $series .= "CDEF:'ccpu_guest_nice'='ccpu_nice','ccpu_gnice',- ";
+            $series .= "CDEF:'ccpu_guest_nice'='ccpu_nice','ccpu_gnice',UN,0,'ccpu_gnice',IF,- ";
         }
 
         $plot_prefix ='ccpu';
