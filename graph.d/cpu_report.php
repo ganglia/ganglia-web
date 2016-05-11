@@ -54,10 +54,10 @@ function graph_cpu_report( &$rrdtool_graph )
 
     $cpu_user_def = '';
     $cpu_user_cdef = '';
-    $guest_user = false;
+    $cpu_user_stack = '';
     $cpu_nice_def = '';
     $cpu_nice_cdef = '';
-    $guest_nice = false;
+    $cpu_nice_stack = '';
 
     if (file_exists("$rrd_dir/cpu_user.rrd")) {
         $cpu_user_def = "DEF:'cpu_user'='${rrd_dir}/cpu_user.rrd':'sum':AVERAGE ";
@@ -94,7 +94,7 @@ function graph_cpu_report( &$rrdtool_graph )
         // cpu_guest has already been included in cpu_user, subtract
         // if cpu_guest is unknown (not measured), just use cpu_user
         $series .= "CDEF:'cpu_guest_user'='cpu_user','cpu_guest',UN,0,'cpu_guest',IF,- ";
-        $guest_user = true;
+        $cpu_user_stack = "_guest";
     }
 
     if (file_exists("$rrd_dir/cpu_gnice.rrd")) {
@@ -102,7 +102,7 @@ function graph_cpu_report( &$rrdtool_graph )
         // cpu_gnice has already been included in cpu_nice, subtract
         // if cpu_gnice is unknown (not measured), just use cpu_nice
         $series .= "CDEF:'cpu_guest_nice'='cpu_nice','cpu_gnice',UN,0,'cpu_gnice',IF,- ";
-        $guest_nice = true;
+        $cpu_nice_stack = "_guest";
     }
 
     if ($context != "host" ) {
@@ -138,14 +138,10 @@ function graph_cpu_report( &$rrdtool_graph )
         $plot_prefix ='cpu';
     }
 
-    if ($guest_user)
-        $guest_prefix = "_guest";
-    else
-        $guest_prefix = "";
-    $series .= "AREA:'${plot_prefix}${guest_prefix}_user'#${conf['cpu_user_color']}:'User${rmspace}' ";
+    $series .= "AREA:'${plot_prefix}${cpu_user_stack}_user'#${conf['cpu_user_color']}:'User${rmspace}' ";
 
     if ( $conf['graphreport_stats'] ) {
-        $series .= "CDEF:user_pos=${plot_prefix}${guest_prefix}_user,0,INF,LIMIT "
+        $series .= "CDEF:user_pos=${plot_prefix}_user,0,INF,LIMIT "
                 . "VDEF:user_last=user_pos,LAST "
                 . "VDEF:user_min=user_pos,MINIMUM "
                 . "VDEF:user_avg=user_pos,AVERAGE "
@@ -173,14 +169,10 @@ function graph_cpu_report( &$rrdtool_graph )
     }
 
     if (file_exists("$rrd_dir/cpu_nice.rrd")) {
-        if ($guest_nice)
-            $guest_prefix = "_guest";
-        else
-            $guest_prefix = "";
-        $series .= "STACK:'${plot_prefix}${guest_prefix}_nice'#${conf['cpu_nice_color']}:'Nice${rmspace}' ";
+        $series .= "STACK:'${plot_prefix}${cpu_nice_stack}_nice'#${conf['cpu_nice_color']}:'Nice${rmspace}' ";
 
         if ( $conf['graphreport_stats'] ) {
-            $series .= "CDEF:nice_pos=${plot_prefix}${guest_prefix}_nice,0,INF,LIMIT "
+            $series .= "CDEF:nice_pos=${plot_prefix}_nice,0,INF,LIMIT " 
                     . "VDEF:nice_last=nice_pos,LAST "
                     . "VDEF:nice_min=nice_pos,MINIMUM "
                     . "VDEF:nice_avg=nice_pos,AVERAGE "
