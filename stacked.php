@@ -19,6 +19,9 @@ if ($cs and (is_numeric($cs) or strtotime($cs)))
 $ce = $_REQUEST['ce'];
 if ($ce and (is_numeric($ce) or strtotime($ce)))
   $end = "'${ce}'";
+  
+$clustername = $_REQUEST['c'];
+$metricname = $_REQUEST['m'];
 
 $command = $conf['rrdtool'] . " graph - $rrd_options -E";
 $command .= " --start ${start}";
