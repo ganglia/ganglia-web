@@ -8,16 +8,21 @@ $conf['gweb_root'] = dirname(__FILE__);
 
 include_once $conf['gweb_root'] . "/eval_conf.php";
 include_once $conf['gweb_root'] . "/functions.php";
-
-$clustername = $_REQUEST['c'];
-$metricname = $_REQUEST['m'];
 $range = $_REQUEST['r'];
+$start = "-".$conf['time_ranges'][$range]."s";
+$end = "N";
 
-$start = $conf['time_ranges'][$range];
+$cs = $_REQUEST['cs'];
+if ($cs and (is_numeric($cs) or strtotime($cs)))
+  $start = "'${cs}'";
+
+$ce = $_REQUEST['ce'];
+if ($ce and (is_numeric($ce) or strtotime($ce)))
+  $end = "'${ce}'";
 
 $command = $conf['rrdtool'] . " graph - $rrd_options -E";
-$command .= " --start -${start}s";
-$command .= " --end N";
+$command .= " --start ${start}";
+$command .= " --end ${end}";
 $command .= " --width 700";
 $command .= " --height 300";
 if (isset($_GET['title'])) {
