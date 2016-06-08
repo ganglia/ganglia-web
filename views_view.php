@@ -28,7 +28,7 @@ function viewFileName($view_name) {
   $view_suffix = str_replace(" ", "_", $view_name);
   return $conf['views_dir'] . 
     "/view_" . 
-    preg_replace('/[^a-zA-Z0-9_-]/', '', $view_suffix) . ".json";
+    preg_replace('/[^a-zA-Z0-9_\-]/', '', $view_suffix) . ".json";
 }
 
 $viewList = new ViewList();
