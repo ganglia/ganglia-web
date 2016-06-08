@@ -78,7 +78,7 @@ if ( $host_found == 1 ) {
   if ( isset($metrics[$fqdn][$metric_name]['VAL']) ) {
     $metric_value = $metrics[$fqdn][$metric_name]['VAL'];
   } else {
-    api_return_error($metric_name . " - Invalid metric request for this host. Please check metric exists.");
+    api_return_error(htmlentities($metric_name) . " - Invalid metric request for this host. Please check metric exists.");
     exit(3);
   }
 
@@ -89,7 +89,6 @@ if ( $host_found == 1 ) {
     , 'units' => $ganglia_units
   ));
 } else {
-   api_return_error($metric_name . " - Hostname info not available. Likely invalid hostname");
+   api_return_error(htmlentities($metric_name) . " - Hostname info not available. Likely invalid hostname");
 }
 
-?>
