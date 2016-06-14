@@ -25,9 +25,20 @@ DIST_TARBALL = $(DIST_DIR).tar.gz
 
 TARGETS = conf_default.php ganglia-web.spec version.php apache.conf
 
+# Coding standard
+STANDARD = test/phpcs-ganglia-web.xml
+
+CODE = *.php api graph.d lib nagios test
+
 all: default
 
 default:	$(TARGETS)
+
+sniff:
+	phpcs --standard=$(STANDARD) -p $(CODE)
+
+fix:
+	phpcbf --standard=$(STANDARD) $(CODE)
 
 clean:
 	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
