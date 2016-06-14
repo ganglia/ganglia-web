@@ -128,6 +128,8 @@ $conf['cpu_wio_color'] = "ff8a60";
 $conf['cpu_idle_color'] = "e2e2f2";
 $conf['cpu_steal_color'] = "990099";
 $conf['cpu_sintr_color'] = "009933";
+$conf['cpu_guest_color'] = "7676bb";
+$conf['cpu_gnice_color'] = "fff261";
 
 #
 # Colors for the MEMORY report graph
