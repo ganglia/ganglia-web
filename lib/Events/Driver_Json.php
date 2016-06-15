@@ -37,7 +37,7 @@ function ganglia_events_get( $start = NULL, $end = NULL ) {
   }
 
   $events_array = array();
-  foreach ($orig_events_array AS $k => $evt) {
+  foreach ($orig_events_array as $k => $evt) {
     if ($evt['end_time'] != NULL) { // Duration event
       if ($start == NULL) {
         if ($evt['start_time'] <= $end && $evt['end_time'] >= $end)
@@ -66,7 +66,7 @@ function ganglia_event_delete( $event_id ) {
   $orig_events_array = ganglia_events_get();
   $events_array = array();
   $event_found = 0;
-  foreach ( $orig_events_array AS $k => $v ) {
+  foreach ( $orig_events_array as $k => $v ) {
     if ( $v['event_id'] != $event_id ) {
       $events_array[] = $v;
     } else {
@@ -98,7 +98,7 @@ function ganglia_event_modify( $event ) {
     api_return_error( "Event ID not found" );
   } // isset event_id
   
-  foreach ( $events_array AS $k => $e ) {
+  foreach ( $events_array as $k => $e ) {
     if ( $e['event_id'] == $event['event_id'] ) {
       $event_found = 1;
       
@@ -116,7 +116,7 @@ function ganglia_event_modify( $event ) {
 		    'description', 
 		    'summary', 
 		    'grid', 
-		    'host_regex') AS $k) {
+		    'host_regex') as $k) {
         if (isset( $event[$k] )) {
           $e[$k] = $event[$k];
         }

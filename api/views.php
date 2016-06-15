@@ -40,7 +40,7 @@ switch ( $_GET['action'] ) {
   case 'list':
     $views = get_available_views();
     $view_list = array();
-    foreach ($views AS $k => $view) {
+    foreach ($views as $k => $view) {
       if ($view['view_name'] != '') $view_list[] = $view['view_name'];
     }
     api_return_ok($view_list);

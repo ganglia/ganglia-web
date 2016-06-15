@@ -31,7 +31,7 @@ class GangliaAuth {
     $this->group = null;
     $this->tokenIsValid = false;
 
-    if(isSet($_COOKIE['ganglia_auth'])) {
+    if(isset($_COOKIE['ganglia_auth'])) {
       $cookie = $_COOKIE['ganglia_auth'];
       // magic quotes will break unserialization
       if($this->getMagicQuotesGpc()) {
@@ -65,7 +65,7 @@ class GangliaAuth {
 
   public function getEnvironmentErrors() {
     $errors = array();
-    if(!isSet($_SERVER['ganglia_secret'])) {
+    if(!isset($_SERVER['ganglia_secret'])) {
       $errors[] = "No ganglia_secret set in the server environment.  If you are using Apache, try adding 'SetEnv ganglia_secret ".sha1(mt_rand().microtime())."' to your configuration.";
     }
     return $errors;

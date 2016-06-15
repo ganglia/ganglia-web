@@ -1,8 +1,8 @@
 <?php
 
 /* Pass in by reference! */
-function graph_cpu_report( &$rrdtool_graph ) 
-{
+function graph_cpu_report( &$rrdtool_graph ) { 
+
     global $conf,
            $context,
            $range,

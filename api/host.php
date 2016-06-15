@@ -28,7 +28,7 @@ $debug = $_GET['debug'];
 function form_image_url ( $page, $args ) {
   global $conf;
   $a = array();
-  foreach ($args AS $k => $v) {
+  foreach ($args as $k => $v) {
     if ($v != null) {
       $a[] = $k . "=" . urlencode($v);
     }
@@ -44,7 +44,7 @@ switch ( $_GET['action'] ) {
     $l = explode( "\n", `$cmd` );
     $clusters = array();
     $hosts = array();
-    foreach ($l AS $v) {
+    foreach ($l as $v) {
       if ($v == $rrd_dir) {
         continue; // skip base directory
       }
@@ -79,8 +79,8 @@ switch ( $_GET['action'] ) {
       $override_reports = array_merge($override_reports, json_decode(file_get_contents($host_file), TRUE));
     }
     // Merge arrays
-    $reports["included_reports"] = array_merge( $default_reports["included_reports"] , $override_reports["included_reports"]);
-    $reports["excluded_reports"] = array_merge($default_reports["excluded_reports"] , $override_reports["excluded_reports"]);
+    $reports["included_reports"] = array_merge( $default_reports["included_reports"], $override_reports["included_reports"]);
+    $reports["excluded_reports"] = array_merge($default_reports["excluded_reports"], $override_reports["excluded_reports"]);
     // Remove duplicates
     $reports["included_reports"] = array_unique($reports["included_reports"]);
     $reports["excluded_reports"] = array_unique($reports["excluded_reports"]);
@@ -103,7 +103,7 @@ switch ( $_GET['action'] ) {
     if ( isset($conf['zoom_support']) && $conf['zoom_support'] === true ) {
       $additional_cluster_img_html_args['class'] = "cluster_zoomable";
     }
-    foreach ( $reports["included_reports"] AS $index => $report_name ) {
+    foreach ( $reports["included_reports"] as $index => $report_name ) {
       if ( ! in_array( $report_name, $reports["excluded_reports"] ) ) {
         $graph = array();
         // Form image URL
@@ -137,7 +137,7 @@ switch ( $_GET['action'] ) {
         DIRECTORY_SEPARATOR . $hostname . DIRECTORY_SEPARATOR
       ) . "*.rrd";
     $rrds_raw = explode( "\n", `$rrd_cmd` ); 
-    foreach ($rrds_raw AS $v) {
+    foreach ($rrds_raw as $v) {
       $rrd = str_replace(".rrd", "", basename( $v ));
       $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
       $size = $size == 'medium' ? 'default' : $size; // set to 'default' to preserve old behavior
@@ -175,7 +175,9 @@ switch ( $_GET['action'] ) {
       $graph['graph_url'] = form_image_url ( 'graph.php', $graph_arguments );
       $r['graph'][] = $graph;
     } // end foreach metrics
-    if ($debug) { print "<pre>"; print_r($r); die("</pre>"); }
+    if ($debug) { print "<pre>";
+print_r($r);
+die("</pre>"); }
     api_return_ok($r);
     break; // end get
 

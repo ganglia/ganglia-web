@@ -3,7 +3,7 @@ include_once("./global.php");
 
 $tpl = new Dwoo_Template_File( template("compare_hosts.tpl") );
 $data = new Dwoo_Data();
-$data->assign("range",$range);
+$data->assign("range", $range);
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
 //set to 'default' to preserve old behavior
@@ -18,7 +18,7 @@ if (array_key_exists('hreg', $_GET)) {
       foreach ( $index_array['hosts'] as $key => $host_name ) {
         if ( preg_match("/$query/i", $host_name ) ) {
           // We can have same hostname in multiple clusters
-          foreach ($index_array['cluster'][$host_name] AS $clustername) {
+          foreach ($index_array['cluster'][$host_name] as $clustername) {
             $matches[] = array ("hostname" => $host_name, "clustername" => $clustername);
           }
         }
@@ -35,7 +35,7 @@ foreach ( $matches as $index => $match ) {
   $hostname = $match['hostname'];
   $host_cluster[] = $match['hostname'] . "|" . $match['clustername'];
   foreach ( $index_array['metrics'] as $metric_name => $hosts ) {
-    if ( array_search( $hostname , $hosts ) !== FALSE && 
+    if ( array_search( $hostname, $hosts ) !== FALSE && 
          ! isset($host_metrics[$metric_name]) ) {
       $host_metrics[$metric_name] = 1; 
     }

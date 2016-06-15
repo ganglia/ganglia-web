@@ -14,9 +14,9 @@
 
 $tpl = new Dwoo_Template_File( template("physical_view.tpl") );
 $data = new Dwoo_Data();
-$data->assign("cluster",$clustername);
+$data->assign("cluster", $clustername);
 $cluster_url=rawurlencode($clustername);
-$data->assign("cluster_url",$cluster_url);
+$data->assign("cluster_url", $cluster_url);
 
 $verbosity_levels = array('3' => "", '2' => "", '1' => "");
 
@@ -49,8 +49,8 @@ $data->assign("cols_menu", $cols_menu);
 #------------------------------------------------------------------------------
 # Organize hosts by rack locations.
 # Works with or without "location" host attributes.
-function physical_racks()
-{
+function physical_racks() {
+
    global $hosts_up, $hosts_down;
 
    # 2Key = "Rack ID / Rank (order in rack)" = [hostname, UP|DOWN]
@@ -113,8 +113,8 @@ function physical_racks()
 # Generates the colored Node cell HTML. Used in Physical
 # view and others. Intended to be used to build a table, output
 # begins with "<tr><td>" and ends the same.
-function nodebox($hostname, $verbose, $title="", $extrarow="")
-{
+function nodebox($hostname, $verbose, $title="", $extrarow="") {
+
    global $cluster, $clustername, $metrics, $hosts_up, $GHOME;
 
    if (!$title) $title = $hostname;
@@ -152,7 +152,7 @@ function nodebox($hostname, $verbose, $title="", $extrarow="")
    if ($up)
       $hardware = 
          sprintf("<em>cpu: </em>%.2f<small>G</small> %s ", $cpu_speed, $cpus) .
-         sprintf("<em>mem: </em>%.2f<small>G</small>",$mem_total_gb);
+         sprintf("<em>mem: </em>%.2f<small>G</small>", $mem_total_gb);
    else $hardware = "&nbsp;";
 
    $row2 = "<tr><td colspan=2>";
@@ -201,8 +201,8 @@ function nodebox($hostname, $verbose, $title="", $extrarow="")
 
 #-------------------------------------------------------------------------------
 # Displays a rack and all its nodes.
-function showrack($ID)
-{
+function showrack($ID) {
+
    global $verbose, $racks, $racks_data, $metrics, $cluster, $hosts_up, $hosts_down;
    global $cluster_url, $tpl, $clusters;
 

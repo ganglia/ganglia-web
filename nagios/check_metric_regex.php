@@ -96,7 +96,7 @@ foreach ( $ganglia_hosts_array as $index => $hostname ) {
         $critical_value = $pieces[2];
         unset($pieces);
 
-        foreach ( $metrics[$hostname] AS $m_k => $m_v ) {
+        foreach ( $metrics[$hostname] as $m_k => $m_v ) {
           if ( preg_match("/" . $metric_name . "/", $m_k) ) {
             $metric_value = $m_v['VAL'];
             $ganglia_units = $m_v['UNITS'];

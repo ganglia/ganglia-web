@@ -123,7 +123,7 @@ foreach ( $results as $metric_name => $metrics_results ) {
     $ok=false;
     $output .= " CRIT " . $metric_name . " differs values => ";
     foreach ( $metrics_results["values"] as $index => $value ) {
-      $output .= $value . " ( "  . join("," ,  $metrics_results["members"][$index]) . " ) ";
+      $output .= $value . " ( "  . join(",", $metrics_results["members"][$index]) . " ) ";
     }
   } else {
     $output .= ", " .$metric_name . " same => " . count($metrics_results["members"][0]) . " nodes";

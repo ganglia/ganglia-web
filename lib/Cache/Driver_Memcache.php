@@ -9,7 +9,7 @@ function g_cache_exists() {
 function g_cache_serialize($data) {
 	global $conf;
 	$mc = g_get_memcache();
-	$mc->set( 'ganglia_cache_' . gethostname() , $data );
+	$mc->set( 'ganglia_cache_' . gethostname(), $data );
 	$mc->set( 'ganglia_cache_timestamp_' . gethostname(), time() );
 } // end function g_cache_serialize
 
@@ -31,7 +31,7 @@ function g_get_memcache() {
 	if (!$GLOBALS['__memcached_pool']) {
 		$GLOBALS['__memcached_pool'] = new Memcached();
 		$GLOBALS['__memcached_pool']->setOption(Memcached::OPT_DISTRIBUTION, Memcached::DISTRIBUTION_CONSISTENT);
-		foreach ($conf['memcached_servers'] AS $server) {
+		foreach ($conf['memcached_servers'] as $server) {
 			list($host, $port) = explode(':', $server);
 			$GLOBALS['__memcached_pool']->addServer( $host, (int)$port );
 		}

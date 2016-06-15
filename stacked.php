@@ -142,7 +142,7 @@ else
     my_passthru($command);
     }
 
-function HSV_TO_RGB ($H, $S, $V){
+function HSV_TO_RGB ($H, $S, $V) {
 
     if($S == 0){
         $R = $G = $B = $V * 255;
@@ -153,12 +153,24 @@ function HSV_TO_RGB ($H, $S, $V){
         $var_2 = $V * ( 1 - $S * ( $var_H - $var_i ) );
         $var_3 = $V * ( 1 - $S * (1 - ( $var_H - $var_i ) ) );
 
-             if ($var_i == 0) { $var_R = $V     ; $var_G = $var_3 ; $var_B = $var_1 ; }
-        else if ($var_i == 1) { $var_R = $var_2 ; $var_G = $V     ; $var_B = $var_1 ; }
-        else if ($var_i == 2) { $var_R = $var_1 ; $var_G = $V     ; $var_B = $var_3 ; }
-        else if ($var_i == 3) { $var_R = $var_1 ; $var_G = $var_2 ; $var_B = $V     ; }
-        else if ($var_i == 4) { $var_R = $var_3 ; $var_G = $var_1 ; $var_B = $V     ; }
-        else if ($var_i == 5) { $var_R = $V     ; $var_G = $var_1 ; $var_B = $var_2 ; }
+             if ($var_i == 0) { $var_R = $V     ;
+$var_G = $var_3 ;
+$var_B = $var_1 ; }
+        else if ($var_i == 1) { $var_R = $var_2 ;
+$var_G = $V     ;
+$var_B = $var_1 ; }
+        else if ($var_i == 2) { $var_R = $var_1 ;
+$var_G = $V     ;
+$var_B = $var_3 ; }
+        else if ($var_i == 3) { $var_R = $var_1 ;
+$var_G = $var_2 ;
+$var_B = $V     ; }
+        else if ($var_i == 4) { $var_R = $var_3 ;
+$var_G = $var_1 ;
+$var_B = $V     ; }
+        else if ($var_i == 5) { $var_R = $V     ;
+$var_G = $var_1 ;
+$var_B = $var_2 ; }
         else { return array(255, 255, 255); }
 
         $R = $var_R * 255;
@@ -169,10 +181,10 @@ function HSV_TO_RGB ($H, $S, $V){
     return array($R, $G, $B);
 }
 
-function get_col($value){
+function get_col($value) {
     list($r,$g,$b) = HSV_TO_RGB($value, 1, 0.9);
 
-    return sprintf('%02X%02X%02X',$r,$g,$b);
+    return sprintf('%02X%02X%02X', $r, $g, $b);
 }
 
 ?>

@@ -1116,7 +1116,7 @@ function output_data_to_external_format($rrdtool_graph_series,
   // Read in the XML
   $string = "";
   if (strlen($command) < 100000) {
-    $fp = popen($command,"r"); 
+    $fp = popen($command, "r"); 
     while (!feof($fp)) { 
       $buffer = fgets($fp, 4096);
       $string .= $buffer;

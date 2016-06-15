@@ -366,7 +366,7 @@ if (isset($_GET['views_menu'])) {
 
 $tpl = new Dwoo_Template_File( template("views_view.tpl") );
 $data = new Dwoo_Data();
-$data->assign("range",$range);
+$data->assign("range", $range);
 
 if (isset($conf['ad-hoc-views']) && 
     $conf['ad-hoc-views'] === true && 

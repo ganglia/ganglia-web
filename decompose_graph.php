@@ -2,7 +2,7 @@
 
 $tpl = new Dwoo_Template_File( template("decompose_graph.tpl") );
 $data = new Dwoo_Data();
-$data->assign("range",$range);
+$data->assign("range", $range);
 
 $graph_type = "line";
 $line_width = "2";

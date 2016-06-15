@@ -5,7 +5,7 @@ function make_metric_cols_menu($conf_metriccols) {
   $metric_cols_menu = 
     "<select name=\"mc\" OnChange=\"ganglia_form.submit();\">\n";
 
-  foreach (range(1,25) as $metric_cols) {
+  foreach (range(1, 25) as $metric_cols) {
     $metric_cols_menu .= "<option value=$metric_cols ";
     if ($metric_cols == $conf_metriccols)
       $metric_cols_menu .= "selected";
@@ -109,7 +109,7 @@ function getOptionalReports($hostname,
     $override_reports["included_reports"]);
 
   $reports["excluded_reports"] = array_merge(
-    $default_reports["excluded_reports"] , 
+    $default_reports["excluded_reports"], 
     $cluster_override_reports["excluded_reports"],  
     $override_reports["excluded_reports"]);
 

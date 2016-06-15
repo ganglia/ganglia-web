@@ -26,7 +26,7 @@ if ( isset($_GET['q']) && $_GET['q'] != "" ) {
   foreach ( $index_array['hosts'] as $key => $host_name ) {
     if ( preg_match("/$query/i", $host_name ) ) {
       $clusters = $index_array['cluster'][$host_name];
-      foreach ($clusters AS $cluster_name) {
+      foreach ($clusters as $cluster_name) {
       if ( $mobile )
 	$results .= '<a onclick="jQuery(\'#jquery-live-search\').slideUp(0)" href="mobile_helper.php?show_host_metrics=1&h=' . $host_name . '&c=' . $cluster_name . '&r=' . $conf['default_time_range'] . '&cs=&ce=">Host: ' . $host_name ." (" . $cluster_name . ')</a>';  
       else
@@ -40,7 +40,7 @@ if ( isset($_GET['q']) && $_GET['q'] != "" ) {
     if ( preg_match("/$query/i", $metric_name ) ) {
       foreach ( $hosts as $key => $host_name ) {
         $clusters = $index_array['cluster'][$host_name];
-        foreach ($clusters AS $cluster_name) {
+        foreach ($clusters as $cluster_name) {
           if ( $mobile ) {
             $results .= 'Metric: <a onclick="jQuery(\'#jquery-live-search\').slideUp(0)" href="mobile_helper.php?show_host_metrics=1&h=' . $host_name . '&c=' . $cluster_name . '&r=' . $conf['default_time_range'] . '&cs=&ce=">' . $host_name . " (" . $metric_name .  ")</a><br>";
           } else {

@@ -139,7 +139,7 @@ class piechart
       $this->white = ImageColorAllocateAlpha($this->im, 0, 0, 0, 127);
       imagefill($this->im, 0, 0, $this->white);
 
-      $this->black = ImageColorAllocate($this->im,0,0,0);
+      $this->black = ImageColorAllocate($this->im, 0, 0, 0);
       $n = count($this->data);
       for ($i = 0; $i < $n; $i++) {
         $this->colors[$i] = ImageColorAllocate($this->im, $this->data[$i][2],
@@ -147,7 +147,8 @@ class piechart
 	      $this->data[$i][4]);
         $this->sum += $this->data[$i][0];
       }
-      $from = 0;$to = 0;
+      $from = 0;
+$to = 0;
       for ($i = 0; $i < $n; $i++) {
         $this->angles[$i] = $this->roundoff( ($this->data[$i][0] * 360) / doubleval($this->sum));
       }
@@ -350,8 +351,8 @@ class piechart
 
    // Converts a hexcode color without a leading "#" into
    // its decimal red, green, blue components.
-   function hex2rgb($hex)
-      {
+   function hex2rgb($hex) {
+      
          $r = hexdec(substr($hex, 0, 2));
          $g = hexdec(substr($hex, 2, 2));
          $b = hexdec(substr($hex, 4, 2));

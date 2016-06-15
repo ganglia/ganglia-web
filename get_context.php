@@ -163,9 +163,9 @@ if (!$user['range'])
 $end = "now";
 
 # $conf['time_ranges'] defined in conf.php
-if( $user['range'] == 'job' && isSet( $user['jobrange'] ) ) {
+if( $user['range'] == 'job' && isset( $user['jobrange'] ) ) {
     $start = $user['jobrange'];
-} else if( isSet( $conf['time_ranges'][ $user['range'] ] ) ) {
+} else if( isset( $conf['time_ranges'][ $user['range'] ] ) ) {
     $start = $conf['time_ranges'][ $user['range'] ] * -1 . "s";
 } else {
     $start = $conf['time_ranges'][ $conf['default_time_range'] ] * -1 . "s";
