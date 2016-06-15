@@ -40,6 +40,10 @@ sniff:
 fix:
 	phpcbf --standard=$(STANDARD) $(CODE)
 
+.PHONY: test
+test:
+	phpunit test
+
 clean:
 	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
 
