@@ -39,7 +39,7 @@ class GangliaAuthTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testAuthUnserializesCookieInformation() {
-    $_COOKIE['ganglia_auth'] = serialize( $this->cookie_data );
+    $_COOKIE['ganglia_auth'] = json_encode( $this->cookie_data );
 
     $auth = GangliaAuth::getInstance();
     $this->assertTrue($auth->isAuthenticated());
@@ -48,7 +48,7 @@ class GangliaAuthTest extends PHPUnit_Framework_TestCase {
 
   public function testIncorrectHashCausesAuthFailure() {
     $this->cookie_data['token'] = 'xxxxxxx';
-    $_COOKIE['ganglia_auth'] = serialize( $this->cookie_data );
+    $_COOKIE['ganglia_auth'] = json_encode( $this->cookie_data );
 
     $auth = GangliaAuth::getInstance();
     $this->assertFalse($auth->isAuthenticated());
@@ -56,7 +56,7 @@ class GangliaAuthTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSlashesAddedByMagicQuotesDontCauseUnserializationFailure() {
-    $_COOKIE['ganglia_auth'] = addslashes(serialize( $this->cookie_data ));
+    $_COOKIE['ganglia_auth'] = addslashes(json_encode( $this->cookie_data ));
 
     // we can't enable real magic_quotes_gpc at runtime, so we mock it.
     $auth = $this->getMockBuilder('GangliaAuth')
