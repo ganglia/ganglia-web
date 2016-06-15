@@ -2,6 +2,11 @@
 <ruleset name="ganglia-web">
  <description>standard for ganglia-web.</description>
 
+ <!-- Ignore external libraries -->
+ <exclude-pattern>*/lib/Services/*</exclude-pattern>
+ <exclude-pattern>*/lib/Zend/*</exclude-pattern>
+ <exclude-pattern>*/lib/Zend/Acl/*</exclude-pattern>
+
  <rule ref="Generic">
   <!-- Whitespace -->
   <exclude name="Generic.Files.EndFileNoNewline" />
