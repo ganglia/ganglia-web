@@ -54,7 +54,7 @@ switch ( $_GET['action'] ) {
       if (strpos($v, ";") !== false) {
         continue; // skip weird invalid directories
       }
-      list( $_cluster, $_host ) = split( '/', $v );
+      list( $_cluster, $_host ) = str_split( '/', $v );
       $hosts[$_host]['clusters'][] = $_cluster;
       $clusters[$_cluster][] = $_host;
     }
