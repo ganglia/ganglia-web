@@ -67,6 +67,7 @@ switch ( $_GET['action'] ) {
     retrieve_metrics_cache();
     if ($debug == 1) {
       //print "<pre>"; print_r($metrics); print "</pre>";
+      ; //PHPCS
     }
     $r = array('graph' => array());
     $default_reports = array("included_reports" => array(), "excluded_reports" => array());

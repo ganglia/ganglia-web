@@ -92,3 +92,4 @@ if ( $host_found == 1 ) {
    api_return_error(htmlentities($metric_name) . " - Hostname info not available. Likely invalid hostname");
 }
 
+?>

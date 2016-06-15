@@ -1343,8 +1343,10 @@ function buildMetricMaps($metrics,
     if ($metric['TYPE'] == "string" or 
 	$metric['TYPE'] == "timestamp" or
 	(isset($always_timestamp[$name]) and $always_timestamp[$name])) {
+      continue;
     } elseif ($metric['SLOPE'] == "zero" or
 	      (isset($always_constant[$name]) and $always_constant[$name])) {
+      continue;
     } else {
       $graphArgs = $baseGraphArgs . "&amp;v=$metric[VAL]&amp;m=$name";
       # Adding units to graph 2003 by Jason Smith <smithj4@bnl.gov>.
@@ -1380,6 +1382,7 @@ function buildMetricMaps($metrics,
 	  $metricGroupMap[$group] = array($name);
 	}
       }
+      continue;
     } // if
   } // foreach
   return array($metricMap, $metricGroupMap);

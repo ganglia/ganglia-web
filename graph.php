@@ -12,6 +12,7 @@ function add_total_to_cdef($cdef,
   $total = " CDEF:'total'=";
   if (count($total_ids) == 0) {
     // Handle nothing gracefully, do nothing
+    ; //PHPCS
   } else if (count($total_ids) == 1) {
     // Concat just that id, leave it at that (100%)
     $total .= $total_ids[0];
@@ -793,6 +794,7 @@ function rrdgraph_cmd_add_overlay_events($command,
     } // end of if ( preg_match ...
     else {
       // error_log("Doesn't match host_regex");
+      ; //PHPCS
     }
   } // end of foreach ( $events_array ...
 
