@@ -1153,8 +1153,8 @@ function build_aggregate_graph_config ($graph_type,
         if ( preg_match("/$query/i", $metric_key, $metric_subexpr ) ) {
           if (isset($metric_subexpr) && count($metric_subexpr) > 1) {
             $legend = array();
-            for ($i = 1; $i < count($metric_subexpr); $i++) {
-              $legend[] = $metric_subexpr[$i];
+            foreach ($metric_subexpr as $m) {
+              $legend[] = $m;
             }
 	    $metric_matches[$metric_key] = implode(' ', $legend);
           } else {
@@ -1229,6 +1229,7 @@ function retrieve_metrics_cache ( $index = "all" ) {
 
    global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics, $context;
 
+   $index; // PHPCS
    require dirname(__FILE__) . '/lib/cache.php';
    return;
 } // end of function get_metrics_cache () {

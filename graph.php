@@ -21,8 +21,8 @@ function add_total_to_cdef($cdef,
     $cdef = $total . ' ' . $cdef;
   } else {
     $total .= $total_ids[0];
-    for ($i = 1; $i < count($total_ids); $i++)
-      $total .= ',' . $total_ids[$i] . ',ADDNAN';
+    foreach ($total_ids as $total_id)
+      $total .= ',' . $total_id . ',ADDNAN';
     
     if (isset($graph_config['scale']))
       $total .= ",${graph_config_scale},*";
@@ -1170,7 +1170,8 @@ function output_data_to_external_format($rrdtool_graph_series,
 	// summed output as 0
 	if (is_numeric($datapoint[0]) && is_numeric($datapoint[1])) {
 	  $summed_output[$index] = array(0, $datapoint[1]);
-	  for ($i = 0 ; $i < count($output_array) ; $i++) {
+	  $output_array_length = count($output_array);
+	  for ($i = 0 ; $i < $output_array_length; $i++) {
 	    $summed_output[$index][0] += 
 	      $output_array[$i]['datapoints'][$index][0];
 	  }
@@ -1221,7 +1222,8 @@ function output_data_to_external_format($rrdtool_graph_series,
     print "Timestamp";
 
     // Print out headers
-    for ($i = 0 ; $i < count($output_array) ; $i++) {
+    $output_array_length = count($output_array);
+    for ($i = 0 ; $i < $output_array_length; $i++) {
       print "," . $output_array[$i]["metric_name"];
     }
 

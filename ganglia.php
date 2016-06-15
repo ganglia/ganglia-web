@@ -84,6 +84,7 @@ function start_meta ($parser, $tagname, $attrs) {
    global $metrics, $grid, $self, $debug;
    static $sourcename, $metricname;
 
+   $parser; // PHPCS
    if ($debug) print "<br/>DEBUG: parser start meta [$tagname]\n";
 
    switch ($tagname)
@@ -126,6 +127,7 @@ function start_cluster ($parser, $tagname, $attrs) {
    global $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
    static $hostname;
 
+   $parser; // PHPCS
    if ($debug) print "<br/>DEBUG: parser start cluster [$tagname]\n";
    switch ($tagname)
       {
@@ -192,6 +194,7 @@ function start_everything ($parser, $tagname, $attrs) {
    global $index_array, $hosts, $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
    static $hostname, $cluster_name;
 
+   $parser; // PHPCS
    if ($debug) print "<br/>DEBUG: parser start everything [$tagname]\n";
 
    switch ($tagname)
@@ -232,6 +235,8 @@ function start_cluster_summary ($parser, $tagname, $attrs) {
 
    global $metrics, $cluster, $self, $grid;
 
+   $parser; // PHPCS
+
    switch ($tagname)
       {
          case "GANGLIA_XML":
@@ -263,6 +268,8 @@ function start_host ($parser, $tagname, $attrs) {
 
    global $metrics, $cluster, $hosts_up, $hosts_down, $self, $grid;
    static $metricname;
+
+   $parser; // PHPCS
 
    switch ($tagname)
       {

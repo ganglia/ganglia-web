@@ -274,6 +274,8 @@ $to = 0;
     */
     function draw_slices( $x, $y, $angles, $colors ) {
 
+      $x; //PHPCS
+      $y; //PHPCS
       $pie_count = count( $angles );
       $PIE_THICKNESS = ($this->diameter * 0.075);
 
