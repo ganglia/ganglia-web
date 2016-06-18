@@ -7,6 +7,7 @@ php:
  - nightly
 before_script:
  - phpenv rehash
+ - export PATH=$PATH:`composer config bin-dir --absolute`
 install:
  - composer self-update
  - composer require squizlabs/php_codesniffer
