@@ -259,7 +259,7 @@ function build_aggregate_graph_config_from_url($conf_graph_colors) {
   /////////////////////////////////////////////////////////////////////////////
   if (isset($_GET['hl'])) {
     $counter = 0;
-    $color_count = sizeof($conf_graph_colors);
+    $color_count = count($conf_graph_colors);
     $metric_name = str_replace("$", 
 			       "", 
 			       str_replace("^", 
@@ -295,13 +295,20 @@ function build_aggregate_graph_config_from_url($conf_graph_colors) {
     $exclude_host_from_legend_label = 
       (array_key_exists('lgnd_xh', $_GET) && 
        $_GET['lgnd_xh'] == "true") ? TRUE : FALSE;
+
+    $sortit = true;
+    if($_GET['sortit'] == "false") {
+      $sortit = false;
+    }
+
     $graph_config = 
       build_aggregate_graph_config($graph_type, 
 				   $line_width, 
 				   $_GET['hreg'], 
 				   $_GET['mreg'],
 				   $graph_legend,
-				   $exclude_host_from_legend_label);
+				   $exclude_host_from_legend_label,
+                                   $sortit);
   }
 
   // Set up 
@@ -646,7 +653,7 @@ function rrdgraph_cmd_add_overlay_events($command,
   $original_command = $command;
 
   // Loop through all the events
-  $color_count = sizeof($conf_graph_colors);
+  $color_count = count($conf_graph_colors);
   $counter = 0;
   $legend_items = array();
   foreach ($events_array as $id => $event) {
@@ -1168,14 +1175,14 @@ function output_data_to_external_format($rrdtool_graph_series,
     // First let's check if JSON output is requested for 
     // Live Dashboard and we are outputting aggregate graph. 
     // If so we need to add up all the values
-    if ($live_dashboard && sizeof($output_array) > 1) {
+    if ($live_dashboard && count($output_array) > 1) {
       $summed_output = array();
       foreach ($output_array[0]['datapoints'] as $index => $datapoint) {
 	// Data point is an array with value and UNIX time stamp. Initialize
 	// summed output as 0
 	if (is_numeric($datapoint[0]) && is_numeric($datapoint[1])) {
 	  $summed_output[$index] = array(0, $datapoint[1]);
-	  for ($i = 0 ; $i < sizeof($output_array) ; $i++) {
+	  for ($i = 0 ; $i < count($output_array) ; $i++) {
 	    $summed_output[$index][0] += 
 	      $output_array[$i]['datapoints'][$index][0];
 	  }
@@ -1234,7 +1241,7 @@ function output_data_to_external_format($rrdtool_graph_series,
     print "Timestamp";
 
     // Print out headers
-    for ($i = 0 ; $i < sizeof($output_array) ; $i++) {
+    for ($i = 0 ; $i < count($output_array) ; $i++) {
       print "," . $output_array[$i]["metric_name"];
     }
 
@@ -1253,7 +1260,7 @@ function output_data_to_external_format($rrdtool_graph_series,
   if ($graphlot_output) {
     header("Content-Type: application/json");
 
-    $last_index = sizeof($output_array[0]["datapoints"]) - 1;
+    $last_index = count($output_array[0]["datapoints"]) - 1;
   
     $output_vals['step'] = 
       $output_array[0]["datapoints"][1][1] - 
@@ -1271,10 +1278,8 @@ function output_data_to_external_format($rrdtool_graph_series,
 }
 
 function execute_graph_command($graph_engine, $command) {
-  global $debug;
+  global $debug, $user;
 
-  // Make sure the image is not cached
-  header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
   // always modified
   header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); 
   header ("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
@@ -1294,7 +1299,10 @@ function execute_graph_command($graph_engine, $command) {
     }        
     print "</body></html>";
   } else {
-    header ("Content-type: image/png");
+    if ( $user['image_format'] == "svg" )
+      header ("Content-type: image/svg+xml");
+    else
+      header ("Content-type: image/png");
     switch ($graph_engine) {  
     case "flot":
     case "rrdtool":
@@ -1352,11 +1360,15 @@ if (isset($_REQUEST['live'])) {
 } else {
   $user['live_output'] = NULL;
 }
-$user['csv_output'] = isset($_GET["csv"]) ? 1 : NULL; 
-$user['graphlot_output'] = isset($_GET["graphlot"]) ? 1 : NULL; 
-$user['flot_output'] = isset($_GET["flot"]) ? 1 : NULL; 
+$user['csv_output'] = isset($_REQUEST["csv"]) ? 1 : NULL;
+$user['graphlot_output'] = isset($_REQUEST["graphlot"]) ? 1 : NULL;
+$user['flot_output'] = isset($_REQUEST["flot"]) ? 1 : NULL;
 
-$user['trend_line'] = isset($_GET["trend"]) ? 1 : NULL; 
+# Check if user is asking for an alternate image format e.g. SVG
+$user['image_format'] = (isset($_REQUEST["image_format"]) and $_REQUEST["image_format"] == "svg") ? "svg" : NULL;
+
+
+$user['trend_line'] = isset($_REQUEST["trend"]) ? 1 : NULL;
 // How many months ahead to extend the trend e.g. 6 months
 $user['trend_range'] = 
   isset($_GET["trendrange"]) && is_numeric($_GET["trendrange"]) ? 
@@ -1727,6 +1739,13 @@ $critical = isset($_GET["crit"]) && is_numeric($_GET["crit"]) ?
 if ($critical) {
   $command .= " 'HRULE:" . $critical . "#FF0000:Critical:dashes'";
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Turn on SVG rendering
+////////////////////////////////////////////////////////////////////////////////
+if ( $user['image_format'] == "svg" )
+  $command .= " -a SVG";
+
 
 if ($debug) {
   error_log("Final rrdtool command:  $command");

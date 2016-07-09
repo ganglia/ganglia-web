@@ -17,8 +17,8 @@
 }
 </style>
 <link type="text/css" href="./styles.css" rel="stylesheet" />
-<link type="text/css" href="js/jstree/themes/default/style.min.css" rel="stylesheet" />
-<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+<link type="text/css" href="{$conf['jstree_css_path']}" rel="stylesheet" />
+<script type="text/javascript" src="{$conf['jquery_js_path']}"></script>
 <script>$.uiBackCompat = false;</script>
 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
@@ -31,8 +31,8 @@
 <script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript" src="js/fullcalendar.js"></script>
+<script type="text/javascript" src="{$conf['jstree_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
-<script type="text/javascript" src="js/jstree/jstree.js"></script>
 <script type="text/javascript" src="js/chosen.jquery.min.js"></script>
 <script type="text/javascript" src="js/jstz-1.0.4.min.js"></script>
 <script type="text/javascript" src="js/moment.min.js"></script>
@@ -293,8 +293,12 @@
       {if $overlay_events}
       <li><a href="events.php">Events</a></li>
       {/if}
+      <li><a href="breakdown_reports.php">Reports</a></li>
       <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
       <li><a href="#tabs-livedashboard" onclick="liveDashboardChooser();">Live Dashboard</a></li>
+      {if $cubism}
+      <li><a href="cubism_form.php">Cubism</a></li>
+      {/if}
       <li><a href="#tabs-mobile" onclick="window.location.href='mobile.php';">Mobile</a></li>
     </ul>
   </div>

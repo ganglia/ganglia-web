@@ -80,7 +80,7 @@ $ganglia_hosts_array = array_keys($metrics);
 $host_found = 0;
 
 # Find a FQDN of a supplied server name.
-for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
+for ( $i = 0 ; $i < count($ganglia_hosts_array) ; $i++ ) {
  if ( strpos(  $ganglia_hosts_array[$i], $host ) !== false  ) {
  $fqdn = $ganglia_hosts_array[$i];
  $host_found = 1;
@@ -126,13 +126,13 @@ if ( $host_found == 1 ) {
   
   } // end of foreach ( $checks as $index => $check
   
-  if ( sizeof( $results_crit ) != 0 ) {
+  if ( count( $results_crit ) != 0 ) {
         print "CRITICAL|System check - CRIT: (" . count($results_crit) . ") WARN: (" . count($results_warn) .  ") OK: (" . count($results_ok) .  ") --" . join(",", $results_crit) .  " --" . join(",", $results_warn) .  "--" . join(",", $results_ok);
         exit(2);
-  } else if ( sizeof( $results_warn ) != 0 ) {
+  } else if ( count( $results_warn ) != 0 ) {
      print "WARNING|System check - WARN: (" . count($results_warn) . ") OK: (" . count($results_ok) .  ") --" . join(",", $results_warn) .  "--" . join(",", $results_ok);
      exit(1);
-  } else if ( sizeof( $results_ok ) != 0 ) {
+  } else if ( count( $results_ok ) != 0 ) {
         print "OK|System check - OK: (" . count($results_ok) .  ") --" . join(",", $results_ok);
         exit(0);
   } else {

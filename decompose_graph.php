@@ -89,7 +89,7 @@ foreach ( $graph_config['series'] as $index => $item ) {
 #print "<PRE>"; print_r($items);
 
 $data->assign("items", $items);
-$data->assign("number_of_items", sizeof($items));
+$data->assign("number_of_items", count($items));
 $dwoo->output($tpl, $data);
 
 ?>

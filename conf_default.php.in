@@ -128,6 +128,8 @@ $conf['cpu_wio_color'] = "ff8a60";
 $conf['cpu_idle_color'] = "e2e2f2";
 $conf['cpu_steal_color'] = "990099";
 $conf['cpu_sintr_color'] = "009933";
+$conf['cpu_guest_color'] = "7676bb";
+$conf['cpu_gnice_color'] = "fff261";
 
 #
 # Colors for the MEMORY report graph
@@ -438,4 +440,27 @@ $conf['display_views_using_tree'] = false;
 # in many code paths. This will pre-emptively strip out the tags in 
 # those code paths to save time during XML parsing.
 $conf['strip_extra'] = true;
-?>
+
+# By default we'll just download Jquery, Cubism and D3 required libraries from a CDN that offers
+# that for free. If that is undesirable you can override this in conf.php by putting 
+# downloading the asset and putting relative path or absolute paths to it e.g.
+#$conf['cubism_js_path'] = "js/cubism.v1.min.js";
+$conf['jquery_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js";
+$conf['jquerymobile_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.js";
+$conf['jqueryui_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js";
+$conf['rickshaw_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js";
+$conf['cubism_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/cubism/1.6.0/cubism.v1.min.js";
+$conf['d3_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js";
+$conf['protovis_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/protovis/3.3.1/protovis.min.js";
+$conf['jstree_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js";
+$conf['jstree_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css";
+
+$conf['jquery_flot_base_path'] = "https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot";
+
+# Enable Cubism integration http://square.github.io/cubism/
+$conf['cubism_enabled'] = true;
+$conf['cubism_default_height'] = 30;
+$conf['cubism_default_step'] = 15;
+# Set this if you are fronted by a proxy and that ends up messing with Cubism URL detection
+#$conf['ganglia_url_prefix'] = "https://metric.domain.com";
+#$conf['ganglia_url_suffix'] = "/ganglia";

@@ -7,10 +7,10 @@ function g_cache_exists() {
 
 function g_cache_serialize($data) {
 	global $conf;
-	file_put_contents($conf['cachefile'], serialize($data), LOCK_EX);
-	file_put_contents($conf['cachefile'] . "_cluster_data", serialize($data["cluster"]), LOCK_EX);	
-	file_put_contents($conf['cachefile'] . "_host_list", serialize($data["hosts"]), LOCK_EX);	
-	file_put_contents($conf['cachefile'] . "_metric_list", serialize(array_keys($data["metrics"])), LOCK_EX);	
+	file_put_contents($conf['cachefile'], json_encode($data));
+	file_put_contents($conf['cachefile'] . "_cluster_data", json_encode($data["cluster"]));
+	file_put_contents($conf['cachefile'] . "_host_list", json_encode($data["hosts"]));
+	file_put_contents($conf['cachefile'] . "_metric_list", json_encode(array_keys($data["metrics"])));
 } // end function g_cache_serialize
 
 function g_cache_deserialize($index) {
@@ -20,17 +20,17 @@ function g_cache_deserialize($index) {
         switch ( $index ) {
 
            case "hosts_and_metrics":
-	       $index_array["cluster"] = unserialize(file_get_contents($conf['cachefile'] . "_cluster_data"));
-	       $index_array["hosts"] = unserialize(file_get_contents($conf['cachefile'] . "_host_list"));
-	       $index_array["metrics"] = unserialize(file_get_contents($conf['cachefile'] . "_metric_list"));
+	       $index_array["cluster"] = json_decode(file_get_contents($conf['cachefile'] . "_cluster_data"), TRUE);
+	       $index_array["hosts"] = json_decode(file_get_contents($conf['cachefile'] . "_host_list"), TRUE);
+	       $index_array["metrics"] = json_decode(file_get_contents($conf['cachefile'] . "_metric_list"), TRUE);
                break;
         
            case "metric_list":
-	       $index_array["metrics"] = unserialize(file_get_contents($conf['cachefile'] . "_" . $index));
+	       $index_array["metric_list"] = json_decode(file_get_contents($conf['cachefile'] . "_" . $index), TRUE);
                break;
 
            default:
-	       $index_array = unserialize(file_get_contents($conf['cachefile']));
+	       $index_array = json_decode(file_get_contents($conf['cachefile']), TRUE);
              
         }
 	return $index_array;

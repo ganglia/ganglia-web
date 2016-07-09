@@ -70,7 +70,7 @@ $ganglia_hosts_array = array_keys($metrics);
 $host_found = 0;
 
 # Find a FQDN of a supplied server name.
-for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
+for ( $i = 0 ; $i < count($ganglia_hosts_array) ; $i++ ) {
  if ( strpos(  $ganglia_hosts_array[$i], $host ) !== false  ) {
  $fqdn = $ganglia_hosts_array[$i];
  $host_found = 1;

@@ -48,7 +48,7 @@ if ( ! isset($_REQUEST['view_name']) and ! $is_ad_hoc ) {
   }
   unset($available_views);
 
-  if ( ($view_found == 0 || sizeof($view['items']) == 0) && !$is_ad_hoc ) {
+  if ( ($view_found == 0 || count($view['items']) == 0) && !$is_ad_hoc ) {
       die ("<font color=red size=4>There are no graphs in view you supplied or view does not exist.</font>");
   }
 
@@ -65,9 +65,9 @@ if ( ! isset($_REQUEST['view_name']) and ! $is_ad_hoc ) {
 <title>Live Dashboard for <?php print $user['view_name']; ?></title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="css/tasseo.css" />
-<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="js/d3.v2.min.js"></script>
-<script type="text/javascript" src="js/rickshaw.min.js"></script>
+<script type="text/javascript" src="<?php print $conf['jquery_js_path']; ?>"></script>
+<script type="text/javascript" src="<?php print $conf['d3_js_path']; ?>"></script>
+<script type="text/javascript" src="<?php print $conf['rickshaw_js_path']; ?>"></script>
 </head>
 <body>
    <div id='title'>

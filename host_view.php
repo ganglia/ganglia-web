@@ -168,12 +168,12 @@ function getMetricGroups($metrics,
 
   $open_groups = NULL;
   if (isset($_GET['metric_group']) && ($_GET['metric_group'] != "")) {
-    $open_groups = explode ("_|_", $_GET['metric_group']);
+    $open_groups = explode ("_|_", htmlentities($_GET['metric_group']));
   } else {
     if ($remember_open_metric_groups && 
 	isset($_SESSION['metric_group']) && 
 	($_SESSION['metric_group'] != ""))
-      $open_groups = explode ("_|_", $_SESSION['metric_group']);
+      $open_groups = explode ("_|_", htmlentities($_SESSION['metric_group']));
   }
 
   // Updated definition of currently open metric groups

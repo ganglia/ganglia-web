@@ -257,7 +257,7 @@ function get_host_metric_graphs($showhosts,
       // If we're hiding DOWN hosts, we skip to next iteration of the loop.
       continue;
     }
-    $host_url = rawurlencode($host);
+    $host_url = ($case_sensitive_hostnames) ? rawurlencode($host) : strtolower(rawurlencode($host));
     
     $host_link="\"?c=$cluster_url&amp;h=$host_url&amp;$get_metric_string\"";
     $textval = "";
@@ -360,7 +360,7 @@ function get_host_metric_graphs($showhosts,
   
   // If there is an overflow list. These are hosts for which we don't show graphs
   // just names
-  if (sizeof($overflow_list) > 0) {
+  if (count($overflow_list) > 0) {
     $data->assign("overflow_list_header", '<p><table width=80%><tr><td align=center class=metric>
     <a href="#" id="overflow_list_button"onclick="$(\'#overflow_list\').toggle();" class="button ui-state-default ui-corner-all" title="Toggle overflow list">Show more hosts (' 
     . ($overflow_counter - 1) .')</a>
@@ -741,6 +741,7 @@ if (isset($conf['heatmaps_enabled']) and
     (count($hosts_up) > 0))
   get_load_heatmap($hosts_up, $user['host_regex'], $metrics, $data, $sort);
 
+$data->assign("conf", $conf);
 $data->assign("showhosts", $showhosts);
 
 // No reason to go on if we are not displaying individual hosts

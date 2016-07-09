@@ -2,7 +2,7 @@
 #
 # Parses ganglia XML tree.
 #
-# The arrays defined in the first part of this file to hold XML info. 
+# Theparser arrays defined in the first part of this file to hold XML info. 
 #
 # sacerdoti: These are now context-sensitive, and hold only as much
 # information as we need to make the page.
@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $gweb_root = dirname(__FILE__);
 
 include_once($gweb_root . "/version.php");
+include_once("./global.php");
 
 $error="";
 
@@ -197,6 +198,7 @@ function start_cluster ($parser, $tagname, $attrs)
          default:
             break;
       }
+
 }
 
 function debug_start_everything ($parser, $tagname, $attrs)
@@ -377,18 +379,10 @@ function Gmetad ()
             $ip = func_get_arg(0);
       }
 
-   if ($debug) 
-      {
-         print "<br/>DEBUG: Creating parser\n";
-         $debug_prefix = "debug_";
-      }
-   else
-      {
-         $debug_prefix = "";
-      }
-
-   if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph") 
+   if ($debug) print "<br/>DEBUG: Creating parser\n";
+   if ( in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
       return TRUE;
+   }
    $parser = xml_parser_create();
    $strip_extra = $conf['strip_extra'];
    switch ($context)

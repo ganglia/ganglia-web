@@ -60,9 +60,9 @@ $user['jobstart'] = isset($_GET["js"]) ?
     clean_number( $_GET["js"] ) : NULL;
 # custom start and end
 $user['cs'] = isset($_GET["cs"]) ?
-    escapeshellcmd($_GET["cs"]) : NULL;
+    escapeshellcmd(htmlentities($_GET["cs"])) : NULL;
 $user['ce'] = isset($_GET["ce"]) ?
-    escapeshellcmd($_GET["ce"]) : NULL;
+    escapeshellcmd(htmlentities($_GET["ce"])) : NULL;
 # Custom step, primarily for use in exporting the raw data from graph.php
 $user['step'] = isset($_GET["step"]) ?
     clean_number( $_GET["step"] ) : NULL;

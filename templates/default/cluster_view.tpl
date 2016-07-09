@@ -1,6 +1,6 @@
 <!-- Begin cluster_view.tpl -->
 {if $heatmap_data}
-<script type="text/javascript" src="js/protovis-r3.2.js"></script>
+<script type="text/javascript" src="{$conf['protovis_js_path']}"></script>
 {/if}
 <script type="text/javascript">
 function Heatmap(elem_id, data) {
@@ -165,17 +165,6 @@ $(function() {
   {/if}
 });
 </script>
-
-{if $graph_engine == "flot"}
-<script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
-<script type="text/javascript" src="js/create-flot-graphs.js"></script>
-<style type="text/css">
-.flotgraph2 {
-  height: {$graph_height}px;
-  width:  {$graph_width}px;
-}
-</style>
-{/if}
 
 <style type="text/css">
   .toggler { width: 500px; height: 200px; }

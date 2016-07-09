@@ -80,7 +80,7 @@ $ganglia_hosts_array = array_keys($metrics);
 $host_found = 0;
 
 # Find a FQDN of a supplied server name.
-for ( $i = 0 ; $i < sizeof($ganglia_hosts_array) ; $i++ ) {
+for ( $i = 0 ; $i < count($ganglia_hosts_array) ; $i++ ) {
  if ( strpos(  $ganglia_hosts_array[$i], $host ) !== false  ) {
  $fqdn = $ganglia_hosts_array[$i];
  $host_found = 1;
@@ -122,7 +122,7 @@ if ( $host_found == 1 ) {
   
   } // end of foreach ( $checks as $index => $check
   
-  if ( sizeof( $results_notok ) == 0 ) {
+  if ( count( $results_notok ) == 0 ) {
      print "OK| Num OK: " . count($results_ok);
      exit(0);
   } else {

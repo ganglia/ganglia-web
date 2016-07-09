@@ -722,7 +722,7 @@ function get_view_graph_elements($view) {
   switch ( $view['view_type'] ) {
   case "standard":
     // Does view have any items/graphs defined
-    if ( sizeof($view['items']) == 0 ) {
+    if ( count($view['items']) == 0 ) {
       continue;
       // print "No graphs defined for this view. Please add some";
     } else {
@@ -746,6 +746,10 @@ function get_view_graph_elements($view) {
             $graph_args_array[] = "z=" . $item['size'];
           } else {
             $graph_args_array[] = "z=" . $default_size;
+          }
+
+          if ( isset($item['sortit']) ) {
+            $graph_args_array[] = "sortit=" . $item['sortit'];
           }
 	  
 	  // If graph type is not specified default to line graph
@@ -865,7 +869,7 @@ function get_view_graph_elements($view) {
 	  unset($graph_args_array);
 	}
       } // end of foreach ( $view['items']
-    } // end of if ( sizeof($view['items'])
+    } // end of if ( count($view['items'])
     break;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1111,13 +1115,14 @@ function build_aggregate_graph_config ($graph_type,
                                        $hreg,
                                        $mreg,
                                        $glegend,
-                                       $exclude_host_from_legend_label) {
+                                       $exclude_host_from_legend_label,
+                                       $sortit = true) {
 
   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
   
   retrieve_metrics_cache();
   
-  $color_count = sizeof($conf['graph_colors']);
+  $color_count = count($conf['graph_colors']);
 
   $graph_config["report_name"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
   $graph_config["title"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
@@ -1157,7 +1162,9 @@ function build_aggregate_graph_config ($graph_type,
         }
       }
     }
-    ksort($metric_matches);
+    if($sortit) {
+      ksort($metric_matches);
+    }
   }
   if( isset($metric_matches)){
     $metric_matches_unique = array_unique($metric_matches);
@@ -1196,7 +1203,7 @@ function build_aggregate_graph_config ($graph_type,
           else
             $label = $host_name;
 
- 	  if (isset($metric_matches) and sizeof($metric_matches_unique) > 1)
+ 	  if (isset($metric_matches) and count($metric_matches_unique) > 1)
             $label .= " $legend";
 	}
 

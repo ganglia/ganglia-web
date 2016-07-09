@@ -1,13 +1,15 @@
 <?php
+include_once "./eval_conf.php";
+include_once "./global.php";
 if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 ?>
 <html>
 <head>
 <title>Ganglia: Graph all periods</title>
 <link rel="stylesheet" href="./styles.css" type="text/css" />
-<script TYPE="text/javascript" SRC="js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="<?php print $conf['jquery_js_path']; ?>"></script>
 <script>$.uiBackCompat = false;</script>
-<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="<?php print $conf['jqueryui_js_path']; ?>"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
@@ -41,8 +43,6 @@ if (!isset($_REQUEST['embed']) && !isset($_REQUEST['mobile'])) {
 </script>
 
 <?php
-include_once "./eval_conf.php";
-include_once "./global.php";
 
 // build a query string but drop r and z since those designate time 
 // window and size. Also if the get arguments are an array rebuild them. 
@@ -109,9 +109,8 @@ if ($conf['graph_engine'] == "flot") {
 // Add JQuery and flot loading only if this is not embedded in the 
 // Aggregate Graphs Tab
 if (!isset($_GET['embed'])) { ?>
-<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
-<script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.time.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.min.js"></script>
+<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.time.min.js"></script>
 <?php
 } // end of if (!isset($_GET['embed'])
 ?>

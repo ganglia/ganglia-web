@@ -149,7 +149,7 @@ if( !empty($metric_total_value) ) {
 
 unset($metric_total_value);
 
-if ( sizeof( $results_notok ) == 0 ) {
+if ( count( $results_notok ) == 0 ) {
 	print "OK!# Services OK = " . count($results_ok) . " ; " . join(",", $results_ok);
 	exit(0);
 } else {

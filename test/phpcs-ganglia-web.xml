@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="ganglia-web">
+ <description>standard for ganglia-web.</description>
+
+ <rule ref="Generic">
+  <!-- Whitespace -->
+  <exclude name="Generic.Files.EndFileNoNewline" />
+  <exclude name="Generic.Files.LineLength" />
+  <exclude name="Generic.Formatting.MultipleStatementAlignment" />
+  <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman" />
+  <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
+  <exclude name="Generic.WhiteSpace.DisallowTabIndent" />
+  <exclude name="Generic.WhiteSpace.ScopeIndent" />
+  <!-- Function naming -->
+  <exclude name="Generic.NamingConventions.CamelCapsFunctionName" />
+  <!-- Multi-line string concat -->
+  <exclude name="Generic.Strings.UnnecessaryStringConcat" />
+ </rule>
+
+</ruleset>

@@ -119,14 +119,14 @@ $ok=true;
 $output = "";
 
 foreach ( $results as $metric_name => $metrics_results ) {
-  if ( sizeof($metrics_results["values"]) > 1 ) {
+  if ( count($metrics_results["values"]) > 1 ) {
     $ok=false;
     $output .= " CRIT " . $metric_name . " differs values => ";
     foreach ( $metrics_results["values"] as $index => $value ) {
       $output .= $value . " ( "  . join("," ,  $metrics_results["members"][$index]) . " ) ";
     }
   } else {
-    $output .= ", " .$metric_name . " same => " . sizeof($metrics_results["members"][0]) . " nodes";
+    $output .= ", " .$metric_name . " same => " . count($metrics_results["members"][0]) . " nodes";
   }
 }
 

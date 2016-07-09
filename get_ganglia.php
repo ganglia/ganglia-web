@@ -7,7 +7,7 @@
 
 # If we are in compare_hosts, views and decompose_graph context we shouldn't attempt
 # any connections to the gmetad
-if ( $context == "compare_hosts" or $context == "views" or $context == "decompose_graph")  {
+if ( in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
    
 } else {
    if (! Gmetad($conf['ganglia_ip'], $conf['ganglia_port']) )
@@ -25,7 +25,7 @@ if ( $context == "compare_hosts" or $context == "views" or $context == "decompos
          exit;
       }
    # If we only have one cluster source, suppress MetaCluster output.
-   if (count($grid) <= 2 and $context=="meta")
+   if (count($grid) < 2 and $context=="meta")
       {
          # Lets look for one cluster (the other is our grid).
          foreach($grid as $source)
@@ -40,3 +40,5 @@ if ( $context == "compare_hosts" or $context == "views" or $context == "decompos
       }
 
 }
+
+?>

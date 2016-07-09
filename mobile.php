@@ -15,9 +15,9 @@ retrieve_metrics_cache();
 <head> 
 <title>Ganglia Mobile</title> 
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
-<link rel="stylesheet" href="css/jquery.mobile-1.0.min.css" />
-<script src="js/jquery-1.7.1.min.js"></script>
-<script src="js/jquery.mobile-1.0.min.js"></script>
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+<script type="text/javascript" src="<?php print $conf['jquery_js_path']; ?>"></script>
+<script type="text/javascript" src="<?php print $conf['jquerymobile_js_path']; ?>"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <style>
@@ -49,13 +49,13 @@ dt code, dd code { font-size:1.3em; line-height:150%; }
   <div data-role="content">
     Please select a category:<p>
     <ul data-role="listview" data-theme="g">
-      <li><a href="#views">Views</a><span class="ui-li-count"><?php print sizeof($available_views); ?></span></li>
+      <li><a href="#views">Views</a><span class="ui-li-count"><?php print count($available_views); ?></span></li>
       <?php
-	if ( sizeof($cluster_names) == 1) {
+	if ( count($cluster_names) == 1) {
            print '<li><a href="#cluster-' . str_replace(" ", "_", $clustername) . '">Clusters</a><span class="ui-li-count">1</span></li>';
         } else {
       ?>
-      <li><a href="#clusters">Clusters</a><span class="ui-li-count"><?php print sizeof($cluster_names); ?></span></li>
+      <li><a href="#clusters">Clusters</a><span class="ui-li-count"><?php print count($cluster_names); ?></span></li>
       <?php
       }
       ?>
@@ -64,7 +64,7 @@ dt code, dd code { font-size:1.3em; line-height:150%; }
   </div><!-- /content -->
 </div><!-- /page -->
 <?php
-if ( sizeof($cluster_names) > 1 ) {
+if ( count($cluster_names) > 1 ) {
 ?>
  <div data-role="page" class="ganglia-mobile" id="clusters">
   <div data-role="header">
@@ -75,14 +75,14 @@ if ( sizeof($cluster_names) > 1 ) {
       <?php
       // List all clusters
       foreach ( $cluster_names as $index => $clustername ) {
-	print '<li><a href="#cluster-' . str_replace(" ", "_", $clustername) . '">' . $clustername . '</a><span class="ui-li-count">' .  sizeof($cluster_array[$clustername]) . '</span></li>';  
+	print '<li><a href="#cluster-' . str_replace(" ", "_", $clustername) . '">' . $clustername . '</a><span class="ui-li-count">' .  count($cluster_array[$clustername]) . '</span></li>';  
       }
       ?>
     </ul>
   </div><!-- /content -->
 </div><!-- /page -->
 <?php
-} // end of if (sizeof(cluster_names))
+} // end of if (count(cluster_names))
 
 ///////////////////////////////////////////////////////////////////////////////
 // Create a sub-page for every cluster

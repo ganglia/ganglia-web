@@ -203,7 +203,7 @@ function make_node_menu($self,
     $node_menu .= "<option value=\"\">--Choose a Source\n";
     ksort($grid);
     foreach ($grid as $k => $v) {
-      if ($k == $self) continue;
+      if ($k == $self and $context != 'meta') continue;
       if (isset($v['GRID']) and $v['GRID']) {
         $url = $v['AUTHORITY'];
         $node_menu .="<option value=\"$url\">$k ${conf['meta_designator']}\n";
@@ -472,12 +472,18 @@ if ( $conf['overlay_events'] == true ) {
   $data->assign('overlay_events', true);
 }
 
+# Check whether we should use Cubism
+if ( $conf['cubism_enabled'] ) {
+  $data->assign('cubism', true);
+}
+
 if ( $conf['picker_autocomplete'] == true ) {
   $data->assign('picker_autocomplete', true);
 }
 
 $data->assign('selected_tab', htmlspecialchars($user['selected_tab']) );
 $data->assign('view_name', $user['viewname']);
+$data->assign('conf', $conf);
 
 $additional_buttons = "";
 if ($context == 'views' || $context == 'decompose_graph' || $context == 'host') {

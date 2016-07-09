@@ -112,7 +112,7 @@ foreach ( $ganglia_hosts_array as $index => $hostname ) {
 
 } // end of foreach ( $ganglia_hosts_array as $index => $hostname ) {
 
-if ( sizeof( $results_notok ) == 0 ) {
+if ( count( $results_notok ) == 0 ) {
 	print "OK|# Services OK = " . count($results_ok);
 	exit(0);
 } else {

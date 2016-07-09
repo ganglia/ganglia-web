@@ -1,17 +1,4 @@
 <!-- Begin host_view.tpl -->
-<style type="text/css">
-/* don't display legends for these small graphs */
-.flotlegend, .flotlegendtoplabel {
-  display: none !important;
-}
-.flotheader {
-  margin-top: 2em;
-}
-.flottitle {
-  padding-right: 4em;
-  font-weight: bold;
-}
-</style>
 <script type="text/javascript">
 var SEPARATOR = "_|_";
 var ALL_GROUPS = "ALLGROUPS";
@@ -247,17 +234,6 @@ $(function() {
   });
 });
 </script>
-
-{if $graph_engine == "flot"}
-<script language="javascript" type="text/javascript" src="js/jquery.flot.min.js"></script>
-<script type="text/javascript" src="js/create-flot-graphs.js"></script>
-<style type="text/css">
-.flotgraph2 {
-  height: {$graph_height}px;
-  width:  {$graph_width}px;
-}
-</style>
-{/if}
 
 <style type="text/css">
   .toggler { width: 500px; height: 200px; }
