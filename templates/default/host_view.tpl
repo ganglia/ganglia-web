@@ -112,6 +112,7 @@ function toggleMetricGroup(mgId, mgDiv) {
             mgDiv.html(data);
 	    mgInitEventBtns(mgDiv);
 	    mgInitTimeshiftBtns(mgDiv);
+	    mgInitCustomTimeRangeDragSelect(mgDiv);
             mgDiv.show();
           });
   }
@@ -144,6 +145,10 @@ function refreshHostView() {
       $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
     }    
   });
+}
+
+function mgInitCustomTimeRangeDragSelect(mgDiv) {
+  initCustomTimeRangeDragSelect(mgDiv);
 }
 
 function mgInitEventBtns(mgDiv) {

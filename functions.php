@@ -1405,4 +1405,14 @@ function my_passthru($command) {
   unlink($tf);
 }
 
+// Get timestamp of textual date/time specified relative to gweb timezone
+function tzTimeToTimestamp($tzTime) {
+  if (isset($_SESSION['tz']) && ($_SESSION['tz'] != '')) {
+    $dtz = new DateTimeZone($_SESSION['tz']);
+    $dt = new DateTime($tzTime, $dtz);
+    return $dt->getTimestamp();
+  } else {
+    return strtotime($tzTime); // server timezone
+  }
+}
 ?>
