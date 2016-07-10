@@ -760,6 +760,10 @@ if (isset($conf['show_stacked_graphs']) and
   $stacked_args = "m={$user['metricname']}&amp;c=$cluster_url&amp;r=$range&amp;st=$cluster[LOCALTIME]";
   if (isset($user['host_regex']))
     $stacked_args .= "&amp;host_regex=" . $user['host_regex'];
+  if ($cs)
+    $stacked_args .= "&amp;cs=" . rawurlencode($cs);
+  if ($ce)
+    $stacked_args .= "&amp;ce=" . rawurlencode($ce);
   $data->assign("stacked_graph_args", $stacked_args);
 }
 

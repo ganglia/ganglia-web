@@ -12,12 +12,22 @@ include_once $conf['gweb_root'] . "/functions.php";
 $clustername = $_REQUEST['c'];
 $metricname = $_REQUEST['m'];
 $range = $_REQUEST['r'];
+$cs = $_REQUEST['cs'];
+$ce = $_REQUEST['ce'];
 
-$start = $conf['time_ranges'][$range];
+if ($cs)
+  $start = date("H:i_Ymd", tzTimeToTimestamp($cs));
+else
+  $start = '-' . $conf['time_ranges'][$range] . 's';
+  
+if ($ce) 
+  $end = date("H:i_Ymd", tzTimeToTimestamp($ce));
+else
+  $end = 'N';
 
 $command = $conf['rrdtool'] . " graph - $rrd_options -E";
-$command .= " --start -${start}s";
-$command .= " --end N";
+$command .= " --start ${start}";
+$command .= " --end ${end}";
 $command .= " --width 700";
 $command .= " --height 300";
 if (isset($_GET['title'])) {
