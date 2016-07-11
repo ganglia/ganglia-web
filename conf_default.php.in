@@ -445,15 +445,22 @@ $conf['strip_extra'] = true;
 # that for free. If that is undesirable you can override this in conf.php by putting 
 # downloading the asset and putting relative path or absolute paths to it e.g.
 #$conf['cubism_js_path'] = "js/cubism.v1.min.js";
-$conf['jquery_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js";
+$conf['jquery_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js";
 $conf['jquerymobile_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery-mobile/1.4.5/jquery.mobile.min.js";
-$conf['jqueryui_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js";
+$conf['jqueryui_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js";
+$conf['jqueryui_smoothness_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.min.css";
+$conf['jquery_scrollTo_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/1.4.13/jquery.scrollTo.min.js";
 $conf['rickshaw_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js";
 $conf['cubism_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/cubism/1.6.0/cubism.v1.min.js";
 $conf['d3_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js";
 $conf['protovis_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/protovis/3.3.1/protovis.min.js";
 $conf['jstree_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js";
 $conf['jstree_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css";
+$conf['chosen_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js";
+$conf['chosen_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css";
+$conf['jstz_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js";
+$conf['moment_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js";
+$conf['moment-timezone_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.2.1/moment-timezone-with-data.min.js";
 
 $conf['jquery_flot_base_path'] = "https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot";
 
