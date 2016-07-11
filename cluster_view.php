@@ -433,7 +433,7 @@ function get_cluster_optional_reports($conf,
                                       $data) {
   $cluster_url = rawurlencode($clustername);
   $graph_args = "c=$cluster_url&amp;$get_metric_string&amp;st=$localtime";
-
+  
   $optional_reports = "";
 
   // If we want zoomable support on graphs we need to add correct zoomable 
@@ -445,65 +445,66 @@ function get_cluster_optional_reports($conf,
   $data->assign("additional_cluster_img_html_args", 
 		$additional_cluster_img_html_args);
 
-###############################################################################
-# Let's find out what optional reports are included
-# First we find out what the default (site-wide) reports are then look
-# for host specific included or excluded reports
-###############################################################################
+  ##############################################################################
+  # Let's find out what optional reports are included
+  # First we find out what the default (site-wide) reports are then look
+  # for host specific included or excluded reports
+  ##############################################################################
   $default_reports = array("included_reports" => array(), 
 			   "excluded_reports" => array());
- if (is_file($conf['conf_dir'] . "/default.json")) {
-   $default_reports = array_merge(
-     $default_reports,
-     json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), TRUE));
- }
+  if (is_file($conf['conf_dir'] . "/default.json")) {
+    $default_reports = array_merge(
+      $default_reports,
+      json_decode(file_get_contents($conf['conf_dir'] . "/default.json"),
+		  TRUE));
+  }
+  
+  $cluster_file = $conf['conf_dir'] . 
+    "/cluster_" . 
+    str_replace(" ", "_", $clustername) . 
+    ".json";
+  
+  $override_reports = array("included_reports" => array(), 
+			    "excluded_reports" => array());
+  if (is_file($cluster_file)) {
+    $override_reports = 
+      array_merge($override_reports, 
+		  json_decode(file_get_contents($cluster_file), TRUE));
+  }
 
- $cluster_file = $conf['conf_dir'] . 
-   "/cluster_" . 
-   str_replace(" ", "_", $clustername) . 
-   ".json";
+  # Merge arrays
+  $reports["included_reports"] = 
+    array_merge($default_reports["included_reports"],
+		$override_reports["included_reports"]);
+  $reports["excluded_reports"] = 
+    array_merge($default_reports["excluded_reports"],
+		$override_reports["excluded_reports"]);
+  
+  # Remove duplicates
+  $reports["included_reports"] = array_unique($reports["included_reports"]);
+  $reports["excluded_reports"] = array_unique($reports["excluded_reports"]);
+  
+  $cluster_url = rawurlencode($clustername);
 
- $override_reports = array("included_reports" => array(), 
-			   "excluded_reports" => array());
- if (is_file($cluster_file)) {
-   $override_reports = 
-     array_merge($override_reports, 
-		 json_decode(file_get_contents($cluster_file), TRUE));
- }
-
-# Merge arrays
- $reports["included_reports"] = 
-   array_merge($default_reports["included_reports"],
-	       $override_reports["included_reports"]);
- $reports["excluded_reports"] = 
-   array_merge($default_reports["excluded_reports"],
-	       $override_reports["excluded_reports"]);
-
-# Remove duplicates
- $reports["included_reports"] = array_unique($reports["included_reports"]);
- $reports["excluded_reports"] = array_unique($reports["excluded_reports"]);
-
- $cluster_url = rawurlencode($clustername);
-
- foreach ($reports["included_reports"] as $index => $report_name ) {
-   if (! in_array( $report_name, $reports["excluded_reports"])) {
-     $optional_reports .= "<A HREF=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large\">
+  foreach ($reports["included_reports"] as $index => $report_name ) {
+    if (! in_array( $report_name, $reports["excluded_reports"])) {
+      $optional_reports .= "<A HREF=\"./graph_all_periods.php?$graph_args&amp;g=" . $report_name . "&amp;z=large\">
     <IMG BORDER=0 style=\"padding:2px;\" $additional_cluster_img_html_args title=\"$cluster_url\" SRC=\"./graph.php?$graph_args&amp;g=" . $report_name ."&amp;z=" . $conf['default_optional_graph_size'] . "\"></A>
 ";
-   }
- }
- $data->assign("optional_reports", $optional_reports);
+    }
+  }
+  $data->assign("optional_reports", $optional_reports);
 
- $data->assign("graph_args", $graph_args);
+  $data->assign("graph_args", $graph_args);
 
- if (!isset($conf['optional_graphs']))
-   $conf['optional_graphs'] = array();
- $optional_graphs_data = array();
- foreach ($conf['optional_graphs'] as $g) {
-   $optional_graphs_data[$g]['name'] = $g;
-   $optional_graphs_data[$g]['graph_args'] = $graph_args;
- }
- $data->assign('optional_graphs_data', $optional_graphs_data);
+  if (!isset($conf['optional_graphs']))
+    $conf['optional_graphs'] = array();
+  $optional_graphs_data = array();
+  foreach ($conf['optional_graphs'] as $g) {
+    $optional_graphs_data[$g]['name'] = $g;
+    $optional_graphs_data[$g]['graph_args'] = $graph_args;
+  }
+  $data->assign('optional_graphs_data', $optional_graphs_data);
 }
 
 function get_load_heatmap($hosts_up, $host_regex, $metrics, $data, $sort) {
@@ -760,10 +761,15 @@ if (isset($conf['show_stacked_graphs']) and
   $stacked_args = "m={$user['metricname']}&amp;c=$cluster_url&amp;r=$range&amp;st=$cluster[LOCALTIME]";
   if (isset($user['host_regex']))
     $stacked_args .= "&amp;host_regex=" . $user['host_regex'];
-  if ($cs)
+  
+  $cs = $user['cs'];
+  if ($cs and (is_numeric($cs) or strtotime($cs)))
     $stacked_args .= "&amp;cs=" . rawurlencode($cs);
-  if ($ce)
+  
+  $ce = $user['ce'];
+  if ($ce and (is_numeric($ce) or strtotime($ce)))
     $stacked_args .= "&amp;ce=" . rawurlencode($ce);
+  
   $data->assign("stacked_graph_args", $stacked_args);
 }
 
