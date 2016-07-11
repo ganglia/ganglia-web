@@ -116,7 +116,8 @@ if (!isset($_GET['embed'])) { ?>
 ?>
 <script type="text/javascript">
   var default_time = 'hour';
-  var metric = "<?php if (isset($_GET['g'])) echo $_GET['g']; else echo $_GET['m']; ?>";
+  var metric = "<?php if (isset($_GET['g'])) echo $_GET['g'];
+else echo $_GET['m']; ?>";
   var base_url = "<?php print 'graph.php?flot=1&amp;' . $_GET['m'] . $query_string ?>" + "&amp;r=" + default_time;
 </script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
@@ -153,7 +154,8 @@ if (isset($_REQUEST['mobile'])) {
     <div data-role="page" class="ganglia-mobile" id="view-home">
     <div data-role="header">
       <a href="#" class="ui-btn-left" data-icon="arrow-l" onclick="history.back(); return false">Back</a>
-      <h3><?php if (isset($_GET['g'])) echo htmlspecialchars($_GET['g']); else echo htmlspecialchars($_GET['m']); ?></h3>
+      <h3><?php if (isset($_GET['g'])) echo htmlspecialchars($_GET['g']);
+else echo htmlspecialchars($_GET['m']); ?></h3>
       <a href="#mobile-home">Home</a>
     </div>
     <div data-role="content">

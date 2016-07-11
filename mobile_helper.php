@@ -134,7 +134,7 @@ if ( isset($_GET['show_cluster_metrics'])) {
     ///////////////////////////////////////////////////////////////////////////
     $default_reports = array("included_reports" => array(), "excluded_reports" => array());
     if ( is_file($conf['conf_dir'] . "/default.json") ) {
-      $default_reports = array_merge($default_reports,json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), TRUE));
+      $default_reports = array_merge($default_reports, json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), TRUE));
     }
     
     $cluster_file = $conf['conf_dir'] . "/cluster_" . preg_replace('/[^a-zA-Z0-9_-]/', '', $clustername) . ".json";
@@ -147,8 +147,8 @@ if ( isset($_GET['show_cluster_metrics'])) {
     }
     
     # Merge arrays
-    $reports["included_reports"] = array_merge( $default_reports["included_reports"] , $override_reports["included_reports"]);
-    $reports["excluded_reports"] = array_merge($default_reports["excluded_reports"] , $override_reports["excluded_reports"]);
+    $reports["included_reports"] = array_merge( $default_reports["included_reports"], $override_reports["included_reports"]);
+    $reports["excluded_reports"] = array_merge($default_reports["excluded_reports"], $override_reports["excluded_reports"]);
     
     # Remove duplicates
     $reports["included_reports"] = array_unique($reports["included_reports"]);
@@ -220,7 +220,7 @@ if ( isset($_GET['show_host_metrics'])) {
     ///////////////////////////////////////////////////////////////////////////
     $default_reports = array("included_reports" => array(), "excluded_reports" => array());
     if ( is_file($conf['conf_dir'] . "/default.json") ) {
-      $default_reports = array_merge($default_reports,json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), TRUE));
+      $default_reports = array_merge($default_reports, json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), TRUE));
     }
     
     $host_file = $conf['conf_dir'] . "/host_" . preg_replace('/[^a-zA-Z0-9_-]/', '', $hostname) . ".json";
@@ -233,8 +233,8 @@ if ( isset($_GET['show_host_metrics'])) {
     }
     
     # Merge arrays
-    $reports["included_reports"] = array_merge( $default_reports["included_reports"] , $override_reports["included_reports"]);
-    $reports["excluded_reports"] = array_merge($default_reports["excluded_reports"] , $override_reports["excluded_reports"]);
+    $reports["included_reports"] = array_merge( $default_reports["included_reports"], $override_reports["included_reports"]);
+    $reports["excluded_reports"] = array_merge($default_reports["excluded_reports"], $override_reports["excluded_reports"]);
     
     # Remove duplicates
     $reports["included_reports"] = array_unique($reports["included_reports"]);

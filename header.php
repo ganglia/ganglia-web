@@ -33,7 +33,7 @@ function make_cols_menu() {
 
   $cols_menu = "<SELECT NAME=\"hc\" OnChange=\"ganglia_form.submit();\">\n";
 
-  foreach(range(0,25) as $cols) {
+  foreach(range(0, 25) as $cols) {
     $cols_menu .= "<OPTION VALUE=$cols ";
     if ($cols == $conf['hostcols'])
       $cols_menu .= "SELECTED";
@@ -297,7 +297,7 @@ $data->assign("page_title", $title);
 $data->assign("refresh", $conf['default_refresh']);
 
 # Templated Logo image
-$data->assign("images","./templates/${conf['template_name']}/images");
+$data->assign("images", "./templates/${conf['template_name']}/images");
 
 $data->assign( "date", date("r"));
 
@@ -305,7 +305,7 @@ $data->assign( "date", date("r"));
 if (isset($page))
   $data->assign("page", $page);
 else
-  $data->assign("page","./");
+  $data->assign("page", "./");
 
 #
 # Used when making graphs via graph.php. Included in most URLs
@@ -470,7 +470,7 @@ if (file_exists("./templates/${conf['template_name']}/user_header.tpl"))
   $data->assign('user_header', "1");
 
 $data->assign('context', $context);
-$data->assign("metric_name","{$user['metricname']}");
+$data->assign("metric_name", "{$user['metricname']}");
 
 $dwoo->output($tpl, $data);
 

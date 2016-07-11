@@ -24,7 +24,7 @@ $data->assign("extra", template("node_extra.tpl"));
 $up = $hosts_up ? 1 : 0;
 
 $class = ($up) ? "even" : "down";
-$data->assign("class",$class);
+$data->assign("class", $class);
 $data->assign("name", $hostname);
 
 # $metrics is an array of [Metrics][Hostname][NAME|VAL|TYPE|UNITS|SOURCE].
@@ -33,7 +33,7 @@ $data->assign("name", $hostname);
 $hostattrs = ($up) ? $hosts_up : $hosts_down;
 list($rack,$rank,$plane) = findlocation($hostattrs);
 $location = ($rack<0) ? "Unknown" : "Rack $rack, Rank $rank, Plane $plane.";
-$data->assign("location",$location);
+$data->assign("location", $location);
 
 if(isset($hostattrs['ip'])) {
 	$data->assign("ip", $hostattrs['ip']);
@@ -76,17 +76,17 @@ if ($age > 3600) {
 
 # The these hardware units should be more flexible.
 $s = ($cpu_num>1) ? "s" : "";
-$data->assign("s",$s);
+$data->assign("s", $s);
 $data->assign("cpu", sprintf("%s x %.2f GHz", $cpu_num, $cpu_speed));
 $data->assign("mem", sprintf("%.2f GB", $mem_total_gb));
-$data->assign("disk","$disk");
+$data->assign("disk", "$disk");
 $data->assign("part_max_used", "$part_max");
-$data->assign("load_one",$load_one);
-$data->assign("load_five",$load_five);
-$data->assign("load_fifteen",$load_fifteen);
-$data->assign("cpu_user",$cpu_user);
-$data->assign("cpu_system",$cpu_system);
-$data->assign("cpu_idle",$cpu_idle);
+$data->assign("load_one", $load_one);
+$data->assign("load_five", $load_five);
+$data->assign("load_fifteen", $load_fifteen);
+$data->assign("cpu_user", $cpu_user);
+$data->assign("cpu_system", $cpu_system);
+$data->assign("cpu_idle", $cpu_idle);
 
 # Choose a load color from a unix load value.
 function loadindex($load) {
@@ -106,12 +106,12 @@ function percentindex($val) {
    return $level;
 }
 
-$data->assign("load1",loadindex($load_one));
-$data->assign("load5",loadindex($load_five));
-$data->assign("load15",loadindex($load_fifteen));
-$data->assign("user",percentindex($cpu_user));
-$data->assign("sys",percentindex($cpu_system));
-$data->assign("idle",percentindex(100 - $cpu_idle));
+$data->assign("load1", loadindex($load_one));
+$data->assign("load5", loadindex($load_five));
+$data->assign("load15", loadindex($load_fifteen));
+$data->assign("user", percentindex($cpu_user));
+$data->assign("sys", percentindex($cpu_system));
+$data->assign("idle", percentindex(100 - $cpu_idle));
 
 # Software metrics
 $os_name=$metrics['os_name']['VAL'];
@@ -126,20 +126,20 @@ $swap_free=$metrics['swap_free']['VAL']/1024.0;
 $swap_total=sprintf("%.1f", $metrics['swap_total']['VAL']/1024.0);
 $swap_used=sprintf("%.1f", $swap_total - $swap_free);
 
-$data->assign("OS","$os_name $os_release ($machine_type)");
-$data->assign("booted","$booted");
+$data->assign("OS", "$os_name $os_release ($machine_type)");
+$data->assign("booted", "$booted");
 $data->assign("uptime", $up ? $uptime : "[down]");
-$data->assign("swap","Using $swap_used of $swap_total MB swap.");
+$data->assign("swap", "Using $swap_used of $swap_total MB swap.");
 
 # For the back link.
 $cluster_url=rawurlencode($clustername);
-$data->assign("physical_view","./?p=$physical&amp;c=$cluster_url");
+$data->assign("physical_view", "./?p=$physical&amp;c=$cluster_url");
 
 # For the full host view link.
-$data->assign("full_host_view","./?c=$cluster_url&amp;h=$hostname&amp;$get_metric_string");
+$data->assign("full_host_view", "./?c=$cluster_url&amp;h=$hostname&amp;$get_metric_string");
 
 # For the reload link.
-$data->assign("self","./?c=$cluster_url&amp;h=$hostname&amp;p=$physical");
+$data->assign("self", "./?c=$cluster_url&amp;h=$hostname&amp;p=$physical");
 
 $dwoo->output($tpl, $data);
 ?>

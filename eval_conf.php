@@ -74,18 +74,18 @@ if ( ! isset($conf['dwoo_cache_dir']) || ! is_writeable($conf['dwoo_cache_dir'])
   "Please adjust <code>\$conf['dwoo_cache_dir']</code>."; 
 }
 
-if( ! isSet($conf['views_dir']) || ! is_readable($conf['views_dir']) ) {
+if( ! isset($conf['views_dir']) || ! is_readable($conf['views_dir']) ) {
   $errors[] = "Views directory '${conf['views_dir']}' is not readable.<br/>".
   "Please adjust <code>\$conf['views_dir']</code>.";
 }
 
-if( ! isSet($conf['conf_dir']) || ! is_readable($conf['conf_dir']) ) {
+if( ! isset($conf['conf_dir']) || ! is_readable($conf['conf_dir']) ) {
   $errors[] = "Directory used to store configuration information '${conf['conf_dir']}' is not readable.<br/>".
   "Please adjust <code>\$conf['conf_dir']</code>.";
 }
 
 $valid_auth_options = array( 'disabled', 'readonly', 'enabled' );
-if( ! isSet( $conf['auth_system'] ) ) {
+if( ! isset( $conf['auth_system'] ) ) {
   $errors[] = "Please define \$conf['auth_system'] and set it to one of these values:
   <ul>
     <li><code>'readonly'</code> : All users can view.  No-one can edit.</li>
@@ -103,7 +103,7 @@ if( ! isSet( $conf['auth_system'] ) ) {
     $auth = GangliaAuth::getInstance();
     if(!$auth->environmentIsValid()) {
       $errors[] = "Problems found with authorization system configuration:".
-      "<ul><li>".implode("</li><li>",$auth->getEnvironmentErrors())."</li></ul>".
+      "<ul><li>".implode("</li><li>", $auth->getEnvironmentErrors())."</li></ul>".
       "<br/>You may also use <code>\$conf['auth_system'] = 'readonly';</code> or <code>\$conf['auth_system'] = 'disabled';</code>";
     }
   }

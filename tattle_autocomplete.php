@@ -15,7 +15,7 @@ if ( isset($_GET['term']) && $_GET['term'] != "" ) {
     if ( preg_match("/$query/i", $metric_name ) ) {
       foreach ( $hosts as $key => $host_name ) {
         $clusters = $index_array['cluster'][$host_name];
-        foreach ($clusters AS $cluster_name) {
+        foreach ($clusters as $cluster_name) {
           $results[] = array( "value" => $cluster_name . "_|_" . $host_name . "_|_" . $metric_name);
         }
       }

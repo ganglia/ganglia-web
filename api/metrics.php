@@ -64,9 +64,9 @@ $ganglia_hosts_array = array_keys($metrics);
 $host_found = 0;
 
 # Find a FQDN of a supplied server name.
-for ( $i = 0 ; $i < count($ganglia_hosts_array) ; $i++ ) {
- if ( !strcasecmp( $ganglia_hosts_array[$i], $host )   ) {
-  $fqdn = $ganglia_hosts_array[$i];
+foreach ( $ganglia_hosts_array as $ganglia_host ) {
+ if ( !strcasecmp( $ganglia_host, $host )   ) {
+  $fqdn = $ganglia_host;
   $host_found = 1;
   break;
  }
@@ -92,3 +92,4 @@ if ( $host_found == 1 ) {
    api_return_error(htmlentities($metric_name) . " - Hostname info not available. Likely invalid hostname");
 }
 
+?>

@@ -21,8 +21,8 @@ if (file_exists( dirname(__FILE__) . "/lib/Events/Driver_${driver}.php")) {
 # Allows a form of inheritance for template files.
 # If a file does not exist in the chosen template, the
 # default is used. Cuts down on code duplication.
-function template ($name)
-{
+function template ($name) {
+
    global $conf;
 
    $fn = "./templates/${conf['template_name']}/$name";
@@ -38,8 +38,8 @@ function template ($name)
 
 #------------------------------------------------------------------------------
 # Creates a hidden input field in a form. Used to save CGI variables.
-function hiddenvar ($name, $var)
-{
+function hiddenvar ($name, $var) {
+
 
    $hidden = "";
    if ($var) {
@@ -52,8 +52,8 @@ function hiddenvar ($name, $var)
 #------------------------------------------------------------------------------
 # Gives a readable time string, from a "number of seconds" integer.
 # Often used to compute uptime.
-function uptime($uptimeS)
-{
+function uptime($uptimeS) {
+
    $uptimeD=intval($uptimeS/86400);
    $uptimeS=$uptimeD ? $uptimeS % ($uptimeD*86400) : $uptimeS;
    $uptimeH=intval($uptimeS/3600);
@@ -62,7 +62,7 @@ function uptime($uptimeS)
    $uptimeS=$uptimeM ? $uptimeS % ($uptimeM*60) : $uptimeS;
 
    $s = ($uptimeD!=1) ? "s" : "";
-   return sprintf("$uptimeD day$s, %d:%02d:%02d",$uptimeH,$uptimeM,$uptimeS);
+   return sprintf("$uptimeD day$s, %d:%02d:%02d", $uptimeH, $uptimeM, $uptimeS);
 }
 
 #------------------------------------------------------------------------------
@@ -71,8 +71,8 @@ function uptime($uptimeS)
 # $hosts[$cluster][$name], where $name is the hostname.
 # Returns [-1,-1,-1] if we could not determine location.
 #
-function findlocation($attrs)
-{
+function findlocation($attrs) {
+
    $rack=$rank=$plane=-1;
 
    $loc=$attrs['LOCATION'];
@@ -91,8 +91,8 @@ function findlocation($attrs)
 
 
 #------------------------------------------------------------------------------
-function cluster_sum($name, $metrics)
-{
+function cluster_sum($name, $metrics) {
+
    $sum = 0;
 
    foreach ($metrics as $host => $val)
@@ -104,8 +104,8 @@ function cluster_sum($name, $metrics)
 }
 
 #------------------------------------------------------------------------------
-function cluster_min($name, $metrics)
-{
+function cluster_min($name, $metrics) {
+
    $min = "";
 
    foreach ($metrics as $host => $val)
@@ -124,8 +124,8 @@ function cluster_min($name, $metrics)
 #
 # A useful function for giving the correct picture for a given
 # load. Scope is "node | cluster | grid". Value is 0 <= v <= 1.
-function load_image ($scope, $value)
-{
+function load_image ($scope, $value) {
+
    global $conf;
 
    $scaled_load = $value / $conf['load_scale'];
@@ -151,8 +151,8 @@ function load_image ($scope, $value)
 #------------------------------------------------------------------------------
 # A similar function that specifies the background color for a graph
 # based on load. Quantizes the load figure into 6 sets.
-function load_color ($value)
-{
+function load_color ($value) {
+
    global $conf;
 
    $scaled_load = $value / $conf['load_scale'];
@@ -181,8 +181,8 @@ function load_color ($value)
 #
 # Just a useful function to print the HTML for
 # the load/death of a cluster node
-function node_image ($metrics)
-{
+function node_image ($metrics) {
+
    global $hosts_down;
 
    # More rigorous checking if variables are set before trying to use them.
@@ -300,8 +300,8 @@ function find_limits($clustername,
 #
 # Finds the avg of the given cluster & metric from the summary rrds.
 #
-function find_avg($clustername, $hostname, $metricname)
-{
+function find_avg($clustername, $hostname, $metricname) {
+
     global $conf, $start, $end, $rrd_options;
     $avg = 0;
 
@@ -325,8 +325,8 @@ function find_avg($clustername, $hostname, $metricname)
 
 #------------------------------------------------------------------------------
 # Alternate between even and odd row styles.
-function rowstyle()
-{
+function rowstyle() {
+
    static $style;
 
    if ($style == "even") { $style = "odd"; }
@@ -339,8 +339,8 @@ function rowstyle()
 # Return a version of the string which is safe for display on a web page.
 # Potentially dangerous characters are converted to HTML entities.  
 # Resulting string is not URL-encoded.
-function clean_string( $string )
-{
+function clean_string( $string ) {
+
   return htmlentities( $string );
 }
 #------------------------------------------------------------------------------
@@ -350,15 +350,15 @@ function sanitize ( $string ) {
 
 #------------------------------------------------------------------------------
 # If arg is a valid number, return it.  Otherwise, return null.
-function clean_number( $value )
-{
+function clean_number( $value ) {
+
   return is_numeric( $value ) ? $value : null;
 }
 
 #------------------------------------------------------------------------------
 # Return true if string is a 3 or 6 character hex color.Return false otherwise.
-function is_valid_hex_color( $string )
-{
+function is_valid_hex_color( $string ) {
+
   $return_value = false;
   if( strlen( $string ) == 6 || strlen( $string ) == 3 ) {
     if( preg_match( '/^[0-9a-fA-F]+$/', $string ) ) {
@@ -371,8 +371,8 @@ function is_valid_hex_color( $string )
 
 #------------------------------------------------------------------------------
 # Allowed view name characters are alphanumeric plus space, dash and underscore
-function is_proper_view_name( $string )
-{
+function is_proper_view_name( $string ) {
+
   if(preg_match("/[^a-zA-z0-9_\-\ ]/", $string)){
     return false;
   } else {
@@ -387,7 +387,7 @@ function is_proper_view_name( $string )
 # 
 function strip_domainname( $hostname ) {
     $postition = strpos($hostname, '.');
-    $name = substr( $hostname , 0, $postition );
+    $name = substr( $hostname, 0, $postition );
     if ( FALSE === $postition || is_numeric($name) ) {
         return $hostname;
     } else {
@@ -397,8 +397,8 @@ function strip_domainname( $hostname ) {
 
 #------------------------------------------------------------------------------
 # Read a file containing key value pairs
-function file_to_hash($filename, $sep)
-{
+function file_to_hash($filename, $sep) {
+
   
   $lines = file($filename, FILE_IGNORE_NEW_LINES);
   
@@ -414,8 +414,8 @@ function file_to_hash($filename, $sep)
 #------------------------------------------------------------------------------
 # Read a file containing key value pairs
 # Multiple values permitted for each key
-function file_to_hash_multi($filename, $sep)
-{
+function file_to_hash_multi($filename, $sep) {
+
  
   $lines = file($filename);
  
@@ -430,8 +430,8 @@ function file_to_hash_multi($filename, $sep)
 
 #------------------------------------------------------------------------------
 # Obtain a list of distinct values from an array of arrays
-function hash_get_distinct_values($h)
-{
+function hash_get_distinct_values($h) {
+
   $values = array();
   $values_done = array();
   foreach($h as $k => $v)
@@ -449,8 +449,8 @@ $filter_defs = array();
 
 #------------------------------------------------------------------------------
 # Scan $conf['filter_dir'] and populate $filter_defs
-function discover_filters()
-{
+function discover_filters() {
+
   global $conf, $filter_defs;
 
   # Check whether filtering is configured or not
@@ -490,8 +490,8 @@ $filter_permit_list = NULL;
 
 #------------------------------------------------------------------------------
 # Initialise the filter permit list, if necessary
-function filter_init()
-{
+function filter_init() {
+
    global $conf, $filter_permit_list, $filter_defs, $choose_filter;
 
    if(!is_null($filter_permit_list))
@@ -550,8 +550,8 @@ function filter_init()
 
 #------------------------------------------------------------------------------
 # Decide whether the given source is permitted by the filters, if any
-function filter_permit($source_name)
-{
+function filter_permit($source_name) {
+
    global $filter_permit_list;
 
    filter_init();
@@ -891,7 +891,7 @@ function get_view_graph_elements($view) {
       foreach ( $index_array['hosts'] as $key => $host_name ) {
 	if (preg_match("/$query/", $host_name)) {
 	  $clusters = $index_array['cluster'][$host_name];
-	  foreach ($clusters AS $cluster) {
+	  foreach ($clusters as $cluster) {
 	    $graph_args_array[] = "h=" . urlencode($host_name);
 	    $graph_args_array[] = "c=" . urlencode($cluster);
 
@@ -906,7 +906,8 @@ function get_view_graph_elements($view) {
 	}
       }
     } // end of foreach ( $view['items'] as $item_id => $item )
-    break;;
+    break;
+;
   } // end of switch ( $view['view_type'] ) {
   return ($view_elements);
 }
@@ -974,7 +975,7 @@ function checkAccess($resource, $privilege, $conf) {
   if(!is_array($conf)) {
     trigger_error('checkAccess: $conf is not an array.', E_USER_ERROR);
   }
-  if(!isSet($conf['auth_system'])) {
+  if(!isset($conf['auth_system'])) {
     trigger_error("checkAccess: \$conf['auth_system'] is not defined.", E_USER_ERROR);
   }
   
@@ -1028,8 +1029,8 @@ function viewId($view_name) {
 // http://au2.php.net/manual/en/function.json-encode.php#80339
 // Pretty print JSON 
 ///////////////////////////////////////////////////////////////////////////////
-function json_prettyprint($json) 
-{ 
+function json_prettyprint($json) { 
+ 
     $tab = "  "; 
     $new_json = ""; 
     $indent_level = 0; 
@@ -1136,7 +1137,7 @@ function build_aggregate_graph_config ($graph_type,
     foreach ( $index_array['hosts'] as $key => $host_name ) {
       if ( preg_match("/$query/i", $host_name ) ) {
         // We can have same hostname in multiple clusters
-        foreach ($index_array['cluster'][$host_name] AS $cluster) {
+        foreach ($index_array['cluster'][$host_name] as $cluster) {
             $host_matches[] = $host_name . "|" . $cluster;
         }
       }
@@ -1152,8 +1153,8 @@ function build_aggregate_graph_config ($graph_type,
         if ( preg_match("/$query/i", $metric_key, $metric_subexpr ) ) {
           if (isset($metric_subexpr) && count($metric_subexpr) > 1) {
             $legend = array();
-            for ($i = 1; $i < count($metric_subexpr); $i++) {
-              $legend[] = $metric_subexpr[$i];
+            foreach ($metric_subexpr as $m) {
+              $legend[] = $m;
             }
 	    $metric_matches[$metric_key] = implode(' ', $legend);
           } else {
@@ -1228,6 +1229,7 @@ function retrieve_metrics_cache ( $index = "all" ) {
 
    global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics, $context;
 
+   $index; // PHPCS
    require dirname(__FILE__) . '/lib/cache.php';
    return;
 } // end of function get_metrics_cache () {
@@ -1342,8 +1344,10 @@ function buildMetricMaps($metrics,
     if ($metric['TYPE'] == "string" or 
 	$metric['TYPE'] == "timestamp" or
 	(isset($always_timestamp[$name]) and $always_timestamp[$name])) {
+      continue;
     } elseif ($metric['SLOPE'] == "zero" or
 	      (isset($always_constant[$name]) and $always_constant[$name])) {
+      continue;
     } else {
       $graphArgs = $baseGraphArgs . "&amp;v=$metric[VAL]&amp;m=$name";
       # Adding units to graph 2003 by Jason Smith <smithj4@bnl.gov>.
@@ -1379,6 +1383,7 @@ function buildMetricMaps($metrics,
 	  $metricGroupMap[$group] = array($name);
 	}
       }
+      continue;
     } // if
   } // foreach
   return array($metricMap, $metricGroupMap);
@@ -1386,7 +1391,7 @@ function buildMetricMaps($metrics,
 
 // keep url decoding until it looks good
 function heuristic_urldecode($blob) {
-  while (substr($blob,0,1) == "%") {
+  while (substr($blob, 0, 1) == "%") {
     $blob = rawurldecode($blob);
   }
   return $blob;

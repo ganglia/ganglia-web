@@ -113,7 +113,7 @@ function ganglia_event_modify( $event ) {
     $clauses[] = "start_time = " . $db->quote( $start_time, 'integer' );
   } // end isset start_time
 
-  foreach(array('cluster', 'description', 'summary', 'grid', 'host_regex') AS $k) {
+  foreach(array('cluster', 'description', 'summary', 'grid', 'host_regex') as $k) {
     if (isset( $event[$k] )) {
       $clauses[] = "${k} = " . $db->quote( $event[$k], 'text' );
     }

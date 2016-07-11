@@ -46,7 +46,7 @@ if( $error ) {
 $default_reports = array("included_reports" => array(), "excluded_reports" => array());
 $default_file = $conf['conf_dir'] . "/default.json";
 if ( is_file($default_file) ) {
-  $default_reports = array_merge($default_reports,json_decode(file_get_contents($default_file), TRUE));
+  $default_reports = array_merge($default_reports, json_decode(file_get_contents($default_file), TRUE));
 }
 
 $override_file = $conf['conf_dir'] . $json_filename_suffix;

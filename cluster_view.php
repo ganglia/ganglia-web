@@ -637,8 +637,8 @@ if (! $refresh) {
   } else {
     $units = "";
   }
-  $data->assign("metric","{$user['metricname']} $units");
-  $data->assign("metric_name","{$user['metricname']}");
+  $data->assign("metric", "{$user['metricname']} $units");
+  $data->assign("metric_name", "{$user['metricname']}");
   $data->assign("sort", $sort);
   $data->assign("range", $range);
   

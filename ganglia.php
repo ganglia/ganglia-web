@@ -52,8 +52,8 @@ $self = " ";
 $index_array = array();
 
 # Returns true if the host is alive. Works for both old and new gmond sources.
-function host_alive($host, $cluster)
-{
+function host_alive($host, $cluster) {
+
    $TTL = 60;
 
    if ($host['TN'] and $host['TMAX']) {
@@ -70,8 +70,8 @@ function host_alive($host, $cluster)
 
 
 # Called with <GANGLIA_XML> attributes.
-function preamble($ganglia)
-{
+function preamble($ganglia) {
+
    global $version;
 
    $component = $ganglia['SOURCE'];
@@ -79,11 +79,12 @@ function preamble($ganglia)
 }
 
 
-function start_meta ($parser, $tagname, $attrs)
-{
+function start_meta ($parser, $tagname, $attrs) {
+
    global $metrics, $grid, $self, $debug;
    static $sourcename, $metricname;
 
+   $parser; // PHPCS
    if ($debug) print "<br/>DEBUG: parser start meta [$tagname]\n";
 
    switch ($tagname)
@@ -121,11 +122,12 @@ function start_meta ($parser, $tagname, $attrs)
 }
 
 
-function start_cluster ($parser, $tagname, $attrs)
-{
+function start_cluster ($parser, $tagname, $attrs) {
+
    global $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
    static $hostname;
 
+   $parser; // PHPCS
    if ($debug) print "<br/>DEBUG: parser start cluster [$tagname]\n";
    switch ($tagname)
       {
@@ -187,11 +189,12 @@ function start_cluster ($parser, $tagname, $attrs)
 
 }
 
-function start_everything ($parser, $tagname, $attrs)
-{
+function start_everything ($parser, $tagname, $attrs) {
+
    global $index_array, $hosts, $metrics, $cluster, $self, $grid, $hosts_up, $hosts_down, $debug;
    static $hostname, $cluster_name;
 
+   $parser; // PHPCS
    if ($debug) print "<br/>DEBUG: parser start everything [$tagname]\n";
 
    switch ($tagname)
@@ -228,9 +231,11 @@ function start_everything ($parser, $tagname, $attrs)
 
 }
 
-function start_cluster_summary ($parser, $tagname, $attrs)
-{
+function start_cluster_summary ($parser, $tagname, $attrs) {
+
    global $metrics, $cluster, $self, $grid;
+
+   $parser; // PHPCS
 
    switch ($tagname)
       {
@@ -259,10 +264,12 @@ function start_cluster_summary ($parser, $tagname, $attrs)
 }
 
 
-function start_host ($parser, $tagname, $attrs)
-{
+function start_host ($parser, $tagname, $attrs) {
+
    global $metrics, $cluster, $hosts_up, $hosts_down, $self, $grid;
    static $metricname;
+
+   $parser; // PHPCS
 
    switch ($tagname)
       {
@@ -314,14 +321,14 @@ function start_host ($parser, $tagname, $attrs)
 }
 
 
-function end_all ($parser, $tagname)
-{
+function end_all ($parser, $tagname) {
+
 
 }
 
 
-function Gmetad ()
-{
+function Gmetad () {
+
    global $conf, $error, $parsetime, $clustername, $hostname, $context, $debug;
    
    if ($debug) print "<br/>\n";
