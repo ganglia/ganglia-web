@@ -4,13 +4,18 @@
 <head>
 <title>Ganglia:: {$page_title}</title>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-<link type="text/css" href="css/smoothness/jquery-ui-1.10.2.custom.min.css" rel="stylesheet" />
+<link type="text/css" href="css/smoothness/jquery-ui.min.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.multiselect.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.flot.events.css" rel="stylesheet" />
 <link type="text/css" href="css/fullcalendar.css" rel="stylesheet" />
 <link type="text/css" href="css/qtip.min.css" rel="stylesheet" />
 <link type="text/css" href="css/chosen.min.css" rel="stylesheet" />
+<style type="text/css">
+.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+  height: auto;
+}
+</style>
 <link type="text/css" href="./styles.css" rel="stylesheet" />
 <link type="text/css" href="{$conf['jstree_css_path']}" rel="stylesheet" />
 <script type="text/javascript" src="{$conf['jquery_js_path']}"></script>
@@ -23,24 +28,29 @@
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/combobox.js"></script>
-<script type="text/javascript" src="js/jquery.scrollTo-1.4.3.1-min.js"></script>
+<script type="text/javascript" src="js/jquery.scrollTo.min.js"></script>
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript" src="js/fullcalendar.js"></script>
 <script type="text/javascript" src="{$conf['jstree_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="js/jstz-1.0.4.min.js"></script>
+<script type="text/javascript" src="js/moment.min.js"></script>
+<script type="text/javascript" src="js/moment-timezone-with-data.min.js"></script>
 <script type="text/javascript">
-    var server_utc_offset={$server_utc_offset};
+    var server_timezone='{$server_timezone}';
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+    var tz = jstz.determine();
 
     function refreshHeader() {
       $.get('header.php?date_only=1', function(datetime) {
-        var title = $("#page_title").text();
+        var pageTitle = $("#page_title");
+        var title = pageTitle.text();
         var l = title.lastIndexOf(" at ");
         if (l != -1)
           title = title.substring(0, l);
         title += " at " + datetime;
-        $("#page_title").text(title);
+        pageTitle.text(title);
         });
     }
 
@@ -75,6 +85,76 @@
           ganglia_form.submit();
       } else
         ganglia_form.submit();
+    }
+
+    function setStartAndEnd(startTimestamp, endTimestamp) {
+      // we're getting local start/end times.
+
+      var start = Math.floor(startTimestamp * 1000);
+      var end = Math.floor(endTimestamp * 1000);
+      if ($("#tz").val() == "") {
+        start = moment.tz(start, server_timezone);
+        end = moment.tz(end, server_timezone);
+      } else {
+        start = moment(start);
+        end = moment(end);
+      }
+      // Generate RRD friendly date/time strings
+      $("#datepicker-cs").val(start.format('MM/D/YYYY HH:mm'));
+      $("#datepicker-ce").val(end.format('MM/D/YYYY HH:mm'));
+    }
+
+    gangZoomDone = function done(startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
+      document.forms['ganglia_form'].submit();
+    }
+
+    gangZoomCancel = function (startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
+    }
+
+    g_gangZoomDefaults = {
+      startTime: {$start_timestamp},
+      endTime: {$end_timestamp},
+      done: gangZoomDone,
+      cancel: gangZoomCancel
+    }
+
+    function initCustomTimeRangeDragSelect(context) {
+      context.find(".host_small_zoomable").gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 38,
+        paddingBottom: 25
+      }, g_gangZoomDefaults));
+
+      context.find(".host_medium_zoomable").gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 38,
+        paddingBottom: 40
+      }, g_gangZoomDefaults));
+
+      context.find(".host_default_zoomable").gangZoom($.extend({
+        paddingLeft: 66,
+        paddingRight: 30,
+        paddingTop: 37,
+        paddingBottom: 50
+      }, g_gangZoomDefaults));
+
+      context.find(".host_large_zoomable").gangZoom($.extend({
+        paddingLeft: 66,
+        paddingRight: 29,
+        paddingTop: 37,
+        paddingBottom: 56
+      }, g_gangZoomDefaults));
+
+      context.find(".cluster_zoomable").gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 37,
+        paddingBottom: 50
+      }, g_gangZoomDefaults));
     }
 
     $(function() {
@@ -145,73 +225,38 @@
     $("#metrics-picker").val("{$metric_name}");
     $(".header_btn").button();
 
-    done = function done(startTime, endTime) {
-            setStartAndEnd(startTime, endTime);
-            document.forms['ganglia_form'].submit();
+    initCustomTimeRangeDragSelect($(document.documentElement));
+
+    var tzPicker = $("#timezone-picker");
+    if (tzPicker.length) {
+      tzPicker.chosen({ max_selected_options:1,
+                        disable_search:true}).
+      on('change', function(evt, params) { 
+        if (params.selected == 'browser') {
+          $("#tz").val(tz.name());
+        } else {
+          $("#tz").val("");
+        }
+        ganglia_form.submit();
+      });
+      tzPicker.val("{$timezone_option}").trigger('chosen:updated');
     }
 
-    cancel = function (startTime, endTime) {
-            setStartAndEnd(startTime, endTime);
-    }
+    var dateTimePickerOptions = {
+      showOn: "button",
+      constrainInput: false,
+      buttonImage: "img/calendar.gif",
+      buttonImageOnly: true,
+      showButtonPanel: ("{$timezone_option}" == 'browser')
+    };
 
-    defaults = {
-        startTime: {$start_timestamp},
-        endTime: {$end_timestamp},
-        done: done,
-        cancel: cancel
-    }
+    var datepicker_cs = $("#datepicker-cs");
+    if (datepicker_cs[0])
+      datepicker_cs.datetimepicker(dateTimePickerOptions);
 
-    $(".host_small_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 25
-    }, defaults));
-
-    $(".host_medium_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 40
-    }, defaults));
-
-    $(".host_default_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-    }, defaults));
-
-    $(".host_large_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 29,
-        paddingTop: 37,
-        paddingBottom: 56
-    }, defaults));
-
-    $(".cluster_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-    }, defaults));
-
-    function rrdDateTimeString(date) {
-      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-    }
-
-    function setStartAndEnd(startTime, endTime) {
-        // we're getting local start/end times.
-
-        // getTimezoneOffset returns negative values east of UTC,
-        // which is the opposite of PHP. we want negative values to the west.
-        var local_offset = new Date().getTimezoneOffset() * 60 * -1;
-        var delta = local_offset - server_utc_offset;
-        var date = new Date((Math.floor(startTime) - delta) * 1000);
-        $("#datepicker-cs").val(rrdDateTimeString(date));
-        date = new Date((Math.floor(endTime) - delta) * 1000);
-        $("#datepicker-ce").val(rrdDateTimeString(date));
-    }
+    var datepicker_ce = $("#datepicker-ce");
+    if (datepicker_ce[0])
+      datepicker_ce.datetimepicker(dateTimePickerOptions);
 
     initShowEvent();
     initTimeShift();
@@ -266,6 +311,7 @@
   <div style="padding:5px 5px 0 5px;">
     <div style="float:left;" id="range_menu" class="nobr">{$range_menu}</div>
     <div style="float:left;" id="custom_range_menu">{$custom_time}</div>
+    <div style="float:left;" id="timezone">{$timezone_picker}</div>
     <div style="float:right;">{$additional_buttons}&nbsp;&nbsp;{$alt_view}</div>
     <div style="clear:both;"></div>
   </div>
@@ -285,6 +331,7 @@
 
 <input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
 <input type="hidden" id="vn" name="vn" value="{$view_name}">
+<input type="hidden" id="tz" name="tz" value="{$timezone_value}">
 {if $hide_header}
 <input type="hidden" id="hide-hf" name="hide-hf" value="true">
 {else}

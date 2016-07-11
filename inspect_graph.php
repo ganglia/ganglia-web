@@ -9,6 +9,7 @@ include_once "./eval_conf.php";
 <script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.selection.min.js"></script>
 <script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.time.min.js"></script>
 <script language="javascript" type="text/javascript" src="js/jquery.flot.events.js"></script>
+<script language="javascript" type="text/javascript" src="js/jquery.flot.dashes.js"></script>
 <script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="inspect_graph_container"></div>
@@ -294,7 +295,7 @@ $(function () {
   }
   
   $.ajax({
-    url: dataurl,
+    url: dataurl + '&maxrows=' + placeHolder.width(),
     method: 'GET',
     dataType: 'json',
     success: onDataReceived
@@ -396,7 +397,7 @@ $(function () {
 
   function refresh() {
     $.ajax({
-      url: dataurl,
+      url: dataurl + '&maxrows=' + placeHolder.width(),
       method: 'GET',
       dataType: 'json',
       success: onDataReceived});

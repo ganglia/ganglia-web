@@ -13,11 +13,25 @@ $clustername = $_REQUEST['c'];
 $metricname = $_REQUEST['m'];
 $range = $_REQUEST['r'];
 
-$start = $conf['time_ranges'][$range];
+$cs = $_REQUEST['cs'];
+if ($cs and (is_numeric($cs) or strtotime($cs)))
+  $start = $cs;
+else
+  $start = '-' . $conf['time_ranges'][$range] . 's';
 
-$command = $conf['rrdtool'] . " graph - $rrd_options -E";
-$command .= " --start -${start}s";
-$command .= " --end N";
+$ce = $_REQUEST['ce'];
+if ($ce and (is_numeric($ce) or strtotime($ce)))
+  $end = $ce;
+else
+  $end = 'N';
+
+$command = '';
+if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
+  $command .= "TZ='" . $_SESSION['tz'] . "' ";
+
+$command .= $conf['rrdtool'] . " graph - $rrd_options -E";
+$command .= " --start ${start}";
+$command .= " --end ${end}";
 $command .= " --width 700";
 $command .= " --height 300";
 if (isset($_GET['title'])) {

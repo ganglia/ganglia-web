@@ -26,9 +26,4 @@ override_dh_auto_install:
 	dh_installdirs
 	# Add here commands to install the package into debian/ganglia.
 	$(MAKE) install APACHE_USER=www-data DESTDIR=$(CURDIR)/debian/ganglia-webfrontend
-	# Install webfrontend
-	mkdir -p debian/ganglia-webfrontend/etc/apache2/conf.d/
-	cp -f debian/apache.conf \
-		 debian/ganglia-webfrontend/etc/ganglia-webfrontend
-	cp -f debian/conf_debian.php \
-		 debian/ganglia-webfrontend/usr/share/ganglia-webfrontend/conf.php
+	#mkdir -p debian/ganglia-webfrontend/etc/apache2/conf.d/
