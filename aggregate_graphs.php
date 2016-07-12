@@ -1,4 +1,4 @@
-<script>
+<script type="text/javascript">
   function refreshAggregateGraph() {
     $("#aggregate_graph_display img").each(function (index) {
 	var src = $(this).attr("src");
@@ -10,7 +10,7 @@
   }
 
   function createAggregateGraph() {
-    if ($('#hreg').val() == "" || $('#metric_chooser').val() == "") {
+    if ($('#hreg').val() == "" || $('#aggregate_graph_metric_chooser').val() == "") {
       alert("Host regular expression and metric name can't be blank");
       return false;
     }
@@ -95,6 +95,8 @@ $(function() {
     var hreg = $.cookie("ganglia-aggregate-graph-hreg" + window.name);
     if (hreg != null)
       $("#hreg").val(hreg);
+    else
+      $("#hreg").val(".*");
   
     var gtype = $.cookie("ganglia-aggregate-graph-gtype" + window.name);
     if (gtype != null) {
@@ -112,9 +114,19 @@ $(function() {
 	$("#glhide").click();
     }
   
-    var metric = $.cookie("ganglia-aggregate-graph-metric" + window.name);
-    if (metric != null)
-      $("#metric_chooser").val(metric);
+    var mreg = $.cookie("ganglia-aggregate-graph-metric" + window.name);
+    if (mreg != null) {
+      var metric_chooser = $("#aggregate_graph_metric_chooser");
+      var metrics = mreg.split("_|_");
+      for (var i = 0; i < metrics.length; i++) {
+	// Ensure that all selected options are included in the list
+        if (metric_chooser.find("option[value='" + metrics[i] + "']").length == 0) {
+	  var option = new Option(metrics[i], metrics[i], true, true);
+	  metric_chooser.append(option);
+	}
+      }
+      metric_chooser.val(metrics).trigger("change");
+    }
 
     var title = $.cookie("ganglia-aggregate-graph-title" + window.name);
     if (title != null)
@@ -132,24 +144,29 @@ $(function() {
     if (lower != null)
       $("#n").val(lower);
   
-    if (hreg != null && metric != null)
+    if (mreg != null)
       return true;
     else
       return false;
   }
 
-  $( "#metric_chooser" ).autocomplete({
-      source: availablemetrics,
-      change: function(event, ui) {
-	$.cookie("ganglia-aggregate-graph-metric" + window.name,
-	         $("#metric_chooser").val());
-      }
+  $( "#aggregate_graph_metric_chooser" ).select2({
+    placeholder: "Select and/or define metrics to be plotted",
+    tags: true,
+    tokenSeparators: [',', ' ']
+  }).
+  on('change', function(event) {
+    if (event.target == this) {
+      var selected_metrics = $(this).val();
+      $.cookie("ganglia-aggregate-graph-metric" + window.name,
+	       selected_metrics ? selected_metrics.join("_|_") : "");
+    }
   });
 
   if (restoreAggregateGraph())
     createAggregateGraph();
 });
-</script>
+</script type="text/javascript">
 <div id="aggregate_graph_header">
 <h2>Create aggregate graphs</h2>
 <form id="aggregate_graph_form">
@@ -169,8 +186,23 @@ $(function() {
 <td>Host Regular expression e.g. web-[0,4], web or (web|db):</td>
 <td colspan=2><input name="hreg[]" id="hreg" size=60></td>
 </tr>
-<tr><td>Metric Regular expression (not a report e.g. load_one, bytes_(in|out)):</td>
-<td colspan=2><input name="mreg[]" id="metric_chooser" size=60></td>
+<tr><td>Metric Regular expression(s):</td>
+<td colspan=2><select name="mreg[]" id="aggregate_graph_metric_chooser" multiple style="width:100%;">
+<?php
+  require_once('./eval_conf.php');
+  require_once('./functions.php');
+
+  $available_metrics = array();
+  retrieve_metrics_cache("metric_list");
+
+  $metric_names = array_keys($index_array['metrics']);
+  asort($metric_names);
+  foreach ($metric_names as $key => $value) {
+    print "<option value='" . $value . "'>" . $value . "</option>";
+  }
+  unset($available_metrics);
+?>
+</select></td>
 </tr>
 <tr>
 <td>Graph Type:</td><td>

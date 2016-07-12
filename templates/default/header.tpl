@@ -16,6 +16,7 @@
   height: auto;
 }
 </style>
+<link type="text/css" href="{$conf['select2_css_path']}" rel="stylesheet" />
 <link type="text/css" href="./styles.css" rel="stylesheet" />
 <link type="text/css" href="{$conf['jstree_css_path']}" rel="stylesheet" />
 <script type="text/javascript" src="{$conf['jquery_js_path']}"></script>
@@ -34,21 +35,24 @@
 <script type="text/javascript" src="{$conf['jstree_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="{$conf['chosen_js_path']}"></script>
+<script type="text/javascript" src="{$conf['select2_js_path']}"></script>
 <script type="text/javascript" src="{$conf['jstz_js_path']}"></script>
 <script type="text/javascript" src="{$conf['moment_js_path']}"></script>
 <script type="text/javascript" src="{$conf['moment-timezone_js_path']}"></script>
 <script type="text/javascript">
     var server_utc_offset={$server_utc_offset};
     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+    var tz = jstz.determine();
 
     function refreshHeader() {
-      $.get('header.php?date_only=1', function(datetime) {
-        var title = $("#page_title").text();
+    $.get('header.php?date_only=1', function(datetime) {
+        var pageTitle = $("#page_title");
+        var title = pageTitle.text();
         var l = title.lastIndexOf(" at ");
         if (l != -1)
           title = title.substring(0, l);
         title += " at " + datetime;
-        $("#page_title").text(title);
+        pageTitle.text(title);
         });
     }
 
@@ -83,6 +87,76 @@
           ganglia_form.submit();
       } else
         ganglia_form.submit();
+    }
+
+    function rrdDateTimeString(date) {
+      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+    }
+
+    function setStartAndEnd(startTime, endTime) {
+      // we're getting local start/end times.
+
+      // getTimezoneOffset returns negative values east of UTC,
+      // which is the opposite of PHP. we want negative values to the west.
+      var local_offset = new Date().getTimezoneOffset() * 60 * -1;
+      var delta = local_offset - server_utc_offset;
+      var date = new Date((Math.floor(startTime) - delta) * 1000);
+      $("#datepicker-cs").val(rrdDateTimeString(date));
+      date = new Date((Math.floor(endTime) - delta) * 1000);
+      $("#datepicker-ce").val(rrdDateTimeString(date));
+    }
+
+    gangZoomDone = function done(startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
+      document.forms['ganglia_form'].submit();
+    }
+
+    gangZoomCancel = function (startTime, endTime) {
+      setStartAndEnd(startTime, endTime);
+    }
+
+    g_gangZoomDefaults = {
+      startTime: {$start_timestamp},
+      endTime: {$end_timestamp},
+      done: gangZoomDone,
+      cancel: gangZoomCancel
+    }
+
+    function initCustomTimeRangeDragSelect(context) {
+      context.find(".host_small_zoomable").gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 38,
+        paddingBottom: 25
+      }, g_gangZoomDefaults));
+
+      context.find(".host_medium_zoomable").gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 38,
+        paddingBottom: 40
+      }, g_gangZoomDefaults));
+
+      context.find(".host_default_zoomable").gangZoom($.extend({
+        paddingLeft: 66,
+        paddingRight: 30,
+        paddingTop: 37,
+        paddingBottom: 50
+      }, g_gangZoomDefaults));
+
+      context.find(".host_large_zoomable").gangZoom($.extend({
+        paddingLeft: 66,
+        paddingRight: 29,
+        paddingTop: 37,
+        paddingBottom: 56
+      }, g_gangZoomDefaults));
+
+      context.find(".cluster_zoomable").gangZoom($.extend({
+        paddingLeft: 67,
+        paddingRight: 30,
+        paddingTop: 37,
+        paddingBottom: 50
+      }, g_gangZoomDefaults));
     }
 
     $(function() {
@@ -153,73 +227,7 @@
     $("#metrics-picker").val("{$metric_name}");
     $(".header_btn").button();
 
-    done = function done(startTime, endTime) {
-            setStartAndEnd(startTime, endTime);
-            document.forms['ganglia_form'].submit();
-    }
-
-    cancel = function (startTime, endTime) {
-            setStartAndEnd(startTime, endTime);
-    }
-
-    defaults = {
-        startTime: {$start_timestamp},
-        endTime: {$end_timestamp},
-        done: done,
-        cancel: cancel
-    }
-
-    $(".host_small_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 25
-    }, defaults));
-
-    $(".host_medium_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 40
-    }, defaults));
-
-    $(".host_default_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-    }, defaults));
-
-    $(".host_large_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 29,
-        paddingTop: 37,
-        paddingBottom: 56
-    }, defaults));
-
-    $(".cluster_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-    }, defaults));
-
-    function rrdDateTimeString(date) {
-      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-    }
-
-    function setStartAndEnd(startTime, endTime) {
-        // we're getting local start/end times.
-
-        // getTimezoneOffset returns negative values east of UTC,
-        // which is the opposite of PHP. we want negative values to the west.
-        var local_offset = new Date().getTimezoneOffset() * 60 * -1;
-        var delta = local_offset - server_utc_offset;
-        var date = new Date((Math.floor(startTime) - delta) * 1000);
-        $("#datepicker-cs").val(rrdDateTimeString(date));
-        date = new Date((Math.floor(endTime) - delta) * 1000);
-        $("#datepicker-ce").val(rrdDateTimeString(date));
-    }
+    initCustomTimeRangeDragSelect($(document.documentElement));
 
     initShowEvent();
     initTimeShift();
