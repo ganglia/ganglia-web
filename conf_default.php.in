@@ -462,6 +462,8 @@ $conf['chosen_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/
 $conf['jstz_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js";
 $conf['moment_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js";
 $conf['moment-timezone_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.2.1/moment-timezone-with-data.min.js";
+$conf['select2_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js";
+$conf['select2_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css";
 
 $conf['jquery_flot_base_path'] = "https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot";
 
