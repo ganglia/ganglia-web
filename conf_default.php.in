@@ -451,6 +451,7 @@ $conf['jquerymobile_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery-m
 $conf['jqueryui_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js";
 $conf['jqueryui_smoothness_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.min.css";
 $conf['jquery_scrollTo_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/1.4.13/jquery.scrollTo.min.js";
+$conf['jquery_cookie_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js";
 $conf['rickshaw_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.5.1/rickshaw.min.js";
 $conf['cubism_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/cubism/1.6.0/cubism.v1.min.js";
 $conf['d3_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js";
@@ -464,6 +465,8 @@ $conf['moment_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.
 $conf['moment-timezone_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.2.1/moment-timezone-with-data.min.js";
 $conf['select2_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js";
 $conf['select2_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css";
+$conf['fullcalendar_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.1/fullcalendar.min.js";
+$conf['fullcalendar_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.1/fullcalendar.min.css";
 
 $conf['jquery_flot_base_path'] = "https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot";
 

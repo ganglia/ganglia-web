@@ -1,6 +1,8 @@
 <?php
 // vim: tabstop=2:softtabstop=2:shiftwidth=2:expandtab
 
+session_start();
+
 include_once "./eval_conf.php";
 include_once "./get_context.php";
 include_once "./functions.php";
@@ -510,10 +512,10 @@ function build_graphite_url($rrd_graphite_link,
   } 
     
   if ($cs) 
-    $start = date("H:i_Ymd", strtotime($cs));
+    $start = date("H:i_Ymd", tzTimeToTimestamp($cs));
 
   if ($ce) 
-    $end = date("H:i_Ymd", strtotime($ce));
+    $end = date("H:i_Ymd", tzTimeToTimestamp($ce));
 
   if ($max == 0) 
     $max = "";
@@ -547,12 +549,7 @@ function get_timestamp($time) {
   } else if (is_numeric($time)) {
     $timestamp = $time;
   } else {
-    $t = strtotime($time);
-    if ($t !== FALSE)
-      $timestamp = $t;
-    else
-      error_log("get_timestamp: ".
-		"Unable to convert time ${time} to Unix timestamp");
+    $timestamp = tzTimeToTimestamp($time);
   }
   return $timestamp;
 }
@@ -947,7 +944,11 @@ function rrdgraph_cmd_build($rrdtool_graph,
 	" last $range";
   }
 
-  $command = 
+  $command = '';
+  if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
+    $command .= "TZ='" . $_SESSION['tz'] . "' ";
+
+  $command .= 
     $conf['rrdtool'] . 
     " graph" . 
     (isset($_GET["verbose"]) ? 'v' : '') . 
@@ -1090,6 +1091,10 @@ function output_data_to_external_format($rrdtool_graph_series,
 	else
 	  $ds_attr['color'] = substr($out[4], $pos_hash); 
       }
+
+      if (strpos($value, ":dashes") !== FALSE)
+	$ds_attr['dashes'] = 1;
+
       $output_array[] = $ds_attr;
       $rrdtool_graph_args .=  
 	" " . "XPORT:'" . $ds_name . "':'" . $metric_name . "' ";
@@ -1097,9 +1102,9 @@ function output_data_to_external_format($rrdtool_graph_series,
   }
 
   // This command will export values for the specified format in XML
-  $command = $rrdtool . 
-    " xport --start '" . $rrdtool_graph_start . 
-    "' --end '" .  $rrdtool_graph_end . "' " 
+
+  $maxRows = '';
+  if ($step) { 
     /*
       Allow a custom step, if it was specified by the user. 
       Also, we need to specify a --maxrows in case the number 
@@ -1109,11 +1114,24 @@ function output_data_to_external_format($rrdtool_graph_series,
       to guard against "underflow" because rrdxport craps out 
       when --maxrows is less than 10.
     */
-    . ($step ? 
-       " --step '" . $step . "' --maxrows '" 
-       . max(10, round(($rrdtool_graph_end - 
-			$rrdtool_graph_start) / $step)) . "' " : "")
-    . $rrd_options . " " . $rrdtool_graph_args;
+
+    $maxRows = max(10, round(($rrdtool_graph_end - 
+			      $rrdtool_graph_start) / $step));
+  } else if (isset($_GET['maxrows']) && is_numeric($_GET['maxrows'])) {
+    $maxRows = max(10, $_GET['maxrows']);
+  }
+
+  $command = '';
+  if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
+    $command .= "TZ='" . $_SESSION['tz'] . "' ";
+
+  $command .= $rrdtool . 
+    " xport -t --start '" . $rrdtool_graph_start . 
+    "' --end '" .  $rrdtool_graph_end . "' " .
+    ($step ? " --step '" . $step . "' " : '') .
+    ($maxRows ? " --maxrows '" . $maxRows . "' " : '') . 
+    $rrd_options . " " . 
+    $rrdtool_graph_args;
 
   // Read in the XML
   $string = "";
@@ -1201,6 +1219,14 @@ function output_data_to_external_format($rrdtool_graph_series,
 
       if (array_key_exists('color', $metric_array))
 	$gdata['color'] = $metric_array['color'];
+
+      if (array_key_exists('dashes', $metric_array)) {
+	$gdata['dashes'] = array();
+	$gdata['dashes']['show'] = True;
+	$gdata['dashes']['dashLength'] = 5;
+	$gdata['lines']['show'] = True;
+	$gdata['lines']['lineWidth'] = 0;
+      }
       
       if ($metric_array['graph_type'] == "stack")
 	$gdata['stack'] = '1';
@@ -1222,17 +1248,17 @@ function output_data_to_external_format($rrdtool_graph_series,
     print "Timestamp";
 
     // Print out headers
-    $output_array_length = count($output_array);
-    for ($i = 0 ; $i < $output_array_length; $i++) {
-      print "," . $output_array[$i]["metric_name"];
+    foreach ($output_array as $series) {
+      print "," . $series["metric_name"];
     }
 
     print "\n";
     
-    foreach ($output_array[0]['datapoints'] as $key => $row) {
-      print date("c", $row[1]);
-      for ( $j = 0 ; $j < $num_of_metrics ; $j++ ) {
-	print "," . $output_array[$j]["datapoints"][$key][0];
+    foreach ($output_array[0]['datapoints'] as $index => $point) {
+      print date("c", $point[1]); // timestamp
+      // metric values
+      foreach ($output_array as $series) {
+	print "," . $series["datapoints"][$index][0];
       }
       print "\n";
     }
