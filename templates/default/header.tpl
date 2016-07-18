@@ -31,7 +31,6 @@
 <script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript" src="{$conf['jquery_scrollTo_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
-<script type="text/javascript" src="{$conf['fullcalendar_js_path']}"></script>
 <script type="text/javascript" src="{$conf['jstree_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="{$conf['chosen_js_path']}"></script>
@@ -39,6 +38,7 @@
 <script type="text/javascript" src="{$conf['jstz_js_path']}"></script>
 <script type="text/javascript" src="{$conf['moment_js_path']}"></script>
 <script type="text/javascript" src="{$conf['moment-timezone_js_path']}"></script>
+<script type="text/javascript" src="{$conf['fullcalendar_js_path']}"></script>
 <script type="text/javascript">
  var time_ranges = {$time_ranges};
  var server_timezone='{$server_timezone}';
@@ -120,7 +120,7 @@
        end = moment(ce);
      }
    } else {
-     end = moment();
+     end = ($("#tz").val() == "") ? moment().tz(server_timezone) : moment();
      var range = getCurrentRange();
      start = moment(end).subtract(time_ranges["rng_" + range], "s");
    }
