@@ -142,6 +142,7 @@
 	  function(data) {
 	    $("#views-content").html(data);
 	    initShowEvent();
+	    initCustomTimeRangeDragSelect($("#views-content"));
   	    if (viewCommonYaxis)
 	      refreshView();
 	  });

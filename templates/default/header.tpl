@@ -8,7 +8,7 @@
 <link type="text/css" href="css/jquery.liveSearch.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.multiselect.css" rel="stylesheet" />
 <link type="text/css" href="css/jquery.flot.events.css" rel="stylesheet" />
-<link type="text/css" href="css/fullcalendar.css" rel="stylesheet" />
+<link type="text/css" href="{$conf['fullcalendar_css_path']}" rel="stylesheet" />
 <link type="text/css" href="css/qtip.min.css" rel="stylesheet" />
 <link type="text/css" href="{$conf['chosen_css_path']}" rel="stylesheet" />
 <style type="text/css">
@@ -25,13 +25,13 @@
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>
 <script type="text/javascript" src="js/ganglia.js"></script>
 <script type="text/javascript" src="js/jquery.gangZoom.js"></script>
-<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript" src="{$conf['jquery_cookie_js_path']}"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript" src="{$conf['jquery_scrollTo_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
-<script type="text/javascript" src="js/fullcalendar.js"></script>
+<script type="text/javascript" src="{$conf['fullcalendar_js_path']}"></script>
 <script type="text/javascript" src="{$conf['jstree_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="{$conf['chosen_js_path']}"></script>
@@ -40,198 +40,253 @@
 <script type="text/javascript" src="{$conf['moment_js_path']}"></script>
 <script type="text/javascript" src="{$conf['moment-timezone_js_path']}"></script>
 <script type="text/javascript">
-    var server_utc_offset={$server_utc_offset};
-    var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
-    var tz = jstz.determine();
+ var time_ranges = {$time_ranges};
+ var server_timezone='{$server_timezone}';
+ var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+ var tz = jstz.determine();
 
-    function refreshHeader() {
-    $.get('header.php?date_only=1', function(datetime) {
-        var pageTitle = $("#page_title");
-        var title = pageTitle.text();
-        var l = title.lastIndexOf(" at ");
-        if (l != -1)
-          title = title.substring(0, l);
-        title += " at " + datetime;
-        pageTitle.text(title);
-        });
-    }
+ function refreshHeader() {
+   $.get('header.php?date_only=1', function(datetime) {
+     var pageTitle = $("#page_title");
+     var title = pageTitle.text();
+     var l = title.lastIndexOf(" at ");
+     if (l != -1)
+       title = title.substring(0, l);
+     title += " at " + datetime;
+     pageTitle.text(title);
+   });
+ }
 
-    function refresh() {
-      var selected_tab = $("#selected_tab").val();
-      if (selected_tab == "agg") {
-        refreshAggregateGraph();
-        g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
-      } else if (selected_tab == "v") {
-        refreshHeader();
-        if ($.isFunction(window.refreshView)) {
-          refreshView();
-          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
-        } else if ($.isFunction(window.refreshDecomposeGraph)) {
-          refreshDecomposeGraph();
-          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
-        } else
-          ganglia_form.submit();
-      } else if (selected_tab == "ev") {
-        refreshOverlayEvent();
-        g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
-      } else if (selected_tab == "m") {
-        if ($.isFunction(window.refreshClusterView)) {
-          refreshHeader();
-          refreshClusterView();
-          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
-        } else if ($.isFunction(window.refreshHostView)) {
-          refreshHeader();
-          refreshHostView();
-          g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
-        } else
-          ganglia_form.submit();
-      } else
-        ganglia_form.submit();
-    }
+ function refresh() {
+   var selected_tab = $("#selected_tab").val();
+   if (selected_tab == "agg") {
+     refreshAggregateGraph();
+     g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+   } else if (selected_tab == "v") {
+     refreshHeader();
+     if ($.isFunction(window.refreshView)) {
+       refreshView();
+       g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+     } else if ($.isFunction(window.refreshDecomposeGraph)) {
+       refreshDecomposeGraph();
+       g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+     } else
+     ganglia_form.submit();
+   } else if (selected_tab == "ev") {
+     refreshOverlayEvent();
+     g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+   } else if (selected_tab == "m") {
+     if ($.isFunction(window.refreshClusterView)) {
+       refreshHeader();
+       refreshClusterView();
+       g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+     } else if ($.isFunction(window.refreshHostView)) {
+       refreshHeader();
+       refreshHostView();
+       g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+     } else
+     ganglia_form.submit();
+   } else
+   ganglia_form.submit();
+ }
 
-    function rrdDateTimeString(date) {
-      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
-    }
+ // start and end are momemnts
+ function setStartAndEnd(start, end) {
+   // Generate RRD friendly date/time strings
+   $("#datepicker-cs").val(start.format('MM/D/YYYY HH:mm'));
+   $("#datepicker-ce").val(end.format('MM/D/YYYY HH:mm'));
+ }
 
-    function setStartAndEnd(startTime, endTime) {
-      // we're getting local start/end times.
+ function getCurrentRange() {
+   var range = null;
+   var range_menu = $("#range_menu");
+   if (range_menu[0])
+     range = $("#range_menu :radio:checked + label").text();
+   return range;
+ }
+ 
+ // Return the current time range as a pair of moments
+ function getCurrentTimeRange() {
+   var cs = $("#datepicker-cs").val();
+   var ce = $("#datepicker-ce").val();
+   var start = 0;
+   var end = 0;
+   if (getCurrentRange() == "custom" && cs && ce) {
+     if ($("#tz").val() == "") {
+       start = moment.tz(cs, server_timezone);
+       end = moment.tz(ce, server_timezone);
+     } else {
+       start = moment(cs);
+       end = moment(ce);
+     }
+   } else {
+     end = moment();
+     var range = getCurrentRange();
+     start = moment(end).subtract(time_ranges["rng_" + range], "s");
+   }
+   return {
+     start: start,
+     end: end};
+ }
 
-      // getTimezoneOffset returns negative values east of UTC,
-      // which is the opposite of PHP. we want negative values to the west.
-      var local_offset = new Date().getTimezoneOffset() * 60 * -1;
-      var delta = local_offset - server_utc_offset;
-      var date = new Date((Math.floor(startTime) - delta) * 1000);
-      $("#datepicker-cs").val(rrdDateTimeString(date));
-      date = new Date((Math.floor(endTime) - delta) * 1000);
-      $("#datepicker-ce").val(rrdDateTimeString(date));
-    }
+ /* selStart and selEnd are fractions of the current time range */
+ gangZoomDone = function done(selStart, selEnd) {
+   var currentRange = getCurrentTimeRange();
+   var span = currentRange.end.unix() - currentRange.start.unix();
+   setStartAndEnd(
+     moment(currentRange.start).add(Math.floor(selStart * span), "s"),
+     moment(currentRange.start).add(Math.floor(selEnd * span), "s"));
+   document.forms['ganglia_form'].submit();
+ }
 
-    gangZoomDone = function done(startTime, endTime) {
-      setStartAndEnd(startTime, endTime);
-      document.forms['ganglia_form'].submit();
-    }
+ gangZoomCancel = function(selStart, selEnd) {
+ }
 
-    gangZoomCancel = function (startTime, endTime) {
-      setStartAndEnd(startTime, endTime);
-    }
+ g_gangZoomDefaults = {
+   done: gangZoomDone,
+   cancel: gangZoomCancel
+ }
 
-    g_gangZoomDefaults = {
-      startTime: {$start_timestamp},
-      endTime: {$end_timestamp},
-      done: gangZoomDone,
-      cancel: gangZoomCancel
-    }
+ function initCustomTimeRangeDragSelect(context) {
+   context.find(".host_small_zoomable").gangZoom($.extend({
+     paddingLeft: 67,
+     paddingRight: 30,
+     paddingTop: 38,
+     paddingBottom: 25
+   }, g_gangZoomDefaults));
 
-    function initCustomTimeRangeDragSelect(context) {
-      context.find(".host_small_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 25
-      }, g_gangZoomDefaults));
+   context.find(".host_medium_zoomable").gangZoom($.extend({
+     paddingLeft: 67,
+     paddingRight: 30,
+     paddingTop: 38,
+     paddingBottom: 40
+   }, g_gangZoomDefaults));
+   
+   context.find(".host_default_zoomable").gangZoom($.extend({
+     paddingLeft: 66,
+     paddingRight: 30,
+     paddingTop: 37,
+     paddingBottom: 50
+   }, g_gangZoomDefaults));
+   
+   context.find(".host_large_zoomable").gangZoom($.extend({
+     paddingLeft: 66,
+     paddingRight: 29,
+     paddingTop: 37,
+     paddingBottom: 56
+   }, g_gangZoomDefaults));
 
-      context.find(".host_medium_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 38,
-        paddingBottom: 40
-      }, g_gangZoomDefaults));
+   context.find(".cluster_zoomable").gangZoom($.extend({
+     paddingLeft: 67,
+     paddingRight: 30,
+     paddingTop: 37,
+     paddingBottom: 50
+   }, g_gangZoomDefaults));
+ }
 
-      context.find(".host_default_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-      }, g_gangZoomDefaults));
+ $(function() {
+   var range_menu = $("#range_menu");
+   if (range_menu[0])
+     range_menu.buttonset();
 
-      context.find(".host_large_zoomable").gangZoom($.extend({
-        paddingLeft: 66,
-        paddingRight: 29,
-        paddingTop: 37,
-        paddingBottom: 56
-      }, g_gangZoomDefaults));
+   var custom_range_menu = $("#custom_range_menu");
+   if (custom_range_menu[0])
+     custom_range_menu.buttonset();
 
-      context.find(".cluster_zoomable").gangZoom($.extend({
-        paddingLeft: 67,
-        paddingRight: 30,
-        paddingTop: 37,
-        paddingBottom: 50
-      }, g_gangZoomDefaults));
-    }
+   var sort_menu = $("#sort_menu");
+   if (sort_menu[0])
+     sort_menu.buttonset();
 
-    $(function() {
-      var range_menu = $("#range_menu");
-      if (range_menu[0])
-        range_menu.buttonset();
+   g_overlay_events = ($("#overlay_events").val() == "true");
+   
+   g_tabIndex = new Object();
+   g_tabName = [];
+   var tabName = ["m", "s", "v", "agg", "ch", "ev", "rep", "rot", "lvd", "cub", "mob"];
+   var j = 0;
+   for (var i in tabName) {
+     if (tabName[i] == "ev" && !g_overlay_events)
+       continue;
+     g_tabIndex[tabName[i]] = j++;
+     g_tabName.push(tabName[i]);
+   }
 
-      var custom_range_menu = $("#custom_range_menu");
-      if (custom_range_menu[0])
-        custom_range_menu.buttonset();
+   // Follow tab's URL instead of loading its content via ajax
+   var tabs = $("#tabs");
+   if (tabs[0]) {
+     tabs.tabs();
+     // Restore previously selected tab
+     var selected_tab = $("#selected_tab").val();
+     //alert("selected_tab = " + selected_tab);
+     if (typeof g_tabIndex[selected_tab] != 'undefined') {
+       try {
+         //alert("Selecting tab: " + selected_tab);
+         tabs.tabs('option', 'active', g_tabIndex[selected_tab]);
+         if (selected_tab == "rot")
+           autoRotationChooser();
+       } catch (err) {
+         try {
+           alert("Error(ganglia.js): Unable to select tab: " + 
+                 selected_tab + ". " + err.getDescription());
+         } catch (err) {
+           // If we can't even show the error, fail silently.
+         }
+       }
+     }
+     tabs.tabs({
+       beforeActivate: function(event, ui) {
+	 var tabIndex = ui.newTab.index();
+	 $("#selected_tab").val(g_tabName[tabIndex]);
+         if (g_tabName[tabIndex] != "mob")
+           $.cookie("ganglia-selected-tab-" + window.name, tabIndex);
+         if (tabIndex == g_tabIndex["m"] ||
+             tabIndex == g_tabIndex["v"] ||
+             tabIndex == g_tabIndex["ch"])
+           ganglia_form.submit();
+       }
+     });
+   }
+ });
 
-      var sort_menu = $("#sort_menu");
-      if (sort_menu[0])
-        sort_menu.buttonset();
+ $(function () {
+   $("#metrics-picker").val("{$metric_name}");
+   $(".header_btn").button();
 
-      g_overlay_events = ($("#overlay_events").val() == "true");
+   initCustomTimeRangeDragSelect($(document.documentElement));
 
-      g_tabIndex = new Object();
-      g_tabName = [];
-      var tabName = ["m", "s", "v", "agg", "ch", "ev", "rot", "mob"];
-      var j = 0;
-      for (var i in tabName) {
-        if (tabName[i] == "ev" && !g_overlay_events)
-          continue;
-        g_tabIndex[tabName[i]] = j++;
-        g_tabName.push(tabName[i]);
-      }
+   var tzPicker = $("#timezone-picker");
+   if (tzPicker.length) {
+     tzPicker.chosen({ max_selected_options:1,
+                       disable_search:true}).
+	      on('change', function(evt, params) { 
+		if (params.selected == 'browser') {
+		  $("#tz").val(tz.name());
+		} else {
+		  $("#tz").val("");
+		}
+		ganglia_form.submit();
+	      });
+     tzPicker.val("{$timezone_option}").trigger('chosen:updated');
+   }
 
-      // Follow tab's URL instead of loading its content via ajax
-      var tabs = $("#tabs");
-      if (tabs[0]) {
-        tabs.tabs();
-        // Restore previously selected tab
-        var selected_tab = $("#selected_tab").val();
-        //alert("selected_tab = " + selected_tab);
-        if (typeof g_tabIndex[selected_tab] != 'undefined') {
-          try {
-            //alert("Selecting tab: " + selected_tab);
-            tabs.tabs('option', 'active', g_tabIndex[selected_tab]);
-            if (selected_tab == "rot")
-              autoRotationChooser();
-          } catch (err) {
-            try {
-              alert("Error(ganglia.js): Unable to select tab: " + 
-                    selected_tab + ". " + err.getDescription());
-            } catch (err) {
-              // If we can't even show the error, fail silently.
-            }
-          }
-        }
-        tabs.tabs({
-          beforeActivate: 
-          function(event, ui) {
-            var tabIndex = ui.newTab.index();
-            $("#selected_tab").val(g_tabName[tabIndex]);
-            if (g_tabName[tabIndex] != "mob")
-              $.cookie("ganglia-selected-tab-" + window.name, tabIndex);
-            if (tabIndex == g_tabIndex["m"] ||
-              tabIndex == g_tabIndex["v"] ||
-              tabIndex == g_tabIndex["ch"])
-              ganglia_form.submit();
-          }
-        });
-      }
-    });
+   var dateTimePickerOptions = {
+     showOn: "button",
+     constrainInput: false,
+     buttonImage: "img/calendar.gif",
+     buttonImageOnly: true,
+     showButtonPanel: ("{$timezone_option}" == 'browser')
+   };
 
-  $(function () {
-    $("#metrics-picker").val("{$metric_name}");
-    $(".header_btn").button();
+   var datepicker_cs = $("#datepicker-cs");
+   if (datepicker_cs[0])
+     datepicker_cs.datetimepicker(dateTimePickerOptions);
 
-    initCustomTimeRangeDragSelect($(document.documentElement));
-
-    initShowEvent();
-    initTimeShift();
-  });
+   var datepicker_ce = $("#datepicker-ce");
+   if (datepicker_ce[0])
+     datepicker_ce.datetimepicker(dateTimePickerOptions);
+   
+   initShowEvent();
+   initTimeShift();
+ });
 
 
 </script>
@@ -282,6 +337,7 @@
   <div style="padding:5px 5px 0 5px;">
     <div style="float:left;" id="range_menu" class="nobr">{$range_menu}</div>
     <div style="float:left;" id="custom_range_menu">{$custom_time}</div>
+    <div style="float:left;" id="timezone">{$timezone_picker}</div>
     <div style="float:right;">{$additional_buttons}&nbsp;&nbsp;{$alt_view}</div>
     <div style="clear:both;"></div>
   </div>
@@ -301,6 +357,7 @@
 
 <input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
 <input type="hidden" id="vn" name="vn" value="{$view_name}">
+<input type="hidden" id="tz" name="tz" value="{$timezone_value}">
 {if $hide_header}
 <input type="hidden" id="hide-hf" name="hide-hf" value="true">
 {else}
