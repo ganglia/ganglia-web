@@ -5,7 +5,7 @@
 	if (src.indexOf("graph.php") == 0) {
 	  var d = new Date();
 	  $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
-	}    
+	}
     });
   }
 
@@ -18,9 +18,9 @@
     var params = $("#aggregate_graph_form").serialize() + "&aggregate=1";
     $("#show_direct_link").html("<a href='graph_all_periods.php?" + params + "'>Direct Link to this aggregate graph</a>");
     $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-    $.ajax({url: 'graph_all_periods.php', 
+    $.ajax({url: 'graph_all_periods.php',
 	    cache: false,
-	    data: params + "&embed=1" , 
+	    data: params + "&embed=1",
 	    success: function(data) {
       $("#aggregate_graph_display").html(data);
 	}});
@@ -28,30 +28,6 @@
   }
 
 $(function() {
-   
-  var availablemetrics = [
-<?php
-
-  require_once('./eval_conf.php');
-  require_once('./functions.php');
-
-  $available_metrics = array();
-  retrieve_metrics_cache("metric_list");
-
-  # If metric_list hash exists we pulled it out of cache. Otherwise
-  # it was just fetched from gmetad so we need to massage the output
-  if ( ! isset($index_array['metric_list']) ) {
-    $index_array['metric_list'] = array_keys($index_array["metrics"]);
-  }
-  
-  foreach ($index_array['metric_list'] as $key => $value) {
-    $available_metrics[] = "\"$value\"";
-  }
-
-  print join(",", $available_metrics);
-  unset($available_metrics);
-?>];
-   
   $( ".ag_buttons" ).button();
   $( "#graph_type_menu" ).buttonset();
   $( "#graph_legend_menu" ).buttonset();
@@ -97,7 +73,7 @@ $(function() {
       $("#hreg").val(hreg);
     else
       $("#hreg").val(".*");
-  
+
     var gtype = $.cookie("ganglia-aggregate-graph-gtype" + window.name);
     if (gtype != null) {
       if (gtype == "line")
@@ -113,7 +89,7 @@ $(function() {
       else
 	$("#glhide").click();
     }
-  
+
     var mreg = $.cookie("ganglia-aggregate-graph-metric" + window.name);
     if (mreg != null) {
       var metric_chooser = $("#aggregate_graph_metric_chooser");
@@ -143,7 +119,7 @@ $(function() {
     var lower = $.cookie("ganglia-aggregate-graph-lower" + window.name);
     if (lower != null)
       $("#n").val(lower);
-  
+
     if (mreg != null)
       return true;
     else
@@ -192,15 +168,18 @@ $(function() {
   require_once('./eval_conf.php');
   require_once('./functions.php');
 
-  $available_metrics = array();
   retrieve_metrics_cache("metric_list");
 
-  $metric_names = array_keys($index_array['metrics']);
-  asort($metric_names);
-  foreach ($metric_names as $key => $value) {
-    print "<option value='" . $value . "'>" . $value . "</option>";
+  # If metric_list hash exists we pulled it out of cache. Otherwise
+  # it was just fetched from gmetad so we need to massage the output
+  if (!isset($index_array['metric_list'])) {
+    $index_array['metric_list'] = array_keys($index_array["metrics"]);
   }
-  unset($available_metrics);
+
+  asort($index_array['metric_list']);
+  foreach ($index_array['metric_list'] as $metric) {
+    print "<option value='" . $metric . "'>" . $metric . "</option>";
+  }
 ?>
 </select></td>
 </tr>
@@ -228,4 +207,3 @@ $(function() {
 <div style="margin-bottom:5px;background-color:#eeeeee;text-align:center;padding:5px;" id="show_direct_link"></div>
 <div id="aggregate_graph_display">
 </div>
-
