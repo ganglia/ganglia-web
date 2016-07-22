@@ -1126,7 +1126,7 @@ function output_data_to_external_format($rrdtool_graph_series,
     $command .= "TZ='" . $_SESSION['tz'] . "' ";
 
   $command .= $rrdtool . 
-    " xport -t --start '" . $rrdtool_graph_start . 
+    " xport --start '" . $rrdtool_graph_start . 
     "' --end '" .  $rrdtool_graph_end . "' " .
     ($step ? " --step '" . $step . "' " : '') .
     ($maxRows ? " --maxrows '" . $maxRows . "' " : '') . 
