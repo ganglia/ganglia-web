@@ -239,7 +239,7 @@ function graph_cpu_report( &$rrdtool_graph ) {
                         . "VDEF:steal_min=steal_pos,MINIMUM "
                         . "VDEF:steal_avg=steal_pos,AVERAGE "
                         . "VDEF:steal_max=steal_pos,MAXIMUM "
-                        . "GPRINT:'steal_last':'  ${space1}Now\:%5.1lf%%' "
+                        . "GPRINT:'steal_last':' ${space1}Now\:%5.1lf%%' "
                         . "GPRINT:'steal_min':'${space1}Min\:%5.1lf%%${eol1}' "
                         . "GPRINT:'steal_avg':'${space2}Avg\:%5.1lf%%' "
                         . "GPRINT:'steal_max':'${space1}Max\:%5.1lf%%\\l' ";
