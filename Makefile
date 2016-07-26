@@ -13,7 +13,11 @@ GWEB_STATEDIR = /var/lib/ganglia-web
 # Gmetad rootdir (parent location of rrd folder)
 GMETAD_ROOTDIR = /var/lib/ganglia
 
+# Name of the user that runs the Apache server 
 APACHE_USER = www-data
+
+# Name of the group that runs the Apache server 
+APACHE_GROUP = $(APACHE_USER)
 ##########################################################
 
 # Gweb version
@@ -69,7 +73,7 @@ install:	dist-dir
 	rsync -a $(DIST_DIR)/conf $(DESTDIR)/$(GWEB_STATEDIR) && \
 	mkdir -p $(DESTDIR)/$(GDESTDIR) && \
 	rsync --exclude "conf" -a $(DIST_DIR)/* $(DESTDIR)/$(GDESTDIR) && \
-	chown -R $(APACHE_USER):$(APACHE_USER) $(DESTDIR)/$(GWEB_STATEDIR)
+	chown -R $(APACHE_USER):$(APACHE_GROUP) $(DESTDIR)/$(GWEB_STATEDIR)
 
 dist-gzip:	dist-dir
 	if [ -f $(DIST_TARBALL) ]; then \
