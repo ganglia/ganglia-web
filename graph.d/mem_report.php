@@ -138,7 +138,7 @@ function graph_mem_report ( &$rrdtool_graph ) {
                     . "VDEF:free_min=free_pos,MINIMUM " 
                     . "VDEF:free_avg=free_pos,AVERAGE " 
                     . "VDEF:free_max=free_pos,MAXIMUM " 
-                    . "GPRINT:'free_last':' ${space1}Now\:%6.1lf%s' "
+                    . "GPRINT:'free_last':'  ${space1}Now\:%6.1lf%s' "
                     . "GPRINT:'free_min':'${space1}Min\:%6.1lf%s${eol1}' "
                     . "GPRINT:'free_avg':'${space2}Avg\:%6.1lf%s' "
                     . "GPRINT:'free_max':'${space1}Max\:%6.1lf%s\\l' ";
