@@ -13,20 +13,17 @@ include_once $conf['gweb_root'] . "/functions.php";
 $clustername = $_REQUEST['c'];
 $metricname = $_REQUEST['m'];
 $range = $_REQUEST['r'];
+
 $cs = isset($_GET["cs"]) ?
   escapeshellcmd(htmlentities($_REQUEST["cs"])) : NULL;
+
 $ce = isset($_GET["ce"]) ?
   escapeshellcmd(htmlentities($_REQUEST["ce"])) : NULL;
 
-if ($cs and (is_numeric($cs) or strtotime($cs)))
-  $start = $cs;
-else
-  $start = '-' . $conf['time_ranges'][$range] . 's';
+$start = ($cs and (is_numeric($cs) or strtotime($cs))) ?
+  $cs : '-' . $conf['time_ranges'][$range] . 's';
 
-if ($ce and (is_numeric($ce) or strtotime($ce)))
-  $end = $ce;
-else
-  $end = 'N';
+$end = ($ce and (is_numeric($ce) or strtotime($ce))) ? $ce : 'N';
 
 $command = '';
 if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
@@ -37,19 +34,16 @@ $command .= " --start '${start}'";
 $command .= " --end '${end}'";
 $command .= " --width 700";
 $command .= " --height 300";
-if (isset($_GET['title'])) {
-  $command .= " --title " . escapeshellarg($_GET['title']);
-} else {
-  $command .= " --title " . escapeshellarg("$clustername aggregated $metricname last $range");
-}
 
-if (isset($_GET['x'])) {
+$title .= isset($_GET['title']) ?
+  $_GET['title'] : "$clustername aggregated $metricname last $range";
+$command .= " --title " . escapeshellarg($title);
+
+if (isset($_GET['x']))
   $command .= " --upper-limit " . escapeshellarg($_GET[x]);
-}
 
-if (isset($_GET['n'])) {
+if (isset($_GET['n']))
   $command .= " --lower-limit " . escapeshellarg($_GET[n]);
-}
 
 if (isset($_GET['x']) || isset($_GET['n'])) {
   $command .= " --rigid";
@@ -58,38 +52,37 @@ if (isset($_GET['x']) || isset($_GET['n'])) {
   $command .= " --lower-limit '0'";
 }
 
-if (isset($_GET['vl'])) {
+if (isset($_GET['vl']))
   $command .= " --vertical-label " . escapeshellarg($_GET['vl']);
-}
 
-$total_cmd = " CDEF:'total'=0";
+$total_cmd = " CDEF:total=0";
+# The total,POP sequence is a workaround to meet the requirement that CDEFS
+# must contain a DEF or CDEF
+$last_total_cmd = " CDEF:last_total=total,POP,0";
 
 # We'll get the list of hosts from here
 retrieve_metrics_cache();
 
-unset($hosts);
 #####################################################################
 # Keep track of maximum host length so we can neatly stack metrics
 $max_len = 0;
-
-foreach($index_array['cluster'] as $host => $cluster_array ) {
-  foreach ( $cluster_array as $index => $cluster ) {
+$hosts = array();
+foreach ($index_array['cluster'] as $host => $cluster_array ) {
+  foreach ($cluster_array as $cluster) {
     // Check cluster name
-    if ( $cluster == $clustername ) {
+    if ($cluster == $clustername &&
+	file_exists($conf['rrds'] . "/$clustername/$host/$metricname.rrd")) {
       // If host regex is specified make sure it matches
-      if ( isset($_REQUEST["host_regex"] ) ) {
-	if ( preg_match("/" . $_REQUEST["host_regex"] . "/", $host ) ) {
-	  $hosts[] = $host;
-	}
-      } else {
-	$hosts[] = $host;
-      }
+      $add_host = (isset($_REQUEST["host_regex"]) &&
+		   !preg_match("/" . $_REQUEST["host_regex"] . "/", $host)) ?
+	FALSE : TRUE;
 
-      if ($conf['strip_domainname'])
-	$host_len = strlen(strip_domainname($host));
-      else
-	$host_len = strlen($host);
-      $max_len = max($host_len, $max_len);
+      if ($add_host) {
+	$hosts[] = $host;
+	$host_len = ($conf['strip_domainname']) ?
+	  strlen(strip_domainname($host)) : strlen($host);
+	$max_len = max($host_len, $max_len);
+      }
     }
   }
 }
@@ -97,60 +90,40 @@ foreach($index_array['cluster'] as $host => $cluster_array ) {
 // Force all hosts to be in name order
 sort($hosts);
 
-foreach ( $hosts as $index => $host ) {
-  $filename = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
-  if (file_exists($filename)) {
-    $command .= " DEF:'a$index'='$filename':'sum':AVERAGE";
-    $total_cmd .= ",a$index,ADDNAN";
-    $c++;
-  } else {
-    // Remove host from the list if the metric doesn't exist to
-    // avoid unsightly broken stacked graphs.
-    unset($hosts[$index]);
-  }
+foreach ($hosts as $index => $host) {
+  $rrd = $conf['rrds'] . "/$clustername/$host/$metricname.rrd";
+  $command .= " DEF:a$index='$rrd':sum:AVERAGE";
+  $command .= " VDEF:l$index=a$index,LAST";
+  $total_cmd .= ",a$index,ADDNAN";
+  $last_total_cmd .= ",l$index,ADDNAN";
 }
 
-$mean_cmd = " CDEF:'mean'=total,$index,/";
+$num_hosts = count($hosts);
+$mean_cmd = " CDEF:mean=total,$num_hosts,/";
+$last_mean_cmd = " CDEF:last_mean=last_total,$num_hosts,/";
 
-$first_color = get_col(0);
-$min_index = min(array_keys($hosts));
-
-foreach($hosts as $index =>  $host) {
-  $cx = $i / (1 + count($hosts));
-  $i++;
-  $color = get_col($cx);
+foreach ($hosts as $index =>  $host) {
+  if ($index == 0) {
+    $gtype = "AREA";
+    $color = get_col(0);
+  } else {
+    $gtype = "STACK";
+    $cx = $index / (1 + count($hosts));
+    $color = get_col($cx);
+  }
   if ($conf['strip_domainname'])
     $host = strip_domainname($host);
-  if ( $index != $min_index )
-    $command .= " STACK:'a$index'#$color:'" . str_pad($host,
-						      $max_len + 1,
-						      ' ',
-						      STR_PAD_RIGHT) . "'";
-  else
-    $command .= " AREA:'a$index'#$first_color:'" . str_pad($host,
-							   $max_len + 1,
-							   ' ',
-							   STR_PAD_RIGHT) . "'";
-
-  $c++;
-}
-
-#$command .= " LINE1:'a0'#333";
-
-$c = 1;
-foreach($hosts as $index => $host) {
-#if ( $index != 0 )
-  #       $command .= " STACK:'a$index'#000000";
-  $c++;
+  $command .= " $gtype:a$index#$color:'" .
+    str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT) . "'";
 }
 
 $command = sanitize($command);
-$command .= $total_cmd . $mean_cmd;
+$command .= $total_cmd . $mean_cmd . $last_total_cmd . $last_mean_cmd;
 $command .= " COMMENT:'\\j'";
 $command .= " GPRINT:'total':AVERAGE:'Avg Total\: %5.2lf'";
-$command .= " GPRINT:'total':LAST:'Current Total\: %5.2lf\\c'";
+$command .= " GPRINT:'last_total':LAST:'Current Total\: %5.2lf\\c'";
 $command .= " GPRINT:'mean':AVERAGE:'Avg Average\: %5.2lf'";
-$command .= " GPRINT:'mean':LAST:'Current Average\: %5.2lf\\c'";
+$command .= " GPRINT:'last_mean':AVERAGE:'Current Average\: %5.2lf\\c'";
 
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
