@@ -1,16 +1,6 @@
 <?php
 include_once "./eval_conf.php";
 ?>
-<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.crosshair.min.js"></script>
-<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.stack.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.multiselect.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.multiselect.filter.js"></script>
-<script language="javascript" type="text/javascript" src="<?php print $conf['jquery_flot_base_path']; ?>.selection.min.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.ganglia-time.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.events.js"></script>
-<script language="javascript" type="text/javascript" src="js/jquery.flot.dashes.js"></script>
-<script type="text/javascript" src="js/create-flot-graphs.js"></script>
 
 <div id="inspect_graph_container"></div>
 
@@ -37,6 +27,7 @@ $(function () {
   var selectStack = null;
   var tooltip = null;
   var lastUpdate = 0;
+  var tz = getTimezone();
 
   function zeroOutMissing(dataset, index) {
     if (dataset.data == null || index < 0)
@@ -54,33 +45,41 @@ $(function () {
       if (dataset.data == null)
 	return;
 
-      for (var i = dataset.data.length - 1; 
-	   i >= 0 && i > index; 
+      for (var i = dataset.data.length - 1;
+	   i >= 0 && i > index;
 	   i--) {
 	if (dataset.data[i][1] != "NaN") {
 	  index = i;
 	  break;
-	} 
+	}
       }
     });
     return index;
   }
 
+  function getTimezone() {
+    var tzValue = "browser";
+    var tz = $("#tz");
+    if (tz[0] && tz.val() === "")
+      tzValue = server_timezone;
+    return tzValue;
+  }
+
   function resize() {
     var popupDialog = $("#popup-dialog");
     placeHolder.height(popupDialog.height() -
-		       graphControls.height() - 
+		       graphControls.height() -
 		       spacer.height());
     graphContainer.width(popupDialog.width() - 20);
   }
 
-  $("#popup-dialog").bind("dialogresizestop.inspect", 
+  $("#popup-dialog").bind("dialogresizestop.inspect",
 			  function() {
 			    resize();
 			    plot.resize();
 			    plotAccordingToChoices();
 			  });
-  $("#popup-dialog").bind("dialogclose.inspect", 
+  $("#popup-dialog").bind("dialogclose.inspect",
 			  function(event) {
 			    $(this).unbind(".inspect");
                             if (refresh_timer) {
@@ -91,14 +90,14 @@ $(function () {
 
   graphContainer.append('<div id="placeholder" style="overflow:hidden"></div><div id="spacer" style="height:5px;"></div><div id="graphcontrols"></div>');
   spacer = graphContainer.find("#spacer");
-    
+
   var datasets = []; // global array of dataset objects {label, data, color}
   var graph_title = null;
 
   placeHolder = graphContainer.find("#placeholder");
   placeHolder.bind("plothover", hoverHandler);
   placeHolder.bind("plotselected", selectRangeHandler);
-    
+
   var dataurl = '<?php print $dataurl; ?>';
   var refresh_interval = '<?php print $refresh_interval; ?>';
 
@@ -106,7 +105,7 @@ $(function () {
   var series_select = '<select id="select_series" name="select_series" multiple="multiple"></select>';
   // Add multi-select menu to controls
   graphControls.append(series_select);
-    
+
   selectSeries = graphControls.find("#select_series");
   selectSeries.multiselect({
     height: 250,
@@ -129,9 +128,9 @@ $(function () {
   var html = '<span id="gopt" style="margin-left:10px;"><input type="radio" id="line" name="gopt"/><label style="font-size:0.825em;" for="line">Line</label><input type="radio" id="stack" name="gopt"/><label style="font-size:0.825em" for="stack">Stack</label></span>';
   html += '<input id="resetzoom" type="button" style="font-size:0.825em;" value="Reset zoom"/>';
 
-  // Add option buttons to controls 
+  // Add option buttons to controls
   graphControls.append(html);
-  
+
   graphControls.find("#gopt").buttonset();
   selectLine = graphControls.find("#line");
   selectLine.button().click(function() {
@@ -149,13 +148,13 @@ $(function () {
     delete plotOpt.yaxis.min;
     delete plotOpt.yaxis.max;
     zooming = false;
-    plotAccordingToChoices();  
+    plotAccordingToChoices();
   });
   var plotOpt =  {
     lines: { show: true, fill: false },
     points: { show: false },
     crosshair: { mode: "x" },
-    xaxis: { mode: "time", timezone: "browser" },
+    xaxis: { mode: "time", timezone: tz },
     yaxis: {tickFormatter: suffixFormatter},
     selection: { mode: "xy" },
     legend: {show : false},
@@ -168,7 +167,7 @@ $(function () {
     datasets = series;
 
     var stacked = false;
-    var series_labels = 
+    var series_labels =
       selectSeries.children("option").map(function(){
 	  var text = $(this).text();
 	  var label = text;
@@ -184,7 +183,7 @@ $(function () {
     var end_time = 0;
 
     // Determine point index corresponding to last update
-    // Typically the dataset will have trailing NaNs that 
+    // Typically the dataset will have trailing NaNs that
     // should be ignored
     lastUpdate = lastUpdateIndex(datasets);
 
@@ -194,11 +193,11 @@ $(function () {
 	return;
 
       start_time = Math.min(dataset.data[0][0], start_time);
-      end_time = Math.max(dataset.data[dataset.data.length - 1][0], 
+      end_time = Math.max(dataset.data[dataset.data.length - 1][0],
 			  end_time);
 
       // Explicity delete the stack attribute if it exists because stacking
-      // is controlled locally. The incoming datasets will contain a 
+      // is controlled locally. The incoming datasets will contain a
       // stack attribute if they were generated from a stacked graph.
       if ("stack" in dataset) {
 	delete dataset.stack;
@@ -220,8 +219,8 @@ $(function () {
         current_value = "";
       var seriesIndex = $.inArray(dataset.label, series_labels);
       if (seriesIndex == -1) {
-	var option = $('<option/>', 
-	  {value: key, 
+	var option = $('<option/>',
+	  {value: key,
 	   text: dataset.label +
 	      VALUE_SEPARATOR +
 	      current_value});
@@ -231,13 +230,13 @@ $(function () {
 	option.data("pre_checkbox_html", colorBox);
       } else {
 	var option = series_options[seriesIndex];
-	var label = series_labels[seriesIndex] + 
-	  VALUE_SEPARATOR + 
+	var label = series_labels[seriesIndex] +
+	  VALUE_SEPARATOR +
 	  current_value;
 	option.text(label);
       }
     });
-      
+
     selectSeries.multiselect('refresh');
 
     if (first_time) {
@@ -275,12 +274,12 @@ $(function () {
       });
 
     var event_types = {};
-    event_types["info"] = {eventType: "info", 
+    event_types["info"] = {eventType: "info",
                            level: 1,
-                           icon: {image: "img/red-pointer.png", 
-                                  width: 10, 
+                           icon: {image: "img/red-pointer.png",
+                                  width: 10,
                                   height: 10}};
-                
+
     plotOpt.events = {
       levels: 1,
       data: events,
@@ -293,7 +292,7 @@ $(function () {
     if ((!zooming) && (dataurl.indexOf("&r=custom") == -1))
       refresh_timer = setTimeout(refresh, refresh_interval * 1000);
   }
-  
+
   $.ajax({
     url: dataurl + '&maxrows=' + placeHolder.width(),
     method: 'GET',
@@ -301,38 +300,17 @@ $(function () {
     success: onDataReceived
   });
 
-  function utcTimeStr(tstamp) {
-    var date = new Date(tstamp);
-
-    var month = date.getUTCMonth() + 1;
-    if ( month < 10 )
-      month = "0" + month;
-    var day = date.getUTCDate();
-    if ( day < 10 )
-      day = "0" + day;
-    var hr = date.getUTCHours();
-    if (hr < 10)
-      hr = "0" + hr; 
-    var min = date.getUTCMinutes();
-    if (min < 10)
-      min = "0" + min; 
-    var sec = date.getUTCSeconds();
-    if (sec < 10)
-      sec = "0" + sec; 
-    return date.getUTCFullYear() + "-" + month + "-" + day + " " + hr + ":" + min + ":" + sec;
-  }
-
   function showTooltip(x, y, contents) {
     tooltip = $('<div id="tooltip">' + contents + '</div>').css( {
       position: 'absolute',
       display: 'none',
       'z-index': 2000,
-      top: y + 5,
-      left: x + 5,
+      top: y - 20,
+      left: x + 10,
       border: '1px solid #fdd',
       padding: '2px',
       'background-color': '#fee',
-      opacity: 0.80
+      opacity: 1.0
     }).appendTo("body").fadeIn(200);
   }
 
@@ -346,16 +324,16 @@ $(function () {
     if (val >= 1000) {
       return (val / 1000).toFixed(places) + " k";
     }
-        
+
     return (val/1).toFixed(places);
   }
-  
+
   function suffixFormatter(val, axis) {
     var tickd = axis.tickDecimals;
     if (tickd <= 0) {
       tickd = 1;
     }
-        
+
     return formattedSiVal(val, tickd);
   }
 
@@ -384,10 +362,12 @@ $(function () {
       if (tooltip != null)
 	tooltip.remove();
       var y = formattedSiVal(item.datapoint[1], 2);
-      showTooltip(item.pageX, 
+      var time = (tz === "browser") ?
+	moment(item.datapoint[0]) : moment(item.datapoint[0]).tz(tz);
+      showTooltip(item.pageX,
 		  item.pageY,
-		  item.series.label + " at " + 
-		  (new Date(item.datapoint[0])).toLocaleString() + 
+		  item.series.label + " at " +
+		  time.format("MM/DD/YYYY HH:mm:ss") +
 		  " = " + y);
     } else {
       if (tooltip != null)
@@ -418,6 +398,8 @@ $(function () {
     }
     plot.getOptions().series.stack = plotOpt.series.stack;
     plot.getOptions().series.lines.fill = plotOpt.lines.fill;
+    tz = getTimezone();
+    plot.getOptions().xaxis.timezone = tz;
   }
 
   function plotAccordingToChoices() {
