@@ -40,7 +40,7 @@
                 } else {
                   if (ul > yAxisUpperLimit)
                     yAxisUpperLimit = ul;
-                } 
+                }
               }
 
 	      var ll = getLimit(data, "min");
@@ -50,12 +50,12 @@
                 } else {
                   if (ll < yAxisLowerLimit)
                     yAxisLowerLimit = ll;
-                } 
+                }
               }
             },
             async: false
           });
-	}    
+	}
     });
 
     var upperLimitChanged = true;
@@ -87,19 +87,19 @@
 	if (src.indexOf("graph.php") == 0) {
 	  var d = new Date();
           if (viewCommonYaxis &&
-              yAxisUpperLimit != null && 
-              yAxisLowerLimit != null && 
+              yAxisUpperLimit != null &&
+              yAxisLowerLimit != null &&
               limitsChanged)
-	    $(this).attr("src", 
+	    $(this).attr("src",
                          jQuery.param.querystring(
-                           src, 
-                           "&x=" + encodeURIComponent(yAxisUpperLimit) + 
+                           src,
+                           "&x=" + encodeURIComponent(yAxisUpperLimit) +
                            "&n=" + encodeURIComponent(yAxisLowerLimit) +
                            "&_=" + d.getTime()));
           else
-	    $(this).attr("src", 
+	    $(this).attr("src",
                          jQuery.param.querystring(src, "&_=" + d.getTime()));
-	}    
+	}
     });
   }
 
@@ -109,8 +109,8 @@
 
   function createView() {
     $("#create-new-view-confirmation-layer").html('<img src="img/spinner.gif">');
-    $.get('views_view.php', 
-          $("#create_view_form").serialize() , 
+    $.get('views_view.php',
+          $("#create_view_form").serialize() ,
           function(data) {
       $("#create-new-view-layer").toggle();
       $("#create-new-view-confirmation-layer").html(data.output);
@@ -132,12 +132,12 @@
     $.get("views_view.php?vn=" + view_name + "&views_menu",
           function(data) {
             $("#views_menu").html(data);
-          }); 
+          });
     {/if}
     var qs = jQuery.deparam.querystring();
-    $.get("view_content.php?vn=" + view_name + 
-  	  "&r=" + qs.r + 
-	  "&cs=" + $("#datepicker-cs").val() + 
+    $.get("view_content.php?vn=" + view_name +
+  	  "&r=" + qs.r +
+	  "&cs=" + $("#datepicker-cs").val() +
 	  "&ce=" + $("#datepicker-ce").val(),
 	  function(data) {
 	    $("#views-content").html(data);
@@ -170,7 +170,7 @@
       .click(function() {
         if ($("#vn").val() != "") {
 	  if (confirm("Are you sure you want to delete the view: " + $("#vn").val() + " ?")) {
-	    $.get('views_view.php?vn=' + 
+	    $.get('views_view.php?vn=' +
                   encodeURIComponent($("#vn").val()) +
                   '&delete_view&views_menu',
                   function(data) {
@@ -183,7 +183,7 @@
                         alert("Please select the view to delete");
                     {else}
                       $("#views_menu").html(data);
-		      $("#view_graphs").html("");  
+		      $("#view_graphs").html("");
 		      $("#vn").val("");
                     {/if}
                   });
@@ -198,7 +198,7 @@
          'multiple' : false,
          'animation' : 0,
 	 'check_callback' : true,
-         'themes' : { 'icons' : false, 'dots' : false, 'stripes' : true }
+         'themes' : { 'icons' : true, 'dots' : true, 'stripes' : false }
       },
       'state' : {
         'filter' : function(n) { delete n.core.selected; return n; },
@@ -206,7 +206,7 @@
       },
       'plugins' : ['state', 'sort', 'unique']
     })
-    .on("select_node.jstree", 
+    .on("select_node.jstree",
           function (event, data) {
 	    if (data.instance.is_leaf(data.node)) {
               selectView(data.node.original.view_name);
@@ -216,7 +216,7 @@
             }
             return false;
           })
-    .on("before.jstree", 
+    .on("before.jstree",
           function (e, data) {
             if (data.func === "select_node" &&
                 !data.inst.is_leaf(data.args[0])) {
