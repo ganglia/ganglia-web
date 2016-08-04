@@ -1,4 +1,4 @@
-$(function(){
+$(function() {
   // Ensure that the window has a unique name
   if ((window.name == null) || window.name == "") {
     var d = new Date();
@@ -25,22 +25,24 @@ $(function(){
       search_field_q.val(search_value);
   }
 
-  });
+});
 
 function selectTab(tab_index) {
   $("#tabs").tabs("select", tab_index);
 }
 
 function addItemToView() {
-  $.get('views_view.php', 
-        $("#add_metric_to_view_form").serialize() + "&add_to_view=1", 
-        function(data) {$("#metric-actions-dialog-content").html(data);});
-  return false;  
+  $.get('views_view.php',
+        $("#add_metric_to_view_form").serialize() + "&add_to_view=1",
+        function(data) {
+          $("#metric-actions-dialog-content").html(data);
+        });
+  return false;
 }
 
 function initMetricActionsDialog() {
   var metric_actions_dialog = $("#metric-actions-dialog");
-  if (metric_actions_dialog[0]) 
+  if (metric_actions_dialog[0])
     metric_actions_dialog.dialog({autoOpen: false,
 		                  width: "auto",
 		                  modal: true,
@@ -50,37 +52,43 @@ function initMetricActionsDialog() {
 }
 
 function metricActions(host_name, metric_name, type, graphargs) {
-    $("#metric-actions-dialog").dialog("open");
-    $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
-    $.get('actions.php',
-          "action=show_views&host_name=" + host_name + 
-	  "&metric_name=" + metric_name + 
-	  "&type=" + type + graphargs, 
-          function(data) {$("#metric-actions-dialog-content").html(data);});
-    return false;
+  $("#metric-actions-dialog").dialog("option", "title", "Add To View");
+  $("#metric-actions-dialog").dialog("open");
+  $("#metric-actions-dialog-content").html('<img src="img/spinner.gif">');
+  $.get('actions.php',
+        "action=show_views&host_name=" + host_name +
+	"&metric_name=" + metric_name +
+	"&type=" + type + "&" + graphargs,
+        function(data) {
+          $("#metric-actions-dialog-content").html(data);
+        });
+  return false;
 }
 
 function metricActionsAggregateGraph(args) {
+  $("#metric-actions-dialog").dialog("option", "title", "Add To View");
   $("#metric-actions-dialog").dialog("open");
   $("#metric-actions-dialog-content").html('<img src="img/spinner.gif" />');
-  $.get('actions.php', 
-        "action=show_views" + args + "&aggregate=1", 
-        function(data) {$("#metric-actions-dialog-content").html(data);});
-    return false;
+  $.get('actions.php',
+        "action=show_views&" + args + "&aggregate=1",
+        function(data) {
+          $("#metric-actions-dialog-content").html(data);
+        });
+  return false;
 }
 
 
 function autoRotationChooser() {
   $("#tabs-autorotation-chooser").html('<img src="img/spinner.gif">');
-  $.get('autorotation.php', 
-        "", 
+  $.get('autorotation.php',
+        "",
         function(data) {$("#tabs-autorotation-chooser").html(data);});
 }
 
 function liveDashboardChooser() {
   $("#tabs-livedashboard-chooser").html('<img src="img/spinner.gif">');
-  $.get('tasseo.php', 
-        "", 
+  $.get('tasseo.php',
+        "",
         function(data) {$("#tabs-livedashboard-chooser").html(data);});
 }
 
@@ -100,11 +108,11 @@ function ganglia_submit(clearonly) {
 -----------------------------------------------------------------------------*/
 function inspectGraph(graphArgs) {
   $("#popup-dialog").dialog('open');
-  $("#popup-dialog").bind("dialogbeforeclose", 
-                                  function(event, ui) {
-                                    $("#enlargeTooltip").remove();});
+  $("#popup-dialog").bind("dialogbeforeclose",
+                          function(event, ui) {
+                            $("#enlargeTooltip").remove();});
   $.get('inspect_graph.php',
-        "flot=1&" + graphArgs, 
+        "flot=1&" + graphArgs,
         function(data) {$('#popup-dialog-content').html(data);});
 }
 
@@ -113,12 +121,12 @@ function inspectGraph(graphArgs) {
 -----------------------------------------------------------------------------*/
 function drawTrendGraph(url) {
   $("#popup-dialog").dialog('open');
-  $("#popup-dialog").bind("dialogbeforeclose", 
+  $("#popup-dialog").bind("dialogbeforeclose",
                                   function(event, ui) {
                                     $("#enlargeTooltip").remove();});
   $.get('trend_navigation.php',
         url,
-        function(data) {$('#popup-dialog-navigation').html(data);})
+        function(data) {$('#popup-dialog-navigation').html(data);});
 
   $("#popup-dialog-content").html('<img src="' + url + '" />');
 
@@ -151,7 +159,7 @@ function initTimeShift() {
     $(this).prop("checked", false);
     $(this).button('refresh');
   });
-    
+
   if ($("#timeshift_overlay").length > 0) {
     $("#timeshift_overlay").button();
     $("#timeshift_overlay").prop("checked", false);
@@ -163,7 +171,7 @@ function showTimeshiftOverlay(show) {
   $("[id^=" + TIME_SHIFT_BASE_ID + "]").each(function() {
       $(this).prop('checked', show);
       $(this).button('refresh');
-      var graphId = GRAPH_BASE_ID + 
+      var graphId = GRAPH_BASE_ID +
 	$(this).attr('id').slice(TIME_SHIFT_BASE_ID_LEN);
       showTimeShift(graphId, show);
     });
@@ -171,37 +179,37 @@ function showTimeshiftOverlay(show) {
 
 function showAllEvents(show) {
   $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
-      $(this).prop('checked', show);
-      $(this).button('refresh');
-      var graphId = GRAPH_BASE_ID + 
-	$(this).attr('id').slice(SHOW_EVENTS_BASE_ID_LEN);
-      showEvents(graphId, show);
-    });
+    $(this).prop('checked', show);
+    $(this).button('refresh');
+    var graphId = GRAPH_BASE_ID +
+	  $(this).attr('id').slice(SHOW_EVENTS_BASE_ID_LEN);
+    showEvents(graphId, show);
+  });
 }
 
 function showEvents(graphId, show) {
-    var graph = $("#" + graphId);
-    var src = graph.attr("src");
-    if ((src.indexOf("graph.php") != 0) &&
-        (src.indexOf("./graph.php") != 0))
-      return;
-    var paramStr = "&event=";
-    paramStr += show ? "show" : "hide"
-    var d = new Date();
-    paramStr += "&_=" + d.getTime();
-    src = jQuery.param.querystring(src, paramStr);
-    graph.attr("src", src);
-  }
+  var graph = $("#" + graphId);
+  var src = graph.attr("src");
+  if ((src.indexOf("graph.php") != 0) &&
+      (src.indexOf("./graph.php") != 0))
+    return;
+  var paramStr = "&event=";
+  paramStr += show ? "show" : "hide";
+  var d = new Date();
+  paramStr += "&_=" + d.getTime();
+  src = jQuery.param.querystring(src, paramStr);
+  graph.attr("src", src);
+}
 
 function showTimeShift(graphId, show) {
-    var graph = $("#" + graphId);
-    var src = graph.attr("src");
-    if ((src.indexOf("graph.php") != 0) &&
-        (src.indexOf("./graph.php") != 0))
-      return;
-    var paramStr = show ? "&ts=1" : "&ts=0";
-    var d = new Date();
-    paramStr += "&_=" + d.getTime();
-    src = jQuery.param.querystring(src, paramStr);
-    graph.attr("src", src);
-  }
+  var graph = $("#" + graphId);
+  var src = graph.attr("src");
+  if ((src.indexOf("graph.php") != 0) &&
+      (src.indexOf("./graph.php") != 0))
+    return;
+  var paramStr = show ? "&ts=1" : "&ts=0";
+  var d = new Date();
+  paramStr += "&_=" + d.getTime();
+  src = jQuery.param.querystring(src, paramStr);
+  graph.attr("src", src);
+}
