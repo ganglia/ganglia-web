@@ -18,7 +18,6 @@
   <exclude name="Generic.Formatting.MultipleStatementAlignment" />
   <exclude name="Generic.Formatting.SpaceAfterCast" />
   <exclude name="Generic.Formatting.NoSpaceAfterCast" />
-  <exclude name="Generic.Formatting.SpaceAfterNot" /> <!-- 2.6.2 -->
   <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman" />
   <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
   <exclude name="Generic.WhiteSpace.DisallowTabIndent" />
