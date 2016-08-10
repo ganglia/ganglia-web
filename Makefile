@@ -36,10 +36,7 @@ DIST_TARBALL = $(DIST_DIR).tar.gz
 TARGETS = conf_default.php ganglia-web.spec version.php apache.conf
 
 # Coding standard
-STANDARD_NEW = test/phpcs-ganglia-web.xml
-STANDARD_OLD = test/phpcs-ganglia-web.old.xml
-# TODO: create a new inclusive standard (that works with all versions of phpcs/phpcbf), instead of the current exclusive one (that doesn't)
-STANDARD = $(shell if $(PHPCS) --standard=$(STANDARD_NEW) empty.php 2>/dev/null; then echo $(STANDARD_NEW); else echo $(STANDARD_OLD); fi )
+STANDARD = test/phpcs-ganglia-web.xml
 
 CODE = *.php api graph.d lib nagios test
 
@@ -48,7 +45,12 @@ all: default
 default:	$(TARGETS)
 
 sniff:
+	@$(PHPCS) --version && echo
 	$(PHPCS) --standard=$(STANDARD) -p $(CODE)
+
+# convert exclusive standard into inclusive rules
+rules:
+	@$(PHPCS) --standard=$(STANDARD) -e | grep "^  " | sed -e 's/^  / <rule ref="/' -e 's/$$/"\/>/'
 
 fix:
 	$(PHPCBF) --standard=$(STANDARD) $(CODE)

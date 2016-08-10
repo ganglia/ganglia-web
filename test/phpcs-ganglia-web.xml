@@ -7,40 +7,40 @@
  <exclude-pattern>*/lib/Zend/*</exclude-pattern>
  <exclude-pattern>*/lib/Zend/Acl/*</exclude-pattern>
 
- <rule ref="Generic">
-  <!-- Inline -->
-  <exclude name="Generic.ControlStructures.InlineControlStructure" />
-  <exclude name="Generic.Files.InlineHTML" />
-  <exclude name="Generic.PHP.CharacterBeforePHPOpeningTag" />
-  <!-- Whitespace -->
-  <exclude name="Generic.Files.EndFileNoNewline" />
-  <exclude name="Generic.Files.LineLength" />
-  <exclude name="Generic.Formatting.MultipleStatementAlignment" />
-  <exclude name="Generic.Formatting.SpaceAfterCast" />
-  <exclude name="Generic.Formatting.NoSpaceAfterCast" />
-  <exclude name="Generic.Formatting.SpaceAfterNot" /> <!-- 2.6.2 -->
-  <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman" />
-  <exclude name="Generic.WhiteSpace.DisallowSpaceIndent" />
-  <exclude name="Generic.WhiteSpace.DisallowTabIndent" />
-  <exclude name="Generic.WhiteSpace.ScopeIndent" />
-  <!-- Constants -->
-  <exclude name="Generic.PHP.LowerCaseConstant" />
-  <exclude name="Generic.PHP.UpperCaseConstant" />
-  <!-- Function naming -->
-  <exclude name="Generic.NamingConventions.CamelCapsFunctionName" />
-  <!-- File naming -->
-  <exclude name="Generic.Files.LowercasedFilename" />
-  <!-- Multi-line string concat -->
-  <exclude name="Generic.Strings.UnnecessaryStringConcat" />
-  <!-- Arrays -->
-  <exclude name="Generic.Arrays.DisallowLongArraySyntax" />
-  <!-- Silencing -->
-  <exclude name="Generic.PHP.NoSilencedErrors" />
-  <!-- Commenting -->
-  <exclude name="Generic.Commenting.Todo" />
-  <!-- Metrics -->
-  <exclude name="Generic.Metrics.CyclomaticComplexity" />
-  <exclude name="Generic.Metrics.NestingLevel" />
- </rule>
+ <rule ref="Generic.Arrays.DisallowShortArraySyntax"/>
+ <rule ref="Generic.Classes.DuplicateClassName"/>
+ <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+ <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>
+ <rule ref="Generic.CodeAnalysis.ForLoopWithTestFunctionCall"/>
+ <rule ref="Generic.CodeAnalysis.JumbledIncrementer"/>
+ <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
+ <rule ref="Generic.CodeAnalysis.UnnecessaryFinalModifier"/>
+ <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+ <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
+ <rule ref="Generic.Commenting.DocComment"/>
+ <rule ref="Generic.Commenting.Fixme"/>
+ <rule ref="Generic.Debug.CSSLint"/>
+ <rule ref="Generic.Debug.ClosureLinter"/>
+ <rule ref="Generic.Debug.JSHint"/>
+ <rule ref="Generic.Files.ByteOrderMark"/>
+ <rule ref="Generic.Files.EndFileNewline"/>
+ <rule ref="Generic.Files.LineEndings"/>
+ <rule ref="Generic.Files.OneClassPerFile"/>
+ <rule ref="Generic.Files.OneInterfacePerFile"/>
+ <rule ref="Generic.Files.OneTraitPerFile"/>
+ <rule ref="Generic.Formatting.DisallowMultipleStatements"/>
+ <rule ref="Generic.Functions.CallTimePassByReference"/>
+ <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
+ <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+ <rule ref="Generic.NamingConventions.ConstructorName"/>
+ <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
+ <rule ref="Generic.PHP.ClosingPHPTag"/>
+ <rule ref="Generic.PHP.DeprecatedFunctions"/>
+ <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+ <rule ref="Generic.PHP.ForbiddenFunctions"/>
+ <rule ref="Generic.PHP.LowerCaseKeyword"/>
+ <rule ref="Generic.PHP.SAPIUsage"/>
+ <rule ref="Generic.PHP.Syntax"/>
+ <rule ref="Generic.VersionControl.SubversionProperties"/>
 
 </ruleset>
