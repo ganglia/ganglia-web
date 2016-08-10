@@ -10,7 +10,7 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
   $available_views = get_available_views();
   ?>
 
-  <table>
+  <table style="text-align:left;" cellpadding="5">
   <?php
   if ( isset($_GET['aggregate']) ) {
   ?>
@@ -19,17 +19,16 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
   <?php
     } else {
   ?>
-     <tr><th>Hostname</th><td><?php print htmlspecialchars($_GET['host_name']); ?></td></tr>
-     <tr><th>Metric/Report</th><td><?php print htmlspecialchars($_GET['metric_name']); ?></td></tr>
+     <tr><th>Host name</th><td><?php print htmlspecialchars($_GET['host_name']); ?></td></tr>
+     <tr><th><?php print ucfirst($_GET['type']); ?></th><td><?php print htmlspecialchars($_GET['metric_name']); ?></td></tr>
   <?php
   }
   ?>
-
   </table>
   <p>
   <form id="add_metric_to_view_form">
     Add graph to view: <br />
-    <?php 
+    <?php
     // Get all the aggregate form variables and put them in the hidden fields
     if ( isset($_GET['aggregate']) ) {
 	foreach ( $_GET as $key => $value ) {
@@ -51,9 +50,10 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
 	  print "<input type=\"hidden\" name=\"vertical_label\" value=\"" . htmlentities(stripslashes($_GET['vl'])) . "\" />";
       if (isset($_GET['ti']) && ($_GET['ti'] !== ''))
 	  print "<input type=\"hidden\" name=\"title\" value=\"" . htmlentities(stripslashes($_GET['ti'])) . "\" />";
-      
-      print "<table><tr><th rowspan=2>Optional thresholds to display</th><td>Warning</td><td><input size=6 name=\"warning\"></td>
-	</tr><td>Critical</td><td><input size=6 name=\"critical\"></td></tr></table>";
+    }
+
+  if (isset($_GET['type']) && $_GET['type'] == 'metric') {
+      print "<table style=\"text-align:left;\" cellpadding=\"5\"><tr><th rowspan=2>Optional thresholds to display</th><td>Warning</td><td><input size=6 name=\"warning\"></td></tr><td>Critical</td><td><input size=6 name=\"critical\"></td></tr></table>";
     }
     ?>
     <br />
@@ -68,7 +68,7 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
     ksort($sorted_views);
     foreach ($sorted_views as $view_name => $view) {
       print "<option value=\"" . $view_name . "\">" . $view_name . "</option>";
-    } 
+    }
     ?>
     </select>
     </center>

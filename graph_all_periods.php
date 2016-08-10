@@ -12,6 +12,7 @@ $data->assign("embed",
               isset($_REQUEST['embed']) ? $_REQUEST['embed'] : NULL);
 $data->assign("mobile",
               isset($_REQUEST['mobile']) ? $_REQUEST['mobile'] : NULL);
+$data->assign("h", isset($_GET['h']) ? $_GET['h'] : NULL);
 $data->assign("g", isset($_GET['g']) ? $_GET['g'] : NULL);
 $data->assign("m", isset($_GET['m']) ? $_GET['m'] : NULL);
 $data->assign("html_g",
@@ -46,35 +47,52 @@ $query_string = join("&amp;", $query_string_array);
 $data->assign("query_string", $query_string);
 
 // Descriptive host/aggregate graph
-if (isset($_GET['h']) && ($_GET['h'] != ''))
-  $description = htmlspecialchars($_GET['h']);
-else if (isset($_GET['c']) && ($_GET['c'] != ''))
-  $description = htmlspecialchars($_GET['c']);
-else if (isset($_GET['hreg']) && is_array($_GET['hreg']))
-  $description = htmlspecialchars(join(",", $_GET['hreg']));
-else
-  $description = "Unknown";
+if (isset($_GET['h']) && ($_GET['h'] != '')) {
+  $host_description = htmlspecialchars($_GET['h']);
+  $host_type = "Host name";
+} else if (isset($_GET['c']) && ($_GET['c'] != '')) {
+  $host_description = htmlspecialchars($_GET['c']);
+  $host_type = "Cluster";
+} else if (isset($_GET['hreg']) && is_array($_GET['hreg'])) {
+  $host_description = htmlspecialchars(join(",", $_GET['hreg']));
+  $host_type = "Host name regular expression";
+} else {
+  $host_description = "Unknown";
+  $host_type = "Unknown host type";
+}
 
-$data->assign("description", $description);
+$data->assign("host_type", $host_type);
+$data->assign("host_description", $host_description);
 
-if (isset($_GET['g']))
+if (isset($_GET['g'])) {
   $metric_description = htmlspecialchars($_GET['g']);
-else if ( isset($_GET['m'] ))
+  $metric_type = "Graph";
+} else if ( isset($_GET['m'] )) {
   $metric_description = htmlspecialchars($_GET['m']);
-else if (isset($_GET['mreg']) && is_array($_GET['mreg']) )
+  $metric_type = "Metric";
+} else if (isset($_GET['mreg']) && is_array($_GET['mreg'])) {
   $metric_description = htmlspecialchars(join(",", $_GET['mreg']));
-else
+  $metric_type = "Metric regular expression";
+} else {
   $metric_description = "Unknown";
+  $metric_type = "Unknown metric type";
+}
 
+$data->assign("metric_type", $metric_type);
 $data->assign("metric_description", $metric_description);
 
-# Determine if it's aggregate graph
+# Determine if this is a standalone page launched from the aggregate
+# graph tab
 $is_aggregate = preg_match("/aggregate=1/", $query_string) ? TRUE : FALSE;
+$data->assign("is_aggregate", $is_aggregate);
 
-$graph_actions = array();
-$graph_actions['timeshift'] = !$is_aggregate && !isset($_GET['g']);
-$graph_actions['metric_actions'] = $is_aggregate;
-$graph_actions['decompose'] = $is_aggregate;
+$graph_actions = NULL;
+if (!isset($_REQUEST['mobile'])) {
+  $graph_actions = array();
+  $graph_actions['timeshift'] = !$is_aggregate && !isset($_GET['g']);
+  $graph_actions['metric_actions'] = TRUE;
+  $graph_actions['decompose'] = $is_aggregate;
+}
 $data->assign('graph_actions', $graph_actions);
 
 $data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);

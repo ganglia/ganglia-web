@@ -108,7 +108,7 @@ $(function () {
 
   selectSeries = graphControls.find("#select_series");
   selectSeries.multiselect({
-    height: 250,
+    height: "auto",
     position : {
       my: "right bottom",
       at: "left top"
@@ -240,6 +240,7 @@ $(function () {
     selectSeries.multiselect('refresh');
 
     if (first_time) {
+      $("#popup-dialog-navigation").html("");
       var gopt = stacked ? selectStack : selectLine;
       gopt.attr("checked", "checked");
       gopt.button("refresh");
