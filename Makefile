@@ -18,6 +18,12 @@ APACHE_USER = www-data
 
 # Name of the group that runs the Apache server 
 APACHE_GROUP = $(APACHE_USER)
+
+# PHP_CodeSniffer
+PHPCS = phpcs
+
+# PHP Code Beautifier and Fixer
+PHPCBF = phpcbf
 ##########################################################
 
 # Gweb version
@@ -39,10 +45,10 @@ all: default
 default:	$(TARGETS)
 
 sniff:
-	phpcs --standard=$(STANDARD) -p $(CODE)
+	$(PHPCS) --standard=$(STANDARD) -p $(CODE)
 
 fix:
-	phpcbf --standard=$(STANDARD) $(CODE)
+	$(PHPCBF) --standard=$(STANDARD) $(CODE)
 
 .PHONY: test
 test:
