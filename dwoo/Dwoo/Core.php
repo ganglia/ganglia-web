@@ -24,8 +24,8 @@ define('DWOO_DIRECTORY', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
  * @copyright  Copyright (c) 2008, Jordi Boggiano
  * @license    http://dwoo.org/LICENSE   Modified BSD License
  * @link       http://dwoo.org/
- * @version    1.1.0
- * @date       2009-07-18
+ * @version    1.2.0
+ * @date       2013-02-15
  * @package    Dwoo
  */
 class Dwoo_Core
@@ -35,7 +35,7 @@ class Dwoo_Core
      *
      * @var string
      */
-    const VERSION = '1.1.1';
+    const VERSION = '1.2.0';
 
     /**
      * unique number of this dwoo release
