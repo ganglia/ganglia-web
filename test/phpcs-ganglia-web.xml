@@ -2,6 +2,10 @@
 <ruleset name="ganglia-web">
  <description>standard for ganglia-web.</description>
 
+ <!-- Ignore any minified files -->
+ <exclude-pattern>*/css/*.min.css</exclude-pattern>
+ <exclude-pattern>*/js/*.min.js</exclude-pattern>
+
  <!-- Ignore external libraries -->
  <exclude-pattern>*/lib/Services/*</exclude-pattern>
  <exclude-pattern>*/lib/Zend/*</exclude-pattern>
