@@ -24,7 +24,7 @@
  <rule ref="Generic.Commenting.DocComment"/>
  <rule ref="Generic.Commenting.Fixme"/>
  <rule ref="Generic.Debug.CSSLint"/>
- <rule ref="Generic.Debug.ClosureLinter"/>
+ <!--rule ref="Generic.Debug.ClosureLinter"/-->
  <rule ref="Generic.Debug.JSHint"/>
  <rule ref="Generic.Files.ByteOrderMark"/>
  <rule ref="Generic.Files.EndFileNewline"/>
@@ -45,6 +45,6 @@
  <rule ref="Generic.PHP.LowerCaseKeyword"/>
  <rule ref="Generic.PHP.SAPIUsage"/>
  <rule ref="Generic.PHP.Syntax"/>
- <rule ref="Generic.VersionControl.SubversionProperties"/>
+ <!--rule ref="Generic.VersionControl.SubversionProperties"/-->
 
 </ruleset>
