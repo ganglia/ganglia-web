@@ -1,4 +1,5 @@
 {if $standalone}
+  <!doctype html>
   <html>
     <head>
       <title>Ganglia: Graph all periods</title>
@@ -96,10 +97,10 @@
       <div style="float:right;">
         <input title="Hide/Show Events"
                type="checkbox"
-               id="show_all_events"
+               id="show_all_events_graph_all_periods"
                onclick="showAllEvents(this.checked)"/>
         <label class="show_event_text"
-               for="show_all_events">Hide/Show Events All Graphs</label>
+               for="show_all_events_graph_all_periods">Hide/Show Events All Graphs</label>
         {if $graph_actions['timeshift']}
           <input title="Timeshift Overlay"
                  type="checkbox"

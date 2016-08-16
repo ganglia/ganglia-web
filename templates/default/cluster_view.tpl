@@ -54,15 +54,15 @@ function refreshClusterView() {
 
     $('#cluster_overview').html(item[2]);
 
-    if ($('#load_pie').size())
+    if ($('#load_pie').length)
       $('#load_pie').attr("src", item[3].replace(/&amp;/g, "&"));
 
-    if ($('#heatmap-fig').size()) {
+    if ($('#heatmap-fig').length) {
       eval("heatmap.setData(" + item[4] + ")");
       heatmap.render();
     }
 
-    if ($('#stacked_graph').size()) {
+    if ($('#stacked_graph').length) {
       var localtimestamp = parseInt(item[0]);
       var src = $('#stacked_graph').attr('src');
       $('#stacked_graph').attr("src", jQuery.param.querystring(src, "&st=" + localtimestamp));
@@ -79,7 +79,7 @@ function refreshClusterView() {
         (src.indexOf("./graph.php") == 0)) {
       var d = new Date();
       $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
-    }    
+    }
   });
 }
 
@@ -90,22 +90,22 @@ $(function() {
     // most effect types need no options passed by default
     var options = { };
 
-    options = { to: { width: 200,height: 60 } }; 
-    
+    options = { to: { width: 200,height: 60 } };
+
     // run the effect
     $("#"+id+"_div").toggle("blind",options,500);
   };
- 
+
   // set effect from select menu value
   $('.button').click(function(event) {
     runEffect(event.target.id);
     return false;
   });
 
-  $("#edit_optional_graphs").dialog({ autoOpen: 
+  $("#edit_optional_graphs").dialog({ autoOpen:
                                       false, minWidth: 550,
-                                      beforeClose: function(event, ui) {  
-                                        location.reload(true); 
+                                      beforeClose: function(event, ui) {
+                                        location.reload(true);
                                       }});
   $("#edit_optional_graphs_button").button();
   $("#save_optional_graphs_button").button();
@@ -114,8 +114,8 @@ $(function() {
   $("#edit_optional_graphs_button").click(function(event) {
     $("#edit_optional_graphs").dialog('open');
     $('#edit_optional_graphs_content').html('<img src="img/spinner.gif">');
-    $.get('edit_optional_graphs.php', 
-          "clustername={$cluster}", 
+    $.get('edit_optional_graphs.php',
+          "clustername={$cluster}",
           function(data) {
             $('#edit_optional_graphs_content').html(data);
           });
@@ -123,8 +123,8 @@ $(function() {
   });
 
   $("#save_optional_graphs_button").click(function(event) {
-    $.get('edit_optional_graphs.php', 
-          $("#edit_optional_reports_form").serialize(), 
+    $.get('edit_optional_graphs.php',
+          $("#edit_optional_reports_form").serialize(),
           function(data) {
             $('#edit_optional_graphs_content').html(data);
             $("#save_optional_graphs_button").hide();
@@ -134,7 +134,12 @@ $(function() {
     return false;
   });
 
-  $("#show_hosts_scaled").buttonset();
+   var $show_hosts_scaled = $("#show_hosts_scaled");
+   $show_hosts_scaled.children(":radio").each(function() {
+     $(this).checkboxradio( { icon: false } );
+   });
+   $show_hosts_scaled.controlgroup();
+
 
   {if $picker_autocomplete}
     var cache = { }, lastXhr;
@@ -147,7 +152,7 @@ $(function() {
           return;
         }
         lastXhr = $.getJSON("api/metrics_autocomplete.php",
-                            request, 
+                            request,
                             function( data, status, xhr ) {
                               cache[term] = data.message;
                               if ( xhr == lastXhr ) {
@@ -174,7 +179,7 @@ $(function() {
   #heatmap-fig {
     width: 200px;
     height: 200px;
-  } 
+  }
 </style>
 
 <div id="edit_optional_graphs">
@@ -235,7 +240,7 @@ heatmap.render();
 <table width="100%" border=0>
 <tr>
   <td colspan="1">
-  <font size="+1" style="text-align:center">Stacked Graph - {$metric}</font> 
+  <font size="+1" style="text-align:center">Stacked Graph - {$metric}</font>
   </td>
 </tr>
 <tr>
@@ -254,7 +259,7 @@ heatmap.render();
       last <strong>{$range}</strong>
       sorted <strong>{$sort}</strong>
     </div>
-    <div style="display:inline;">
+    <div style="display:inline;padding:5px 0 0 0;">
      Metric&nbsp;
      {if $picker_autocomplete}
        <input name="m" id="metrics-picker" />
@@ -263,7 +268,8 @@ heatmap.render();
      {/if}
     </div>
     {/if}
-    <div id="show_hosts_scaled" style="display:inline;padding-left:10px;">Show Hosts Scaled:
+    <div style="padding:5px 0 0 0;">Show Hosts Scaled:&nbsp;&nbsp;
+    <div id="show_hosts_scaled">
       {foreach $showhosts_levels id showhosts implode=""}
       <input type="radio" name="sh" value="{$id}" id="shch{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}><label for="shch{$id}">{$showhosts.name}</label>
       {/foreach}
@@ -273,7 +279,7 @@ heatmap.render();
       <div style="display:inline;padding-left:10px;" class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</div>
     {/if}
   </div>
-  <div style="text-align:center;">
+  <div style="text-align:center;padding:5px 0 0 0;">
     {$additional_filter_options}
   </div>
 </div>
