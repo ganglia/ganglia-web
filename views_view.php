@@ -11,8 +11,8 @@ $view_name = NULL;
 if (isset($_GET['vn']) && !is_proper_view_name($_GET['vn'])) {
 ?>
 <div class="ui-widget">
-  <div class="ui-state-default ui-corner-all" styledefault="padding: 0 .7em;"> 
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+  <div class="ui-state-default ui-corner-all" styledefault="padding: 0 .7em;">
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
     View names valid characters are 0-9, a-z, A-Z, -, _ and space. View has not been created.</p>
   </div>
 </div>
@@ -26,8 +26,8 @@ function viewFileName($view_name) {
   global $conf;
 
   $view_suffix = str_replace(" ", "_", $view_name);
-  return $conf['views_dir'] . 
-    "/view_" . 
+  return $conf['views_dir'] .
+    "/view_" .
     preg_replace('/[^a-zA-Z0-9_\-]/', '', $view_suffix) . ".json";
 }
 
@@ -42,7 +42,7 @@ if (isset($_GET['create_view'])) {
   } else {
     if ($viewList->viewExists($view_name)) {
       $output = "<strong>Alert:</strong> View with the name " .
-                $view_name . 
+                $view_name .
                 " already exists.";
     } else {
       $empty_view = array ("view_name" => $view_name,
@@ -53,7 +53,7 @@ if (isset($_GET['create_view'])) {
       }
 
       $json = json_encode($empty_view);
-      if (file_put_contents($view_filename, 
+      if (file_put_contents($view_filename,
                             json_prettyprint($json)) === FALSE) {
         $output = "<strong>Alert:</strong>" .
                   " Can't write to file " . htmlspecialchars($view_filename) .
@@ -72,7 +72,7 @@ if (isset($_GET['create_view'])) {
   $json .= '}';
   echo $json;
   exit(0);
-} 
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Delete view
@@ -83,7 +83,7 @@ if (isset($_GET['delete_view'])) {
   } else {
     if (!$viewList->viewExists($view_name)) {
       $output = "<strong>Alert:</strong> View with the name " .
-      $view_name . 
+      $view_name .
       " does not exist.";
     } else {
       $view_filename = viewFileName($view_name);
@@ -112,22 +112,22 @@ if (isset($_GET['add_to_view'])) {
   } else {
     if (!$viewList->viewExists($view_name)) {
       $output = "<strong>Alert:</strong> View " .
-      $view_name . 
+      $view_name .
       " does not exist. This should not happen.";
     } else {
       $view = $viewList->getView($view_name);
 
       # Check if we are adding an aggregate graph
       if (isset($_GET['aggregate'])) {
-	foreach ($_GET['mreg'] as $key => $value) 
+	foreach ($_GET['mreg'] as $key => $value)
 	  $metric_regex_array[] = array("regex" => $value);
 
-	foreach ($_GET['hreg'] as $key => $value) 
+	foreach ($_GET['hreg'] as $key => $value)
 	  $host_regex_array[] = array("regex" => $value);
 
-	$item_array = array("aggregate_graph" => "true", 
-			    "metric_regex" => $metric_regex_array, 
-			    "host_regex" => $host_regex_array, 
+	$item_array = array("aggregate_graph" => "true",
+			    "metric_regex" => $metric_regex_array,
+			    "host_regex" => $host_regex_array,
 			    "graph_type" => stripslashes($_GET['gtype']),
 			    "vertical_label" => stripslashes($_GET['vl']),
 			    "title" => $_GET['title'],
@@ -144,25 +144,25 @@ if (isset($_GET['add_to_view'])) {
 	  $item_array["cluster"] = $_GET['c'];
 	}
 
-	if (isset($_GET['h'])) { 
-	  $item_array['host'] = $_GET['h']; 
-	  unset($item_array['host_regex']); 
+	if (isset($_GET['h'])) {
+	  $item_array['host'] = $_GET['h'];
+	  unset($item_array['host_regex']);
 	}
-	if (isset($_GET['m'])) { 
-	  $item_array['metric'] = $_GET['m']; 
-	  unset($item_array['metric_regex']); 
+	if (isset($_GET['m'])) {
+	  $item_array['metric'] = $_GET['m'];
+	  unset($item_array['metric_regex']);
 	}
-	if (isset($_GET['g'])) { 
-	  $item_array['graph'] = $_GET['g']; 
+	if (isset($_GET['g'])) {
+	  $item_array['graph'] = $_GET['g'];
 	}
-	if ($item_array['host_regex'] == null) 
+	if ($item_array['host_regex'] == null)
 	  $item_array['host_regex'] = '.*';
 
 	$view['items'][] = $item_array;
 	unset($item_array);
       } else {
 	if ($_GET['type'] == "metric") {
-          $items = array("hostname" => $_GET['host_name'], 
+          $items = array("hostname" => $_GET['host_name'],
                          "metric" => $_GET['metric_name']);
 	  if (isset($_GET['vertical_label']))
             $items["vertical_label"] = stripslashes($_GET['vertical_label']);
@@ -174,10 +174,10 @@ if (isset($_GET['add_to_view'])) {
             $items["warning"] = $_GET['warning'];
           if (isset($_GET['critical']) && is_numeric($_GET['critical']))
             $items["critical"] = $_GET['critical'];
-          
+
 	  $view['items'][] = $items;
 	} else
-	  $view['items'][] = array("hostname" => $_GET['host_name'], 
+	  $view['items'][] = array("hostname" => $_GET['host_name'],
                                    "graph" => $_GET['metric_name']);
       }
 
@@ -185,43 +185,43 @@ if (isset($_GET['add_to_view'])) {
       // Remove the file_name attribute, it is not stored in the view defn.
       unset($view['file_name']);
       $json = json_encode($view);
-      if (file_put_contents($view_filename, 
+      if (file_put_contents($view_filename,
                             json_prettyprint($json)) === FALSE ) {
         $output = "<strong>Alert:</strong>" .
 	  " Can't write to file: \"$view_filename\"." .
 	  " Perhaps permissions are wrong.";
       } else {
         $output = "View has been updated successfully.";
-      } 
-    }  
+      }
+    }
   }
 ?>
 <div class="ui-widget">
-  <div class="ui-state-default ui-corner-all" style="padding: 0 .7em;"> 
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+  <div class="ui-state-default ui-corner-all" style="padding: 0 .7em;">
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
     <?php echo $output ?></p>
   </div>
 </div>
 <?php
   exit(0);
-} 
+}
 
 class ViewTreeNode {
   private $name = NULL;
   private $data = NULL;
   private $children = NULL;
   private $parent = NULL;
-  
+
   public function __construct($name) {
     $this->name = $name;
   }
-  
+
   public function hasChild($name) {
     if ($this->children == NULL)
       return false;
     return array_key_exists($name, $this->children);
   }
-  
+
   public function getChild($name) {
     return $this->children[$name];
   }
@@ -229,7 +229,7 @@ class ViewTreeNode {
   public function getChildren() {
     return $this->children;
   }
-  
+
   public function addChild($node) {
     if ($this->children == NULL)
       $this->children = array();
@@ -237,7 +237,7 @@ class ViewTreeNode {
     $node->setParent($this);
     return $node;
   }
-  
+
   public function getNode($path) {
     $parent = $this;
     foreach (explode("/", $path) as $node_name) {
@@ -253,11 +253,11 @@ class ViewTreeNode {
   public function getData() {
     return $this->data;
   }
-  
+
   public function setData($data) {
     $this->data = $data;
   }
-  
+
   public function getName() {
     return $this->name;
   }
@@ -276,7 +276,7 @@ class ViewTreeNode {
     $json = '{"text":"' . $this->name . '","id":"' . $id . '"';
     if ($this->data != NULL)
       $json .= ',"view_name":"' . $pathName . '"';
-    
+
     if ($initially_open && in_array($pathName, $initially_open))
       $json .= ',"state":{"opened": true}';
 
@@ -324,42 +324,47 @@ function build_view_tree($views) {
   return $view_tree;
 }
 
-$existing_views = '';
-if ($conf['display_views_using_tree']) {
-  $initially_open = NULL;
-  if (!isset($_SESSION['view_tree_built']) && 
-      isset($conf['view_tree_nodes_initially_open']))
-    $initially_open = $conf['view_tree_nodes_initially_open'];
+function getViewSelectors($viewList,
+                          $display_views_using_tree,
+                          $view_tree_nodes_initially_open,
+                          $selected_view) {
+  $existing_views = '';
+  if ($display_views_using_tree) {
+    $initially_open = NULL;
+    if (!isset($_SESSION['view_tree_built']) &&
+        isset($view_tree_nodes_initially_open))
+      $initially_open = $view_tree_nodes_initially_open;
 
-  $view_tree = build_view_tree($viewList->getViews());
-  $existing_views = '[';
-  $i = 0;
-  foreach ($view_tree->getChildren() as $view_node) {
-    if ($i++ > 0) $existing_views .= ',';
-    $existing_views .= $view_node->toJson($initially_open);
-    $i++;
-  }
-  $existing_views .= ']';
-  $_SESSION['view_tree_built'] = TRUE;
-} else {
-  foreach ($viewList->getViews() as $view) {
-    if ($view['parent'] == NULL) {
-      $v = $view['view_name'];
-      $vid = viewId($v);
-      $checked = ($_GET['vn'] == $v);
-      $existing_views .= '<input type="radio" id="' . $vid . '" onClick="selectView(\'' . $v . '\'); return false;"' . ($checked ? " checked" : "") . '><label style="text-align:left;" class="nobr" for="' . $vid . '">' . $v . '</label>'; 
+    $view_tree = build_view_tree($viewList->getViews());
+    $existing_views = '[';
+    $i = 0;
+    foreach ($view_tree->getChildren() as $view_node) {
+      if ($i++ > 0) $existing_views .= ',';
+      $existing_views .= $view_node->toJson($initially_open);
+      $i++;
+    }
+    $existing_views .= ']';
+    $_SESSION['view_tree_built'] = TRUE;
+  } else {
+    foreach ($viewList->getViews() as $view) {
+      if ($view['parent'] == NULL) {
+        $v = $view['view_name'];
+        $vid = viewId($v);
+        $checked = ($selected_view == $v);
+        $existing_views .= '<input type="radio" id="' . $vid . '" name="views_menu_button_group" onchange="selectView(\'' . $v . '\'); return false;"' . ($checked ? " checked" : "") . '><label style="text-align:left;" class="nobr" for="' . $vid . '">' . $v . '</label>';
+      }
     }
   }
+  return $existing_views;
 }
+
+$existing_views = getViewSelectors($viewList,
+                                   $conf['display_views_using_tree'],
+                                   $conf['view_tree_nodes_initially_open'],
+                                   $_GET['vn']);
 if (isset($_GET['views_menu'])) {
   if (!$conf['display_views_using_tree']) {
-?>
-<div id="views_menu">
-      <?php echo $existing_views ?>
-</div>
-    <script type="text/javascript">$(function(){$("#views_menu").buttonsetv();});</script>
-  <?php } else { ?>
-<?php
+    echo $existing_views;
   }
   exit(0);
 }
@@ -368,8 +373,8 @@ $tpl = new Dwoo_Template_File( template("views_view.tpl") );
 $data = new Dwoo_Data();
 $data->assign("range", $range);
 
-if (isset($conf['ad-hoc-views']) && 
-    $conf['ad-hoc-views'] === true && 
+if (isset($conf['ad-hoc-views']) &&
+    $conf['ad-hoc-views'] === true &&
     isset($_GET['ad-hoc-view'])) {
   $is_ad_hoc = true;
 }
@@ -379,9 +384,9 @@ if (isset($conf['ad-hoc-views']) &&
 if (count($viewList->getViews()) == -1 && !$is_ad_hoc) {
   $error_msg = '
     <div class="ui-widget">
-      <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
-        <p><span class="ui-icon ui-icon-alert" 
-                 style="float: left; margin-right: .3em;"></span> 
+      <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+        <p><span class="ui-icon ui-icon-alert"
+                 style="float: left; margin-right: .3em;"></span>
 	   <strong>Alert:</strong> There are no views defined.</p>
       </div>
     </div>';
@@ -390,14 +395,14 @@ if (count($viewList->getViews()) == -1 && !$is_ad_hoc) {
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
 
 // set to 'default' to preserve old behavior
-if ($size == 'medium') 
+if ($size == 'medium')
   $size = 'default';
 
 $additional_host_img_css_classes = "";
 if (isset($conf['zoom_support']) && $conf['zoom_support'] === true)
   $additional_host_img_css_classes = "host_${size}_zoomable";
 
-$data->assign("additional_host_img_css_classes", 
+$data->assign("additional_host_img_css_classes",
               $additional_host_img_css_classes);
 
 $data->assign("existing_views", $existing_views);
@@ -408,7 +413,7 @@ $view_items = NULL;
 if ($is_ad_hoc) {
   $data->assign("ad_hoc_view", true);
   $data->assign("ad_hoc_view_json", rawurlencode($_GET['ad-hoc-view']));
-  $ad_hoc_view_json = json_decode(heuristic_urldecode($_GET['ad-hoc-view']), 
+  $ad_hoc_view_json = json_decode(heuristic_urldecode($_GET['ad-hoc-view']),
 				  true);
   $view_items = getViewItems($ad_hoc_view_json, $range, $cs, $ce);
 } else {

@@ -138,16 +138,14 @@ var GRAPH_BASE_ID = "graph_img_";
 
 function initShowEvent() {
   $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
-    $(this).button();
-    $(this).prop("checked", true);
-    $(this).button('refresh');
+    $(this).checkboxradio( { icon: false } );
+    $(this).prop("checked", true).checkboxradio('refresh');
   });
 
-  if ($("#show_all_events").length > 0) {
-    $("#show_all_events").button();
-    $("#show_all_events").prop("checked", true);
-    $("#show_all_events").button('refresh');
-  }
+  $("[id^=show_all_events]").each(function() {
+    $(this).checkboxradio( { icon: false } );
+    $(this).prop("checked", true).checkboxradio('refresh');
+  });
 }
 
 var TIME_SHIFT_BASE_ID = "time_shift_";
@@ -155,22 +153,19 @@ var TIME_SHIFT_BASE_ID_LEN = TIME_SHIFT_BASE_ID.length;
 
 function initTimeShift() {
   $("[id^=" + TIME_SHIFT_BASE_ID + "]").each(function() {
-    $(this).button();
-    $(this).prop("checked", false);
-    $(this).button('refresh');
+    $(this).checkboxradio( { icon: false } );
+    $(this).prop("checked", false).checkboxradio('refresh');
   });
 
-  if ($("#timeshift_overlay").length > 0) {
-    $("#timeshift_overlay").button();
-    $("#timeshift_overlay").prop("checked", false);
-    $("#timeshift_overlay").button('refresh');
-  }
+    $("[id^=timeshift_overlay]").each(function() {
+    $(this).checkboxradio( { icon: false } );
+    $(this).prop("checked", false).checkboxradio('refresh');
+  });
 }
 
 function showTimeshiftOverlay(show) {
   $("[id^=" + TIME_SHIFT_BASE_ID + "]").each(function() {
-      $(this).prop('checked', show);
-      $(this).button('refresh');
+      $(this).prop('checked', show).checkboxradio('refresh');
       var graphId = GRAPH_BASE_ID +
 	$(this).attr('id').slice(TIME_SHIFT_BASE_ID_LEN);
       showTimeShift(graphId, show);
@@ -179,8 +174,7 @@ function showTimeshiftOverlay(show) {
 
 function showAllEvents(show) {
   $("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
-    $(this).prop('checked', show);
-    $(this).button('refresh');
+    $(this).prop('checked', show).checkboxradio('refresh');
     var graphId = GRAPH_BASE_ID +
 	  $(this).attr('id').slice(SHOW_EVENTS_BASE_ID_LEN);
     showEvents(graphId, show);

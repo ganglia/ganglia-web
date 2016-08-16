@@ -103,11 +103,11 @@ function toggleMetricGroup(mgId, mgDiv) {
     addMetricGroup(mgName);
     var url = 'metric_group_view.php?{$baseGraphArgs}&metric_group=' + mgName;
     url += "&event=";
-    url += ($("#show_all_events").attr("checked") == "checked") ? "show" : "hide";
+    url += $("#show_all_events").prop("checked") ? "show" : "hide";
     url += "&ts=";
-    url += ($("#timeshift_overlay").attr("checked") == "checked") ? "1" : "0";
+    url += $("#timeshift_overlay").prop("checked") ? "1" : "0";
 
-    $.get(url, 
+    $.get(url,
           function(data) {
             mgDiv.html(data);
 	    mgInitEventBtns(mgDiv);
@@ -134,7 +134,7 @@ function refreshHostView() {
         (src.indexOf("./graph.php") == 0)) {
       var d = new Date();
       $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
-    }    
+    }
   });
 
   $("#metrics img").each(function (index) {
@@ -143,7 +143,7 @@ function refreshHostView() {
         (src.indexOf("./graph.php") == 0)) {
       var d = new Date();
       $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
-    }    
+    }
   });
 }
 
@@ -152,33 +152,25 @@ function mgInitCustomTimeRangeDragSelect(mgDiv) {
 }
 
 function mgInitEventBtns(mgDiv) {
-  var checked = $("#show_all_events").attr("checked");
+  var checked = $("#show_all_events").prop("checked");
   mgDiv.find("[id^=" + SHOW_EVENTS_BASE_ID + "]").each(function() {
-    $(this).button();
-    if (checked == "checked")
-      $(this).attr("checked", 'checked');
-    else
-      $(this).removeAttr("checked");
-    $(this).button('refresh');
+    $(this).checkboxradio({ icon: false });
+    $(this).prop('checked', checked).checkboxradio('refresh');
   });
 }
 
 function mgInitTimeshiftBtns(mgDiv) {
-  var checked = $("#timeshift_overlay").attr("checked");
+  var checked = $("#timeshift_overlay").prop("checked");
   mgDiv.find("[id^=" + TIME_SHIFT_BASE_ID + "]").each(function() {
-    $(this).button();
-    if (checked == "checked")
-      $(this).attr("checked", 'checked');
-    else
-      $(this).removeAttr("checked");
-    $(this).button('refresh');
+    $(this).checkboxradio({ icon: false });
+    $(this).prop('checked', checked).checkboxradio('refresh');
   });
 }
 
 $(function() {
   var stored_groups = $('input[name="metric_group"]');
   stored_groups.val("{$g_open_metric_groups}");
- 
+
   $("#edit_optional_graphs").dialog({ autoOpen: false, minWidth: 550,
     beforeClose: function(event, ui) { location.reload(true); } });
 
@@ -219,7 +211,7 @@ $(function() {
 
   $("#host_overview").button();
   $('#host_overview').click(function() {
-    var options = { to: { width: 200, height: 60 } }; 
+    var options = { to: { width: 200, height: 60 } };
     $("#host_overview_div").toggle("blind", options, 500);
     return false;
   });

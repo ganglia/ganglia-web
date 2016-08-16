@@ -103,7 +103,7 @@
     });
   }
 
-  function viewId(view_name) {
+ function viewId(view_name) {
     return "v_" + view_name.replace(/[^a-zA-Z0-9_]/g, "_");
   }
 
@@ -126,37 +126,46 @@
    return false;
   }
 
-  function selectView(view_name) {
-    $("#vn").val(view_name);
-    {if !$display_views_using_tree}
-    $.get("views_view.php?vn=" + view_name + "&views_menu",
-          function(data) {
-            $("#views_menu").html(data);
-          });
-    {/if}
-    var qs = jQuery.deparam.querystring();
-    $.get("view_content.php?vn=" + view_name +
-  	  "&r=" + qs.r +
-	  "&cs=" + $("#datepicker-cs").val() +
-	  "&ce=" + $("#datepicker-ce").val(),
-	  function(data) {
-	    $("#views-content").html(data);
-	    initShowEvent();
-	    initCustomTimeRangeDragSelect($("#views-content"));
-  	    if (viewCommonYaxis)
-	      refreshView();
-	  });
-    $("#page_title").text('"' + view_name.replace(/--/g, " / ") + '"');
-    refreshHeader();
+ function selectView(view_name) {
+   $("#vn").val(view_name);
+   var qs = jQuery.deparam.querystring();
+   $.get("view_content.php?vn=" + view_name +
+  	 "&r=" + qs.r +
+	 "&cs=" + $("#datepicker-cs").val() +
+	 "&ce=" + $("#datepicker-ce").val(),
+	 function(data) {
+	   $("#views-content").html(data);
+	   initShowEvent();
+	   initCustomTimeRangeDragSelect($("#views-content"));
+  	   if (viewCommonYaxis)
+	     refreshView();
+	 });
+   $("#page_title").text('"' + view_name.replace(/--/g, " / ") + '"');
+   refreshHeader();
   }
 
+ function initViewsMenu() {
+   {if !$display_views_using_tree}
+   $("#views_menu").controlgroup({ direction: "vertical" });
+   $("#views_menu").find("input:radio").each(function() {
+     $(this).checkboxradio({ icon: false }).checkboxradio('refresh');
+   });
+   // Highlight the currently selected view
+   var view_name = $("#vn").val();
+   if (view_name != "") {
+     $('#' + viewId(view_name)).prop('checked', true).checkboxradio('refresh');
+   }
+   {/if}
+ }
+
   function newViewDialogCloseCallback() {
-  {if !$display_views_using_tree}
+    {if !$display_views_using_tree}
     $.get('views_view.php?views_menu=1',
 	  function(data) {
 	    $("#views_menu").html(data);
+            initViewsMenu();
           });
-  {/if}
+    {/if}
   }
 
   $(function() {
@@ -183,6 +192,7 @@
                         alert("Please select the view to delete");
                     {else}
                       $("#views_menu").html(data);
+                      initViewsMenu();
 		      $("#view_graphs").html("");
 		      $("#vn").val("");
                     {/if}
@@ -228,6 +238,8 @@
     // Check for a selected view
     var tree = $('#views_menu').jstree(true);
     tree.select_node(viewId("{$view_name}"), true, false);
+    {else}
+    initViewsMenu();
     {/if}
   });
 </script>
@@ -239,11 +251,6 @@
     {$existing_views}
   {/if}
 </div>
-{if !$display_views_using_tree}
-<script type="text/javascript">
-  $(function() { $("#views_menu").buttonsetv(); });
-</script>
-{/if}
 </td>
 <td valign="top">
 <div>

@@ -14,21 +14,21 @@ if (isset($_GET['date_only'])) {
 function make_size_menu($clustergraphsize, $context) {
   global $conf;
 
-  $size_menu = '<SELECT NAME="z" OnChange="ganglia_form.submit();">';
-      
+  $size_menu = '<select name="z" onchange="ganglia_form.submit();">';
+
   $size_arr = $conf['graph_sizes_keys'];
   foreach ($size_arr as $size) {
     if ($size == "default")
       continue;
-    $size_menu .= "<OPTION VALUE=\"$size\"";
-    if ((isset($clustergraphsize) && ($size === $clustergraphsize)) || 
-	(!isset($clustergraphsize) && ($size === 'small')) || 
+    $size_menu .= "<option value=\"$size\"";
+    if ((isset($clustergraphsize) && ($size === $clustergraphsize)) ||
+	(!isset($clustergraphsize) && ($size === 'small')) ||
 	(!isset($_GET['z']) && ($context == 'host') && ($size == "medium"))) {
-      $size_menu .= " SELECTED";
+      $size_menu .= " selected";
     }
-    $size_menu .= ">$size</OPTION>\n";
+    $size_menu .= ">$size</option>\n";
   }
-  $size_menu .= "</SELECT>\n";
+  $size_menu .= "</select>\n";
   return $size_menu;
 }
 
@@ -59,14 +59,15 @@ function make_sort_menu($context, $sort) {
 
     // Show sort order options for meta context only:
 
-    if ($context == "meta" ) {
+    if ($context == "meta") {
       $context_sorts[] = array("by hosts up",
 			       "Display hosts in UP state first");
       $context_sorts[] = array("by hosts down",
 			       "Display hosts in DOWN state first");
     }
 
-    $sort_menu = "<div id=\"sort_menu\" class=\"nobr\" style=\"display:inline\">Sorted&nbsp;&nbsp;";
+    $sort_menu = "Sorted&nbsp;&nbsp;";
+    $sort_menu .= "<div id=\"sort_menu\">";
     foreach ($context_sorts as $v) {
       $label = $v[0];
       $title = $v[1];
@@ -95,7 +96,7 @@ function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
   if ($cs or $ce)
     $context_ranges[] = "custom";
 
-  $range_menu = "Last&nbsp;&nbsp;";
+  $range_menu = "Last&nbsp;&nbsp;<div id=\"range_menu\">";
   foreach ($context_ranges as $v) {
     $url = rawurlencode($v);
     if ($v == $range)
@@ -104,21 +105,21 @@ function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
       $checked = "";
     $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
   }
-  return $range_menu;
+  return $range_menu . "</div>";
 }
 
 function make_custom_time_selector($cs, $ce) {
   $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
     . " -2 days, start + 1 hour, etc.";
 
-  $custom_time = "or <span class=\"nobr\">from <input type=\"TEXT\" title=\"$examples\" NAME=\"cs\" ID=\"datepicker-cs\" SIZE=\"17\"";
+  $custom_time = "<span class=\"nobr\">or from <input type=\"text\" title=\"$examples\" name=\"cs\" id=\"datepicker-cs\" size=\"17\"";
   if ($cs)
     $custom_time .= " value=\"$cs\"";
-  $custom_time .= "> to <input type=\"TEXT\" title=\"$examples\" name=\"ce\" ID=\"datepicker-ce\" SIZE=\"17\"";
+  $custom_time .= "> to <input type=\"text\" title=\"$examples\" name=\"ce\" id=\"datepicker-ce\" size=\"17\"";
   if ($ce)
     $custom_time .= " value=\"$ce\"";
-  $custom_time .= "> <input type=\"submit\" value=\"Go\">\n";
-  $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>\n";
+  $custom_time .= "> <input type=\"submit\" value=\"Go\">";
+  $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>";
   return $custom_time;
 }
 
@@ -363,9 +364,9 @@ $data->assign("time_ranges", $js_time_ranges);
 # Make some information available to templates.
 $data->assign("cluster_url", $cluster_url);
 
-$alt_view = make_alt_view($context, 
-			  $clustername, 
-			  $hostname, 
+$alt_view = make_alt_view($context,
+			  $clustername,
+			  $hostname,
 			  $get_metric_string);
 $data->assign("alt_view", $alt_view);
 
@@ -413,12 +414,12 @@ if ($context == "physical" or $context == "cluster" or $context == 'host') {
 
 $custom_time = "";
 $timezone_picker = "";
-if (in_array($context, array ("meta", 
-			      "cluster", 
-			      "cluster-summary", 
-			      "host", 
-			      "views", 
-			      "decompose_graph", 
+if (in_array($context, array ("meta",
+			      "cluster",
+			      "cluster-summary",
+			      "host",
+			      "views",
+			      "decompose_graph",
 			      "compare_hosts"))) {
   $custom_time = make_custom_time_selector($cs, $ce);
   $timezone_picker = make_timezone_picker();
@@ -428,7 +429,7 @@ if (in_array($context, array ("meta",
 } else {
    $data->assign("custom_time_head", "");
 }
- 
+
 $data->assign("custom_time", $custom_time);
 $data->assign("timezone_picker", $timezone_picker);
 

@@ -8,13 +8,14 @@ if (isset($_GET['calendar_events_only'])) {
   include_once $conf['gweb_root'] . "/functions.php";
   include_once $conf['gweb_root'] . "/lib/common_api.php";
 
-  $events = ganglia_events_get($_GET['start'], $_GET['end']);
+  $start = new DateTime($_GET['start']);
+  $end = new DateTime($_GET['end']);
+  $events = ganglia_events_get($start->getTimestamp(), $end->getTimestamp());
   $cal_events = array();
   foreach ( $events as $id => $event ) {
     $cal_event = array('title' => $event['summary'],
-                       'start' => $event['start_time'],
-                       'end' => (isset($event['end_time']) ? 
-				 $event['end_time'] : ""),
+                       'start' => $event['start_time'] * 1000,
+                       'end' => isset($event['end_time']) ? $event['end_time'] * 1000 : NULL,
                        'gweb_event_id' => $event['event_id'],
                        'grid' => $event['grid'],
                        'cluster' => $event['cluster'],
@@ -24,7 +25,7 @@ if (isset($_GET['calendar_events_only'])) {
 
     if (isset($event['end_time']))
       $cal_event['end_time'] = $event['end_time'];
-	
+
     array_push($cal_events, $cal_event);
   }
   $json = json_encode($cal_events);
@@ -67,33 +68,42 @@ $(function(){
 
 <?php if ($conf['display_events_using_calendar']) { ?>
   $('#calendar').fullCalendar({
+    timezone: 'local',
     editable: false,
     disableDragging: true,
-    disableResizing: true,      
-    events: 'events.php?calendar_events_only=1',
+    disableResizing: true,
+    eventSources: [
+      {
+        url: 'events.php',
+        data: {
+          calendar_events_only: '1'
+        }
+      }
+    ],
     defaultView: 'basicWeek',
-    header: {left: 'title', 
-             center: '', 
-             right: 'today prev next basicDay basicWeek month'},
+    header: {left: 'prev,next,today', 
+             center: 'title', 
+             right: 'basicDay,basicWeek,month'},
     eventRender: function(event, element) {
         var fmt = "HH:mm:ss";
-
+	console.log("event = " + JSON.stringify(event));
+	var start = moment(event.start_time * 1000);
+	var end = null;
 	if ('end_time' in event) {
-	  var startDate = new Date(event.start_time * 1000);
-	  var endDate = new Date(event.end_time * 1000);
-	  if (startDate.getFullYear() != endDate.getFullYear()) {
+	  var end = moment(event.end_time * 1000);
+	  if (start.year() != end.year()) {
 	    fmt = "MM/dd/yyyy " + fmt;
 	  } else {
-	    if ((startDate.getDate() != endDate.getDate()) ||
-		(startDate.getMonth() != endDate.getMonth()))
+	    if ((start.date() != end.date()) ||
+		(start.month() != end.month()))
 	      fmt = "MM/dd " + fmt;
 	  }
 	}
 
 	var tipText = event.title + 
-	  '<br>Start: ' + $.fullCalendar.formatDate(new Date(event.start_time * 1000), fmt);
-	if ('end_time' in event)
-	  tipText += '<br>End: ' + $.fullCalendar.formatDate(new Date(event.end_time * 1000), fmt);
+	  '<br>Start: ' + start.format(fmt);
+	if (end)
+	  tipText += '<br>End: ' + end.format(fmt);
 
         element.qtip({
           content : {
@@ -169,17 +179,17 @@ function eventActions(action) {
     alert("You must specify a regular expression describing the host(s) to which this event should be associated.");
     return false;
   }
-  queryString += "&host_regex=" + encodeURIComponent(host_regex);    
+  queryString += "&host_regex=" + encodeURIComponent(host_regex);
 
   /*
-  alert('api/events.php' + 
-        "action=" + action + 
+  alert('api/events.php' +
+        "action=" + action +
         "&summary=" + summary + queryString);
   */
 
   $("#event-message").html('<img src="img/spinner.gif">');
-  $.get('api/events.php', 
-        "action=" + action + 
+  $.get('api/events.php',
+        "action=" + action +
         "&summary=" + encodeURIComponent(summary) + queryString, function(data) {
       $("#event-message").html(data);
   });
@@ -203,7 +213,7 @@ You can specify either start date or end date or both.<p>
 </div>
 <br>
 
-<?php 
+<?php
   } // if (!isset($_GET['events_only']))
 
 if ($conf['display_events_using_calendar']) {
@@ -221,21 +231,20 @@ if ($conf['display_events_using_calendar']) {
   print "<th>Host Regex</th>";
   print "</tr>";
   print "</thead>";
-  
+
   include_once $conf['gweb_root'] . "/functions.php";
   include_once $conf['gweb_root'] . "/lib/common_api.php";
 
   function start_time_cmp($ev1, $ev2) {
     $start1 = $ev1['start_time'];
     $start2 = $ev2['start_time'];
-    
+
     if ($start1 == $start2)
       return 0;
-    
+
     return ($start1 < $start2) ? 1 : -1;
   }
 
-  
   $events_array = ganglia_events_get();
   if (count($events_array) > 0) {
     print "<tbody>";

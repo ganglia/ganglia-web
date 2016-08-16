@@ -131,15 +131,15 @@ $(function () {
   // Add option buttons to controls
   graphControls.append(html);
 
-  graphControls.find("#gopt").buttonset();
+  graphControls.find("#gopt").controlgroup();
   selectLine = graphControls.find("#line");
-  selectLine.button().click(function() {
-    plotAccordingToChoices();
-  });
+  selectLine.checkboxradio({icon: false}).click(function() {
+      plotAccordingToChoices();
+    });
   selectStack = graphControls.find("#stack");
-  selectStack.button().click(function() {
-    plotAccordingToChoices();
-  });
+  selectStack.checkboxradio({icon: false}).click(function() {
+      plotAccordingToChoices();
+    });
   var resetZoomElem = graphControls.find("#resetzoom");
   resetZoomElem.button();
   resetZoomElem.click(function () {
@@ -224,7 +224,7 @@ $(function () {
 	   text: dataset.label +
 	      VALUE_SEPARATOR +
 	      current_value});
-	option.attr('selected', 'selected');
+	option.prop('selected', true);
 	option.appendTo(selectSeries);
 	var colorBox = '<div style="border:1px solid #ccc;padding:1px;display:inline-block;"><div style="width:4px;height:0;border:5px solid ' + dataset.color + ';overflow:hidden"></div></div>';
 	option.data("pre_checkbox_html", colorBox);
@@ -242,8 +242,7 @@ $(function () {
     if (first_time) {
       $("#popup-dialog-navigation").html("");
       var gopt = stacked ? selectStack : selectLine;
-      gopt.attr("checked", "checked");
-      gopt.button("refresh");
+      gopt.prop("checked", true).checkboxradio("refresh");
 
       if (($("#popup-dialog").dialog("option", "height") == "auto") ||
 	  ($("#popup-dialog").dialog("option", "width") == "auto")) {

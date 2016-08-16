@@ -29,8 +29,12 @@
 
 $(function() {
   $( ".ag_buttons" ).button();
-  $( "#graph_type_menu" ).buttonset();
-  $( "#graph_legend_menu" ).buttonset();
+  $( "#gtstack" ).checkboxradio( { icon: false } );
+  $( "#gtline" ).checkboxradio( { icon: false } );
+  $( "#graph_type_menu" ).controlgroup();
+  $( "#glshow" ).checkboxradio( { icon: false } );
+  $( "#glhide" ).checkboxradio( { icon: false } );
+  $( "#graph_legend_menu" ).controlgroup();
 
   $("#hreg").change(function() {
     $.cookie("ganglia-aggregate-graph-hreg" + window.name,

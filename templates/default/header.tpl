@@ -1,5 +1,5 @@
 <!-- Begin header.tpl -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!doctype html>
 <html>
   <head>
     <title>Ganglia:: {$page_title}</title>
@@ -154,16 +154,24 @@
 
      $(function() {
        var range_menu = $("#range_menu");
-       if (range_menu[0])
-         range_menu.buttonset();
+       if (range_menu[0]) {
+         range_menu.children(":radio").each(function() {
+           $(this).checkboxradio( { icon: false } );
+         });
+         range_menu.controlgroup();
+       }
 
        var custom_range_menu = $("#custom_range_menu");
        if (custom_range_menu[0])
-         custom_range_menu.buttonset();
+         custom_range_menu.controlgroup();
 
        var sort_menu = $("#sort_menu");
-       if (sort_menu[0])
-         sort_menu.buttonset();
+       if (sort_menu[0]) {
+         sort_menu.children(":radio").each(function() {
+           $(this).checkboxradio( { icon: false } );
+         });
+         sort_menu.controlgroup();
+       }
 
        g_overlay_events = ($("#overlay_events").val() == "true");
 
@@ -275,7 +283,7 @@
     {/if}
 
     <div id="tabs">
-      <div id="tabs-menu", {if $hide_header} style="visibility: hidden; display: none;" {/if}>
+      <div id="tabs-menu" {if $hide_header} style="visibility: hidden; display: none;" {/if}>
         <ul>
           <li><a href="#tabs-main">Main</a></li>
           <li><a href="#tabs-search">Search</a></li>
@@ -286,12 +294,15 @@
             <li><a href="events.php">Events</a></li>
           {/if}
           <li><a href="breakdown_reports.php">Reports</a></li>
-          <li><a href="#tabs-autorotation" onclick="autoRotationChooser();">Automatic Rotation</a></li>
-          <li><a href="#tabs-livedashboard" onclick="liveDashboardChooser();">Live Dashboard</a></li>
+          <li><a href="#tabs-autorotation"
+                 onclick="autoRotationChooser();">Automatic Rotation</a></li>
+          <li><a href="#tabs-livedashboard"
+                 onclick="liveDashboardChooser();">Live Dashboard</a></li>
           {if $cubism}
             <li><a href="cubism_form.php">Cubism</a></li>
           {/if}
-          <li><a href="#tabs-mobile" onclick="window.location.href='mobile.php';">Mobile</a></li>
+          <li><a href="#tabs-mobile"
+                 onclick="window.location.href='mobile.php';">Mobile</a></li>
         </ul>
       </div>
 
@@ -308,10 +319,13 @@
             <div style="clear:both"></div>
           </div>
           <div>
-            <div style="float:left;padding:5px 0 0 0;" id="range_menu" class="nobr">{$range_menu}</div>
-            <div style="float:left;padding:5px 0 0 0;" id="custom_range_menu">{$custom_time}</div>
-            <div style="float:left;padding:5px 0 0 0;" id="timezone">{$timezone_picker}</div>
-            <div style="float:right;padding:5px 0 0 0;">{$additional_buttons}&nbsp;&nbsp;{$alt_view}</div>
+            <div style="float:left;padding:5px 0 0 5px;">{$range_menu}</div>
+            <div style="float:left;padding:5px 0 0 5px;"
+                 id="custom_range_menu">{$custom_time}</div>
+            <div style="float:left;padding:5px 0 0 5px;" id="timezone">
+              {$timezone_picker}
+            </div>
+            <div style="float:right;padding:5px 0 0 5px;">{$additional_buttons}&nbsp;&nbsp;{$alt_view}</div>
             <div style="clear:both;"></div>
           </div>
           {if $context != "cluster" && $context != "cluster-summary"}
@@ -322,13 +336,17 @@
               {$sort_menu}
             </div>
           {/if}
+          <div style="clear:both;"></div>
           {if $node_menu != ""}
             <div id="node_menu" style="padding:5px 5px 0 5px;">
               {$node_menu}&nbsp;&nbsp;{$additional_filter_options}
             </div>
           {/if}
 
-          <input type="hidden" name="tab" id="selected_tab" value="{$selected_tab}">
+          <input type="hidden"
+                 name="tab"
+                 id="selected_tab"
+                 value="{$selected_tab}">
           <input type="hidden" id="vn" name="vn" value="{$view_name}">
           <input type="hidden" id="tz" name="tz" value="{$timezone_value}">
           {if $hide_header}
