@@ -309,17 +309,23 @@ function find_avg($clustername, $hostname, $metricname) {
         $sum_dir = "${conf['rrds']}/$clustername/$hostname";
     else
         $sum_dir = "${conf['rrds']}/$clustername/__SummaryInfo__";
-
-    $command = $conf['rrdtool'] . " graph /dev/null $rrd_options ".
-        "--start $start --end $end ".
-        "DEF:avg='$sum_dir/$metricname.rrd':'sum':AVERAGE ".
-        "PRINT:avg:AVERAGE:%.2lf ";
-    exec($command, $out);
-    if ( isset($out[1]) ) 
-      $avg = $out[1];
-    else
-      $avg = 0;
-    #echo "$sum_dir: avg($metricname)=$avg<br>\n";
+    
+    # Confirm that sum_dir exists:
+    if ( is_dir($sum_dir) ) {
+        $rrd_file = "$sum_dir/$metricname.rrd";
+        if ( file_exists($rrd_file) ) {
+            $command = $conf['rrdtool'] . " graph /dev/null $rrd_options ".
+                "--start $start --end $end ".
+                "DEF:avg='$rrd_file':'sum':AVERAGE ".
+                "PRINT:avg:AVERAGE:%.2lf ";
+            exec($command, $out);
+            if ( isset($out[1]) ) 
+              $avg = $out[1];
+            else
+              $avg = 0;
+            #echo "$sum_dir: avg($metricname)=$avg<br>\n";
+        }
+    }
     return $avg;
 }
 
