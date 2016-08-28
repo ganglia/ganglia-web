@@ -83,22 +83,9 @@ function make_sort_menu($context, $sort) {
   return $sort_menu;
 }
 
-function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
-  global $conf;
-
-  $range_menu = "";
-  if ($physical)
-    return $range_menu;
-
-  $context_ranges = array_keys($conf['time_ranges']);
-  if ($jobrange)
-    $context_ranges[] = "job";
-  if ($cs or $ce)
-    $context_ranges[] = "custom";
-
+function make_range_menu($context_ranges, $range) {
   $range_menu = "Last&nbsp;&nbsp;<div id=\"range_menu\">";
   foreach ($context_ranges as $v) {
-    $url = rawurlencode($v);
     if ($v == $range)
       $checked = "checked=\"checked\"";
     else
@@ -106,30 +93,6 @@ function make_range_menu($physical, $jobrange, $cs, $ce, $range) {
     $range_menu .= "<input OnChange=\"ganglia_form.submit();\" type=\"radio\" id=\"range-$v\" name=\"r\" value=\"$v\" $checked/><label for=\"range-$v\">$v</label>";
   }
   return $range_menu . "</div>";
-}
-
-function make_custom_time_selector($cs, $ce) {
-  $examples = "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week,"
-    . " -2 days, start + 1 hour, etc.";
-
-  $custom_time = "<span class=\"nobr\">or from <input type=\"text\" title=\"$examples\" name=\"cs\" id=\"datepicker-cs\" size=\"17\"";
-  if ($cs)
-    $custom_time .= " value=\"$cs\"";
-  $custom_time .= "> to <input type=\"text\" title=\"$examples\" name=\"ce\" id=\"datepicker-ce\" size=\"17\"";
-  if ($ce)
-    $custom_time .= " value=\"$ce\"";
-  $custom_time .= "> <input type=\"submit\" value=\"Go\">";
-  $custom_time .= "<input type=\"button\" value=\"Clear\" onclick=\"ganglia_submit(1)\"></span>";
-  return $custom_time;
-}
-
-function make_timezone_picker() {
-  $picker = "Timezone:&nbsp;";
-  $picker .= '<select id="timezone-picker" style="width:100px;">';
-  $picker .= '<option value="browser">Browser</option>';
-  $picker .= '<option value="server">Server</option>';
-  $picker .= '</select>';
-  return $picker;
 }
 
 function make_alt_view($context, $clustername, $hostname, $get_metric_string) {
@@ -399,7 +362,15 @@ $data->assign("node_menu", $node_menu);
 #
 # If there are graphs present, show ranges.
 #
-$range_menu = make_range_menu($physical, $jobrange, $cs, $ce, $range);
+$range_menu = "";
+if (!$physical) {
+  $context_ranges = array_keys($conf['time_ranges']);
+  if ($jobrange)
+    $context_ranges[] = "job";
+  if ($range == "custom" && $cs && $ce)
+    $context_ranges[] = "custom";
+  $range_menu = make_range_menu($context_ranges, $range);
+}
 $data->assign("range_menu", $range_menu);
 
 if ($context == 'meta') {
@@ -412,8 +383,6 @@ if ($context == "physical" or $context == "cluster" or $context == 'host') {
   $size_menu = make_size_menu($clustergraphsize, $context);
 }
 
-$custom_time = "";
-$timezone_picker = "";
 if (in_array($context, array ("meta",
 			      "cluster",
 			      "cluster-summary",
@@ -421,17 +390,14 @@ if (in_array($context, array ("meta",
 			      "views",
 			      "decompose_graph",
 			      "compare_hosts"))) {
-  $custom_time = make_custom_time_selector($cs, $ce);
-  $timezone_picker = make_timezone_picker();
-
   #$tpl->assign("custom_time_head", $calendar_head);
   $data->assign("custom_time_head", "");
 } else {
    $data->assign("custom_time_head", "");
 }
 
-$data->assign("custom_time", $custom_time);
-$data->assign("timezone_picker", $timezone_picker);
+$data->assign("cs", $cs ? $cs : NULL);
+$data->assign("ce", $ce ? $ce : NULL);
 
 if (isset($_SESSION['tz']) && ($_SESSION['tz'] != '')) {
   $data->assign("timezone_option", "browser");
@@ -467,12 +433,6 @@ if ( $conf['picker_autocomplete'] == true ) {
 $data->assign('selected_tab', htmlspecialchars($user['selected_tab']) );
 $data->assign('view_name', $user['viewname']);
 $data->assign('conf', $conf);
-
-$additional_buttons = "";
-if ($context == 'views' || $context == 'decompose_graph' || $context == 'host') {
-  $additional_buttons = '<input title="Hide/Show Events" type="checkbox" id="show_all_events" onclick="showAllEvents(this.checked)"/><label for="show_all_events">Hide/Show Events</label>';
-}
-$data->assign('additional_buttons', $additional_buttons);
 
 # Make sure that no data is cached..
 header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); # Date in the past
