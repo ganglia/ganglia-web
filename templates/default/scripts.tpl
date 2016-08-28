@@ -25,7 +25,6 @@
 <script type="text/javascript" src="js/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/combobox.js"></script>
 <script type="text/javascript" src="{$conf['jquery_scrollTo_js_path']}"></script>
-<script type="text/javascript" src="js/jquery.buttonsetv.js"></script>
 <script type="text/javascript" src="{$conf['jstree_js_path']}"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
 <script type="text/javascript" src="{$conf['chosen_js_path']}"></script>
@@ -42,3 +41,5 @@
 <script type="text/javascript" src="js/jquery.flot.ganglia-time.js"></script>
 <script type="text/javascript" src="js/jquery.flot.events.js"></script>
 <script type="text/javascript" src="js/jquery.flot.dashes.js"></script>
+<script type="text/javascript" src="js/flot_graph.js"></script>
+<script type="text/javascript" src="{$conf['jquery_visible_js_path']}"></script>

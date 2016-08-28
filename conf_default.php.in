@@ -467,7 +467,7 @@ $conf['select2_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3
 $conf['select2_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css";
 $conf['fullcalendar_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.0/fullcalendar.min.js";
 $conf['fullcalendar_css_path'] = "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.0/fullcalendar.min.css";
-
+$conf['jquery_visible_js_path'] = "https://cdnjs.cloudflare.com/ajax/libs/jquery-visible/1.2.0/jquery.visible.min.js";
 $conf['jquery_flot_base_path'] = "https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot";
 
 # Enable Cubism integration http://square.github.io/cubism/

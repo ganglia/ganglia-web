@@ -130,8 +130,9 @@ function refreshHostView() {
 
   $("#optional_graphs img").each(function (index) {
     var src = $(this).attr("src");
-    if ((src.indexOf("graph.php") == 0) ||
-        (src.indexOf("./graph.php") == 0)) {
+    if ((src.indexOf("graph.php") == 0 ||
+         src.indexOf("./graph.php") == 0) &&
+        $(this).visible(true, true)) {
       var d = new Date();
       $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
     }
@@ -139,8 +140,9 @@ function refreshHostView() {
 
   $("#metrics img").each(function (index) {
     var src = $(this).attr("src");
-    if ((src.indexOf("graph.php") == 0)  ||
-        (src.indexOf("./graph.php") == 0)) {
+    if ((src.indexOf("graph.php") == 0  ||
+        src.indexOf("./graph.php") == 0) &&
+        $(this).visible(true, true)) {
       var d = new Date();
       $(this).attr("src", jQuery.param.querystring(src, "&_=" + d.getTime()));
     }
