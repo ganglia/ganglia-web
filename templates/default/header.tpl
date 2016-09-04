@@ -8,7 +8,8 @@
     <script type="text/javascript">
      var time_ranges = {$time_ranges};
      var server_timezone='{$server_timezone}';
-     var g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+     var g_refreshInterval = {$refresh};
+     var g_refresh_timer = setTimeout("refresh()", g_refreshInterval * 1000);
      var tz = jstz.determine();
 
      function refreshHeader() {
@@ -27,31 +28,31 @@
        var selected_tab = $("#selected_tab").val();
        if (selected_tab == "agg") {
          refreshAggregateGraph();
-         g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+         g_refresh_timer = setTimeout("refresh()", g_refreshInterval * 1000);
        } else if (selected_tab == "s") {
          // Dont refresh the serach tab
        } else if (selected_tab == "v") {
          refreshHeader();
          if ($.isFunction(window.refreshView)) {
            refreshView();
-           g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+           g_refresh_timer = setTimeout("refresh()", g_refreshInterval * 1000);
          } else if ($.isFunction(window.refreshDecomposeGraph)) {
            refreshDecomposeGraph();
-           g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+           g_refresh_timer = setTimeout("refresh()", g_refreshInterval * 1000);
          } else
          ganglia_form.submit();
        } else if (selected_tab == "ev") {
          refreshOverlayEvent();
-         g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+         g_refresh_timer = setTimeout("refresh()", g_refreshInterval * 1000);
        } else if (selected_tab == "m") {
          if ($.isFunction(window.refreshClusterView)) {
            refreshHeader();
            refreshClusterView();
-           g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+           g_refresh_timer = setTimeout("refresh()", g_refreshInterval * 1000);
          } else if ($.isFunction(window.refreshHostView)) {
            refreshHeader();
            refreshHostView();
-           g_refresh_timer = setTimeout("refresh()", {$refresh} * 1000);
+           g_refresh_timer = setTimeout("refresh()", g_refreshInterval * 1000);
          } else
          ganglia_form.submit();
        } else
@@ -320,12 +321,46 @@
           </div>
           <div>
             <div style="float:left;padding:5px 0 0 5px;">{$range_menu}</div>
-            <div style="float:left;padding:5px 0 0 5px;"
-                 id="custom_range_menu">{$custom_time}</div>
-            <div style="float:left;padding:5px 0 0 5px;" id="timezone">
-              {$timezone_picker}
+            {if $context == "meta" || $context == "cluster" || $context == "cluster-summary" || $context == "host" || $context == "views" || $context == "decompose_graph" || $context == "compare_hosts"}
+              {assign "Feb 27 2007 00:00, 2/27/2007, 27.2.2007, now -1 week, -2 days, start + 1 hour, etc." examples}
+              <div style="float:left;padding:5px 0 0 5px;"
+                   id="custom_range_menu">
+                <span class="nobr">or&nbsp;from&nbsp;
+                  <input type="text"
+                         title="{$examples}"
+                         name="cs"
+                         id="datepicker-cs"
+                         size="17"
+                         {if isset($cs)} value="{$cs}"{/if}>
+                  &nbsp;to&nbsp;
+                  <input type="text"
+                         title="{$examples}"
+                         name="ce"
+                         id="datepicker-ce"
+                         size="17"
+                         {if isset($ce)} value="{$ce}"{/if}>
+                  &nbsp;
+                  <input type="submit" value="Go">
+                  <input type="button" value="Clear" onclick="ganglia_submit(1)">
+                </span>
+              </div>
+              <div style="float:left;padding:5px 0 0 5px;" id="timezone">Timezone:&nbsp;
+                <select id="timezone-picker" style="width:100px;">
+                  <option value="browser">Browser</option>
+                  <option value="server">Server</option>
+                </select>
+              </div>
+            {/if}
+            <div style="float:right;padding:5px 0 0 5px;">
+              {if $context == "views" || $context == "decompose_graph" || $context == "host"}
+                <input title="Hide/Show Events"
+                       type="checkbox"
+                       id="show_all_events"
+                       onclick="showAllEvents(this.checked)"/>
+                <label for="show_all_events">Hide/Show Events</label>
+              {/if}
+              &nbsp;&nbsp;{$alt_view}
             </div>
-            <div style="float:right;padding:5px 0 0 5px;">{$additional_buttons}&nbsp;&nbsp;{$alt_view}</div>
             <div style="clear:both;"></div>
           </div>
           {if $context != "cluster" && $context != "cluster-summary"}

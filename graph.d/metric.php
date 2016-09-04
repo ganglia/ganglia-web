@@ -117,7 +117,7 @@ function graph_metric ( &$rrdtool_graph ) {
 
     //# the actual graph...
     $series  = "DEF:'sum'='$rrd_dir/$metricname.rrd:sum':AVERAGE ";
-    $series .= "AREA:'sum'#${conf['default_metric_color']}:'$subtitle_one   '";
+    $series .= "AREA:'sum'#${conf['default_metric_color']}:'$metricname   '";
 
     if ($conf['graphreport_stats'] == false) {
         $series .= ":STACK: COMMENT:'$subtitle_two\\l'";
@@ -150,8 +150,8 @@ function graph_metric ( &$rrdtool_graph ) {
     // If metric is not present we are likely not collecting it on this
     // host therefore we should not attempt to build anything and will likely end up with a broken
     // image. To avoid that we'll make an empty image
-    if ( !file_exists("$rrd_dir/$metricname.rrd") ) 
-      $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"No matching metrics detected"';   
+    if ( !file_exists("$rrd_dir/$metricname.rrd") )
+      $rrdtool_graph[ 'series' ] = 'HRULE:1#FFCC33:"No matching metrics detected"';
     else
       $rrdtool_graph[ 'series' ] = $series;
 

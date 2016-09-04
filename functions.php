@@ -67,7 +67,7 @@ function uptime($uptimeS) {
 
 #------------------------------------------------------------------------------
 # Try to determine a nodes location in the cluster. Attempts to find the
-# LOCATION attribute first. Requires the host attribute array from 
+# LOCATION attribute first. Requires the host attribute array from
 # $hosts[$cluster][$name], where $name is the hostname.
 # Returns [-1,-1,-1] if we could not determine location.
 #
@@ -215,11 +215,11 @@ function node_image ($metrics) {
 # Finds the min/max over a set of metric graphs. Nodes is
 # an array keyed by host names.
 #
-function find_limits($clustername, 
-		     $nodes, 
-		     $metricname, 
-		     $start, 
-		     $end, 
+function find_limits($clustername,
+		     $nodes,
+		     $metricname,
+		     $start,
+		     $end,
 		     $metrics,
 		     $conf,
 		     $rrd_options) {
@@ -227,7 +227,7 @@ function find_limits($clustername,
     return array(0, 0);
 
   $firsthost = key($metrics);
-   
+
   if (array_key_exists($metricname, $metrics[$firsthost])) {
     if ($metrics[$firsthost][$metricname]['TYPE'] == "string"
         or $metrics[$firsthost][$metricname]['SLOPE'] == "zero")
@@ -239,7 +239,7 @@ function find_limits($clustername,
   $max = 0;
   $min = 0;
   if ($conf['graph_engine'] == "graphite") {
-    $target = $conf['graphite_prefix'] . 
+    $target = $conf['graphite_prefix'] .
       $clustername . ".[a-zA-Z0-9]*." . $metricname . ".sum";
     $raw_highestMax = file_get_contents($conf['graphite_url_base'] . "?target=highestMax(" . $target . ",1)&from=" . $start . "&until=" . $end . "&format=json");
     $highestMax = json_decode($raw_highestMax, TRUE);
@@ -277,14 +277,14 @@ function find_limits($clustername,
 	  } else {
 	    $thismax = NULL;
 	  }
-	  if (!is_numeric($thismax)) 
+	  if (!is_numeric($thismax))
 	    continue;
 	  $thismin = $out[2];
 	  if (!is_numeric($thismin))
 	    continue;
 	}
 
-	if ($max < $thismax) 
+	if ($max < $thismax)
 	  $max = $thismax;
 
 	if ($min > $thismin)
@@ -315,7 +315,7 @@ function find_avg($clustername, $hostname, $metricname) {
         "DEF:avg='$sum_dir/$metricname.rrd':'sum':AVERAGE ".
         "PRINT:avg:AVERAGE:%.2lf ";
     exec($command, $out);
-    if ( isset($out[1]) ) 
+    if ( isset($out[1]) )
       $avg = $out[1];
     else
       $avg = 0;
@@ -337,7 +337,7 @@ function rowstyle() {
 
 #------------------------------------------------------------------------------
 # Return a version of the string which is safe for display on a web page.
-# Potentially dangerous characters are converted to HTML entities.  
+# Potentially dangerous characters are converted to HTML entities.
 # Resulting string is not URL-encoded.
 function clean_string( $string ) {
 
@@ -366,7 +366,7 @@ function is_valid_hex_color( $string ) {
     }
   }
   return $return_value;
-    
+
 }
 
 #------------------------------------------------------------------------------
@@ -384,7 +384,7 @@ function is_proper_view_name( $string ) {
 #------------------------------------------------------------------------------
 # Return a shortened version of a FQDN
 # if "hostname" is numeric only, assume it is an IP instead
-# 
+#
 function strip_domainname( $hostname ) {
     $postition = strpos($hostname, '.');
     $name = substr( $hostname, 0, $postition );
@@ -399,10 +399,10 @@ function strip_domainname( $hostname ) {
 # Read a file containing key value pairs
 function file_to_hash($filename, $sep) {
 
-  
+
   $lines = file($filename, FILE_IGNORE_NEW_LINES);
-  
-  foreach ($lines as $line) 
+
+  foreach ($lines as $line)
   {
     list($k, $v) = explode($sep, rtrim($line));
     $params[$k] = $v;
@@ -416,9 +416,9 @@ function file_to_hash($filename, $sep) {
 # Multiple values permitted for each key
 function file_to_hash_multi($filename, $sep) {
 
- 
+
   $lines = file($filename);
- 
+
   foreach ($lines as $line)
   {
     list($k, $v) = explode($sep, rtrim($line));
@@ -440,7 +440,7 @@ function hash_get_distinct_values($h) {
     {
       $values_done[$v] = "x";
       $values[] = $v;
-    } 
+    }
   }
   return $values;
 }
@@ -511,7 +511,7 @@ function filter_init() {
    foreach($choose_filter as $filter_shortname => $filter_choice)
    {
       if($filter_choice == "")
-         continue; 
+         continue;
 
       $filter_params = $filter_defs[$filter_shortname];
       if($filter_count == 0)
@@ -532,7 +532,7 @@ function filter_init() {
                if($filter_params["data"][$key] == $filter_choice)
                {
                   $remove_key = FALSE;
-               } 
+               }
             }
             if($remove_key)
             {
@@ -555,7 +555,7 @@ function filter_permit($source_name) {
    global $filter_permit_list;
 
    filter_init();
-   
+
    # Handle the case where filtering is not active
    if(!is_array($filter_permit_list))
       return true;
@@ -618,21 +618,21 @@ function getViewItems($view, $range, $cs, $ce) {
   $view_elements = get_view_graph_elements($view);
   $view_items = array();
   if (count($view_elements) != 0) {
-    $graphargs = "";
+    $custom_time_args = "";
     if ($cs)
-      $graphargs .= "&amp;cs=" . rawurlencode($cs);
+      $custom_time_args .= "&cs=" . rawurlencode($cs);
     if ($ce)
-      $graphargs .= "&amp;ce=" . rawurlencode($ce);
-    
+      $custom_time_args .= "&ce=" . rawurlencode($ce);
+
     foreach ($view_elements as $element) {
       $canBeDecomposed = isset($element['aggregate_graph']) ||
 	((strpos($element['graph_args'], 'vn=') !== FALSE) &&
 	 (strpos($element['graph_args'], 'item_id=') !== FALSE));
-      $view_items[] = 
-	array("legend" => isset($element['hostname']) ? 
+      $view_items[] =
+	array("legend" => isset($element['hostname']) ?
 	      $element['hostname'] : "Aggregate graph",
-	      "url_args" => htmlentities($element['graph_args']) . 
-	      "&amp;r=" . $range . $graphargs,
+	      "url_args" => $element['graph_args'] .
+	      "&r=" . $range . $custom_time_args,
 	      "aggregate_graph" => isset($element['aggregate_graph']) ? 1 : 0,
 	      "canBeDecomposed" => $canBeDecomposed ? 1 : 0);
     }
@@ -645,7 +645,7 @@ function getViewItems($view, $range, $cs, $ce) {
 ///////////////////////////////////////////////////////////////////////////////
 function get_available_views() {
   global $conf;
-  
+
   /* -----------------------------------------------------------------------
   Find available views by looking in the GANGLIA_DIR/conf directory
   anything that matches view_*.json. Read them all and build a available_views
@@ -658,26 +658,26 @@ function get_available_views() {
       if (preg_match("/^view_(.*)\.json$/", $file, $out)) {
 	$view_config_file = $conf['views_dir'] . "/" . $file;
 	if (!is_file ($view_config_file)) {
-	  echo("Can't read view config file " . 
+	  echo("Can't read view config file " .
 	       $view_config_file . ". Please check permissions");
 	}
 
 	$view = json_decode(file_get_contents($view_config_file), TRUE);
-	// Check whether view type has been specified ie. regex. 
+	// Check whether view type has been specified ie. regex.
 	// If not it's standard view
-	$view_type = 
+	$view_type =
 	  isset($view['view_type']) ? $view['view_type'] : "standard";
-	$default_size = isset($view['default_size']) ? 
+	$default_size = isset($view['default_size']) ?
 	  $view['default_size'] : $conf['default_view_graph_size'];
-	$view_parent = 
+	$view_parent =
 	  isset($view['parent']) ? $view['parent'] : NULL;
-	$common_y_axis = 
+	$common_y_axis =
 	  isset($view['common_y_axis']) ? $view['common_y_axis'] : 0;
 
-	$available_views[] = array ("file_name" => $view_config_file, 
+	$available_views[] = array ("file_name" => $view_config_file,
 				    "view_name" => $view['view_name'],
-				    "default_size" => $default_size, 
-				    "items" => $view['items'], 
+				    "default_size" => $default_size,
+				    "items" => $view['items'],
 				    "view_type" => $view_type,
 				    "parent" => $view_parent,
 				    "common_y_axis" => $common_y_axis);
@@ -686,27 +686,27 @@ function get_available_views() {
     }
     closedir($handle);
   }
-  
+
   foreach ($available_views as $key => $row) {
     $name[$key] = strtolower($row['view_name']);
   }
-  
+
   @array_multisort($name, SORT_ASC, $available_views);
-  
-  return $available_views; 
+
+  return $available_views;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Get image graph URLS
-// This function returns an array of graph URLs to be used when rendering the 
-// view. It returns only the base ie. cluster, host, metric information. 
+// This function returns an array of graph URLs to be used when rendering the
+// view. It returns only the base ie. cluster, host, metric information.
 // It is up to the caller to add proper size information, time ranges etc.
 ///////////////////////////////////////////////////////////////////////////////
 function get_view_graph_elements($view) {
   global $conf, $index_array;
 
   retrieve_metrics_cache();
-  
+
   $view_elements = array();
 
   // set the default size from the view or global config
@@ -736,7 +736,7 @@ function get_view_graph_elements($view) {
 
 	  if (isset($item['metric_regex'])) {
 	    foreach ( $item['metric_regex'] as $reg_id => $regex_array ) {
-	      $graph_args_array[] = 
+	      $graph_args_array[] =
 		"mreg[]=" . urlencode($regex_array["regex"]);
               $mreg[] = $regex_array["regex"];
 	    }
@@ -751,23 +751,23 @@ function get_view_graph_elements($view) {
           if ( isset($item['sortit']) ) {
             $graph_args_array[] = "sortit=" . $item['sortit'];
           }
-	  
+
 	  // If graph type is not specified default to line graph
-	  if (isset($item['graph_type']) && 
+	  if (isset($item['graph_type']) &&
 	      in_array($item['graph_type'], array('line', 'stack')))
 	    $graph_args_array[] = "gtype=" . $item['graph_type'];
 	  else
 	    $graph_args_array[] = "gtype=line";
-	  
+
 	  if (isset($item['upper_limit']))
 	    $graph_args_array[] = "x=" . $item['upper_limit'];
-	  
+
 	  if (isset($item['lower_limit']))
 	    $graph_args_array[] = "n=" . $item['lower_limit'];
-	  
+
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
-	  
+
 	  if (isset($item['title']))
 	    $graph_args_array[] = "title=" . urlencode($item['title']);
 
@@ -781,29 +781,29 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "c=" . urlencode($item['cluster']);
 
 	  if (isset($item['exclude_host_from_legend_label']))
-	    $graph_args_array[] = 
+	    $graph_args_array[] =
 	      "lgnd_xh=" . $item['exclude_host_from_legend_label'];
-	  
+
 	  $graph_args_array[] = "aggregate=1";
-	  $view_elements[] = 
-	    array("graph_args" => join("&", $graph_args_array), 
+	  $view_elements[] =
+	    array("graph_args" => join("&", $graph_args_array),
 		  "aggregate_graph" => 1,
-		  "name" => isset($item['title']) && $item['title'] != "" ? 
+		  "name" => isset($item['title']) && $item['title'] != "" ?
 		  $item['title'] : $mreg[0] . " Aggregate graph");
-	  
+
 	  unset($graph_args_array);
-          
-	  // Check whether it's a composite graph/report. 
+
+	  // Check whether it's a composite graph/report.
 	  // It needs to have an item id
 	} else if ($item['item_id']) {
 	  $graph_args_array[] = "vn=" . $view['view_name'];
           $graph_args_array[] = "item_id=" . $item['item_id'];
 
-	  $view_elements[] = 
+	  $view_elements[] =
 	    array("graph_args" => join("&", $graph_args_array));
           unset($graph_args_array);
-          
-	  // It's standard metric graph          
+
+	  // It's standard metric graph
         } else {
 	  // Is it a metric or a graph(report)
 	  if (isset($item['metric'])) {
@@ -835,16 +835,16 @@ function get_view_graph_elements($view) {
 
 	  if (isset($item['upper_limit']))
 	    $graph_args_array[] = "x=" . $item['upper_limit'];
-	  
+
 	  if (isset($item['lower_limit']))
 	    $graph_args_array[] = "n=" . $item['lower_limit'];
-	  
+
 	  if (isset($item['vertical_label']))
 	    $graph_args_array[] = "vl=" . urlencode($item['vertical_label']);
-	  
+
 	  if (isset($item['title']))
 	    $graph_args_array[] = "title=" . urlencode($item['title']);
-	  
+
           if (isset($item['warning'])) {
             $view_e['warning'] = $item['warning'];
             $graph_args_array[] = "warn=" . $item['warning'];
@@ -862,9 +862,9 @@ function get_view_graph_elements($view) {
           $view_e['hostname'] = $hostname;
           $view_e['cluster'] = $cluster;
           $view_e['name'] = $name;
-	  
+
 	  $view_elements[] = $view_e;
-	  
+
           unset($view_e);
 	  unset($graph_args_array);
 	}
@@ -885,7 +885,7 @@ function get_view_graph_elements($view) {
 	$metric_suffix = "g=" . $item['graph'];
 	$name = $item['graph'];
       }
-      
+
       // Find hosts matching a criteria
       $query = $item['hostname'];
       foreach ( $index_array['hosts'] as $key => $host_name ) {
@@ -895,12 +895,12 @@ function get_view_graph_elements($view) {
 	    $graph_args_array[] = "h=" . urlencode($host_name);
 	    $graph_args_array[] = "c=" . urlencode($cluster);
 
-	    $view_elements[] = 
-	      array("graph_args" => $metric_suffix . "&" . join("&", $graph_args_array), 
+	    $view_elements[] =
+	      array("graph_args" => $metric_suffix . "&" . join("&", $graph_args_array),
 		    "hostname" => $host_name,
 		    "cluster" => $cluster,
 		    "name" => $name);
-	    
+
 	    unset($graph_args_array);
 	  }
 	}
@@ -952,7 +952,7 @@ function legendEntry($vname, $legend_items) {
     $legend .= "GPRINT:'{$vname}_max':'Max\:%5.1lf%s";
     $terminate = TRUE;
   }
-  
+
   if ($terminate)
     $legend .= "\\l' ";
 
@@ -971,51 +971,51 @@ function legendEntry($vname, $legend_items) {
  *   checkAccess( 'cluster1', GangliaAcl::VIEW, $conf ); // user has view privilege on cluster1?
  */
 function checkAccess($resource, $privilege, $conf) {
-  
+
   if(!is_array($conf)) {
     trigger_error('checkAccess: $conf is not an array.', E_USER_ERROR);
   }
   if(!isset($conf['auth_system'])) {
     trigger_error("checkAccess: \$conf['auth_system'] is not defined.", E_USER_ERROR);
   }
-  
+
   switch( $conf['auth_system'] ) {
     case 'readonly':
       $out = ($privilege == GangliaAcl::VIEW);
       break;
-      
+
     case 'enabled':
       // TODO: 'edit' needs to check for writeability of data directory.  error log if edit is allowed but we're unable to due to fs problems.
-      
+
       $acl = GangliaAcl::getInstance();
       $auth = GangliaAuth::getInstance();
-      
+
       if(!$auth->isAuthenticated()) {
         $user = GangliaAcl::GUEST;
       } else {
         $user = $auth->getUser();
       }
-      
+
       if(!$acl->has($resource)) {
         $resource = GangliaAcl::ALL_CLUSTERS;
       }
-      
+
       $out = false;
       if($acl->hasRole($user)) {
         $out = (bool) $acl->isAllowed($user, $resource, $privilege);
       }
       // error_log("checkAccess() user=$user, resource=$resource, priv=$privilege == $out");
       break;
-    
+
     case 'disabled':
       $out = true;
       break;
-    
+
     default:
       trigger_error( "Invalid value '".$conf['auth_system']."' for \$conf['auth_system'].", E_USER_ERROR );
       return false;
   }
-  
+
   return $out;
 }
 
@@ -1027,79 +1027,79 @@ function viewId($view_name) {
 ///////////////////////////////////////////////////////////////////////////////
 // Taken from
 // http://au2.php.net/manual/en/function.json-encode.php#80339
-// Pretty print JSON 
+// Pretty print JSON
 ///////////////////////////////////////////////////////////////////////////////
-function json_prettyprint($json) { 
- 
-    $tab = "  "; 
-    $new_json = ""; 
-    $indent_level = 0; 
-    $in_string = false; 
+function json_prettyprint($json) {
 
-    $len = strlen($json); 
+    $tab = "  ";
+    $new_json = "";
+    $indent_level = 0;
+    $in_string = false;
 
-    for($c = 0; $c < $len; $c++) 
-    { 
-        $char = $json[$c]; 
-        switch($char) 
-        { 
-            case '{': 
-            case '[': 
-                if(!$in_string) 
-                { 
-                    $new_json .= $char . "\n" . str_repeat($tab, $indent_level+1); 
-                    $indent_level++; 
-                } 
-                else 
-                { 
-                    $new_json .= $char; 
-                } 
-                break; 
-            case '}': 
-            case ']': 
-                if(!$in_string) 
-                { 
-                    $indent_level--; 
-                    $new_json .= "\n" . str_repeat($tab, $indent_level) . $char; 
-                } 
-                else 
-                { 
-                    $new_json .= $char; 
-                } 
-                break; 
-            case ',': 
-                if(!$in_string) 
-                { 
-                    $new_json .= ",\n" . str_repeat($tab, $indent_level); 
-                } 
-                else 
-                { 
-                    $new_json .= $char; 
-                } 
-                break; 
-            case ':': 
-                if(!$in_string) 
-                { 
-                    $new_json .= ": "; 
-                } 
-                else 
-                { 
-                    $new_json .= $char; 
-                } 
-                break; 
-            case '"': 
-                if($c > 0 && $json[$c-1] != '\\') 
-                { 
-                    $in_string = !$in_string; 
-                } 
-            default: 
-                $new_json .= $char; 
-                break;                    
-        } 
-    } 
+    $len = strlen($json);
 
-    return $new_json; 
-} 
+    for($c = 0; $c < $len; $c++)
+    {
+        $char = $json[$c];
+        switch($char)
+        {
+            case '{':
+            case '[':
+                if(!$in_string)
+                {
+                    $new_json .= $char . "\n" . str_repeat($tab, $indent_level+1);
+                    $indent_level++;
+                }
+                else
+                {
+                    $new_json .= $char;
+                }
+                break;
+            case '}':
+            case ']':
+                if(!$in_string)
+                {
+                    $indent_level--;
+                    $new_json .= "\n" . str_repeat($tab, $indent_level) . $char;
+                }
+                else
+                {
+                    $new_json .= $char;
+                }
+                break;
+            case ',':
+                if(!$in_string)
+                {
+                    $new_json .= ",\n" . str_repeat($tab, $indent_level);
+                }
+                else
+                {
+                    $new_json .= $char;
+                }
+                break;
+            case ':':
+                if(!$in_string)
+                {
+                    $new_json .= ": ";
+                }
+                else
+                {
+                    $new_json .= $char;
+                }
+                break;
+            case '"':
+                if($c > 0 && $json[$c-1] != '\\')
+                {
+                    $in_string = !$in_string;
+                }
+            default:
+                $new_json .= $char;
+                break;
+        }
+    }
+
+    return $new_json;
+}
 
 function ganglia_cache_metrics() {
     global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
@@ -1111,8 +1111,8 @@ function ganglia_cache_metrics() {
 //////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////
-function build_aggregate_graph_config ($graph_type, 
-                                       $line_width, 
+function build_aggregate_graph_config ($graph_type,
+                                       $line_width,
                                        $hreg,
                                        $mreg,
                                        $glegend,
@@ -1120,9 +1120,9 @@ function build_aggregate_graph_config ($graph_type,
                                        $sortit = true) {
 
   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
-  
+
   retrieve_metrics_cache();
-  
+
   $color_count = count($conf['graph_colors']);
 
   $graph_config["report_name"]=isset($mreg)  ?  sanitize(implode($mreg))   : NULL;
@@ -1132,7 +1132,7 @@ function build_aggregate_graph_config ($graph_type,
   $counter = 0;
 
   ///////////////////////////////////////////////////////////////////////////
-  // Find matching hosts    
+  // Find matching hosts
   foreach ( $hreg as $key => $query ) {
     foreach ( $index_array['hosts'] as $key => $host_name ) {
       if ( preg_match("/$query/i", $host_name ) ) {
@@ -1142,7 +1142,7 @@ function build_aggregate_graph_config ($graph_type,
         }
       }
     }
-  } 
+  }
 
   sort($host_matches);
 
@@ -1234,13 +1234,13 @@ function retrieve_metrics_cache ( $index = "all" ) {
    return;
 } // end of function get_metrics_cache () {
 
-function getHostOverViewData($hostname, 
-                             $metrics, 
+function getHostOverViewData($hostname,
+                             $metrics,
                              $cluster,
-                             $hosts_up, 
-                             $hosts_down, 
-                             $always_timestamp, 
-                             $always_constant, 
+                             $hosts_up,
+                             $hosts_down,
+                             $always_timestamp,
+                             $always_constant,
                              $data) {
   $data->assign("extra", template("host_extra.tpl"));
 
@@ -1248,9 +1248,9 @@ function getHostOverViewData($hostname,
   $data->assign("node_image", node_image($metrics));
 
   if ($hosts_up)
-    $data->assign("node_msg", "This host is up and running."); 
+    $data->assign("node_msg", "This host is up and running.");
   else
-    $data->assign("node_msg", "This host is down."); 
+    $data->assign("node_msg", "This host is down.");
 
   # No reason to go on if this node is down.
   if ($hosts_down)
@@ -1307,7 +1307,7 @@ function getHostOverViewData($hostname,
       } else {
         $s_metrics_data[$name]["name"] = $name;
       }
-      if ($v['TYPE']=="timestamp" or 
+      if ($v['TYPE']=="timestamp" or
           (isset($always_timestamp[$name]) and $always_timestamp[$name])) {
         $s_metrics_data[$name]["value"] = date("r", $v['VAL']);
       } else {
@@ -1341,7 +1341,7 @@ function buildMetricMaps($metrics,
   $metricMap = NULL;
   $metricGroupMap = NULL;
   foreach ($metrics as $name => $metric) {
-    if ($metric['TYPE'] == "string" or 
+    if ($metric['TYPE'] == "string" or
 	$metric['TYPE'] == "timestamp" or
 	(isset($always_timestamp[$name]) and $always_timestamp[$name])) {
       continue;
@@ -1349,23 +1349,23 @@ function buildMetricMaps($metrics,
 	      (isset($always_constant[$name]) and $always_constant[$name])) {
       continue;
     } else {
-      $graphArgs = $baseGraphArgs . "&amp;v=$metric[VAL]&amp;m=$name";
+      $graphArgs = $baseGraphArgs . "&v=$metric[VAL]&m=$name";
       # Adding units to graph 2003 by Jason Smith <smithj4@bnl.gov>.
       if ($metric['UNITS']) {
 	$encodeUnits = rawurlencode($metric['UNITS']);
-	$graphArgs .= "&amp;vl=$encodeUnits";
+	$graphArgs .= "&vl=$encodeUnits";
       }
       if (isset($metric['TITLE'])) {
 	$title = $metric['TITLE'];
 	$encodeTitle = rawurlencode($title);
-	$graphArgs .= "&amp;ti=$encodeTitle";
+	$graphArgs .= "&ti=$encodeTitle";
       }
       // dump_var($graphArgs, "graphArgs");
 
       $metricMap[$name]['graph'] = $graphArgs;
-      $metricMap[$name]['description'] = 
+      $metricMap[$name]['description'] =
 	isset($metric['DESC']) ? $metric['DESC'] : '';
-      $metricMap[$name]['title'] = 
+      $metricMap[$name]['title'] =
 	isset($metric['TITLE']) ? $metric['TITLE'] : '';
 
       # Setup an array of groups that can be used for sorting in group view
@@ -1377,7 +1377,7 @@ function buildMetricMaps($metrics,
 
       foreach ($groups as $group) {
 	if (isset($metricGroupMap[$group])) {
-	  $metricGroupMap[$group] = 
+	  $metricGroupMap[$group] =
 	    array_merge($metricGroupMap[$group], (array)$name);
 	} else {
 	  $metricGroupMap[$group] = array($name);

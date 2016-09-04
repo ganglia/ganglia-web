@@ -432,7 +432,8 @@ if (isset($view_items)) {
 
 $data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);
 $data->assign('SHOW_EVENTS_BASE_ID', $SHOW_EVENTS_BASE_ID);
-
+$data->assign('graph_engine', $conf['graph_engine']);
+$data->assign('flot_graph', isset($conf['flot_graph']) ? true : null);
 $dwoo->output($tpl, $data);
 
 ?>
