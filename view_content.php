@@ -12,8 +12,8 @@ $view_name = NULL;
 if (isset($_GET['vn']) && !is_proper_view_name($_GET['vn'])) {
 ?>
 <div class="ui-widget">
-  <div class="ui-state-default ui-corner-all" styledefault="padding: 0 .7em;"> 
-    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+  <div class="ui-state-default ui-corner-all" styledefault="padding: 0 .7em;">
+    <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
     View names valid characters are 0-9, a-z, A-Z, -, _ and space. View has not been created.</p>
   </div>
 </div>
@@ -31,14 +31,14 @@ $data = new Dwoo_Data();
 
 $size = isset($clustergraphsize) ? $clustergraphsize : 'default';
 // set to 'default' to preserve old behavior
-if ($size == 'medium') 
+if ($size == 'medium')
   $size = 'default';
 
 $additional_host_img_css_classes = "";
 if (isset($conf['zoom_support']) && $conf['zoom_support'] === true)
   $additional_host_img_css_classes = "host_${size}_zoomable";
 
-$data->assign("additional_host_img_css_classes", 
+$data->assign("additional_host_img_css_classes",
               $additional_host_img_css_classes);
 
 $view_items = NULL;
@@ -61,7 +61,8 @@ if (isset($view_items)) {
 
 $data->assign('GRAPH_BASE_ID', $GRAPH_BASE_ID);
 $data->assign('SHOW_EVENTS_BASE_ID', $SHOW_EVENTS_BASE_ID);
-
+$data->assign('graph_engine', $conf['graph_engine']);
+$data->assign('flot_graph', isset($conf['flot_graph']) ? true : null);
 $dwoo->output($tpl, $data);
 
 ?>

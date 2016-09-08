@@ -103,6 +103,14 @@ function ganglia_submit(clearonly) {
     document.ganglia_form.submit();
 }
 
+function getTimezone() {
+  var tzValue = "browser";
+  var tz = $("#tz");
+  if (tz[0] && tz.val() === "")
+    tzValue = server_timezone;
+  return tzValue;
+}
+
 /* ----------------------------------------------------------------------------
  Enlarges a graph using Flot
 -----------------------------------------------------------------------------*/
@@ -111,9 +119,13 @@ function inspectGraph(graphArgs) {
   $("#popup-dialog").bind("dialogbeforeclose",
                           function(event, ui) {
                             $("#enlargeTooltip").remove();});
-  $.get('inspect_graph.php',
-        "flot=1&" + graphArgs,
-        function(data) {$('#popup-dialog-content').html(data);});
+  var graph = new InspectGraph(graphArgs,
+                               g_refreshInterval,
+                               getTimezone(),
+                               $("#popup-dialog"));
+  $('#popup-dialog-content').html(graph.getBaseHtml());
+  graph.initialize();
+  graph.start();
 }
 
 /* ----------------------------------------------------------------------------
