@@ -268,8 +268,8 @@ getHostOverViewData($hostname,
                     $always_constant, 
                     $data);
 
-# No reason to go on if this node is down.
-if ($hosts_down) {
+# When this node is down, only show data when show_host_data_if_down is True
+if ($hosts_down && !$conf['show_host_data_if_down']) {
   $dwoo->output($tpl, $data);
   return;
 }
