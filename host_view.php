@@ -68,6 +68,12 @@ function getOptionalReports($hostname,
       json_decode(file_get_contents($conf['conf_dir'] . "/default.json"), 
 		  TRUE));
   }
+  if ( is_file($conf['conf_dir'] . "/default_host.json") ) {
+    $default_reports = array_merge(
+      $default_reports,
+      json_decode(file_get_contents($conf['conf_dir'] . "/default_host.json"),
+		  TRUE));
+  }
 
   $cluster_file = $conf['conf_dir'] .
     "/cluster_" .
