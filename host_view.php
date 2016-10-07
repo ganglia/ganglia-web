@@ -234,7 +234,7 @@ function getMetricGroups($metrics,
 	$metric_array = sort_metric_group_metrics($group, $metric_array);
       } else {
 	// Sort by metric_name
-	asort($metric_array);
+	asort($metric_array, SORT_NATURAL);
       }
 
       $i = 0;
