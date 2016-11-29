@@ -99,8 +99,15 @@ class Dwoo_Loader implements Dwoo_ILoader
 	 */
 	public function loadPlugin($class, $forceRehash = true)
 	{
-		// a new class was added or the include failed so we rebuild the cache
-		if (!isset($this->classPath[$class]) || !(include $this->classPath[$class])) {
+		// An unknown class was requested (maybe newly added) or the
+		// include failed so we rebuild the cache. include() will fail
+		// with an uncatchable error if the file doesn't exist, which
+		// usually means that the cache is stale and must be rebuilt,
+		// so we check for that before trying to include() the plugin.
+		if (!isset($this->classPath[$class]) ||
+			!is_readable($this->classPath[$class]) ||
+			!(include $this->classPath[$class]))
+		{
 			if ($forceRehash) {
 				$this->rebuildClassPathCache($this->corePluginDir, $this->cacheDir . 'classpath.cache.d'.Dwoo_Core::RELEASE_TAG.'.php');
 				foreach ($this->paths as $path=>$file) {

@@ -2006,7 +2006,7 @@ class Dwoo_Compiler implements Dwoo_ICompiler
 			echo 'CONST FOUND : '.$substr.'<br />';
 		}
 
-		if (!preg_match('#^%([a-z0-9_:]+)#i', $substr, $m)) {
+		if (!preg_match('#^%([\\\\a-z0-9_:]+)#i', $substr, $m)) {
 			throw new Dwoo_Compilation_Exception($this, 'Invalid constant');
 		}
 
