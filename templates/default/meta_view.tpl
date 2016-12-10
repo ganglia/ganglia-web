@@ -100,7 +100,7 @@
       <td>
       <a href="{$source.url}">
         <img src="./graph.php?{$source.graph_url}&amp;g=network_report&amp;z=medium&amp;r={$source.range}"
-             alt="{$source.name} MEM" border="0" />
+             alt="{$source.name} NETWORK" border="0" />
       </a>
       </td>
 

@@ -442,6 +442,11 @@ $conf['display_views_using_tree'] = false;
 # those code paths to save time during XML parsing.
 $conf['strip_extra'] = true;
 
+# By default, if a host goes down, the graphs and information available
+# under the host view are not shown. Setting this variable to true will show
+# the information even if the host is down.
+$conf['show_host_data_if_down'] = true;
+
 # By default we'll just download Jquery, Cubism and D3 required libraries from a CDN that offers
 # that for free. If that is undesirable you can override this in conf.php by putting
 # downloading the asset and putting relative path or absolute paths to it e.g.

@@ -79,6 +79,12 @@ function getOptionalReports($hostname,
       json_decode(file_get_contents($conf_dir . "/default.json"),
 		  TRUE));
   }
+  if ( is_file($conf['conf_dir'] . "/default_host.json") ) {
+    $default_reports = array_merge(
+      $default_reports,
+      json_decode(file_get_contents($conf['conf_dir'] . "/default_host.json"),
+		  TRUE));
+  }
 
   $cluster_file = $conf_dir .
     "/cluster_" .
@@ -290,8 +296,8 @@ getHostOverViewData($user['hostname'],
                     $always_constant,
                     $data);
 
-# No reason to go on if this node is down.
-if ($hosts_down) {
+# When this node is down, only show data when show_host_data_if_down is True
+if ($hosts_down && !$conf['show_host_data_if_down']) {
   $dwoo->output($tpl, $data);
   return;
 }

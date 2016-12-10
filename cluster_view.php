@@ -22,7 +22,7 @@ if ($refresh) {
 }
 
 function get_picker_metrics($metrics, $reports, $gweb_root, $graph_engine) {
-  $context_metrics = "";
+  $context_metrics = array();
   if (count($metrics)) {
     foreach ($metrics as $host_metrics) {
       foreach ($host_metrics as $metric_name => $metric_value) {
