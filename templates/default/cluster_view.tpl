@@ -190,102 +190,123 @@ $(function() {
 </div>
 
 <div style="background:rgb(238,238,238);text-align:center;">
-  <font size="+1" id="cluster_title">Overview of {$cluster} @ {$localtime}</font>
+  <font size="+1"
+        id="cluster_title">Overview of {$cluster} @ {$localtime}</font>
 </div>
 
 <table border="0" cellspacing=4 width="100%">
-<tr>
-<td align="left" valign="top">
-<div id="cluster_overview">
-{include('cluster_overview.tpl')}
-</div>
-{if isset($extra)}
-{include(file="$extra")}
-{/if}
-</td>
-<td rowspan=2 align="center" valign=top>
-<div id="optional_graphs" style="padding-bottom:4px">
-{$optional_reports}<br>
-{foreach $optional_graphs_data graph}
-  <a href="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=large">
-  <img border=0 {$additional_cluster_img_html_args} title="{$cluster} {$graph.name}" src="./graph.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=medium"></a>
-{/foreach}
-</div>
-{if $user_may_edit}
-<button id="edit_optional_graphs_button">Edit Optional Graphs</button>
-{/if}
-</td>
-</tr>
-
-<tr>
- <td align="center" valign="top">
-{if $php_gd && !$heatmap_data}
-  <img id="load_pie" src="./pie.php?{$pie_args}" border="0" />
-{/if}
-{if $heatmap_data && $num_nodes > 0}
-Server Load Distribution<br />
-<div id="heatmap-fig">
-<script type="text/javascript">
-var heatmap = new Heatmap("heatmap-fig", {$heatmap_data});
-heatmap.render();
-    </script>
- </div>
-{/if}
- </td>
-</tr>
+  <tr>
+    <td align="left" valign="top">
+      <div id="cluster_overview">
+        {include('cluster_overview.tpl')}
+      </div>
+      {if isset($extra)}
+        {include(file="$extra")}
+      {/if}
+    </td>
+    <td rowspan=2 align="center" valign=top>
+      <div id="optional_graphs" style="padding-bottom:4px">
+        {foreach $optional_reports graph}
+          <a href="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}&amp;z=large">
+            <img border=0
+                 {if $graph.zoom_support}class="cluster_zoomable"{/if}
+                 title="{$cluster} {$graph.name}"
+                 src="./graph.php?{$graph.graph_args}&amp;g={$graph.name}&amp;z={$graph.size}"></a>
+        {/foreach}
+        <br>
+        {foreach $optional_graphs graph}
+          <a href="./graph_all_periods.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=large">
+            <img border=0
+                 {if $graph.zoom_support}class="cluster_zoomable"{/if}
+                 title="{$cluster} {$graph.name}"
+                 src="./graph.php?{$graph.graph_args}&amp;g={$graph.name}_report&amp;z=medium"></a>
+        {/foreach}
+      </div>
+      {if $user_may_edit}
+        <button id="edit_optional_graphs_button">Edit Optional Graphs</button>
+      {/if}
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+      {if $php_gd && !$heatmap_data}
+        <img id="load_pie" src="./pie.php?{$pie_args}" border="0" />
+      {/if}
+      {if $heatmap_data && $overview.num_nodes > 0}
+        Server Load Distribution<br />
+        <div id="heatmap-fig">
+          <script type="text/javascript">
+           var heatmap = new Heatmap("heatmap-fig", {$heatmap_data});
+           heatmap.render();
+          </script>
+        </div>
+      {/if}
+    </td>
+  </tr>
 </table>
 
 {if $stacked_graph_args}
-<center>
-<table width="100%" border=0>
-<tr>
-  <td colspan="1">
-  <font size="+1" style="text-align:center">Stacked Graph - {$metric}</font>
-  </td>
-</tr>
-<tr>
-  <td>
-  <center><img id="stacked_graph" src="stacked.php?{$stacked_graph_args}" alt="{$cluster} {$metric}"></center>
-  </td>
-</tr>
-</table>
-</center>
+  <center>
+    <table width="100%" border=0>
+      <tr>
+        <td colspan="1">
+          <font size="+1"
+                style="text-align:center">Stacked Graph - {$metric}</font>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <center><img id="stacked_graph"
+                       src="stacked.php?{$stacked_graph_args}"
+                       alt="{$cluster} {$metric}"></center>
+        </td>
+      </tr>
+    </table>
+  </center>
 {/if}
 
 <div id="cluster_view_chooser" style="padding:5px;background:rgb(238,238,238);">
   <div style="text-align:center;padding:5px;">
     {if $showhosts != 0}
-    <div class="nobr">{$cluster} <strong>{$metric}</strong>
-      last <strong>{$range}</strong>
-      sorted <strong>{$sort}</strong>
-    </div>
-    <div style="display:inline;padding:5px 0 0 0;">
-     Metric&nbsp;
-     {if $picker_autocomplete}
-       <input name="m" id="metrics-picker" />
-     {else}
-       <select name="m" id="metrics-picker">{$picker_metrics}</select>
-     {/if}
-    </div>
+      <div class="nobr">{$cluster} <strong>{$metric}</strong>
+        last <strong>{$overview.range}</strong>
+        sorted <strong>{$sort}</strong>
+      </div>
+      <div style="display:inline;padding:5px 0 0 0;">
+        Metric&nbsp;
+        {if $picker_autocomplete}
+          <input name="m" id="metrics-picker" />
+        {else}
+          <select name="m" id="metrics-picker">{$picker_metrics}</select>
+        {/if}
+      </div>
     {/if}
     <div style="padding:5px 0 0 0;">Show Hosts Scaled:&nbsp;&nbsp;
-    <div id="show_hosts_scaled">
-      {foreach $showhosts_levels id showhosts implode=""}
-      <input type="radio" name="sh" value="{$id}" id="shch{$id}" OnClick="ganglia_form.submit();" {$showhosts.checked}><label for="shch{$id}">{$showhosts.name}</label>
-      {/foreach}
+      <div id="show_hosts_scaled">
+        {foreach $showhosts_levels id showhosts implode=""}
+          <input type="radio"
+                 name="sh"
+                 value="{$id}"
+                 id="shch{$id}"
+                 OnClick="ganglia_form.submit();" {$showhosts.checked}>
+          <label for="shch{$id}">{$showhosts.name}</label>
+        {/foreach}
+      </div>
+      {if isset($columns_size_dropdown) && ($showhosts != 0)}
+        <div style="display:inline;padding-left:10px;"
+             class="nobr">Size&nbsp;&nbsp;{$size_menu}</div>
+        <div style="display:inline;padding-left:10px;"
+             class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</div>
+      {/if}
     </div>
-    {if isset($columns_size_dropdown) && ($showhosts != 0)}
-      <div style="display:inline;padding-left:10px;" class="nobr">Size&nbsp;&nbsp;{$size_menu}</div>
-      <div style="display:inline;padding-left:10px;" class="nobr">Columns&nbsp;&nbsp;{$cols_menu} (0 = metric + reports)</div>
-    {/if}
-  </div>
-  <div style="text-align:center;padding:5px 0 0 0;">
-    {$additional_filter_options}
+    <div style="text-align:center;padding:5px 0 0 0;">
+      {$additional_filter_options}
+    </div>
   </div>
 </div>
 
 <div id="host_metric_graphs">
-{include('cluster_host_metric_graphs.tpl')}
+  {include('cluster_host_metric_graphs.tpl')}
 </div>
 
 <!-- End cluster_view.tpl -->
