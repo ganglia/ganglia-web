@@ -1349,16 +1349,16 @@ function buildMetricMaps($metrics,
 	      (isset($always_constant[$name]) and $always_constant[$name])) {
       continue;
     } else {
-      $graphArgs = $baseGraphArgs . "&v=$metric[VAL]&m=$name";
+      $graphArgs = $baseGraphArgs . "&amp;v=$metric[VAL]&amp;m=$name";
       # Adding units to graph 2003 by Jason Smith <smithj4@bnl.gov>.
       if ($metric['UNITS']) {
 	$encodeUnits = rawurlencode($metric['UNITS']);
-	$graphArgs .= "&vl=$encodeUnits";
+	$graphArgs .= "&amp;vl=$encodeUnits";
       }
       if (isset($metric['TITLE'])) {
 	$title = $metric['TITLE'];
 	$encodeTitle = rawurlencode($title);
-	$graphArgs .= "&ti=$encodeTitle";
+	$graphArgs .= "&amp;ti=$encodeTitle";
       }
       // dump_var($graphArgs, "graphArgs");
 
