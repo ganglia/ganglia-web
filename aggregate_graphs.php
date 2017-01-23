@@ -1,3 +1,4 @@
+<script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript">
   function refreshAggregateGraph() {
     $("#aggregate_graph_display img").each(function (index) {
@@ -9,6 +10,11 @@
     });
   }
 
+  function clearTime() {
+    $("#datepicker_cs").val("");
+    $("#datepicker_ce").val("");
+  }
+
   function createAggregateGraph() {
     if ($('#hreg').val() == "" || $('#aggregate_graph_metric_chooser').val() == "") {
       alert("Host regular expression and metric name can't be blank");
@@ -16,14 +22,19 @@
     }
 
     var params = $("#aggregate_graph_form").serialize() + "&aggregate=1";
-    $("#show_direct_link").html("<a href='graph_all_periods.php?" + params + "'>Direct Link to this aggregate graph</a>");
     $("#aggregate_graph_display").html('<img src="img/spinner.gif">');
-    $.ajax({url: 'graph_all_periods.php',
+    if ($('#datepicker_cs').val() == "" && $('#datepicker_ce').val() == "") {
+      $("#show_direct_link").html("<a href='graph_all_periods.php?" + params + "'>Direct Link to this aggregate graph</a>");
+      $.ajax({url: 'graph_all_periods.php',
 	    cache: false,
 	    data: params + "&embed=1",
 	    success: function(data) {
       $("#aggregate_graph_display").html(data);
 	}});
+    } else {
+      $("#show_direct_link").html("<a href='graph.php?" + params + "'>Direct Link to this aggregate graph</a>");
+      $("#aggregate_graph_display").html('<img src="graph.php?'  + params + '">');
+    }
     return false;
   }
 
@@ -145,6 +156,17 @@ $(function() {
 
   if (restoreAggregateGraph())
     createAggregateGraph();
+
+  var dateTimePickerOptions = {
+    showOn: "button",
+    constrainInput: false,
+    buttonImage: "img/calendar.gif",
+    buttonImageOnly: true
+  };
+
+  $("#datepicker_cs").datetimepicker(dateTimePickerOptions);
+  $("#datepicker_ce").datetimepicker(dateTimePickerOptions);
+
 });
 </script type="text/javascript">
 <div id="aggregate_graph_header">
@@ -154,6 +176,12 @@ $(function() {
 <tr>
 <td>Title:</td>
 <td colspan=2><input name="title" id="title" value="" size=60></td>
+</tr>
+<tr>
+<td>Time:</td>
+<td>From:<input name="cs" id="datepicker_cs" value="" size=17>
+To:<input name="ce" id="datepicker_ce" value="" size=17>&nbsp;
+<input type="button" value="Clear" onclick="clearTime()"></td>
 </tr>
 <tr>
 <td>Vertical (Y-Axis) label:</td>
