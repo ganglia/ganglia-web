@@ -19,6 +19,9 @@ APACHE_USER = www-data
 # Name of the group that runs the Apache server 
 APACHE_GROUP = $(APACHE_USER)
 
+# PHP xUnit
+PHPUNIT = phpunit
+
 # PHP_CodeSniffer
 PHPCS = phpcs
 
@@ -57,7 +60,7 @@ fix:
 
 .PHONY: test
 test:
-	phpunit test
+	$(PHPUNIT) test
 
 clean:
 	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild
