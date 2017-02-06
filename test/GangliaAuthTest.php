@@ -4,7 +4,8 @@ $base_dir = dirname(__FILE__);
 ini_set( 'include_path', ini_get('include_path').":$base_dir/../lib");
 require_once 'GangliaAuth.php';
 
-class GangliaAuthTest extends PHPUnit_Framework_TestCase {
+require_once 'TestCase.php';
+class GangliaAuthTest extends TestCase {
 
   public function setUp() {
     $_SERVER['ganglia_secret'] = 'really really secret';
