@@ -3,6 +3,7 @@
     {$i = 0}
     {foreach $g_metrics["metrics"] g_metric}
       <td>
+        <div id="metric_{$g_metric.metric_name}">
         <font style="font-size: 8px">{$g_metric.metric_name} {if $g_metric.title != '' && $g_metric.title != $g_metric.metric_name}- {$g_metric.title}{/if}</font><br>
         {if $may_edit_views}
           {$graph_args = "&amp;";$graph_args .= $g_metric.graphargs;}
@@ -54,6 +55,7 @@
                  title="{$g_metric.desc}"/>
           </a>
         {/if}
+        </div>
       </td>
       {$g_metric.new_row}
       {math "$i + 1" assign=i}
