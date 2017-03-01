@@ -287,7 +287,7 @@ $(function() {
 <option disabled="disabled" selected="selected">Jump To Metric Group...</option>
 {foreach $g_metrics_group_data group g_metrics}
 {$mgId = "mg_"; $mgId .= regex_replace($group, '/[^a-zA-Z0-9_]/', '_')}
-<option value="{$mgId}">{$group}</a>
+<option value="{$mgId}">{$group}</option>
 {/foreach}
 </select>
 </div>
