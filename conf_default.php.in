@@ -482,3 +482,4 @@ $conf['cubism_default_step'] = 15;
 # Set this if you are fronted by a proxy and that ends up messing with Cubism URL detection
 #$conf['ganglia_url_prefix'] = "https://metric.domain.com";
 #$conf['ganglia_url_suffix'] = "/ganglia";
+?>
