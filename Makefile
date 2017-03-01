@@ -18,6 +18,15 @@ APACHE_USER = www-data
 
 # Name of the group that runs the Apache server 
 APACHE_GROUP = $(APACHE_USER)
+
+# PHP xUnit
+PHPUNIT = phpunit
+
+# PHP_CodeSniffer
+PHPCS = phpcs
+
+# PHP Code Beautifier and Fixer
+PHPCBF = phpcbf
 ##########################################################
 
 # Gweb version
@@ -39,14 +48,19 @@ all: default
 default:	$(TARGETS)
 
 sniff:
-	phpcs --standard=$(STANDARD) -p $(CODE)
+	@$(PHPCS) --version && echo
+	$(PHPCS) --standard=$(STANDARD) -p $(CODE)
+
+# convert exclusive standard into inclusive rules
+rules:
+	@$(PHPCS) --standard=$(STANDARD) -e | grep "^  " | sed -e 's/^  / <rule ref="/' -e 's/$$/"\/>/'
 
 fix:
-	phpcbf --standard=$(STANDARD) $(CODE)
+	$(PHPCBF) --standard=$(STANDARD) $(CODE)
 
 .PHONY: test
 test:
-	phpunit test
+	$(PHPUNIT) test
 
 clean:
 	rm -rf $(TARGETS) $(DIST_DIR) $(DIST_TARBALL) rpmbuild

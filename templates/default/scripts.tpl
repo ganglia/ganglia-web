@@ -14,7 +14,7 @@
 <link type="text/css" href="./styles.css" rel="stylesheet" />
 <link type="text/css" href="{$conf['jstree_css_path']}" rel="stylesheet" />
 <script type="text/javascript" src="{$conf['jquery_js_path']}"></script>
-<script>$.uiBackCompat = false;</script>
+<script type="text/javascript">$.uiBackCompat = false;</script>
 <script type="text/javascript" src="{$conf['jqueryui_js_path']}"></script>
 <script type="text/javascript" src="{$conf['jquery_flot_base_path']}.min.js"></script>
 <script type="text/javascript" src="js/jquery.livesearch.min.js"></script>

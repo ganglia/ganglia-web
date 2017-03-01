@@ -1,0 +1,10 @@
+{
+   "report_name" : "io_report",
+   "report_type" : "standard",
+   "title" : "Disk I/O",
+   "vertical_label" : "Bytes/sec",
+   "series" : [
+      { "metric": "io_nread", "color": "33cc33", "label": "Read", "line_width": "2", "type": "line" },
+      { "metric": "io_nwrite", "color": "5555cc", "label": "Write", "line_width": "2", "type": "line" }
+   ]
+}

@@ -15,7 +15,7 @@
       </p>
     </form>
   </div>
-</div> 
+</div>
 
 <div id="create-new-view-dialog" title="Create new view">
   <div id="create-new-view-layer">
@@ -31,7 +31,7 @@
   <div id="create-new-view-confirmation-layer"></div>
 </div>
 
-<script>
+<script type="text/javascript">
 $(function(){
   var create_new_view_dialog = $("#create-new-view-dialog");
   if (create_new_view_dialog[0])
@@ -58,16 +58,16 @@ $(function(){
   </div>
 </div>
 
-<script>
+<script type="text/javascript">
 $(function(){
-  initMetricActionsDialog();	
+  initMetricActionsDialog();
 });
 </script>
 
 <div id="tabs-mobile"></div>
 
 <div id="tabs-autorotation">
-Invoke automatic rotation system. Automatic rotation rotates all of the graphs/metrics specified in a view waiting 
+Invoke automatic rotation system. Automatic rotation rotates all of the graphs/metrics specified in a view waiting
 30 seconds in between each. This will run as long as you have this page open.
 <p>
 Please select the view you want to rotate.</p>
@@ -89,8 +89,7 @@ Loading view, please wait...<img src="img/spinner.gif" />
 </div>
 
 
-<div align="center">
-<font size="-1" class="footer" {if $hide_footer} style="visibility: hidden; display: none;" {/if}>
+<div align="center" class="footer" style="font-size:small;clear:both;" {if $hide_footer} style="visibility:hidden;display:none;" {/if}>
 <hr />
 Ganglia Web Frontend version {$webfrontend_version}
 <a href="http://ganglia.sourceforge.net/downloads.php?component=ganglia-webfrontend&amp;version={$webfrontend_version}">Check for Updates.</a><br />
@@ -101,7 +100,6 @@ Ganglia Web Backend <i>({$webbackend_component})</i> version {$webbackend_versio
 Downloading and parsing ganglia's XML tree took {$parsetime}.<br />
 Images created with <a href="http://www.rrdtool.org/">RRDtool</a> version {$rrdtool_version}.<br />
 {$dwoo.ad} {$dwoo.version}.<br />
-</font>
 </div>
 </div> <!-- div-tabs -->
 <div id="popup-dialog" title="Inspect Graph">
@@ -110,10 +108,10 @@ Images created with <a href="http://www.rrdtool.org/">RRDtool</a> version {$rrdt
   </div>
 </div>
 
-<script>
+<script type="text/javascript">
 $(function(){
-  $("#popup-dialog").dialog({ autoOpen: false, 
-                              width:800, 
+  $("#popup-dialog").dialog({ autoOpen: false,
+                              width:800,
                               height:500,
                               position: { my: "top",
                                           at: "top+200",
@@ -123,4 +121,3 @@ $(function(){
 </body>
 <!-- End footer.tpl -->
 </html>
-
