@@ -6,6 +6,6 @@
     "series" : [
        { "metric": "moab_running_jobs", "color": "0000FF", "label": "Running", "type": "stack"}
        { "metric": "moab_eligible_jobs", "color": "00FF00", "label": "Eligible", "type": "stack"},
-       { "metric": "moab_blocked_cores", "color": "FF0000", "label": "Blocked", "type": "stacked"}
+       { "metric": "moab_blocked_jobs", "color": "FF0000", "label": "Blocked", "type": "stack"}
     ]
 }
