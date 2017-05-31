@@ -1,0 +1,11 @@
+{
+    "report_name" : "moab_cores_report",
+    "report_type" : "standard",
+    "title" : "Moab Core Utilization",
+    "vertical_label" : "Cores",
+    "series" : [
+       { "metric": "moab_allocated_cores", "color": "0000FF", "label": "In use", "type": "stack"},
+       { "metric": "moab_idle_cores", "color": "E2E2F2", "label": "Idle", "type": "stack"},
+       { "metric": "moab_up_cores", "color": "FF0000", "label": "Up", "type": "line", "line_width": "2"}
+    ]
+}

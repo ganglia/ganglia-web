@@ -1,0 +1,11 @@
+{
+    "report_name" : "moab_nodes_report",
+    "report_type" : "standard",
+    "title" : "Moab Node Utilization",
+    "vertical_label" : "Nodes",
+    "series" : [
+       { "metric": "moab_allocated_nodes", "color": "0000FF", "label": "In use", "type": "stack"},
+       { "metric": "moab_idle_nodes", "color": "E2E2F2", "label": "Idle", "type": "stack"},
+       { "metric": "moab_up_nodes", "color": "FF0000", "label": "Up", "type": "line", "line_width": "2"}
+    ]
+}
