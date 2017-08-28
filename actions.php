@@ -20,7 +20,7 @@ if ( isset($_GET['action']) && $_GET['action'] == "show_views" ) {
     } else {
   ?>
      <tr><th>Host name</th><td><?php print htmlspecialchars($_GET['host_name']); ?></td></tr>
-     <tr><th><?php print ucfirst($_GET['type']); ?></th><td><?php print htmlspecialchars($_GET['metric_name']); ?></td></tr>
+     <tr><th><?php print htmlspecialchars(ucfirst($_GET['type'])); ?></th><td><?php print htmlspecialchars($_GET['metric_name']); ?></td></tr>
   <?php
   }
   ?>
