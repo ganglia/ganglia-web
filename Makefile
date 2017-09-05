@@ -30,7 +30,7 @@ PHPCBF = phpcbf
 ##########################################################
 
 # Gweb version
-GWEB_VERSION = 3.7.2
+GWEB_VERSION = 3.7.3
 
 DIST_NAME = ganglia-web
 DIST_DIR = $(DIST_NAME)-$(GWEB_VERSION)
