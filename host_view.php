@@ -79,10 +79,10 @@ function getOptionalReports($hostname,
       json_decode(file_get_contents($conf_dir . "/default.json"),
 		  TRUE));
   }
-  if ( is_file($conf['conf_dir'] . "/default_host.json") ) {
+  if ( is_file($conf_dir . "/default_host.json") ) {
     $default_reports = array_merge(
       $default_reports,
-      json_decode(file_get_contents($conf['conf_dir'] . "/default_host.json"),
+      json_decode(file_get_contents($conf_dir . "/default_host.json"),
 		  TRUE));
   }
 
