@@ -1125,8 +1125,20 @@ function output_data_to_external_format($rrdtool_graph_series,
   if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
     $command .= "TZ='" . $_SESSION['tz'] . "' ";
 
+  # Get rrdtool version
+  $rrdtool_version = array();
+  exec($rrdtool, $rrdtool_version);
+  $rrdtool_version = explode(" ", $rrdtool_version[0]);
+  $rrdtool_version = $rrdtool_version[1];
+
+  $rrdtool_timestamp = '';
+  if (version_compare($rrdtool_version, '1.5.999', '>='))
+    $rrdtool_timestamp = '-t';
+  elseif (version_compare($rrdtool_version, '1.4.999', '>='))
+    $rrdtool_timestamp = ''; // timestamp always missing (#672)
+
   $command .= $rrdtool .
-    " xport -t --start '" . $rrdtool_graph_start .
+    " xport " . $rrdtool_timestamp . " --start '" . $rrdtool_graph_start .
     "' --end '" .  $rrdtool_graph_end . "' " .
     ($step ? " --step '" . $step . "' " : '') .
     ($maxRows ? " --maxrows '" . $maxRows . "' " : '') .
@@ -1160,8 +1172,15 @@ function output_data_to_external_format($rrdtool_graph_series,
   $metric_values = array();
   // Build the metric_values array
 
+  $x = 0;
+  $rows = $xml->data->row->count();
   foreach ($xml->data->row as $objects) {
     $values = get_object_vars($objects);
+
+    if (!isset($values['t'])) {
+      $values['t'] = $rrdtool_graph_start + $x *
+        ($step ? $step : ($rrdtool_graph_end - $rrdtool_graph_start) / ($rows - 1));
+      }
 
     // If $values["v"] is an array we have multiple data sources/metrics and
     // we need to iterate over those
@@ -1174,6 +1193,7 @@ function output_data_to_external_format($rrdtool_graph_series,
       $output_array[0]["datapoints"][] =
 	array(build_value_for_json($values["v"]), intval($values['t']));
     }
+    $x++;
   }
 
   // If JSON output request simple encode the array as JSON
