@@ -45,6 +45,7 @@ function graph_mem_report ( &$rrdtool_graph ) {
     }
 
     $bmem_shared_defs = '';
+    $bmem_slab_defs = '';
     $bmem_buffers_defs = '';
     $bmem_used_cdef = "CDEF:'bmem_used'='bmem_total','bmem_free',-,'bmem_cached',-";
 
@@ -52,6 +53,12 @@ function graph_mem_report ( &$rrdtool_graph ) {
        $bmem_used_cdef .= ",'bmem_shared',-";
        $bmem_shared_defs = "DEF:'mem_shared'='${rrd_dir}/mem_shared.rrd':'sum':AVERAGE "
            ."CDEF:'bmem_shared'=mem_shared,1024,* ";
+    }
+
+    if (file_exists("$rrd_dir/mem_slab.rrd")) {
+       $bmem_used_cdef .= ",'bmem_slab',-";
+       $bmem_slab_defs = "DEF:'mem_slab'='${rrd_dir}/mem_slab.rrd':'sum':AVERAGE "
+           ."CDEF:'bmem_slab'=mem_slab,1024,* ";
     }
 
     if (file_exists("$rrd_dir/mem_buffers.rrd")) {
@@ -67,6 +74,7 @@ function graph_mem_report ( &$rrdtool_graph ) {
         ."CDEF:'bmem_free'=mem_free,1024,* "
         ."DEF:'mem_cached'='${rrd_dir}/mem_cached.rrd':'sum':AVERAGE "
         ."CDEF:'bmem_cached'=mem_cached,1024,* "
+        .$bmem_slab_defs
         .$bmem_buffers_defs
         ."$bmem_used_cdef "
         ."AREA:'bmem_used'#${conf['mem_used_color']}:'Use${rmspace}' ";
@@ -111,6 +119,22 @@ function graph_mem_report ( &$rrdtool_graph ) {
                 . "GPRINT:'cached_min':'${space1}Min\:%6.1lf%s${eol1}' "
                 . "GPRINT:'cached_avg':'${space2}Avg\:%6.1lf%s' "
                 . "GPRINT:'cached_max':'${space1}Max\:%6.1lf%s\\l' ";
+    }
+
+    if (file_exists("$rrd_dir/mem_slab.rrd")) {
+        $series .= "STACK:'bmem_slab'#${conf['mem_slab_color']}:'Slab${rmspace}' ";
+
+        if ( $conf['graphreport_stats'] ) {
+            $series .= "CDEF:slab_pos=bmem_slab,0,INF,LIMIT "
+                    . "VDEF:slab_last=slab_pos,LAST "
+                    . "VDEF:slab_min=slab_pos,MINIMUM " 
+                    . "VDEF:slab_avg=slab_pos,AVERAGE " 
+                    . "VDEF:slab_max=slab_pos,MAXIMUM " 
+                    . "GPRINT:'slab_last':'  ${space1}Now\:%6.1lf%s' "
+                    . "GPRINT:'slab_min':'${space1}Min\:%6.1lf%s${eol1}' "
+                    . "GPRINT:'slab_avg':'${space2}Avg\:%6.1lf%s' "
+                    . "GPRINT:'slab_max':'${space1}Max\:%6.1lf%s\\l' ";
+        }
     }
 
     if (file_exists("$rrd_dir/mem_buffers.rrd")) {
