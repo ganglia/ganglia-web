@@ -17,11 +17,6 @@ $conf['gweb_root'] = dirname(dirname(__FILE__));
 
 $ignore_host_reg = "";
 
-# Sometimes we want to ignore certain hosts. If so supply them as a regex
-if ( isset($_GET['ignore_host_reg'])  ) {
-   $ignore_host_reg = $_GET['ignore_host_reg'];
-} 
-
 include_once $conf['gweb_root'] . "/eval_conf.php";
 
 # To turn on debug set to 1
@@ -31,6 +26,13 @@ $context = "cluster";
 include_once $conf['gweb_root'] . "/functions.php";
 include_once $conf['gweb_root'] . "/ganglia.php";
 include_once $conf['gweb_root'] . "/get_ganglia.php";
+
+
+# Sometimes we want to ignore certain hosts. If so supply them as a regex
+if ( isset($_GET['ignore_host_reg'])  ) {
+   $ignore_host_reg = sanitize($_GET['ignore_host_reg']);
+} 
+
 # Massage the metrics to minimize the cache file by caching only attributes
 # we care about
 $stuck_gmond_hosts = array();

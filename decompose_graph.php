@@ -10,6 +10,8 @@ $line_width = "2";
 
 $user['view_name'] = isset($_GET["vn"]) ? sanitize ($_GET["vn"]) : NULL;
 $user['item_id'] = isset($_GET["item_id"]) ? sanitize ($_GET["item_id"]) : NULL;
+$user['hreg'] = isset($_GET["hreg"]) ? $_GET["hreg"] : NULL;
+$user['mreg'] = isset($_GET["mreg"]) ? $_GET["mreg"] : NULL;
 
 #################################################################################
 # Let's check if we are decomposing a composite graph from a view
@@ -37,13 +39,13 @@ if ( $user['view_name'] and $user['item_id'] ) {
 } else if ( isset($_GET['aggregate']) ) {
 
 
-  $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $_GET['hreg'], $_GET['mreg']);
+  $graph_config = build_aggregate_graph_config ($graph_type, $line_width, $user['hreg'], $user['mreg']);
 
-  foreach ( $_GET['hreg'] as $index => $arg ) {
-    print "<input type=hidden name=hreg[] value='" . htmlspecialchars($arg) . "'>";
+  foreach ( $user['hreg'] as $index => $arg ) {
+    print "<input type=hidden name=hreg[] value='" . sanitize($arg) . "'>";
   }
-  foreach ( $_GET['mreg'] as $index => $arg ) {
-    print "<input type=hidden name=mreg[] value='" . htmlspecialchars($arg) . "'>";
+  foreach ( $user['mreg'] as $index => $arg ) {
+    print "<input type=hidden name=mreg[] value='" . sanitize($arg) . "'>";
   }
 
 } else {
@@ -80,16 +82,12 @@ if ($ce)
 
 foreach ( $graph_config['series'] as $index => $item ) {
    $args = "h=" . $item['hostname'] . "&c=" . $item['clustername'] . "&m=" . $item['metric'];
-   $items[] = array ( "title" => "",
+   $items[] = array ( "title" => $item['hostname'] . " " . $item['metric'],
           "url_args" => $args . $graphargs . "&r=" . $range
    );
 
 }
 
-#print "<PRE>"; print_r($items);
-
 $data->assign("items", $items);
 $data->assign("number_of_items", count($items));
 $dwoo->output($tpl, $data);
-
-?>

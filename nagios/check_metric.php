@@ -14,15 +14,16 @@
 $conf['gweb_root'] = dirname(dirname(__FILE__));
 
 include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
 
 # To turn on debug set to 1
 $debug = 0;
 
 if ( isset($_GET['host']) && isset($_GET['metric_name']) && isset($_GET['operator']) && isset($_GET['critical_value']) ) {
-   $host = $_GET['host'];
-   $metric_name = $_GET['metric_name'];
-   $operator = $_GET['operator'];
-   $critical_value = $_GET['critical_value'];
+   $host = sanitize($_GET['host']);
+   $metric_name = sanitize($_GET['metric_name']);
+   $operator = sanitize($_GET['operator']);
+   $critical_value = sanitize($_GET['critical_value']);
 } else {
    die("You need to supply host, metric_name, operator and critical_value");
 }
@@ -47,7 +48,6 @@ if ( ! is_array( $metrics ) ) {
 		  error_log("DEBUG: Querying GMond for new data\n");
   }
   $context = "cluster";
-  include_once $conf['gweb_root'] . "/functions.php";
   include_once $conf['gweb_root'] . "/ganglia.php";
   include_once $conf['gweb_root'] . "/get_ganglia.php";
   # Massage the metrics to minimize the cache file by caching only attributes

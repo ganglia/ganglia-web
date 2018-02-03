@@ -20,10 +20,10 @@ if ( !isset($_GET['action']) ) {
 }
 
 // Variables
-$hostname = $_GET['h'];
-$cluster_url = $_GET['c'];
-$range = $_GET['r'];
-$debug = $_GET['debug'];
+$hostname = sanitize($_GET['h']);
+$cluster_url = sanitize($_GET['c']);
+$range = sanitize($_GET['r']);
+$debug = sanitize($_GET['debug']);
 
 function form_image_url ( $page, $args ) {
   global $conf;

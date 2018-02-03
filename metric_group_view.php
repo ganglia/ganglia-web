@@ -111,9 +111,9 @@ if ($cs)
 if ($ce)
   $baseGraphArgs .= "&amp;ce=" . rawurlencode($ce);
 if (isset($_GET['event']))
-  $baseGraphArgs .= "&amp;event=" . $_GET['event'];
+  $baseGraphArgs .= "&amp;event=" . rawurlencode($_GET['event']);
 if (isset($_GET['ts']))
-  $baseGraphArgs .= "&amp;ts=" . $_GET['ts'];
+  $baseGraphArgs .= "&amp;ts=" . rawurlencode($_GET['ts']);
 
 getMetricGroup($metrics,
 	       $metric_group,

@@ -24,14 +24,15 @@
 $conf['gweb_root'] = dirname(dirname(__FILE__));
 
 include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
 
 # To turn on debug set to 1
 $debug = 0;
 
 if ( isset($_GET['host']) && isset($_GET['checks']) ) {
-   $host = $_GET['host'];
+   $host = sanitize($_GET['host']);
    # Checks are : delimited
-   $checks = explode(":", $_GET['checks']);
+   $checks = explode(":", sanitize($_GET['checks']));
 } else {
    die("You need to supply host and list of checks");
 }
@@ -81,11 +82,11 @@ $host_found = 0;
 
 # Find a FQDN of a supplied server name.
 foreach ( $ganglia_hosts_array as $ganglia_host ) {
- if ( strpos(  $ganglia_hosts, $host ) !== false  ) {
- $fqdn = $ganglia_host;
- $host_found = 1;
- break;
- }
+  if ( strpos(  $ganglia_host, $host ) !== false  ) {
+    $fqdn = $ganglia_host;
+    $host_found = 1;
+    break;
+  }
 }
 
 # Host has been found in the Ganglia tree
@@ -144,5 +145,3 @@ if ( $host_found == 1 ) {
    echo("UNKNOWN|System check - " . $host. " - Hostname info not available. Likely invalid hostname");
    exit(3);
 }
-
-?>

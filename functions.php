@@ -347,7 +347,7 @@ function rowstyle() {
 # Resulting string is not URL-encoded.
 function clean_string( $string ) {
 
-  return htmlentities( $string );
+  return htmlentities( $string, ENT_QUOTES | ENT_HTML401 );
 }
 #------------------------------------------------------------------------------
 function sanitize ( $string ) {

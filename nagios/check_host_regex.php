@@ -24,15 +24,16 @@
 $conf['gweb_root'] = dirname(dirname(__FILE__));
 
 include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
 
 # To turn on debug set to 1
 $debug = $_GET['debug'];
 
 if ( isset($_GET['hreg']) && isset($_GET['checks']) ) {
-   $host_reg = $_GET['hreg'];
+   $host_reg = sanitize($_GET['hreg']);
    # Checks are : delimited
    $ignore_unknowns = isset($_GET['ignore_unknowns']) && $_GET['ignore_unknowns'] == 1 ? 1 : 0;
-   $checks = explode(":", $_GET['checks']);
+   $checks = explode(":", sanitize($_GET['checks']));
 } else {
    die("You need to supply hreg (host regex) and list of checks of format metrics,operator,critical value. Multiple checks can be supplied separated using a colon");
 }

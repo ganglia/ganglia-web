@@ -15,13 +15,14 @@
 $conf['gweb_root'] = dirname(dirname(__FILE__));
 
 include_once $conf['gweb_root'] . "/eval_conf.php";
+include_once $conf['gweb_root'] . "/functions.php";
 
 # To turn on debug set to 1
 $debug = 0;
 
 if ( isset($_GET['host']) ) {
-   $host = $_GET['host'];
-   $threshold = isset($_GET['threshold']) ? $_GET['threshold'] : 25;
+   $host = sanitize($_GET['host']);
+   $threshold = isset($_GET['threshold']) && is_numeric($_GET['threshold']) ? $_GET['threshold'] : 25;
 } else {
    die("You need to supply host and if you'd like threshold");
 }
@@ -64,18 +65,17 @@ if ( ! is_array( $metrics ) ) {
   unset($new_metrics);
 
 }
-
 # Get a list of all hosts
 $ganglia_hosts_array = array_keys($metrics);
 $host_found = 0;
 
 # Find a FQDN of a supplied server name.
 foreach ( $ganglia_hosts_array as $ganglia_host ) {
- if ( strpos(  $ganglia_hosts, $host ) !== false  ) {
- $fqdn = $ganglia_host;
- $host_found = 1;
- break;
- }
+  if ( strpos(  $ganglia_host, $host ) !== false  ) {
+    $fqdn = $ganglia_host;
+    $host_found = 1;
+    break;
+  }
 }
 
 # Host has been found in the Ganglia tree

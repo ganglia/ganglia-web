@@ -11,9 +11,9 @@ $cluster_designator = "Cluster Overview";
 ///////////////////////////////////////////////////////////////////////////////
 // Blocking malicious CGI input.
 $user['clustername'] = isset($_GET["c"]) ?
-    escapeshellcmd( clean_string( rawurldecode($_GET["c"]) ) ) : NULL;
+    sanitize($_GET["c"]) : NULL;
 $user['gridname'] = isset($_GET["G"]) ?
-    escapeshellcmd( clean_string( rawurldecode($_GET["G"]) ) ) : NULL;
+    sanitize($_GET["G"]) : NULL;
 
 $user['viewname'] = '';
 if ( isset($_GET["vn"]) &&  is_proper_view_name ($_GET["vn"]) ) {
@@ -22,22 +22,22 @@ if ( isset($_GET["vn"]) &&  is_proper_view_name ($_GET["vn"]) ) {
 
 if($conf['case_sensitive_hostnames'] == 1) {
     $user['hostname'] = isset($_GET["h"]) ?
-        escapeshellcmd( clean_string( rawurldecode($_GET["h"]) ) ) : NULL;
+        sanitize($_GET["h"]) : NULL;
 } else {
     $user['hostname'] = isset($_GET["h"]) ?
-        strtolower( escapeshellcmd( clean_string( rawurldecode($_GET["h"]) ) ) ) : NULL;
+        strtolower( sanitize($_GET["h"]) ) : NULL;
 }
 
 $user['range'] = isset( $_GET["r"] ) && in_array($_GET["r"], array_keys( $conf['time_ranges'] ) ) ?
     escapeshellcmd( rawurldecode($_GET["r"])) : NULL;
 $user['metricname'] = isset($_GET["m"]) ?
-    escapeshellcmd( clean_string( rawurldecode($_GET["m"]) ) ) : NULL;
+    sanitize($_GET["m"]) : NULL;
 $user['metrictitle'] = isset($_GET["ti"]) ?
-    escapeshellcmd( clean_string( rawurldecode($_GET["ti"]) ) ) : NULL;
+    sanitize($_GET["ti"]) : NULL;
 $user['sort'] = isset($_GET["s"]) ?
-    escapeshellcmd( clean_string( rawurldecode($_GET["s"]) ) ) : NULL;
+    sanitize($_GET["s"]) : NULL;
 $user['controlroom'] = isset($_GET["cr"]) ?
-    escapeshellcmd( clean_string( rawurldecode($_GET["cr"]) ) ): NULL;
+    sanitize($_GET["cr"]): NULL;
 # Default value set in conf.php, Allow URL to overrride
 if (isset($_GET["hc"]))
     //TODO: shouldn't set $conf from user input.
@@ -51,7 +51,7 @@ $user['showhosts'] = isset($_GET["sh"]) ?
 $user['physical'] = isset($_GET["p"]) ?
     clean_number( $_GET["p"] ) : NULL;
 $user['tree'] = isset($_GET["t"]) ?
-    escapeshellcmd($_GET["t"] ) : NULL;
+    sanitize($_GET["t"] ) : NULL;
 # A custom range value for job graphs, in -sec.
 $user['jobrange'] = isset($_GET["jr"]) ?
     clean_number( $_GET["jr"] ) : NULL;
@@ -60,18 +60,18 @@ $user['jobstart'] = isset($_GET["js"]) ?
     clean_number( $_GET["js"] ) : NULL;
 # custom start and end
 $user['cs'] = isset($_GET["cs"]) ?
-    escapeshellcmd(htmlentities($_GET["cs"])) : NULL;
+    sanitize($_GET["cs"]) : NULL;
 $user['ce'] = isset($_GET["ce"]) ?
-    escapeshellcmd(htmlentities($_GET["ce"])) : NULL;
+    sanitize($_GET["ce"]) : NULL;
 # Custom step, primarily for use in exporting the raw data from graph.php
 $user['step'] = isset($_GET["step"]) ?
     clean_number( $_GET["step"] ) : NULL;
 # The direction we are travelling in the grid tree
 $user['gridwalk'] = isset($_GET["gw"]) ?
-    escapeshellcmd( clean_string( $_GET["gw"] ) ) : NULL;
+    sanitize($_GET["gw"]) : NULL;
 # Size of the host graphs in the cluster view
 $user['clustergraphsize'] = isset($_GET["z"]) && in_array( $_GET[ 'z' ], $conf['graph_sizes_keys'] ) ?
-    escapeshellcmd($_GET["z"]) : NULL;
+    sanitize($_GET["z"]) : NULL;
 # A stack of grid parents. Prefer a GET variable, default to cookie.
 if (isset($_GET["gs"]) and $_GET["gs"])
     $user['gridstack'] = explode( ">", rawurldecode( $_GET["gs"] ) );
@@ -80,13 +80,13 @@ else if ( isset($_COOKIE['gs']) and $_COOKIE['gs'])
 
 if (isset($user['gridstack']) and $user['gridstack']) {
    foreach( $user['gridstack'] as $key=>$value )
-      $user['gridstack'][ $key ] = clean_string( $value );
+      $user['gridstack'][ $key ] = sanitize( $value );
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // Used with to limit hosts shown
 if ( isset($_GET['host_regex']) )
-  $user['host_regex'] = $_GET['host_regex'];
+  $user['host_regex'] = sanitize ($_GET['host_regex']);
 
 if ( isset($_GET['max_graphs']) && is_numeric($_GET['max_graphs'] ) )
   $user['max_graphs'] = $_GET['max_graphs'];
@@ -117,8 +117,8 @@ if(isset($_GET["choose_filter"]))
   $user['choose_filter'] = array();
   foreach($req_choose_filter as $k_req => $v_req)
   {
-    $k = escapeshellcmd( clean_string( rawurldecode ($k_req)));
-    $v = escapeshellcmd( clean_string( rawurldecode ($v_req)));
+    $k = sanitize ($k_req);
+    $v = sanitize ($v_req);
     $user['choose_filter'][$k] = $v;
   }
 }

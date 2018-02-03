@@ -19,6 +19,8 @@
 $conf['ganglia_dir'] = dirname(dirname(__FILE__));
 
 include_once $conf['ganglia_dir'] . "/eval_conf.php";
+include_once $conf['ganglia_dir'] . "/functions.php";
+
 
 # To turn on debug set to 1
 $debug = 0;
@@ -26,8 +28,8 @@ $debug = 0;
 $host_reg="cache-|varnish-";
 
 if ( isset($_GET['hreg']) &&  isset($_GET['checks'])) {
-   $host_reg = $_GET['hreg'];
-   $check_metrics =  explode(",", $_GET['checks']);
+   $host_reg = sanitize($_GET['hreg']);
+   $check_metrics =  explode(",", sanitize($_GET['checks']));
 } else {
    die("You need to supply hreg (host regex)");
 }

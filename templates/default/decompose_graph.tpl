@@ -32,6 +32,7 @@
     {else}
       {foreach $items item}
       <div class="img_view">
+        <font style="font-size: 7px">{$item.title}</font>
         <button title="Export to CSV" class="cupid-green" onClick="javascript:location.href='graph.php?{$item.url_args}&amp;csv=1';return false;">CSV</button>
         <button title="Export to JSON" class="cupid-green" onClick="javascript:location.href='graph.php?{$item.url_args}&amp;json=1';return false;">JSON</button>
         <button title="Inspect Graph" onClick="inspectGraph('{$item.url_args}'); return false;" class="shiny-blue">Inspect</button>

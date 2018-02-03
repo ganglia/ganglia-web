@@ -19,7 +19,7 @@ if (isset($_GET['vn']) && !is_proper_view_name($_GET['vn'])) {
 <?php
   exit(0);
 } else {
-  $view_name = $_GET['vn'];
+  $view_name = sanitize($_GET['vn']);
 }
 
 function viewFileName($view_name) {
