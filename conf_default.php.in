@@ -137,6 +137,7 @@ $conf['cpu_gnice_color'] = "fff261";
 $conf['mem_used_color'] = "5555cc";
 $conf['mem_shared_color'] = "0000aa";
 $conf['mem_cached_color'] = "33cc33";
+$conf['mem_slab_color'] = "66e533";
 $conf['mem_buffered_color'] = "99ff33";
 $conf['mem_free_color'] = "f0ffc0";
 $conf['mem_swapped_color'] = "9900CC";
