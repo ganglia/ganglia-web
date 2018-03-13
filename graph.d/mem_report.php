@@ -50,19 +50,19 @@ function graph_mem_report ( &$rrdtool_graph ) {
     $bmem_used_cdef = "CDEF:'bmem_used'='bmem_total','bmem_free',-,'bmem_cached',-";
 
     if (file_exists("$rrd_dir/mem_shared.rrd")) {
-       $bmem_used_cdef .= ",'bmem_shared',-";
+       $bmem_used_cdef .= ",'bmem_shared',UN,0,'bmem_shared',IF,-";
        $bmem_shared_defs = "DEF:'mem_shared'='${rrd_dir}/mem_shared.rrd':'sum':AVERAGE "
            ."CDEF:'bmem_shared'=mem_shared,1024,* ";
     }
 
     if (file_exists("$rrd_dir/mem_slab.rrd")) {
-       $bmem_used_cdef .= ",'bmem_slab',-";
+       $bmem_used_cdef .= ",'bmem_slab',UN,0,'bmem_slab',IF,-";
        $bmem_slab_defs = "DEF:'mem_slab'='${rrd_dir}/mem_slab.rrd':'sum':AVERAGE "
            ."CDEF:'bmem_slab'=mem_slab,1024,* ";
     }
 
     if (file_exists("$rrd_dir/mem_buffers.rrd")) {
-       $bmem_used_cdef .= ",'bmem_buffers',-";
+       $bmem_used_cdef .= ",'bmem_buffers',UN,0,'bmem_buffers',IF,-";
        $bmem_buffers_defs = "DEF:'mem_buffers'='${rrd_dir}/mem_buffers.rrd':'sum':AVERAGE "
            ."CDEF:'bmem_buffers'=mem_buffers,1024,* ";
     }
