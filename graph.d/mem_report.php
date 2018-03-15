@@ -48,6 +48,8 @@ function graph_mem_report ( &$rrdtool_graph ) {
     $bmem_slab_defs = '';
     $bmem_buffers_defs = '';
     $bmem_used_cdef = "CDEF:'bmem_used'='bmem_total','bmem_free',-,'bmem_cached',-";
+    $bmem_available_defs = '';
+    $bmem_realused_cdef = '';
 
     if (file_exists("$rrd_dir/mem_shared.rrd")) {
        $bmem_used_cdef .= ",'bmem_shared',UN,0,'bmem_shared',IF,-";
@@ -67,6 +69,12 @@ function graph_mem_report ( &$rrdtool_graph ) {
            ."CDEF:'bmem_buffers'=mem_buffers,1024,* ";
     }
 
+    if (file_exists("$rrd_dir/mem_available.rrd")) {
+       $bmem_realused_cdef = "CDEF:'bmem_realused'='bmem_total','bmem_available',- ";
+       $bmem_available_defs = "DEF:'mem_available'='${rrd_dir}/mem_available.rrd':'sum':AVERAGE "
+           ."CDEF:'bmem_available'=mem_available,1024,* ";
+    }
+
     $series = "DEF:'mem_total'='${rrd_dir}/mem_total.rrd':'sum':AVERAGE "
         ."CDEF:'bmem_total'=mem_total,1024,* "
         .$bmem_shared_defs
@@ -76,6 +84,8 @@ function graph_mem_report ( &$rrdtool_graph ) {
         ."CDEF:'bmem_cached'=mem_cached,1024,* "
         .$bmem_slab_defs
         .$bmem_buffers_defs
+        .$bmem_available_defs
+        .$bmem_realused_cdef
         ."$bmem_used_cdef "
         ."AREA:'bmem_used'#${conf['mem_used_color']}:'Use${rmspace}' ";
 
@@ -186,6 +196,22 @@ function graph_mem_report ( &$rrdtool_graph ) {
                         . "GPRINT:'swapped_avg':'${space2}Avg\:%6.1lf%s' "
                         . "GPRINT:'swapped_max':'${space1}Max\:%6.1lf%s\\l' ";
 	}
+    }
+
+    if (file_exists("$rrd_dir/mem_available.rrd")) {
+        $series .= "LINE2:'bmem_realused'#${conf['mem_available_color']}:'Avail${rmspace}' ";
+
+        if ( $conf['graphreport_stats'] ) {
+            $series .= "CDEF:available_pos=bmem_available,0,INF,LIMIT "
+                    . "VDEF:available_last=available_pos,LAST "
+                    . "VDEF:available_min=available_pos,MINIMUM " 
+                    . "VDEF:available_avg=available_pos,AVERAGE " 
+                    . "VDEF:available_max=available_pos,MAXIMUM " 
+                    . "GPRINT:'available_last':' ${space1}Now\:%6.1lf%s' "
+                    . "GPRINT:'available_min':'${space1}Min\:%6.1lf%s${eol1}' "
+                    . "GPRINT:'available_avg':'${space2}Avg\:%6.1lf%s' "
+                    . "GPRINT:'available_max':'${space1}Max\:%6.1lf%s\\l' ";
+        }
     }
 
     $series .= "LINE2:'bmem_total'#${conf['cpu_num_color']}:'Total${rmspace}' ";
