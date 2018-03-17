@@ -55,9 +55,9 @@ function graph_mem_report ( &$rrdtool_graph ) {
            ."CDEF:'bmem_shared'=mem_shared,1024,* ";
     }
 
-    if (file_exists("$rrd_dir/mem_slab.rrd")) {
+    if (file_exists("$rrd_dir/mem_sreclaimable.rrd")) {
        $bmem_used_cdef .= ",'bmem_slab',UN,0,'bmem_slab',IF,-";
-       $bmem_slab_defs = "DEF:'mem_slab'='${rrd_dir}/mem_slab.rrd':'sum':AVERAGE "
+       $bmem_slab_defs = "DEF:'mem_slab'='${rrd_dir}/mem_sreclaimable.rrd':'sum':AVERAGE "
            ."CDEF:'bmem_slab'=mem_slab,1024,* ";
     }
 
@@ -121,7 +121,7 @@ function graph_mem_report ( &$rrdtool_graph ) {
                 . "GPRINT:'cached_max':'${space1}Max\:%6.1lf%s\\l' ";
     }
 
-    if (file_exists("$rrd_dir/mem_slab.rrd")) {
+    if (file_exists("$rrd_dir/mem_sreclaimable.rrd")) {
         $series .= "STACK:'bmem_slab'#${conf['mem_slab_color']}:'Slab${rmspace}' ";
 
         if ( $conf['graphreport_stats'] ) {
