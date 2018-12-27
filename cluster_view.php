@@ -30,7 +30,7 @@ function get_picker_metrics($metrics, $reports, $gweb_root, $graph_engine) {
       }
     }
     foreach ($reports as $report_name => $report_value)
-      $context_metrics[] = $report_name;
+      $context_metrics = $report_name;
   }
 
   if (!is_array($context_metrics))
