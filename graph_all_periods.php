@@ -7,6 +7,7 @@ include_once "./dwoo/dwooAutoload.php";
 $tpl = new Dwoo_Template_File(template("graph_all_periods.tpl"));
 $data = new Dwoo_Data();
 
+$data->assign("refresh", $conf['default_refresh']);
 $data->assign("conf", $conf);
 $data->assign("embed",
               isset($_REQUEST['embed']) ? $_REQUEST['embed'] : NULL);

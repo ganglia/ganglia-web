@@ -6,6 +6,8 @@
       {include('scripts.tpl')}
 {/if}
 <script type="text/javascript">
+ var g_refreshInterval = {$refresh};
+
  function openDecompose($url) {
    $.cookie("ganglia-selected-tab-" + window.name, 0);
    location.href="./index.php" + $url + "&amp;tab=m";
