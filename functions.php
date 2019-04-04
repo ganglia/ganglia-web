@@ -1121,8 +1121,8 @@ function build_aggregate_graph_config ($graph_type,
                                        $line_width,
                                        $hreg,
                                        $mreg,
-                                       $glegend,
-                                       $exclude_host_from_legend_label,
+                                       $glegend = NULL,
+                                       $exclude_host_from_legend_label = false,
                                        $sortit = true) {
 
   global $conf, $index_array, $hosts, $grid, $clusters, $debug, $metrics;
