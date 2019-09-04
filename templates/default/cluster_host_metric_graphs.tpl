@@ -42,7 +42,7 @@
       {/foreach}
     {/if}
   {/if}
-  {if $index % $hostcols == 0}
+  {if $index % max(1, $hostcols) == 0}
     </tr><tr>
   {/if}
   {math "$index + 1" assign="index"}
