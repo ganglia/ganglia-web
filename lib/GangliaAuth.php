@@ -82,14 +82,14 @@ class GangliaAuth {
 
   // this is how a user 'logs in'.
   public function setAuthCookie($user, $group=null) {
-    setcookie('ganglia_auth', json_encode( array('user'=>$user, 'group'=>$group, 'token'=>$this->getAuthToken($user)) ) );
+    setcookie('ganglia_auth', json_encode( array('user'=>$user, 'group'=>$group, 'token'=>$this->getAuthToken($user)) ), NULL, NULL, NULL, true, true );
     $this->user = $user;
     $this->group = $group;
     $this->tokenIsValid = true;
   }
 
   public function destroyAuthCookie() {
-    setcookie('ganglia_auth', '', time());
+    setcookie('ganglia_auth', '', time(), NULL, NULL, true, true);
     self::$auth = null;
   }
 
