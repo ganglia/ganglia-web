@@ -1406,8 +1406,15 @@ function heuristic_urldecode($blob) {
 // alternative passthru() implementation to avoid incomplete images shown in
 // browsers.
 function my_passthru($command) {
+  // "exec" cannot handle very long command strings
+  $cmdf = tempnam('/tmp', 'ganglia-graph-cmd.');
+  $cmdfp = fopen($cmdf, 'wb');
+  fwrite($cmdfp, $command);
+  fclose($cmdfp);
+  $cmd = "/bin/sh $cmdf";
   $tf = tempnam('/tmp', 'ganglia-graph.');
-  $ret = exec("$command > $tf");
+  $ret = exec("$cmd > $tf");
+  unlink($cmdf);
   $size = filesize($tf);
   header("Content-Length: $size");
   $fp = fopen($tf, 'rb');
