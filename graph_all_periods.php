@@ -10,12 +10,12 @@ $data = new Dwoo_Data();
 $data->assign("refresh", $conf['default_refresh']);
 $data->assign("conf", $conf);
 $data->assign("embed",
-              isset($_REQUEST['embed']) ? $_REQUEST['embed'] : NULL);
+              isset($_REQUEST['embed']) ? sanitize($_REQUEST['embed']) : NULL);
 $data->assign("mobile",
-              isset($_REQUEST['mobile']) ? $_REQUEST['mobile'] : NULL);
-$data->assign("h", isset($_GET['h']) ? $_GET['h'] : NULL);
-$data->assign("g", isset($_GET['g']) ? $_GET['g'] : NULL);
-$data->assign("m", isset($_GET['m']) ? $_GET['m'] : NULL);
+              isset($_REQUEST['mobile']) ? sanitize($_REQUEST['mobile']) : NULL);
+$data->assign("h", isset($_GET['h']) ? sanitize($_GET['h']) : NULL);
+$data->assign("g", isset($_GET['g']) ? sanitize($_GET['g']) : NULL);
+$data->assign("m", isset($_GET['m']) ? sanitize($_GET['m']) : NULL);
 $data->assign("html_g",
               isset($_GET['g']) ? htmlspecialchars($_GET['g']) : NULL);
 $data->assign("html_m",
