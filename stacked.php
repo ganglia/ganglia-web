@@ -15,10 +15,10 @@ $metricname = $_REQUEST['m'];
 $range = $_REQUEST['r'];
 
 $cs = isset($_GET["cs"]) ?
-  escapeshellcmd(htmlentities($_REQUEST["cs"])) : NULL;
+  sanitize(htmlentities($_REQUEST["cs"])) : NULL;
 
 $ce = isset($_GET["ce"]) ?
-  escapeshellcmd(htmlentities($_REQUEST["ce"])) : NULL;
+  sanitize(htmlentities($_REQUEST["ce"])) : NULL;
 
 $start = ($cs and (is_numeric($cs) or strtotime($cs))) ?
   $cs : '-' . $conf['time_ranges'][$range] . 's';
@@ -27,23 +27,23 @@ $end = ($ce and (is_numeric($ce) or strtotime($ce))) ? $ce : 'N';
 
 $command = '';
 if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
-  $command .= "TZ='" . $_SESSION['tz'] . "' ";
+  $command .= "TZ='" . sanitize($_SESSION['tz']) . "' ";
 
 $command .= $conf['rrdtool'] . " graph - $rrd_options -E";
-$command .= " --start '${start}'";
-$command .= " --end '${end}'";
+$command .= " --start '" . sanitize(${start}) . "'";
+$command .= " --end '" . sanitize(${end}) . "'";
 $command .= " --width 700";
 $command .= " --height 300";
 
 $title .= isset($_GET['title']) ?
   $_GET['title'] : "$clustername aggregated $metricname last $range";
-$command .= " --title " . escapeshellarg($title);
+$command .= " --title " . sanitize($title);
 
 if (isset($_GET['x']))
-  $command .= " --upper-limit " . escapeshellarg($_GET[x]);
+  $command .= " --upper-limit " . sanitize($_GET[x]);
 
 if (isset($_GET['n']))
-  $command .= " --lower-limit " . escapeshellarg($_GET[n]);
+  $command .= " --lower-limit " . sanitize($_GET[n]);
 
 if (isset($_GET['x']) || isset($_GET['n'])) {
   $command .= " --rigid";
@@ -53,7 +53,7 @@ if (isset($_GET['x']) || isset($_GET['n'])) {
 }
 
 if (isset($_GET['vl']))
-  $command .= " --vertical-label " . escapeshellarg($_GET['vl']);
+  $command .= " --vertical-label " . sanitize($_GET['vl']);
 
 $total_cmd = " CDEF:total=0";
 # The total,POP sequence is a workaround to meet the requirement that CDEFS
@@ -117,7 +117,6 @@ foreach ($hosts as $index =>  $host) {
     str_pad($host, $max_len + 1, ' ', STR_PAD_RIGHT) . "'";
 }
 
-$command = sanitize($command);
 $command .= $total_cmd . $mean_cmd . $last_total_cmd . $last_mean_cmd;
 $command .= " COMMENT:'\\j'";
 $command .= " GPRINT:'total':AVERAGE:'Avg Total\: %5.2lf'";
