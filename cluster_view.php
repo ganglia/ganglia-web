@@ -483,7 +483,7 @@ function show_stacked_graphs($clustername,
   $tpl_data->assign("stacked_graph_args", $stacked_args);
 }
 
-function get_load_heatmap($hosts_up, $host_regex, $metrics, $tpl_data, $sort) {
+function get_load_heatmap($hosts_up, $host_regex, $metrics, $load_scale, $tpl_data, $sort) {
   foreach ($hosts_up as $host => $val) {
   // If host_regex is defined
   if (isset($host_regex) &&
@@ -491,7 +491,7 @@ function get_load_heatmap($hosts_up, $host_regex, $metrics, $tpl_data, $sort) {
       continue;
 
     $load = get_load($host, $metrics);
-    $host_load[$host] = $load;
+    $host_load[$host] = $load / $load_scale;
   }
 
   $num_hosts = count($host_load);
@@ -735,7 +735,7 @@ if ($user['showhosts'] != 0)
 if (isset($conf['heatmaps_enabled']) and
     $conf['heatmaps_enabled'] == 1 and
     (count($hosts_up) > 0))
-  get_load_heatmap($hosts_up, $user['host_regex'], $metrics, $tpl_data, $user['sort']);
+  get_load_heatmap($hosts_up, $user['host_regex'], $metrics, $conf['load_scale'], $tpl_data, $user['sort']);
 
 $tpl_data->assign("conf", $conf);
 $tpl_data->assign("showhosts", $user['showhosts']);
