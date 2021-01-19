@@ -120,7 +120,7 @@ function graph_metric ( &$rrdtool_graph ) {
     $series .= "AREA:'sum'#${conf['default_metric_color']}:'$metricname   '";
 
     if ($conf['graphreport_stats'] == false) {
-        $series .= ":STACK: COMMENT:'$subtitle_two\\l'";
+        $series .= " COMMENT:'$subtitle_two\\l'";
     }
     $series .= " ";
 
