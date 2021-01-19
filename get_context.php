@@ -208,7 +208,7 @@ $always_timestamp = array(
 
 # List of report graphs
 $reports = array(
-   "load_report" => "load_one",
+   "load_report" => 1,
    "cpu_report" => 1,
    "mem_report" => 1,
    "network_report" => 1,
