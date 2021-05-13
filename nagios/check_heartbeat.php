@@ -68,14 +68,24 @@ if ( ! is_array( $metrics ) ) {
 # Get a list of all hosts
 $ganglia_hosts_array = array_keys($metrics);
 $host_found = 0;
+$host_found_by_substr = 0;
 
 # Find a FQDN of a supplied server name.
 foreach ( $ganglia_hosts_array as $ganglia_host ) {
-  if ( strpos(  $ganglia_host, $host ) !== false  ) {
+  if ( strcmp(  $ganglia_host, $host ) === 0  ) {
     $fqdn = $ganglia_host;
     $host_found = 1;
     break;
   }
+  if ( strpos(  $ganglia_host, $host ) !== false  ) {
+    $fqdn_by_substr = $ganglia_host;
+    $host_found_by_substr = 1;
+  }
+}
+
+if ( $host_found !== 1 && $host_found_by_substr === 1 ) {
+  $host_found = 1;
+  $fqdn = $fqdn_by_substr;
 }
 
 # Host has been found in the Ganglia tree
