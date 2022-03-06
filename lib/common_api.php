@@ -15,8 +15,7 @@ function api_return_ok ( $message ) {
 
 // Handle PHP error
 set_error_handler("ganglia_api_error_handler");
-function ganglia_api_error_handler ($no, $str, $file, $line, $context) {
-  $context; // PHPCS
+function ganglia_api_error_handler ($no, $str, $file, $line) {
   switch ($no) {
     case E_ERROR:
     case E_CORE_ERROR:
