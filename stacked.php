@@ -37,7 +37,7 @@ $command .= " --height 300";
 
 $title .= isset($_GET['title']) ?
   $_GET['title'] : "$clustername aggregated $metricname last $range";
-$command .= " --title " . sanitize($title);
+$command .= " --title " . escapeshellarg($title);
 
 if (isset($_GET['x']))
   $command .= " --upper-limit " . sanitize($_GET[x]);
