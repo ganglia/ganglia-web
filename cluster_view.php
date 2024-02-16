@@ -740,7 +740,6 @@ if (isset($conf['heatmaps_enabled']) and
 $tpl_data->assign("conf", $conf);
 $tpl_data->assign("showhosts", $user['showhosts']);
 
-error_log("reports = " . print_r($reports, TRUE));
 $tpl_data->assign("reports_metricname",
                   isset($reports[$user['metricname']]) &&
                   $reports[$user['metricname']]);
