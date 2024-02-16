@@ -887,7 +887,7 @@ function rrdgraph_cmd_build($rrdtool_graph,
 
 	// We need to add hostname and clustername if it's not specified
 	foreach (array_keys($graph_config['series']) as $series_id) {
-	  if (! isset($graph_config['series'][$index]['hostname'])) {
+	  if (! isset($graph_config['series'][$series_id]['hostname'])) {
 	    $graph_config['series'][$series_id]['hostname'] = $raw_host;
 	    if (isset($grid))
 	      $graph_config['series'][$series_id]['clustername'] = $grid;
