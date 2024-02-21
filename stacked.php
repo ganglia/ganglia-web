@@ -30,8 +30,8 @@ if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
   $command .= "TZ='" . sanitize($_SESSION['tz']) . "' ";
 
 $command .= $conf['rrdtool'] . " graph - $rrd_options -E";
-$command .= " --start '" . sanitize(${start}) . "'";
-$command .= " --end '" . sanitize(${end}) . "'";
+$command .= " --start '" . sanitize($start) . "'";
+$command .= " --end '" . sanitize($end) . "'";
 $command .= " --width 700";
 $command .= " --height 300";
 

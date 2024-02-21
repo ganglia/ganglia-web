@@ -208,7 +208,11 @@ if ($conf['show_meta_snapshot']=="yes") {
    # above the image. Not easy with template blocks.
    $cols=5;
    $i = 0;
-   $count=count($names);
+   if (is_null($names)) {
+      $count=0;
+   } else {
+      $count=count($names);
+   }
    while ($i < $count)
       {
          $snapnames = "";
