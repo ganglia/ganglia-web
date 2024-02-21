@@ -729,7 +729,7 @@ function get_view_graph_elements($view) {
   case "standard":
     // Does view have any items/graphs defined
     if ( count($view['items']) == 0 ) {
-      continue;
+      break;
       // print "No graphs defined for this view. Please add some";
     } else {
       // Loop through graph items
