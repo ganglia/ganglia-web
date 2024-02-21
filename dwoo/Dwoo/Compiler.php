@@ -1820,7 +1820,7 @@ class Dwoo_Compiler implements Dwoo_ICompiler
 				if ($func === 'tif') {
 					$params[] = $tokens;
 				}
-				$output = call_user_func_array($funcCompiler, $params);
+				$output = call_user_func_array($funcCompiler, array_values($params));
 			} else {
 				array_unshift($params, '$this');
 				$params = self::implode_r($params);

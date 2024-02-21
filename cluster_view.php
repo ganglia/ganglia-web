@@ -594,7 +594,7 @@ if (!$user['showhosts']) {
   if (array_key_exists($user_metricname, $metrics))
     $units = $metrics[$user_metricname]['UNITS'];
 } else {
-  if (array_key_exists($user_metricname, $metrics[key($metrics)]))
+  if ((!is_null($metrics[key($metrics)])) && array_key_exists($user_metricname, $metrics[key($metrics)]))
     if (isset($metrics[key($metrics)][$user_metricname]['UNITS']))
       $units = $metrics[key($metrics)][$user_metricname]['UNITS'];
   else
@@ -614,7 +614,7 @@ if (! $refresh) {
                                $user['ce'],
                                $conf['zoom_support'],
                                $conf['default_optional_graph_size'],
-                               $cluster[LOCALTIME],
+                               $cluster['LOCALTIME'],
                                $tpl_data);
 
   //////////////////////////////////////////////////////////////////////////////
@@ -761,7 +761,7 @@ if (isset($conf['show_stacked_graphs']) and
   show_stacked_graphs($user['clustername'],
 		      $user['metricname'],
 		      $user['range'],
-		      $cluster[LOCALTIME],
+		      $cluster['LOCALTIME'],
 		      $user['host_regex'],
 		      $user['cs'],
 		      $user['ce'],
