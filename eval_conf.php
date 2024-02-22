@@ -12,6 +12,11 @@ require_once $base_dir . "/conf_default.php";
 require_once 'lib/GangliaAcl.php';
 require_once 'lib/GangliaAuth.php';
 
+# Include system-wide overrides if they exist.
+if( file_exists( "/etc/ganglia/conf.d/conf.php" ) ) {
+  include_once "/etc/ganglia/conf.d/conf.php";
+}
+
 # Include user-defined overrides if they exist.
 if( file_exists( $base_dir . "/conf.php" ) ) {
   include_once $base_dir . "/conf.php";
