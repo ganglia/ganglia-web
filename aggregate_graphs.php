@@ -46,6 +46,9 @@ $(function() {
   $( "#glshow" ).checkboxradio( { icon: false } );
   $( "#glhide" ).checkboxradio( { icon: false } );
   $( "#graph_legend_menu" ).controlgroup();
+  $( "#glhostshow" ).checkboxradio( { icon: false } );
+  $( "#glhosthide" ).checkboxradio( { icon: false } );
+  $( "#graph_lgnd_xh_menu" ).controlgroup();
 
   $("#hreg").change(function() {
     $.cookie("ganglia-aggregate-graph-hreg" + window.name,
@@ -82,6 +85,11 @@ $(function() {
     $.cookie("ganglia-aggregate-graph-glegend" + window.name, glegend);
   });
 
+  $("#aggregate_graph_table_form input[name=lgnd_xh]").change(function() {
+    var lgnd_xh = $("#aggregate_graph_table_form input[name=lgnd_xh]:checked").val();
+    $.cookie("ganglia-aggregate-graph-lgnd_xh" + window.name, lgnd_xh);
+  });
+
   function restoreAggregateGraph() {
     var hreg = $.cookie("ganglia-aggregate-graph-hreg" + window.name);
     if (hreg != null)
@@ -103,6 +111,14 @@ $(function() {
 	$("#glshow").click();
       else
 	$("#glhide").click();
+    }
+
+    var lgnd_xh = $.cookie("ganglia-aggregate-graph-lgnd_xh" + window.name);
+    if (lgnd_xh != null) {
+      if (lgnd_xh == "false")
+	$("#glhostshow").click();
+      else
+	$("#glhosthide").click();
     }
 
     var mreg = $.cookie("ganglia-aggregate-graph-metric" + window.name);
@@ -225,6 +241,8 @@ To:<input name="ce" id="datepicker_ce" value="" size=17>&nbsp;
 <td>Legend options:</td><td>
 <div id="graph_legend_menu"><input type="radio" name="glegend" id="glshow" value="show" checked /><label for="glshow">Show legend</label>
 <input type="radio" name="glegend" id="glhide" value="hide" /><label for="glhide">Hide legend</label></div>
+<div id="graph_lgnd_xh_menu"><input type="radio" name="lgnd_xh" id="glhostshow" value="false" /><label for="glhostshow">Show hostnames</label>
+<input type="radio" name="lgnd_xh" id="glhosthide" value="true" checked /><label for="glhosthide">Hide hostnames</label></div>
 </td>
 </tr>
 <tr>
