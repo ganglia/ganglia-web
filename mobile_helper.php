@@ -266,7 +266,7 @@ foreach ($metrics as $metric_name => $metric_attributes) {
   } else if (isset($reports[$metric_name]) and $reports[$metric])
     continue;
   else {
-    $metric_graphargs = "c=".rawurlencode($clustername)."&amp;h=".rawurlencode($hostname)."&amp;v=".rawurlencode($metric_attributes[VAL])
+    $metric_graphargs = "c=".rawurlencode($clustername)."&amp;h=".rawurlencode($hostname)."&amp;v=".rawurlencode($metric_attributes['VAL'])
       ."&amp;m=$metric_name&amp;r=".rawurlencode($range)."&amp;z=$size&amp;jr=$jobrange"
       ."&amp;js=$jobstart&amp;st=$cluster[LOCALTIME]";
     if ($cs)
