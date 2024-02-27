@@ -276,7 +276,11 @@ $to = 0;
 
       $x; //PHPCS
       $y; //PHPCS
-      $pie_count = count( $angles );
+      if is_null( $angles ) {
+        $pie_count = 0;
+      } else {
+        $pie_count = count( $angles );
+      }
       $PIE_THICKNESS = ($this->diameter * 0.075);
 
       for( $j = ($this->center_y+$PIE_THICKNESS); $j > $this->center_y; $j-- ) {
