@@ -99,7 +99,7 @@ function physical_racks() {
    else {
       ksort($racks);
       reset($racks);
-      while (list($rack,) = each($racks)) {
+      foreach ($racks as $rack => $values) {
          # In our convention, y=0 is close to the floor. (Easier to wire up)
          krsort($racks[$rack]);
       }

@@ -372,7 +372,7 @@ function get_cluster_overview($showhosts,
   $overview["cluster_load"] = join(", ", $cluster_load);
 
   $avg_cpu_num = find_avg($clustername, "", "cpu_num");
-  if ($avg_cpu_num == 0)
+  if ((float)$avg_cpu_num == 0)
     $avg_cpu_num = 1;
   $cluster_util =
     sprintf("%.0f%%",

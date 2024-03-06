@@ -67,7 +67,7 @@ class Dwoo_Plugin_textformat extends Dwoo_Block_Plugin
 		// gets paragraphs
 		$pgs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->buffer));
 
-		while (list($i,) = each($pgs)) {
+		foreach ($pgs as $i => $values) {
 			if (empty($pgs[$i])) {
 				continue;
 			}

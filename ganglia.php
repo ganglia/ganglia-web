@@ -350,7 +350,7 @@ function Gmetad () {
       }
 
    if ($debug) print "<br/>DEBUG: Creating parser\n";
-   if ( isset($context) && is_array($context) && isset($SKIP_GMETAD_CONTEXTS) && is_array($SKIP_GMETAD_CONTEXTS) && in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
+   if ( is_array($SKIP_GMETAD_CONTEXTS) && in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
       return TRUE;
    }
    $parser = xml_parser_create();

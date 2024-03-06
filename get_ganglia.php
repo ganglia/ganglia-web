@@ -7,7 +7,7 @@
 
 # If we are in compare_hosts, views and decompose_graph context we shouldn't attempt
 # any connections to the gmetad
-if (! in_array($context, $SKIP_GMETAD_CONTEXTS) ) {
+if (! ( is_array($SKIP_GMETAD_CONTEXTS) && in_array($context, $SKIP_GMETAD_CONTEXTS) ) ) {
    if (! Gmetad($conf['ganglia_ip'], $conf['ganglia_port']) )
       {
          print "<H4>There was an error collecting ganglia data ".
