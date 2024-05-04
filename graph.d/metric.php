@@ -53,6 +53,7 @@ function graph_metric ( &$rrdtool_graph ) {
             }
 
             $prefix = $summary ? $metricname : $hostname;
+            $value = (float)$value;
             $value = ($value > 1000)
                         ? number_format($value)
                         : number_format($value, 2);
