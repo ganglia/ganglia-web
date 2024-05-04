@@ -1552,7 +1552,7 @@ if ($sourcetime) {
 
 // Fix from Phil Radden, but step is not always 15 anymore.
 if ($range == "month")
-  $rrdtool_graph['end'] = floor($rrdtool_graph['end'] / 672) * 672;
+  $rrdtool_graph['end'] = floor((int)$rrdtool_graph['end'] / 672) * 672;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Are we generating aggregate graphs

@@ -71,7 +71,7 @@ class Dwoo_Data implements Dwoo_IDataProvider
 	public function mergeData(array $data)
 	{
 		$args = func_get_args();
-		while (list(,$v) = each($args)) {
+		foreach ($args as $v) {
 			if (is_array($v)) {
 				$this->data = array_merge($this->data, $v);
 			}
@@ -90,8 +90,9 @@ class Dwoo_Data implements Dwoo_IDataProvider
 	{
 		if (is_array($name)) {
 			reset($name);
-			while (list($k,$v) = each($name))
+			foreach ($name as $k => $v) {
 				$this->data[$k] = $v;
+			}
 		} else {
 			$this->data[$name] = $val;
 		}
