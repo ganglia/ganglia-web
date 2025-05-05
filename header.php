@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_GET['tz'])) {
+if (isset($_GET['tz']) && in_array($_GET['tz'], timezone_identifiers_list())) {
   $_SESSION['tz'] = $_GET['tz'];
 }
 
