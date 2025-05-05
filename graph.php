@@ -946,7 +946,7 @@ function rrdgraph_cmd_build($rrdtool_graph,
 
   $command = '';
   if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
-    $command .= "TZ='" . $_SESSION['tz'] . "' ";
+    $command .= "TZ='" . escapeshellcmd($_SESSION['tz']) . "' ";
 
   $command .=
     $conf['rrdtool'] .
@@ -1123,7 +1123,7 @@ function output_data_to_external_format($rrdtool_graph_series,
 
   $command = '';
   if (isset($_SESSION['tz']) && ($_SESSION['tz'] != ''))
-    $command .= "TZ='" . $_SESSION['tz'] . "' ";
+    $command .= "TZ='" . escapeshellcmd($_SESSION['tz']) . "' ";
 
   $command .= $rrdtool .
     " xport --start '" . $rrdtool_graph_start .
