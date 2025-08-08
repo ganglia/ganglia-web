@@ -25,7 +25,7 @@ function Dwoo_Plugin_capitalize(Dwoo_Core $dwoo, $value, $numwords=false)
 	} else {
 		$bits = explode(' ', (string) $value);
 		$out = '';
-		while (list(,$v) = each($bits)) {
+		foreach ($bits as $v) {
 			if (preg_match('#^[^0-9]+$#', $v)) {
 				$out .=	' '.mb_convert_case($v, MB_CASE_TITLE, $dwoo->getCharset());
 			} else {

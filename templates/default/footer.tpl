@@ -92,7 +92,7 @@ Loading view, please wait...<img src="img/spinner.gif" />
 <div align="center" class="footer" style="font-size:small;clear:both;" {if $hide_footer} style="visibility:hidden;display:none;" {/if}>
 <hr />
 Ganglia Web Frontend version {$webfrontend_version}
-<a href="http://ganglia.sourceforge.net/downloads.php?component=ganglia-webfrontend&amp;version={$webfrontend_version}">Check for Updates.</a><br />
+<a href="https://github.com/ganglia/ganglia-web" target="_blank">Check for Updates.</a><br />
 
 Ganglia Web Backend <i>({$webbackend_component})</i> version {$webbackend_version}
 <a href="http://ganglia.sourceforge.net/downloads.php?component={$webbackend_component}&amp;version={$webbackend_version}">Check for Updates.</a><br />
